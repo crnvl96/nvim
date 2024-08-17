@@ -9,12 +9,6 @@ vim.api.nvim_create_autocmd('FileType', {
 })
 
 vim.api.nvim_create_autocmd('FileType', {
-    group = vim.api.nvim_create_augroup(vim.g.whoami .. '/exit_with_esc', {}),
-    pattern = { 'qf', 'fzf' },
-    callback = function() vim.keymap.set('t', '<esc><esc>', '<cmd>close<cr>', { desc = 'close with <esc>' }) end,
-})
-
-vim.api.nvim_create_autocmd('FileType', {
     group = vim.api.nvim_create_augroup(vim.g.whoami .. '/close_with_q', {}),
     pattern = { 'qf', 'gitsigns-blame', 'fugitive', 'fugitiveblame' },
     callback = function() vim.keymap.set('n', 'q', '<cmd>close<cr>', { desc = 'close with <esc>' }) end,
