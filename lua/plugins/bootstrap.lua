@@ -13,7 +13,7 @@ local fox = require('nightfox')
 
 fox.setup({ options = { transparent = true } })
 
-vim.cmd('colorscheme carbonfox')
+vim.cmd('colorscheme nordfox')
 
 require('mini.icons').setup()
 require('mini.icons').mock_nvim_web_devicons()
