@@ -29,10 +29,3 @@ miniai.setup({
         inside_last = '',
     },
 })
-
-local markview = require('markview')
-
-markview.setup({
-    modes = { 'n', 'i', 'no', 'c' },
-    hybrid_modes = { 'i' },
-})
