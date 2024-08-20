@@ -10,32 +10,36 @@ vim.api.nvim_create_autocmd('ColorScheme', {
 })
 
 local fox = require('nightfox')
-
 fox.setup({ options = { transparent = true } })
-
 vim.cmd('colorscheme nordfox')
 
-require('mini.icons').setup()
-require('mini.icons').mock_nvim_web_devicons()
+local icons = require('mini.icons')
+icons.setup()
+icons.mock_nvim_web_devicons()
 
-require('mason').setup()
+local mason = require('mason')
+mason.setup()
 
 local ensure_installed = {}
 vim.list_extend(ensure_installed, vim.tbl_keys(require('tools').servers))
 vim.list_extend(ensure_installed, require('tools').formatters)
 vim.list_extend(ensure_installed, require('tools').debuggers)
 
-require('mason-tool-installer').setup({
+local mts = require('mason-tool-installer')
+mts.setup({
     ensure_installed = ensure_installed,
 })
 
-require('mini.misc').setup_restore_cursor({ center = true })
-require('mini.misc').setup_termbg_sync()
-vim.keymap.set('n', '<c-w>z', require('mini.misc').zoom, { desc = 'zoom' })
+local misc = require('mini.misc')
+misc.setup_restore_cursor({ center = true })
+misc.setup_termbg_sync()
+vim.keymap.set('n', '<c-w>z', misc.zoom, { desc = 'zoom' })
 
-require('mini.tabline').setup()
+local tabline = require('mini.tabline')
+tabline.setup()
 
-require('mini.bufremove').setup()
+local bufremove = require('mini.bufremove')
+bufremove.setup()
 vim.keymap.set('n', '<leader>bc', function() require('mini.bufremove').delete(0, false) end, { desc = 'delete buffer' })
 vim.keymap.set('n', '<leader>bo', function()
     local bcur = vim.api.nvim_get_current_buf()

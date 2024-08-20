@@ -1,4 +1,5 @@
-require('mini.clue').setup({
+local clue = require('mini.clue')
+clue.setup({
     triggers = {
         { mode = 'n', keys = 'g' },
         { mode = 'x', keys = 'g' },
