@@ -17,7 +17,18 @@ oil.setup({
 
 local fzf = require('fzf-lua')
 fzf.setup({
-    fzf_opts = { ['--cycle'] = '' },
+    fzf_colors = {
+        bg = { 'bg', 'Normal' },
+        gutter = { 'bg', 'Normal' },
+        info = { 'fg', 'Conditional' },
+        scrollbar = { 'bg', 'Normal' },
+        separator = { 'fg', 'Comment' },
+    },
+    fzf_opts = {
+        ['--info'] = 'default',
+        ['--layout'] = 'reverse-list',
+        ['--cycle'] = '',
+    },
     winopts = {
         height = 0.85,
         width = 0.80,

@@ -15,7 +15,6 @@ return {
   ["mason.nvim"] = "e2f7f9044ec30067bc11800a9e266664b88cda22",
   ["mini.nvim"] = "71b5694a2df4f7e3661855eb8e2814980d2e0ac9",
   neogit = "2b74a777b963dfdeeabfabf84d5ba611666adab4",
-  ["nightfox.nvim"] = "d3e8b1acc095baf57af81bb5e89fe7c4359eb619",
   ["nvim-bqf"] = "1b24dc6050c34e8cd377b6b4cd6abe40509e0187",
   ["nvim-cmp"] = "ae644feb7b67bf1ce4260c231d1d4300b19c6f30",
   ["nvim-dap"] = "281a2e4cd1e7a17cea7ecb1745d84a8ab1249925",
@@ -31,5 +30,6 @@ return {
   ["project.nvim"] = "5ac6e7a3c0dd5cd92ca19457e1294cec5d69607e",
   ["quicker.nvim"] = "308088ebcec33f9ed551714e52390206b8f62ed6",
   ["vim-fugitive"] = "0444df68cd1cdabc7453d6bd84099458327e5513",
-  ["vim-rhubarb"] = "ee69335de176d9325267b0fd2597a22901d927b1"
+  ["vim-rhubarb"] = "ee69335de176d9325267b0fd2597a22901d927b1",
+  ["zenburn.nvim"] = "f5ee12b30119499c7fa7f95719cd7c5aab9f9f29"
 }

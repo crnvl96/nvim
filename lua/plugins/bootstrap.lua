@@ -9,9 +9,9 @@ vim.api.nvim_create_autocmd('ColorScheme', {
     end,
 })
 
-local fox = require('nightfox')
-fox.setup({ options = { transparent = true } })
-vim.cmd('colorscheme nordfox')
+local z = require('zenburn')
+z.setup()
+vim.cmd('colorscheme zenburn')
 
 local icons = require('mini.icons')
 icons.setup()
