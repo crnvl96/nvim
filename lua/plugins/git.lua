@@ -1,5 +1,11 @@
 local neogit = require('neogit')
-neogit.setup()
+neogit.setup({
+    signs = {
+        hunk = { '', '' },
+        item = { '', ' ' },
+        section = { '', ' ' },
+    },
+})
 
 local gitsigns = require('gitsigns')
 gitsigns.setup({
