@@ -34,7 +34,7 @@ fzf.setup({
         width = 0.80,
         row = 0.50,
         col = 0.50,
-        border = { '╭', '─', '╮', '│', '╯', '─', '╰', '│' },
+        border = 'none',
         backdrop = 60,
         preview = {
             hidden = 'hidden',

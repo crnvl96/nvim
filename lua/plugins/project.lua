@@ -1,8 +1,8 @@
 local project = require('project_nvim')
 project.setup({
-    -- patterns = { '.git', '_darcs', '.hg', '.bzr', '.svn', 'Makefile', 'package.json' },
     patterns = { '.git' },
     silent_chdir = false,
+    detection_methods = { 'pattern', 'lsp' },
     scope_chdir = 'win',
 })
 
