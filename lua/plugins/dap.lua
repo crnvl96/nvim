@@ -1,7 +1,13 @@
+MiniDeps.add({ source = 'theHamsta/nvim-dap-virtual-text' })
+MiniDeps.add({ source = 'mfussenegger/nvim-dap' })
+MiniDeps.add({ source = 'jay-babu/mason-nvim-dap.nvim' })
+
 vim.api.nvim_set_hl(0, 'DapStoppedLine', { default = true, link = 'Visual' })
 
 local dapvt = require('nvim-dap-virtual-text')
 dapvt.setup({ virt_text_pos = 'eol' })
+
+MiniDeps.add({ source = 'rcarriga/nvim-dap-ui' })
 
 local dapui = require('dapui')
 dapui.setup()
@@ -32,6 +38,8 @@ local vscode = require('dap.ext.vscode')
 local json = require('plenary.json')
 vscode.json_decode = function(str) return vim.json.decode(json.json_strip_comments(str)) end
 if vim.fn.filereadable('.vscode/launch.json') then vscode.load_launchjs() end
+
+MiniDeps.add({ source = 'leoluz/nvim-dap-go' })
 
 -- go
 local dap_go = require('dap-go')

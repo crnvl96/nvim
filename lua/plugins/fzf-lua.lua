@@ -1,21 +1,7 @@
-local grug_far = require('grug-far')
-grug_far.setup({ headerMaxWidth = 80 })
-
-local oil = require('oil')
-oil.setup({
-    columns = { 'icon' },
-    watch_for_changes = true,
-    view_options = { show_hidden = true },
-    keymaps = {
-        ['<C-s>'] = false,
-        ['<C-h>'] = false,
-        ['<C-l>'] = false,
-        ['<M-v>'] = { 'actions.select', opts = { vertical = true }, desc = 'Open the entry in a vertical split' },
-        ['<M-s>'] = { 'actions.select', opts = { horizontal = true }, desc = 'Open the entry in a horizontal split' },
-    },
-})
+MiniDeps.add({ source = 'ibhagwan/fzf-lua' })
 
 local fzf = require('fzf-lua')
+
 fzf.setup({
     fzf_colors = {
         bg = { 'bg', 'Normal' },
@@ -67,12 +53,12 @@ vim.keymap.set('n', '<leader>fo', fzf.oldfiles, { desc = 'Oldfiles' })
 vim.keymap.set('n', '<leader>fq', fzf.quickfix, { desc = 'Qf' })
 vim.keymap.set('n', '<leader>fl', fzf.blines, { desc = 'Lines' })
 vim.keymap.set('n', '<leader>ft', fzf.tabs, { desc = 'Tabs' })
-vim.keymap.set('n', '<leader>sg', fzf.live_grep, { desc = 'Lgrep' })
-vim.keymap.set('x', '<leader>sg', fzf.grep_visual, { desc = 'Lgrep visual' })
-vim.keymap.set('n', '<leader>sG', fzf.live_grep_resume, { desc = 'Lgrep resume' })
-vim.keymap.set('n', '<leader>sq', fzf.lgrep_quickfix, { desc = 'Lgrep qf' })
-vim.keymap.set('n', '<leader>sl', fzf.lgrep_curbuf, { desc = 'Lgrep lines' })
-vim.keymap.set('n', '<leader>sr', '<cmd>GrugFar<cr>', { desc = 'replace' })
+vim.keymap.set('n', '<leader>fg', fzf.live_grep, { desc = 'Lgrep' })
+vim.keymap.set('x', '<leader>fg', fzf.grep_visual, { desc = 'Lgrep visual' })
+vim.keymap.set('n', '<leader>fG', fzf.live_grep_resume, { desc = 'Lgrep resume' })
+-- vim.keymap.set('n', '<leader>fq', fzf.lgrep_quickfix, { desc = 'Lgrep qf' })
+-- vim.keymap.set('n', '<leader>fl', fzf.lgrep_curbuf, { desc = 'Lgrep lines' })
+vim.keymap.set('n', '<leader>fr', '<cmd>GrugFar<cr>', { desc = 'replace' })
 vim.keymap.set('n', '-', '<cmd>Oil<CR>', { desc = 'oil' })
 
 fzf.register_ui_select()

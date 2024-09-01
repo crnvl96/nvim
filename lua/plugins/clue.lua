@@ -1,5 +1,4 @@
-local clue = require('mini.clue')
-clue.setup({
+require('mini.clue').setup({
     triggers = {
         { mode = 'n', keys = 'g' },
         { mode = 'x', keys = 'g' },
@@ -30,8 +29,8 @@ clue.setup({
         { mode = 'x', keys = '<leader>h', desc = '+hunks' },
         { mode = 'n', keys = '<leader>t', desc = '+tabs' },
         { mode = 'n', keys = '<leader>x', desc = '+list' },
-        { mode = 'n', keys = '<leader>s', desc = '+search' },
-        { mode = 'x', keys = '<leader>s', desc = '+search' },
+        -- { mode = 'n', keys = '<leader>s', desc = '+search' },
+        -- { mode = 'x', keys = '<leader>s', desc = '+search' },
         { mode = 'n', keys = '<leader><tab>', desc = '+tabs' },
         require('mini.clue').gen_clues.builtin_completion(),
         require('mini.clue').gen_clues.g(),
