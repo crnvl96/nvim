@@ -1,7 +1,12 @@
+MiniDeps.add({ source = 'williamboman/mason.nvim', hooks = { post_checkout = function() vim.cmd('MasonUpdate') end } })
+
 MiniDeps.add({ source = 'williamboman/mason-lspconfig.nvim' })
 MiniDeps.add({ source = 'neovim/nvim-lspconfig' })
 
 local tools = require('tools')
+local mason = require('mason')
+
+mason.setup()
 
 local capabilities = vim.tbl_deep_extend(
     'force',
@@ -37,6 +42,7 @@ local function on_attach(client, bufnr)
 end
 
 require('mason-lspconfig').setup({
+ensure_installed = vim.tbl_keys(tools.servers),
     handlers = {
         function(server_name)
             local server = tools.servers[server_name] or {}
