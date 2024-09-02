@@ -22,7 +22,6 @@ local add, now, ltr = deps.add, deps.now, deps.later
 local tools = {
     servers = {
         vtsls = {},
-        clojure_lsp = {},
         lua_ls = {
             settings = {
                 Lua = {
@@ -54,24 +53,13 @@ local tools = {
         },
     },
     ts_parsers = {
-        'bash',
         'c',
         'lua',
-        'query',
-        'fennel',
-        'clojure',
         'vim',
         'vimdoc',
+        'query',
         'markdown',
         'markdown_inline',
-        'html',
-        'typescript',
-        'javascript',
-        'go',
-        'gomod',
-        'gosum',
-        'gowork',
-        'gotmpl',
     },
     formatters = {
         'stylua',
@@ -80,11 +68,6 @@ local tools = {
         'gofumpt',
         'goimports',
         'golines',
-        'joker',
-    },
-    debuggers = {
-        'delve',
-        'js-debug-adapter',
     },
 }
 
@@ -254,56 +237,31 @@ now(function()
     })
 end)
 
-now(
-    function()
-        require('mini.base16').setup({
-            palette = {
-                base00 = '#2E3440',
-                base01 = '#3B4252',
-                base02 = '#434C5E',
-                base03 = '#4C566A',
-                base04 = '#D8DEE9',
-                base05 = '#E5E9F0',
-                base06 = '#ECEFF4',
-                base07 = '#8FBCBB',
-                base08 = '#88C0D0',
-                base09 = '#81A1C1',
-                base0A = '#5E81AC',
-                base0B = '#BF616A',
-                base0C = '#D08770',
-                base0D = '#EBCB8B',
-                base0E = '#A3BE8C',
-                base0F = '#B48EAD',
-            },
-        })
-    end
-)
-
 now(function()
-    local misc = require('mini.misc')
-    misc.setup_restore_cursor({ center = true })
-    misc.setup_auto_root()
+    local base16 = require('mini.base16')
+    base16.setup({
+        palette = {
+            base00 = '#2E3440',
+            base01 = '#3B4252',
+            base02 = '#434C5E',
+            base03 = '#4C566A',
+            base04 = '#D8DEE9',
+            base05 = '#E5E9F0',
+            base06 = '#ECEFF4',
+            base07 = '#8FBCBB',
+            base08 = '#88C0D0',
+            base09 = '#81A1C1',
+            base0A = '#5E81AC',
+            base0B = '#BF616A',
+            base0C = '#D08770',
+            base0D = '#EBCB8B',
+            base0E = '#A3BE8C',
+            base0F = '#B48EAD',
+        },
+    })
 end)
 
-now(function()
-    local bufremove = require('mini.bufremove')
-
-    bufremove.setup()
-
-    vim.keymap.set('n', '<leader>bc', function() bufremove.delete(0, false) end, { desc = 'delete buffer' })
-    vim.keymap.set('n', '<leader>bo', function()
-        local bcur = vim.api.nvim_get_current_buf()
-        local blist = vim.api.nvim_list_bufs()
-
-        for _, buf in ipairs(blist) do
-            if buf ~= bcur then require('mini.bufremove').delete(buf, true) end
-        end
-
-        vim.cmd('redraw!')
-    end, { desc = 'delete other buffers' })
-end)
-
-now(function()
+ltr(function()
     add({
         source = 'nvim-treesitter/nvim-treesitter',
         hooks = { post_update = function() vim.cmd('TSUpdate') end },
@@ -315,14 +273,15 @@ now(function()
         auto_install = true,
         indent = { enable = true },
         highlight = {
-            enable = true,
+            enable = false,
+            disable = true,
             additional_vim_regex_highlighting = { 'markdown' },
         },
     })
 end)
 
-now(function()
-    MiniDeps.add({ source = 'nvim-treesitter/nvim-treesitter-textobjects' })
+ltr(function()
+    add({ source = 'nvim-treesitter/nvim-treesitter-textobjects' })
 
     local miniai = require('mini.ai')
 
@@ -342,13 +301,13 @@ now(function()
     })
 end)
 
-now(function()
+ltr(function()
     add({ source = 'MagicDuck/grug-far.nvim' })
 
     require('grug-far').setup({ headerMaxWidth = 80 })
 end)
 
-now(function()
+ltr(function()
     add('stevearc/oil.nvim')
 
     local oil = require('oil')
@@ -371,7 +330,7 @@ now(function()
     })
 end)
 
-now(function()
+ltr(function()
     add({ source = 'ibhagwan/fzf-lua' })
 
     local fzf = require('fzf-lua')
@@ -436,7 +395,7 @@ now(function()
     fzf.register_ui_select()
 end)
 
-now(function()
+ltr(function()
     add({ source = 'stevearc/conform.nvim' })
 
     local conform = require('conform')
@@ -480,7 +439,7 @@ now(function()
     })
 end)
 
-now(function()
+ltr(function()
     add({ source = 'hrsh7th/cmp-buffer' })
     add({ source = 'hrsh7th/cmp-path' })
     add({ source = 'hrsh7th/cmp-nvim-lua' })
@@ -529,7 +488,7 @@ now(function()
     })
 end)
 
-now(function()
+ltr(function()
     add({
         source = 'williamboman/mason.nvim',
         hooks = { post_checkout = function() vim.cmd('MasonUpdate') end },
@@ -591,77 +550,6 @@ now(function()
             local client = vim.lsp.get_client_by_id(e.data.client_id)
             if not client then return end
             on_attach(client, e.buf)
-        end,
-    })
-end)
-
-ltr(function()
-    add({ source = 'lewis6991/gitsigns.nvim' })
-
-    local gitsigns = require('gitsigns')
-    gitsigns.setup({
-        signs = {
-            add = { text = '▒' },
-            change = { text = '▒' },
-            delete = { text = '▒' },
-            topdelete = { text = '▒' },
-            changedelete = { text = '▒' },
-            untracked = { text = '▒' },
-        },
-        signs_staged = {
-            add = { text = '▒' },
-            change = { text = '▒' },
-            delete = { text = '▒' },
-            topdelete = { text = '▒' },
-            changedelete = { text = '▒' },
-            untracked = { text = '▒' },
-        },
-        on_attach = function(bufnr)
-            local function handle_nav_fwd()
-                return vim.wo.diff and vim.cmd.normal({ ']c', bang = true }) or gitsigns.nav_hunk('next')
-            end
-
-            local function handle_nav_bck()
-                return vim.wo.diff and vim.cmd.normal({ '[c', bang = true }) or gitsigns.nav_hunk('prev')
-            end
-
-            local function stage_selected_hunk_part() gitsigns.stage_hunk({ vim.fn.line('.'), vim.fn.line('v') }) end
-            local function reset_selected_hunk_part() gitsigns.reset_hunk({ vim.fn.line('.'), vim.fn.line('v') }) end
-            local function blame_line() gitsigns.blame_line({ full = true }) end
-            local function diff_from_head() gitsigns.diffthis('~') end
-
-            vim.keymap.set('n', ']c', handle_nav_fwd, { desc = 'next hunk' })
-            vim.keymap.set('n', '[c', handle_nav_bck, { desc = 'prev hunk' })
-            vim.keymap.set('n', '<leader>hs', gitsigns.stage_hunk, { desc = 'stage hunk', buffer = bufnr })
-            vim.keymap.set('n', '<leader>hr', gitsigns.reset_hunk, { desc = 'reset hunk', buffer = bufnr })
-            vim.keymap.set('n', '<leader>hs', stage_selected_hunk_part, { desc = 'stage hunk', buffer = bufnr })
-            vim.keymap.set('n', '<leader>hr', reset_selected_hunk_part, { desc = 'reset hunk', buffer = bufnr })
-            vim.keymap.set('n', '<leader>hS', gitsigns.stage_buffer, { desc = 'stage buffer', buffer = bufnr })
-            vim.keymap.set('n', '<leader>hu', gitsigns.undo_stage_hunk, { desc = 'undo stage hunk', buffer = bufnr })
-            vim.keymap.set('n', '<leader>hR', gitsigns.reset_buffer, { desc = 'reset buffer', buffer = bufnr })
-            vim.keymap.set('n', '<leader>hp', gitsigns.preview_hunk_inline, { desc = 'preview hunk', buffer = bufnr })
-            vim.keymap.set('n', '<leader>hb', blame_line, { desc = 'blame line', buffer = bufnr })
-            vim.keymap.set('n', '<leader>hB', gitsigns.blame, { desc = 'blame', buffer = bufnr })
-            vim.keymap.set('n', '<leader>hd', gitsigns.diffthis, { desc = 'diff this', buffer = bufnr })
-            vim.keymap.set('n', '<leader>hD', diff_from_head, { desc = 'diff this against ~', buffer = bufnr })
-            vim.keymap.set(
-                'n',
-                '<leader>td',
-                gitsigns.toggle_deleted,
-                { desc = 'toggle deleted lines', buffer = bufnr }
-            )
-            vim.keymap.set(
-                'n',
-                '<leader>tb',
-                gitsigns.toggle_current_line_blame,
-                { desc = 'blame line', buffer = bufnr }
-            )
-            vim.keymap.set(
-                { 'x', 'o' },
-                'ih',
-                ':<C-U>Gitsigns select_hunk<CR>',
-                { desc = 'select hunk', buffer = bufnr }
-            )
         end,
     })
 end)
