@@ -95,7 +95,7 @@ now(function()
 
     vim.o.splitbelow = true
     vim.o.splitright = true
-    vim.o.cursorline = false
+    vim.o.cursorline = true
     vim.o.showcmd = false
     vim.o.showmode = false
     vim.o.ruler = false
