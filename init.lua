@@ -15,227 +15,16 @@ if not vim.loop.fs_stat(mini_path) then
 end
 
 local deps = require('mini.deps')
+
 deps.setup({ path = { package = path_package } })
 
 local add, now, ltr = deps.add, deps.now, deps.later
 
-local tools = {
-    servers = {
-        vtsls = {},
-        lua_ls = {
-            settings = {
-                Lua = {
-                    runtime = {
-                        version = 'LuaJIT',
-                    },
-                    workspace = {
-                        checkThirdParty = false,
-                        library = {
-                            vim.env.VIMRUNTIME,
-                            '${3rd}/luv/library',
-                            '${3rd}/busted/library',
-                        },
-                    },
-                },
-            },
-        },
-        eslint = {
-            settings = {
-                format = false,
-            },
-        },
-        gopls = {
-            settings = {
-                gopls = {
-                    gofumpt = true,
-                },
-            },
-        },
-    },
-    ts_parsers = {
-        'c',
-        'lua',
-        'vim',
-        'vimdoc',
-        'query',
-        'markdown',
-        'markdown_inline',
-    },
-    formatters = {
-        'stylua',
-        'prettierd',
-        'staticcheck',
-        'gofumpt',
-        'goimports',
-        'golines',
-    },
-}
+local tools = require('config.tools')
 
-now(function()
-    vim.g.mapleader = ' '
-    vim.g.maplocalleader = ','
-    vim.g.whoami = 'crnvl96'
-
-    vim.o.splitbelow = true
-    vim.o.splitright = true
-    vim.o.cursorline = true
-    vim.o.showcmd = false
-    vim.o.showmode = false
-    vim.o.ruler = false
-    vim.o.laststatus = 0
-    vim.o.foldcolumn = '0'
-    vim.o.foldenable = true
-    vim.o.foldlevel = 99
-    vim.o.foldlevelstart = 99
-    vim.o.foldmethod = 'expr'
-    vim.o.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
-    vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
-    vim.o.swapfile = false
-    vim.o.virtualedit = 'block'
-    vim.o.splitkeep = 'screen'
-    vim.o.shiftround = true
-    vim.o.shiftwidth = 2
-    vim.o.tabstop = 2
-    vim.o.expandtab = true
-    vim.o.scrolloff = 8
-    vim.o.sidescrolloff = 4
-    vim.o.breakindent = true
-    vim.o.smartindent = true
-    vim.o.smartcase = true
-    vim.o.ignorecase = true
-    vim.o.infercase = true
-    vim.o.mouse = 'a'
-    vim.o.number = true
-    vim.o.relativenumber = true
-    vim.o.clipboard = 'unnamedplus'
-    vim.o.signcolumn = 'yes'
-    vim.o.fillchars = 'eob: '
-    vim.o.termguicolors = true
-    vim.o.undofile = true
-    vim.o.updatetime = 300
-    vim.o.timeoutlen = 200
-    vim.o.backup = false
-    vim.o.writebackup = false
-    vim.o.wrap = false
-    vim.o.wildignorecase = true
-    vim.o.background = 'dark'
-
-    vim.opt.formatoptions:append('l1')
-    vim.opt.shortmess:append('WcC')
-    vim.opt.diffopt:append('linematch:60')
-    vim.opt.wildoptions:append('fuzzy')
-    vim.opt.path:append('**')
-    vim.opt.wildignore:append('*/node_modules/*,*/dist/*')
-    vim.opt.completeopt:append('menuone,noinsert,noselect,popup,fuzzy')
-
-    if vim.fn.executable('rg') ~= 0 then vim.o.grepprg = 'rg --vimgrep' end
-    if vim.fn.exists('syntax_on') ~= 1 then vim.cmd('syntax enable') end
-
-    vim.cmd('filetype plugin indent on')
-    vim.cmd('packadd cfilter')
-end)
-
-now(function()
-    vim.keymap.set({ 'n', 'x', 'i' }, '<c-s>', '<esc><cmd>w<cr><esc>')
-    vim.keymap.set({ 'n', 'x', 'i' }, '<esc>', '<esc><cmd>noh<cr><esc>')
-
-    vim.keymap.set({ 'n', 'x' }, 'j', [[v:count == 0 ? 'gj' : 'j']], { expr = true })
-    vim.keymap.set({ 'n', 'x' }, 'k', [[v:count == 0 ? 'gk' : 'k']], { expr = true })
-
-    vim.keymap.set('x', 'p', 'P')
-
-    vim.keymap.set('n', 'Y', 'v$<left>y')
-    vim.keymap.set('n', '<c-d>', '<c-d>zz')
-    vim.keymap.set('n', '<c-u>', '<c-u>zz')
-    vim.keymap.set('n', 'n', 'nzzzv')
-    vim.keymap.set('n', 'N', 'Nzzzv')
-    vim.keymap.set('n', '*', '*zzzv')
-    vim.keymap.set('n', '#', '#zzzv')
-
-    vim.keymap.set('t', '<esc><esc>', '<c-\\><c-n>')
-    vim.keymap.set('t', '<C-h>', '<cmd>wincmd h<cr>')
-    vim.keymap.set('t', '<C-j>', '<cmd>wincmd j<cr>')
-    vim.keymap.set('t', '<C-k>', '<cmd>wincmd k<cr>')
-    vim.keymap.set('t', '<C-l>', '<cmd>wincmd l<cr>')
-    vim.keymap.set('t', '<C-/>', '<cmd>close<cr>')
-    vim.keymap.set('t', '<c-_>', '<cmd>close<cr>')
-
-    vim.keymap.set('x', '<', '<gv')
-    vim.keymap.set('x', '>', '>gv')
-    vim.keymap.set('n', '<', '<cmd>bn<cr>')
-    vim.keymap.set('n', '>', '<cmd>bp<cr>')
-
-    vim.keymap.set('n', '<c-h>', '<c-w>h')
-    vim.keymap.set('n', '<c-j>', '<c-w>j')
-    vim.keymap.set('n', '<c-k>', '<c-w>k')
-    vim.keymap.set('n', '<c-l>', '<c-w>l')
-    vim.keymap.set('n', '<c-up>', '<cmd>resize +5<cr>')
-    vim.keymap.set('n', '<c-down>', '<cmd>resize -5<cr>')
-    vim.keymap.set('n', '<c-left>', '<cmd>vertical resize -20<cr>')
-    vim.keymap.set('n', '<c-right>', '<cmd>vertical resize +20<cr>')
-    vim.keymap.set('n', '<c-w>+', '<cmd>resize +5<cr>')
-    vim.keymap.set('n', '<c-w>-', '<cmd>resize -5<cr>')
-    vim.keymap.set('n', '<c-w><', '<cmd>vertical resize -20<cr>')
-    vim.keymap.set('n', '<c-w>>', '<cmd>vertical resize +20<cr>')
-    vim.keymap.set('n', '-', '<cmd>Ex<cr>')
-
-    vim.keymap.set('n', ']t', '<cmd>tabnext<cr>', { desc = 'next tab' })
-    vim.keymap.set('n', '[t', '<cmd>tabprevious<cr>', { desc = 'previous tab' })
-    vim.keymap.set('n', '[T', '<cmd>tabfirst<cr>', { desc = 'first tab' })
-    vim.keymap.set('n', ']T', '<cmd>tablast<cr>', { desc = 'last tab' })
-
-    vim.keymap.set('n', '<leader><tab>o', '<cmd>tabonly<cr>', { desc = 'close other tabs' })
-    vim.keymap.set('n', '<leader><tab><tab>', '<cmd>tabnew<cr>', { desc = 'new tab' })
-    vim.keymap.set('n', '<leader><tab>c', '<cmd>tabclose<cr>', { desc = 'close tab' })
-end)
-
-now(function()
-    vim.api.nvim_create_autocmd('TextYankPost', {
-        pattern = '*',
-        group = vim.api.nvim_create_augroup(vim.g.whoami .. '/highlight_on_yank', {}),
-        callback = function() vim.highlight.on_yank() end,
-    })
-
-    vim.api.nvim_create_autocmd('FileType', {
-        pattern = '*',
-        group = vim.api.nvim_create_augroup(vim.g.whoami .. '/setup_format_opts', {}),
-        callback = function() vim.cmd('setlocal formatoptions-=c formatoptions-=o') end,
-    })
-
-    vim.api.nvim_create_autocmd('FileType', {
-        pattern = { 'qf', 'gitsigns-blame', 'fugitive', 'fugitiveblame', 'grug-far' },
-        group = vim.api.nvim_create_augroup(vim.g.whoami .. '/close_with_q', {}),
-        callback = function() vim.keymap.set('n', 'q', '<cmd>close<cr>', { desc = 'close with <esc>', buffer = true }) end,
-    })
-
-    vim.api.nvim_create_autocmd('VimResized', {
-        pattern = '*',
-        group = vim.api.nvim_create_augroup(vim.g.whoami .. '/auto_resize_vim', {}),
-        callback = function()
-            vim.cmd('tabdo wincmd =')
-            vim.cmd('tabnext ' .. vim.fn.tabpagenr())
-        end,
-    })
-
-    vim.api.nvim_create_autocmd('ColorScheme', {
-        pattern = '*',
-        group = vim.api.nvim_create_augroup(vim.g.whoami .. '/colorscheme_fix', {}),
-        callback = function()
-            vim.api.nvim_set_hl(0, 'Flovim.api.nvim_set_hlatBorder', { link = 'Normal' })
-            vim.api.nvim_set_hl(0, 'LspInfoBorder', { link = 'Normal' })
-            vim.api.nvim_set_hl(0, 'NormalFloat', { link = 'Normal' })
-
-            vim.cmd('highlight Winbar guibg=none')
-        end,
-    })
-
-    -- go
-    vim.api.nvim_create_autocmd('FileType', {
-        group = vim.api.nvim_create_augroup(vim.g.whoami .. '/go_opts', {}),
-        pattern = { 'go' },
-        callback = function() vim.cmd('setlocal shiftwidth=4 tabstop=4') end,
-    })
-end)
+now(function() require('config.opts') end)
+now(function() require('config.keymaps') end)
+now(function() require('config.autocmds') end)
 
 now(function()
     local base16 = require('mini.base16')
@@ -261,50 +50,19 @@ now(function()
     })
 end)
 
-ltr(function()
-    add({
-        source = 'nvim-treesitter/nvim-treesitter',
-        hooks = { post_update = function() vim.cmd('TSUpdate') end },
-    })
-
-    require('nvim-treesitter.configs').setup({
-        ensure_installed = tools.ts_parsers,
-        sync_install = false,
-        auto_install = true,
-        indent = { enable = true },
-        highlight = {
-            enable = false,
-            disable = true,
-            additional_vim_regex_highlighting = { 'markdown' },
-        },
-    })
-end)
+ltr(function() add('christoomey/vim-tmux-navigator') end)
 
 ltr(function()
-    add({ source = 'nvim-treesitter/nvim-treesitter-textobjects' })
-
-    local miniai = require('mini.ai')
-
-    miniai.setup({
-        n_lines = 300,
-        custom_textobjects = {
-            f = miniai.gen_spec.treesitter({ a = '@function.outer', i = '@function.inner' }, {}),
-        },
-        silent = true,
-        search_method = 'cover',
-        mappings = {
-            around_next = '',
-            inside_next = '',
-            around_last = '',
-            inside_last = '',
-        },
-    })
+    add({ source = 'tpope/vim-fugitive' })
+    add({ source = 'tpope/vim-rhubarb' })
 end)
 
 ltr(function()
     add({ source = 'MagicDuck/grug-far.nvim' })
 
     require('grug-far').setup({ headerMaxWidth = 80 })
+
+    vim.keymap.set('n', '<leader>fr', '<cmd>GrugFar<cr>', { desc = 'replace' })
 end)
 
 ltr(function()
@@ -328,6 +86,8 @@ ltr(function()
             },
         },
     })
+
+    vim.keymap.set('n', '-', '<cmd>Oil<CR>', { desc = 'oil' })
 end)
 
 ltr(function()
@@ -389,8 +149,6 @@ ltr(function()
     vim.keymap.set('n', '<leader>fg', fzf.live_grep, { desc = 'Lgrep' })
     vim.keymap.set('x', '<leader>fg', fzf.grep_visual, { desc = 'Lgrep visual' })
     vim.keymap.set('n', '<leader>fG', fzf.live_grep_resume, { desc = 'Lgrep resume' })
-    vim.keymap.set('n', '<leader>fr', '<cmd>GrugFar<cr>', { desc = 'replace' })
-    vim.keymap.set('n', '-', '<cmd>Oil<CR>', { desc = 'oil' })
 
     fzf.register_ui_select()
 end)
@@ -553,13 +311,6 @@ ltr(function()
         end,
     })
 end)
-
-ltr(function()
-    add({ source = 'tpope/vim-fugitive' })
-    add({ source = 'tpope/vim-rhubarb' })
-end)
-
-ltr(function() add('christoomey/vim-tmux-navigator') end)
 
 ltr(function()
     require('mini.clue').setup({
