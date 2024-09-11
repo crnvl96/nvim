@@ -28,6 +28,7 @@ require('mini.deps').now(function() require('langs.typescript') end)
 require('mini.deps').now(function() require('langs.lua') end)
 
 require('mini.deps').now(function() require('plugins.completion') end)
+require('mini.deps').now(function() require('plugins.dap') end)
 require('mini.deps').now(function() require('plugins.lsp') end)
 require('mini.deps').now(function() require('plugins.treesitter') end)
 require('mini.deps').now(function() require('plugins.formatter') end)

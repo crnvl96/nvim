@@ -15,8 +15,12 @@ local mason = require('mason')
 
 mason.setup()
 
+local ensure_installed = {}
+vim.list_extend(ensure_installed, tools.debuggers)
+vim.list_extend(ensure_installed, tools.formatters)
+
 require('mason-tool-installer').setup({
-    ensure_installed = tools.formatters,
+    ensure_installed = ensure_installed,
     integrations = {
         ['mason-lspconfig'] = false,
         ['mason-null-ls'] = false,
@@ -27,8 +31,8 @@ require('mason-tool-installer').setup({
 local capabilities = vim.tbl_deep_extend(
     'force',
     {},
-    vim.lsp.protocol.make_client_capabilities()
-    -- require('cmp_nvim_lsp').default_capabilities()
+    vim.lsp.protocol.make_client_capabilities(),
+    require('cmp_nvim_lsp').default_capabilities()
 )
 
 local function on_attach(client, bufnr)
@@ -38,9 +42,7 @@ local function on_attach(client, bufnr)
     end
 
     client.server_capabilities.documentFormattingProvider = false
-    -- vim.bo[bufnr].omnifunc = 'v:lua.vim.lsp.omnifunc'
-    -- vim.bo[bufnr].omnifunc = 'v:lua.MiniCompletion.completefunc_lsp'
-    vim.opt.omnifunc = 'v:lua.MiniCompletion.completefunc_lsp'
+    vim.bo[bufnr].omnifunc = 'v:lua.vim.lsp.omnifunc'
 
     local fzf = require('fzf-lua')
 

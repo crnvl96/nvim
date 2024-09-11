@@ -27,36 +27,34 @@ vim.o.expandtab = true -- Converts tabs into spaces
 vim.o.scrolloff = 8 -- Amount of lines to surround the cursor
 vim.o.sidescrolloff = 4 -- Amount of lines to surround the cursor horizontally
 vim.o.breakindent = true -- Every wrapped line will continue visually indented
-vim.o.smartindent = true
-vim.o.smartcase = true
-vim.o.ignorecase = true
-vim.o.infercase = true
-vim.o.mouse = 'a'
-vim.o.number = true
-vim.o.relativenumber = true
-vim.o.clipboard = 'unnamedplus'
-vim.o.signcolumn = 'yes'
-vim.o.fillchars = 'eob: '
-vim.o.termguicolors = true
-vim.o.undofile = true
-vim.o.updatetime = 300
-vim.o.timeoutlen = 200
-vim.o.backup = false
-vim.o.writebackup = false
-vim.o.wrap = false
-vim.o.wildignorecase = true
-vim.o.background = 'dark'
+vim.o.smartindent = true -- Respect indentation when creating new lines
+vim.o.ignorecase = true -- Perform case insensitive searches
+vim.o.smartcase = true --  Override the 'ignorecase' option if the search pattern contains upper case characters
+vim.o.mouse = 'a' -- Enable mouse usage in all modes
+vim.o.number = true -- Enable line numbers
+vim.o.relativenumber = true -- Enable relative line numbers
+vim.o.clipboard = 'unnamedplus' -- Use system clipboard
+vim.o.signcolumn = 'yes' -- Always show the sign column
+vim.o.fillchars = 'eob: ' -- Disable some unwanted signs
+vim.o.termguicolors = true -- Enable 24-bit RGB color support
+vim.o.undofile = true -- Enable persistend undo across sessions
+vim.o.updatetime = 300 --  If this many milliseconds nothing is typed the swap file will be written to disk.  Also used for the CursorHold autocmd.
+vim.o.timeoutlen = 200 -- Time to wait before a keymap is computed
+vim.o.backup = false -- Disable Backup files
+vim.o.writebackup = false -- Do not write backup files
+vim.o.wrap = false -- Do now wrap lines
+vim.o.linebreak = true -- If on, Vim will wrap long lines at a character in 'breakat' rather than at the last character that fits on the screen
+vim.o.wildignorecase = true -- Wildmenu matches will be case insensitive
+vim.o.background = 'dark' -- Dark background
 
-vim.opt.formatoptions:append('l1')
-vim.opt.shortmess:append('WcC')
-vim.opt.diffopt:append('linematch:60')
-vim.opt.wildoptions:append('fuzzy')
-vim.opt.path:append('**')
-vim.opt.wildignore:append('*/node_modules/*,*/dist/*')
-vim.opt.completeopt:append('menuone,noinsert,noselect,popup,fuzzy')
+vim.opt.diffopt:append('linematch:60') -- Enable a second stage diff on each generated hunk in order to align lines.
+vim.opt.wildoptions:append('fuzzy') -- Fuzzy match on wildmenu
+vim.opt.path:append('**') -- Recursive search
+vim.opt.wildignore:append('*/node_modules/*,*/dist/*') -- Never search on these files
+vim.opt.completeopt:append('menuone,noinsert,noselect,popup,fuzzy') -- Completion options
 
-if vim.fn.executable('rg') ~= 0 then vim.o.grepprg = 'rg --vimgrep' end
-if vim.fn.exists('syntax_on') ~= 1 then vim.cmd('syntax enable') end
+if vim.fn.executable('rg') ~= 0 then vim.o.grepprg = 'rg --vimgrep' end -- Conditionally enables ripgrep as search engine
+if vim.fn.exists('syntax_on') ~= 1 then vim.cmd('syntax enable') end -- Enable syntax highlight
 
-vim.cmd('filetype plugin indent on')
-vim.cmd('packadd cfilter')
+vim.cmd('filetype plugin indent on') -- Indentation
+vim.cmd('packadd cfilter') -- Adds Cfilter plugin

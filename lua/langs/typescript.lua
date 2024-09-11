@@ -5,7 +5,9 @@ tools.servers.eslint = { settings = { format = false } }
 
 vim.list_extend(tools.ts_parsers, { 'javascript', 'typescript' })
 
-vim.list_extend(tools.formatters, { 'prettierd' })
+vim.list_extend(tools.formatters, { 'prettierd', 'js-debug-adapter' })
+
+vim.list_extend(tools.debuggers, { 'js-debug-adapter' })
 
 tools.conform_by_ft.javascript = { 'prettierd', 'prettier', stop_after_first = true }
 tools.conform_by_ft.typescript = { 'prettierd', 'prettier', stop_after_first = true }

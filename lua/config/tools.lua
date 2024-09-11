@@ -11,6 +11,7 @@ end
 return {
     servers = {},
     formatters = {},
+    debuggers = {},
     cmp_sources = {
         {
             name = 'nvim_lsp',
