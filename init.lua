@@ -14,28 +14,27 @@ if not vim.loop.fs_stat(mini_path) then
     vim.cmd('echo "Installed `mini.nvim`" | redraw')
 end
 
-require('mini.deps').setup({ path = { package = path_package } })
+local deps = require('mini.deps')
 
-require('mini.deps').now(function() require('config.opts') end)
-require('mini.deps').now(function() require('config.keymaps') end)
-require('mini.deps').now(function() require('config.autocmds') end)
+deps.setup({ path = { package = path_package } })
 
-require('mini.deps').now(function() require('plugins.colorscheme') end)
-require('mini.deps').now(function() require('plugins.icons') end)
+local now = deps.now
 
-require('mini.deps').now(function() require('langs.go') end)
-require('mini.deps').now(function() require('langs.typescript') end)
-require('mini.deps').now(function() require('langs.lua') end)
+now(function()
+    require('config.opts')
+    require('config.autocmds')
+end)
 
-require('mini.deps').now(function() require('plugins.completion') end)
-require('mini.deps').now(function() require('plugins.dap') end)
-require('mini.deps').now(function() require('plugins.lsp') end)
-require('mini.deps').now(function() require('plugins.treesitter') end)
-require('mini.deps').now(function() require('plugins.formatter') end)
+now(function() require('plugins.sources') end)
 
-require('mini.deps').later(function() require('plugins.tmux') end)
-require('mini.deps').later(function() require('plugins.fugitive') end)
-require('mini.deps').later(function() require('plugins.grugfar') end)
-require('mini.deps').later(function() require('plugins.oil') end)
-require('mini.deps').later(function() require('plugins.fzflua') end)
-require('mini.deps').later(function() require('plugins.clue') end)
+now(function()
+    require('plugins.theme')
+    require('plugins.tools')
+    require('plugins.treesitter')
+    require('plugins.debug')
+    require('plugins.code')
+    require('plugins.explorer')
+    require('plugins.editor')
+end)
+
+now(function() require('config.keymaps') end)

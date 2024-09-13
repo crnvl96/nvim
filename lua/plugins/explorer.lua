@@ -1,10 +1,23 @@
-local add = MiniDeps.add
+require('oil').setup({
+    columns = { 'icon' },
+    watch_for_changes = true,
+    view_options = { show_hidden = true },
+    keymaps = {
+        ['<C-s>'] = false,
+        ['<C-h>'] = false,
+        ['<C-l>'] = false,
+        ['<M-v>'] = { 'actions.select', opts = { vertical = true }, desc = 'Open the entry in a vertical split' },
+        ['<M-s>'] = {
+            'actions.select',
+            opts = { horizontal = true },
+            desc = 'Open the entry in a horizontal split',
+        },
+    },
+})
 
-add({ source = 'ibhagwan/fzf-lua' })
+require('fzf-lua').register_ui_select()
 
-local fzf = require('fzf-lua')
-
-fzf.setup({
+require('fzf-lua').setup({
     fzf_colors = {
         bg = { 'bg', 'Normal' },
         gutter = { 'bg', 'Normal' },
@@ -61,16 +74,3 @@ fzf.setup({
         glob_separator = '%s%-%-', -- query separator pattern (lua): ' --'
     },
 })
-
-vim.keymap.set('n', '<leader>fb', fzf.buffers, { desc = 'Buffers' })
-vim.keymap.set('n', '<leader>ff', fzf.files, { desc = 'Files' })
-vim.keymap.set('n', '<leader>fo', fzf.oldfiles, { desc = 'Oldfiles' })
-vim.keymap.set('n', '<leader>fq', fzf.quickfix, { desc = 'Qf' })
-vim.keymap.set('n', '<leader>fl', fzf.blines, { desc = 'Lines' })
-vim.keymap.set('n', '<leader>ft', fzf.tabs, { desc = 'Tabs' })
-vim.keymap.set('n', '<leader>fg', fzf.live_grep, { desc = 'Lgrep' })
-vim.keymap.set('n', '<leader>fG', fzf.live_grep_glob, { desc = 'Lgrep glob' })
-vim.keymap.set('x', '<leader>fg', fzf.grep_visual, { desc = 'Lgrep visual' })
-vim.keymap.set('n', '<leader>fr', fzf.live_grep_resume, { desc = 'Lgrep resume' })
-
-fzf.register_ui_select()
