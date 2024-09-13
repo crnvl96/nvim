@@ -33,7 +33,10 @@ add('WhoIsSethDaniel/mason-tool-installer.nvim')
 add('williamboman/mason-lspconfig.nvim')
 add('neovim/nvim-lspconfig')
 
+add('christoomey/vim-tmux-navigator')
 add('tpope/vim-fugitive')
 add('tpope/vim-rhubarb')
 add('stevearc/oil.nvim')
 add('ibhagwan/fzf-lua')
+
+add('OXY2DEV/markview.nvim')

@@ -7,6 +7,7 @@ vim.o.autoread = true
 vim.o.splitbelow = true
 vim.o.splitright = true
 vim.o.cursorline = true
+vim.o.guicursor = ''
 vim.o.showcmd = false
 vim.o.showmode = false
 vim.o.ruler = false
@@ -47,6 +48,8 @@ vim.o.wrap = false
 vim.o.linebreak = true
 vim.o.wildignorecase = true
 vim.o.background = 'dark'
+vim.o.statusline = "%{repeat('─',winwidth('.'))}"
+vim.o.signcolumn = 'number'
 
 vim.opt.diffopt:append('linematch:60')
 vim.opt.wildoptions:append('fuzzy')
@@ -55,7 +58,5 @@ vim.opt.wildignore:append('*/node_modules/*,*/dist/*')
 vim.opt.completeopt:append('menuone,noinsert,noselect,popup,fuzzy')
 
 if vim.fn.executable('rg') ~= 0 then vim.o.grepprg = 'rg --vimgrep' end
-if vim.fn.exists('syntax_on') ~= 1 then vim.cmd('syntax enable') end
 
-vim.cmd('filetype plugin indent on')
 vim.cmd('packadd cfilter')

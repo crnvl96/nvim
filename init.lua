@@ -22,7 +22,7 @@ local now = deps.now
 
 now(function()
     require('config.opts')
-    require('config.autocmds')
+    require('config.keymaps')
 end)
 
 now(function() require('plugins.sources') end)
@@ -32,9 +32,6 @@ now(function()
     require('plugins.tools')
     require('plugins.treesitter')
     require('plugins.debug')
-    require('plugins.code')
+    require('plugins.lsp')
     require('plugins.explorer')
-    require('plugins.editor')
 end)
-
-now(function() require('config.keymaps') end)

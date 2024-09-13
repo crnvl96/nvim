@@ -18,3 +18,7 @@ require('mason-tool-installer').setup({
         ['mason-nvim-dap'] = false,
     },
 })
+
+require('mini.misc').setup_restore_cursor({
+    center = true,
+})
