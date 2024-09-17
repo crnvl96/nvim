@@ -1,6 +1,7 @@
 return {
     {
         'stevearc/oil.nvim',
+        cmd = 'Oil',
         opts = function()
             local detail = false
 

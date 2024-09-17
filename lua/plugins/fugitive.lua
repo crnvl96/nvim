@@ -9,7 +9,7 @@ return {
             vim.api.nvim_create_autocmd('FileType', {
                 group = vim.api.nvim_create_augroup(vim.g.whoami .. '/fugitive_group', {}),
                 pattern = { 'fugitive', 'fugitive-blame' },
-                callback = function() vim.keymap.set('n', 'q', '<cmd>close!<CR>') end,
+                callback = function(e) vim.keymap.set('n', 'q', '<cmd>quit<CR>', { buffer = e.buf }) end,
             })
         end,
         keys = {

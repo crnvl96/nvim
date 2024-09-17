@@ -22,16 +22,14 @@ return {
                 lua = { 'stylua' },
             }
 
-            local fts = {
+            for _, ft in ipairs({
                 'typescript',
                 'typescriptreact',
                 'typescript.tsx',
                 'javascript',
                 'javascriptreact',
                 'javascript.tsx',
-            }
-
-            for _, ft in ipairs(fts) do
+            }) do
                 formatters_by_ft[ft] = { 'prettierd', 'prettier', stop_after_first = true }
             end
 

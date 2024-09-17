@@ -70,20 +70,18 @@ return {
                 client.server_capabilities.documentFormattingProvider = false
                 vim.bo[bufnr].omnifunc = 'v:lua.vim.lsp.omnifunc'
 
-                local fzf = require('fzf-lua')
-
-                set('grr', fzf.lsp_references, 'references')
-                set('grd', fzf.lsp_definitions, 'definitions')
-                set('gri', fzf.lsp_implementations, 'implementations')
-                set('gry', fzf.lsp_typedefs, 'typedefs')
-                set('gra', fzf.lsp_code_actions, 'code actions')
-                set('grc', fzf.lsp_incoming_calls, 'incoming calls')
+                set('grr', function() require('fzf-lua').lsp_references() end, 'references')
+                set('grd', function() require('fzf-lua').lsp_definitions() end, 'definitions')
+                set('gri', function() require('fzf-lua').lsp_implementations() end, 'implementations')
+                set('gry', function() require('fzf-lua').lsp_typedefs() end, 'typedefs')
+                set('gra', function() require('fzf-lua').lsp_code_actions() end, 'code actions')
+                set('grc', function() require('fzf-lua').lsp_incoming_calls() end, 'incoming calls')
                 set('grn', vim.lsp.buf.rename, 'rename symbol')
-                set('grC', fzf.lsp_outgoing_calls, 'outgoing calls')
-                set('grs', fzf.lsp_document_symbols, 'document symbols')
-                set('grS', fzf.lsp_workspace_symbols, 'workspace symbols')
-                set('grx', fzf.lsp_document_diagnostics, 'documet diagnostics')
-                set('grX', fzf.lsp_workspace_diagnostics, 'workspace diagnostics')
+                set('grC', function() require('fzf-lua').lsp_outgoing_calls() end, 'outgoing calls')
+                set('grs', function() require('fzf-lua').lsp_document_symbols() end, 'document symbols')
+                set('grS', function() require('fzf-lua').lsp_workspace_symbols() end, 'workspace symbols')
+                set('grx', function() require('fzf-lua').lsp_document_diagnostics() end, 'documet diagnostics')
+                set('grX', function() require('fzf-lua').lsp_workspace_diagnostics() end, 'workspace diagnostics')
                 set('<C-k>', vim.lsp.buf.signature_help, 'signature help', 'i')
             end,
             capabilities = function()

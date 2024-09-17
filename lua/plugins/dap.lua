@@ -6,6 +6,23 @@ return {
         config = function()
             vim.api.nvim_set_hl(0, 'DapStoppedLine', { default = true, link = 'Visual' })
 
+            for name, sign in pairs({
+                Stopped = { '', 'DiagnosticWarn', 'DapStoppedLine' },
+                Breakpoint = '',
+                BreakpointCondition = '',
+                BreakpointRejected = { '', 'DiagnosticError' },
+                LogPoint = '',
+            }) do
+                sign = type(sign) == 'table' and sign or { sign }
+                vim.fn.sign_define('Dap' .. name, {
+                    text = sign[1] --[[@as string]]
+                        .. ' ',
+                    texthl = sign[2] or 'DiagnosticInfo',
+                    linehl = sign[3],
+                    numhl = sign[3],
+                })
+            end
+
             local dap = require('dap')
             local dapui = require('dapui')
 
@@ -14,8 +31,8 @@ return {
 
             dap.listeners.before.attach.dapui_config = dapui.open
             dap.listeners.before.launch.dapui_config = dapui.open
-            dap.listeners.before.event_terminated.dapui_config = dapui.close
-            dap.listeners.before.event_exited.dapui_config = dapui.close
+            -- dap.listeners.before.event_terminated.dapui_config = dapui.close
+            -- dap.listeners.before.event_exited.dapui_config = dapui.close
 
             require('dap.ext.vscode').json_decode = function(str)
                 return vim.json.decode(require('plenary.json').json_strip_comments(str))
@@ -94,30 +111,21 @@ return {
             end
         end,
         keys = function()
-            local dap = require('dap')
-            local widgets = require('dap.ui.widgets')
-
             local function input_prompt() vim.fn.input('Cond:') end
-            local function set_conditional_breakpoint() dap.set_breakpoint(input_prompt()) end
+            local function set_conditional_breakpoint() require('dap').set_breakpoint(input_prompt()) end
 
             return {
                 { '<leader>d', '', desc = 'Debug' },
                 { '<leader>dB', set_conditional_breakpoint, desc = 'Breakpoint Condition' },
-                { '<leader>db', dap.toggle_breakpoint, desc = 'Toggle Breakpoint' },
-                { '<leader>dc', dap.continue, desc = 'Continue' },
-                { '<leader>dC', dap.run_to_cursor, desc = 'Run to Cursor' },
-                { '<leader>dg', dap.goto_, desc = 'Go to Line (No Execute)' },
-                { '<leader>di', dap.step_into, desc = 'Step Into' },
-                { '<leader>dj', dap.down, desc = 'Down' },
-                { '<leader>dk', dap.up, desc = 'Up' },
-                { '<leader>dl', dap.run_last, desc = 'Run Last' },
-                { '<leader>do', dap.step_out, desc = 'Step Out' },
-                { '<leader>dO', dap.step_over, desc = 'Step Over' },
-                { '<leader>dp', dap.pause, desc = 'Pause' },
-                { '<leader>dr', dap.repl.toggle, desc = 'Toggle REPL' },
-                { '<leader>ds', dap.session, desc = 'Session' },
-                { '<leader>dt', dap.terminate, desc = 'Terminate' },
-                { '<leader>dw', widgets.hover, desc = 'Widgets' },
+                { '<leader>db', function() require('dap').toggle_breakpoint() end, desc = 'Toggle Breakpoint' },
+                { '<leader>dc', function() require('dap').continue() end, desc = 'Continue' },
+                { '<leader>dC', function() require('dap').run_to_cursor() end, desc = 'Run to Cursor' },
+                { '<leader>dl', function() require('dap').run_last() end, desc = 'Run Last' },
+                { '<leader>dr', function() require('dap').repl.toggle() end, desc = 'Toggle REPL' },
+                { '<leader>ds', function() require('dap').session() end, desc = 'Session' },
+                { '<leader>dt', function() require('dap').terminate() end, desc = 'Terminate' },
+                { '<leader>dw', function() require('dap.ui.widgets').hover() end, desc = 'Widgets' },
+                { '<leader>du', function() require('dapui').toggle() end, desc = 'ToggleUI' },
             }
         end,
     },
