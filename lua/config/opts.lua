@@ -49,7 +49,6 @@ vim.o.linebreak = true
 vim.o.wildignorecase = true
 vim.o.background = 'dark'
 vim.o.statusline = "%{repeat('─',winwidth('.'))}"
-vim.o.signcolumn = 'number'
 
 vim.opt.diffopt:append('linematch:60')
 vim.opt.wildoptions:append('fuzzy')
