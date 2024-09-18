@@ -36,16 +36,14 @@ return {
                 keymap = {
                     fzf = {
                         true,
-                        ['alt-u'] = 'unix-line-discard',
+                        ['ctrl-l'] = 'unix-line-discard',
                         ['ctrl-d'] = 'half-page-down',
                         ['ctrl-u'] = 'half-page-up',
                         ['ctrl-f'] = 'preview-page-down',
                         ['ctrl-b'] = 'preview-page-up',
-                    },
-                    builtin = {
-                        true,
-                        ['<C-f>'] = 'preview-page-down',
-                        ['<C-b>'] = 'preview-page-up',
+                        ['alt-a'] = 'select-all',
+                        ['alt-d'] = 'deselect-all',
+                        ['alt-o'] = 'toggle-all',
                     },
                 },
                 global_git_icons = false,
@@ -113,7 +111,6 @@ return {
             fzf.register_ui_select()
         end,
         keys = {
-            { '<leader>f', '', desc = 'Files' },
             { '<leader><space>', '<cmd>FzfLua<CR>', desc = 'Commands' },
             { '<leader>f<', '<cmd>FzfLua resume<cr>', desc = 'Resume last command' },
             {

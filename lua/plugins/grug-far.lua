@@ -13,7 +13,6 @@ return {
             })
         end,
         keys = {
-            { '<leader>c', '', desc = 'Code' },
             {
                 '<leader>cr',
                 function()

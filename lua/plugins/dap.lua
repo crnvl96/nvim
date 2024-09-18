@@ -1,5 +1,4 @@
 return {
-    { 'theHamsta/nvim-dap-virtual-text' },
     { 'rcarriga/nvim-dap-ui' },
     {
         'mfussenegger/nvim-dap',
@@ -27,12 +26,9 @@ return {
             local dapui = require('dapui')
 
             dapui.setup()
-            require('nvim-dap-virtual-text').setup()
 
             dap.listeners.before.attach.dapui_config = dapui.open
             dap.listeners.before.launch.dapui_config = dapui.open
-            -- dap.listeners.before.event_terminated.dapui_config = dapui.close
-            -- dap.listeners.before.event_exited.dapui_config = dapui.close
 
             require('dap.ext.vscode').json_decode = function(str)
                 return vim.json.decode(require('plenary.json').json_strip_comments(str))
@@ -115,7 +111,6 @@ return {
             local function set_conditional_breakpoint() require('dap').set_breakpoint(input_prompt()) end
 
             return {
-                { '<leader>d', '', desc = 'Debug' },
                 { '<leader>dB', set_conditional_breakpoint, desc = 'Breakpoint Condition' },
                 { '<leader>db', function() require('dap').toggle_breakpoint() end, desc = 'Toggle Breakpoint' },
                 { '<leader>dc', function() require('dap').continue() end, desc = 'Continue' },
