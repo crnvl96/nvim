@@ -60,7 +60,6 @@ return {
                 },
                 helptags = {
                     actions = {
-                        -- Open help pages in a vertical split.
                         ['enter'] = actions.help_vert,
                     },
                 },
@@ -105,13 +104,10 @@ return {
             }
         end,
         config = function(_, opts)
-            local fzf = require('fzf-lua')
-
-            fzf.setup(opts)
-            fzf.register_ui_select()
+            require('fzf-lua').setup(opts)
+            require('fzf-lua').register_ui_select()
         end,
         keys = {
-            { '<leader><space>', '<cmd>FzfLua<CR>', desc = 'Commands' },
             { '<leader>f<', '<cmd>FzfLua resume<cr>', desc = 'Resume last command' },
             {
                 '<leader>fl',
@@ -126,7 +122,7 @@ return {
                 end,
                 desc = 'Grep current buffer',
             },
-            { '<leader>fc', '<cmd>FzfLua highlights<cr>', desc = 'Highlights' },
+            { '<leader>fc', function() require('fzf-lua').highlights() end, desc = 'Highlights' },
             { '<leader>ff', function() require('fzf-lua').files() end, desc = 'Files' },
             { '<leader>fo', function() require('fzf-lua').oldfiles() end, desc = 'Oldfiles' },
             { '<leader>fh', function() require('fzf-lua').help_tags() end, desc = 'Help' },

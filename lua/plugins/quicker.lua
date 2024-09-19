@@ -18,11 +18,6 @@ return {
         end,
         keys = {
             {
-                '<leader>x',
-                '',
-                desc = 'Quickfix',
-            },
-            {
                 '<leader>xx',
                 function() require('quicker').toggle() end,
                 desc = 'Toggle quickfix',

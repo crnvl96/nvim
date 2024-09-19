@@ -3,7 +3,7 @@ return {
         'folke/which-key.nvim',
         event = 'VeryLazy',
         opts = {
-            preset = 'modern',
+            preset = 'helix',
             icons = { mappings = false },
         },
         config = function(_, opts)
@@ -14,17 +14,20 @@ return {
                 vim.api.nvim_set_hl(0, name, new_def)
             end
 
-            extend_hl('WhichKeyFloat', { bg = '#181818' })
-            extend_hl('WhichKeyNormal', { bg = '#181818' })
-            extend_hl('WhichKeySeparator', { bg = '#181818' })
+            extend_hl('WhichKeyFloat', { link = 'Normal' })
+            extend_hl('WhichKeyNormal', { link = 'Normal' })
+            extend_hl('WhichKeySeparator', { link = 'Normal' })
 
             require('which-key').setup(opts)
 
             require('which-key').add({
-                { '<leader>g', '', group = 'Git' },
-                { '<leader>d', '', group = 'Debug' },
-                { '<leader>f', '', group = 'Files' },
-                { '<leader>c', '', group = 'Code' },
+                { '<leader>g', group = 'Git' },
+                { '<leader>d', group = 'Debug' },
+                { '<leader>f', group = 'Files' },
+                { '<leader>c', group = 'Code' },
+                { '<leader>x', group = 'Quickfix' },
+                { '<leader>h', group = 'Git Hunks' },
+                { '<leader>t', group = 'Toggle' },
             })
         end,
         keys = {

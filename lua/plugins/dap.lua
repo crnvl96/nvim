@@ -108,10 +108,10 @@ return {
         end,
         keys = function()
             local function input_prompt() vim.fn.input('Cond:') end
-            local function set_conditional_breakpoint() require('dap').set_breakpoint(input_prompt()) end
 
             return {
-                { '<leader>dB', set_conditional_breakpoint, desc = 'Breakpoint Condition' },
+                -- stylua: ignore
+                { '<leader>dB', function() require('dap').set_breakpoint(input_prompt()) end, desc = 'Breakpoint Condition' },
                 { '<leader>db', function() require('dap').toggle_breakpoint() end, desc = 'Toggle Breakpoint' },
                 { '<leader>dc', function() require('dap').continue() end, desc = 'Continue' },
                 { '<leader>dC', function() require('dap').run_to_cursor() end, desc = 'Run to Cursor' },
