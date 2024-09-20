@@ -1,5 +1,5 @@
 return {
-    -- { 'hrsh7th/cmp-nvim-lsp' },
+    { 'hrsh7th/cmp-nvim-lsp' },
     { 'williamboman/mason-lspconfig.nvim' },
     { 'williamboman/mason.nvim', build = ':MasonUpdate' },
     {
@@ -14,11 +14,7 @@ return {
                 },
                 servers = {
                     vtsls = {},
-                    eslint = {
-                        settings = {
-                            format = false,
-                        },
-                    },
+                    eslint = { settings = { format = false } },
                     lua_ls = {
                         settings = {
                             Lua = {
@@ -33,13 +29,11 @@ return {
                 },
                 on_attach = function(client, bufnr)
                     local function set(lhs, rhs, desc, mode)
-                        local s = vim.keymap.set
-                        s(mode or 'n', lhs, rhs, { desc = desc, buffer = bufnr })
+                        vim.keymap.set(mode or 'n', lhs, rhs, { desc = desc, buffer = bufnr })
                     end
 
                     client.server_capabilities.documentFormattingProvider = false
-                    -- vim.bo[bufnr].omnifunc = 'v:lua.vim.lsp.omnifunc'
-                    vim.bo[bufnr].omnifunc = 'v:lua.MiniCompletion.completefunc_lsp'
+                    vim.bo[bufnr].omnifunc = 'v:lua.vim.lsp.omnifunc'
 
                     set('grr', function() require('fzf-lua').lsp_references() end, 'references')
                     set('grd', function() require('fzf-lua').lsp_definitions() end, 'definitions')
@@ -53,28 +47,14 @@ return {
                     set('grS', function() require('fzf-lua').lsp_workspace_symbols() end, 'workspace symbols')
                     set('grx', function() require('fzf-lua').lsp_document_diagnostics() end, 'document diagnostics')
                     set('grX', function() require('fzf-lua').lsp_workspace_diagnostics() end, 'workspace diagnostics')
-
                     set('<C-k>', vim.lsp.buf.signature_help, 'signature help', 'i')
-
-                    set('<C-x>r', function() vim.lsp.buf.references() end, 'references')
-                    set('<C-x>d', function() vim.lsp.buf.definition() end, 'definitions')
-                    set('<C-x>i', function() vim.lsp.buf.implementation() end, 'implementations')
-                    set('<C-x>y', function() vim.lsp.buf.type_definition() end, 'typedefs')
-                    set('<C-x>a', function() vim.lsp.buf.code_action() end, 'code actions')
-                    set('<C-x>n', vim.lsp.buf.rename, 'rename symbol')
-                    set('<C-x>c', function() vim.lsp.buf.incoming_calls() end, 'incoming calls')
-                    set('<C-x>C', function() vim.lsp.buf.outgoing_calls() end, 'outgoing calls')
-                    set('<C-x>s', function() vim.lsp.buf.document_symbol() end, 'document symbols')
-                    set('<C-x>S', function() vim.lsp.buf.workspace_symbol() end, 'workspace symbols')
-                    set('<C-x>x', function() vim.diagnostic.show() end, 'document diagnostics')
-                    set('<C-x>X', function() vim.diagnostic.setqflist() end, 'document diagnostics')
                 end,
                 capabilities = function()
                     return vim.tbl_deep_extend(
                         'force',
                         {},
-                        vim.lsp.protocol.make_client_capabilities()
-                        -- require('cmp_nvim_lsp').default_capabilities()
+                        vim.lsp.protocol.make_client_capabilities(),
+                        require('cmp_nvim_lsp').default_capabilities()
                     )
                 end,
             }
@@ -87,13 +67,15 @@ return {
 
             local mr = require('mason-registry')
             mr:on('package:install:success', function()
-                vim.defer_fn(function()
-                    -- trigger FileType event to possibly load this newly installed LSP server
-                    require('lazy.core.handler.event').trigger({
-                        event = 'FileType',
-                        buf = vim.api.nvim_get_current_buf(),
-                    })
-                end, 100)
+                vim.defer_fn(
+                    function()
+                        require('lazy.core.handler.event').trigger({
+                            event = 'FileType',
+                            buf = vim.api.nvim_get_current_buf(),
+                        })
+                    end,
+                    100
+                )
             end)
 
             mr.refresh(function()

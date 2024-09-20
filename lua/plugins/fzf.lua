@@ -22,7 +22,7 @@ return {
                 preview = {
                     scrollbar = false,
                     hidden = 'hidden',
-                    vertical = 'up:50%',
+                    vertical = 'up:0%',
                     layout = 'vertical',
                 },
             },
@@ -100,21 +100,19 @@ return {
         require('fzf-lua').register_ui_select()
     end,
     keys = function()
+        local lgrep_curbuf = function()
+            require('fzf-lua').lgrep_curbuf({
+                winopts = {
+                    height = 0.6,
+                    width = 0.5,
+                    preview = { vertical = 'up:70%' },
+                },
+            })
+        end
+
         return {
+            { '<leader>fl', lgrep_curbuf, desc = 'grep buffer' },
             { '<leader>f<', function() require('fzf-lua').resume() end, desc = 'resume' },
-            {
-                '<leader>fl',
-                function()
-                    require('fzf-lua').lgrep_curbuf({
-                        winopts = {
-                            height = 0.6,
-                            width = 0.5,
-                            preview = { vertical = 'up:70%' },
-                        },
-                    })
-                end,
-                desc = 'grep buffer',
-            },
             { '<leader>fc', function() require('fzf-lua').highlights() end, desc = 'Highlights' },
             { '<leader>ff', function() require('fzf-lua').files() end, desc = 'files' },
             { '<leader>fo', function() require('fzf-lua').oldfiles() end, desc = 'oldfiles' },

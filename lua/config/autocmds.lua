@@ -1,7 +1,7 @@
 vim.api.nvim_create_autocmd('TextYankPost', {
     group = vim.api.nvim_create_augroup(vim.g.whoami .. '/yank_highlight', { clear = true }),
     desc = 'Highlight on yank',
-    callback = function() vim.highlight.on_yank({ higroup = 'Visual', priority = 250 }) end,
+    callback = function() vim.highlight.on_yank({ priority = 250 }) end,
 })
 
 vim.api.nvim_create_autocmd('FileType', {

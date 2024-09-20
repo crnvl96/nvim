@@ -6,6 +6,24 @@ return {
         'mfussenegger/nvim-dap',
         opts = function()
             return {
+                setup_signs = function()
+                    for name, sign in pairs({
+                        Stopped = { '', 'DiagnosticWarn', 'DapStoppedLine' },
+                        Breakpoint = '',
+                        BreakpointCondition = '',
+                        BreakpointRejected = { '', 'DiagnosticError' },
+                        LogPoint = '',
+                    }) do
+                        sign = type(sign) == 'table' and sign or { sign }
+                        vim.fn.sign_define('Dap' .. name, {
+                            text = sign[1] --[[@as string]]
+                                .. ' ',
+                            texthl = sign[2] or 'DiagnosticInfo',
+                            linehl = sign[3],
+                            numhl = sign[3],
+                        })
+                    end
+                end,
                 sync_vscode = function()
                     require('dap.ext.vscode').json_decode = function(str)
                         return vim.json.decode(require('plenary.json').json_strip_comments(str))
@@ -88,32 +106,11 @@ return {
             }
         end,
         config = function(_, opts)
-            vim.api.nvim_set_hl(0, 'DapStoppedLine', { default = true, link = 'Visual' })
+            opts.setup_signs()
 
-            for name, sign in pairs({
-                Stopped = { '', 'DiagnosticWarn', 'DapStoppedLine' },
-                Breakpoint = '',
-                BreakpointCondition = '',
-                BreakpointRejected = { '', 'DiagnosticError' },
-                LogPoint = '',
-            }) do
-                sign = type(sign) == 'table' and sign or { sign }
-                vim.fn.sign_define('Dap' .. name, {
-                    text = sign[1] --[[@as string]]
-                        .. ' ',
-                    texthl = sign[2] or 'DiagnosticInfo',
-                    linehl = sign[3],
-                    numhl = sign[3],
-                })
-            end
-
-            local dap = require('dap')
-            local dapui = require('dapui')
-
-            dapui.setup()
-
-            dap.listeners.before.attach.dapui_config = dapui.open
-            dap.listeners.before.launch.dapui_config = dapui.open
+            require('dapui').setup()
+            require('dap').listeners.before.attach.dapui_config = require('dapui').open
+            require('dap').listeners.before.launch.dapui_config = require('dapui').open
 
             opts.sync_vscode()
             opts.typescript_setup()

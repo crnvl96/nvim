@@ -21,6 +21,30 @@ return {
         end,
     },
     {
+        'nvim-treesitter/nvim-treesitter-context',
+        event = { 'BufReadPre', 'BufNewFile' },
+        opts = function()
+            return {
+                max_lines = 3,
+                multiline_threshold = 1,
+                min_window_height = 20,
+            }
+        end,
+        keys = function()
+            return {
+                {
+                    '[[',
+                    function()
+                        vim.schedule(function() require('treesitter-context').go_to_context() end)
+                        return '<Ignore>'
+                    end,
+                    desc = 'Jump to upper context',
+                    expr = true,
+                },
+            }
+        end,
+    },
+    {
         'nvim-treesitter/nvim-treesitter',
         event = { 'BufReadPre', 'BufNewFile' },
         build = ':TSUpdate',
@@ -29,29 +53,6 @@ return {
             require('lazy.core.loader').add_to_rtp(plugin)
             require('nvim-treesitter.query_predicates')
         end,
-        dependencies = {
-            'nvim-treesitter/nvim-treesitter-context',
-            opts = function()
-                return {
-                    max_lines = 3,
-                    multiline_threshold = 1,
-                    min_window_height = 20,
-                }
-            end,
-            keys = function()
-                return {
-                    {
-                        '[[',
-                        function()
-                            vim.schedule(function() require('treesitter-context').go_to_context() end)
-                            return '<Ignore>'
-                        end,
-                        desc = 'Jump to upper context',
-                        expr = true,
-                    },
-                }
-            end,
-        },
         opts = function()
             return {
                 ensure_installed = {
