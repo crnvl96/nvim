@@ -1,11 +1,13 @@
 return {
     'folke/which-key.nvim',
     event = { 'BufReadPre', 'BufNewFile' },
-    opts = {
-        preset = 'helix',
-        icons = { mappings = false },
-        delay = 200,
-    },
+    opts = function()
+        return {
+            preset = 'helix',
+            icons = { mappings = false },
+            delay = 200,
+        }
+    end,
     config = function(_, opts)
         local function extend_hl(name, def)
             local current_def = vim.api.nvim_get_hl(0, { name = name })
@@ -30,11 +32,13 @@ return {
             { '<leader>t', group = 'toggle' },
         })
     end,
-    keys = {
-        {
-            '<leader>?',
-            function() require('which-key').show({ global = false }) end,
-            desc = 'local keymaps',
-        },
-    },
+    keys = function()
+        return {
+            {
+                '<leader>?',
+                function() require('which-key').show({ global = false }) end,
+                desc = 'local keymaps',
+            },
+        }
+    end,
 }

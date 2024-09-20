@@ -1,11 +1,7 @@
 return {
     'stevearc/quicker.nvim',
     ft = 'qf',
-    opts = {
-        borders = {
-            vert = '│',
-        },
-    },
+    opts = { borders = { vert = '│' } },
     config = function(_, opts)
         require('quicker').setup(opts)
 

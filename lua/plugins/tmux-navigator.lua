@@ -1,12 +1,5 @@
 return {
     'christoomey/vim-tmux-navigator',
-    cmd = {
-        'TmuxNavigateLeft',
-        'TmuxNavigateDown',
-        'TmuxNavigateUp',
-        'TmuxNavigateRight',
-        'TmuxNavigatePrevious',
-    },
     keys = function()
         return {
             { '<c-h>', '<cmd><C-U>TmuxNavigateLeft<cr>' },
