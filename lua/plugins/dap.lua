@@ -120,7 +120,6 @@ return {
         end,
         keys = function()
             return {
-                -- stylua: ignore
                 { '<leader>db', function() require('dap').toggle_breakpoint() end, desc = 'breakpoint' },
                 { '<leader>dc', function() require('dap').continue() end, desc = 'continue' },
                 { '<leader>dl', function() require('dap').run_last() end, desc = 'run last' },

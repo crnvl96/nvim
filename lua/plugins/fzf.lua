@@ -103,7 +103,7 @@ return {
         end,
         keys = function()
             return {
-                { '<leader>f<', function() require('fzf-lua').resume() end, desc = 'Resume last command' },
+                { '<leader>f<', function() require('fzf-lua').resume() end, desc = 'resume' },
                 {
                     '<leader>fl',
                     function()
@@ -115,15 +115,15 @@ return {
                             },
                         })
                     end,
-                    desc = 'Grep current buffer',
+                    desc = 'grep buffer',
                 },
                 { '<leader>fc', function() require('fzf-lua').highlights() end, desc = 'Highlights' },
-                { '<leader>ff', function() require('fzf-lua').files() end, desc = 'Files' },
-                { '<leader>fo', function() require('fzf-lua').oldfiles() end, desc = 'Oldfiles' },
-                { '<leader>fh', function() require('fzf-lua').help_tags() end, desc = 'Help' },
-                { '<leader>fg', function() require('fzf-lua').live_grep_glob() end, desc = 'Grep' },
-                { '<leader>fg', function() require('fzf-lua').grep_visual() end, desc = 'Grep visual', mode = 'x' },
-                { '<leader>fr', function() require('fzf-lua').live_grep_resume() end, desc = 'Lgrep resume' },
+                { '<leader>ff', function() require('fzf-lua').files() end, desc = 'files' },
+                { '<leader>fo', function() require('fzf-lua').oldfiles() end, desc = 'oldfiles' },
+                { '<leader>fh', function() require('fzf-lua').help_tags() end, desc = 'help' },
+                { '<leader>fg', function() require('fzf-lua').live_grep_glob() end, desc = 'grep' },
+                { '<leader>fg', function() require('fzf-lua').grep_visual() end, desc = 'grep visual', mode = 'x' },
+                { '<leader>fr', function() require('fzf-lua').live_grep_resume() end, desc = 'resume grep' },
             }
         end,
     },
