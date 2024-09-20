@@ -1,32 +1,29 @@
 return {
-    {
-        'stevearc/quicker.nvim',
-        ft = 'qf',
-        opts = {
-            borders = {
-                vert = '│',
-            },
+    'stevearc/quicker.nvim',
+    ft = 'qf',
+    opts = {
+        borders = {
+            vert = '│',
         },
-        config = function(_, opts)
-            require('quicker').setup(opts)
+    },
+    config = function(_, opts)
+        require('quicker').setup(opts)
 
-            vim.api.nvim_create_autocmd('FileType', {
-                group = vim.api.nvim_create_augroup(vim.g.whoami .. '/fugitive_group', {}),
-                pattern = { 'qf' },
-                callback = function(e) vim.keymap.set('n', 'q', '<cmd>quit<CR>', { buffer = e.buf }) end,
-            })
-        end,
-        keys = {
+        vim.api.nvim_create_autocmd('FileType', {
+            group = vim.api.nvim_create_augroup(vim.g.whoami .. '/fugitive_group', {}),
+            pattern = { 'qf' },
+            callback = function(e) vim.keymap.set('n', 'q', '<cmd>quit<CR>', { buffer = e.buf }) end,
+        })
+    end,
+    keys = function()
+        return {
+            { '<leader>xx', function() require('quicker').toggle() end, desc = 'toggle' },
             {
-                '<leader>xx',
-                function() require('quicker').toggle() end,
-                desc = 'Toggle quickfix',
+                '>',
+                function() require('quicker').expand({ before = 2, after = 2, add_to_existing = true }) end,
+                desc = 'inc context',
             },
-            {
-                '<leader>xl',
-                function() require('quicker').toggle({ loclist = true }) end,
-                desc = 'Toggle loclist list',
-            },
+            { '<', function() require('quicker').collapse() end, desc = 'dec context' },
             {
                 '<leader>xd',
                 function()
@@ -38,18 +35,8 @@ return {
                         vim.diagnostic.setqflist()
                     end
                 end,
-                desc = 'Toggle diagnostics',
+                desc = 'toggle diagnostics',
             },
-            {
-                '>',
-                function() require('quicker').expand({ before = 2, after = 2, add_to_existing = true }) end,
-                desc = 'Expand context',
-            },
-            {
-                '<',
-                function() require('quicker').collapse() end,
-                desc = 'Collapse context',
-            },
-        },
-    },
+        }
+    end,
 }

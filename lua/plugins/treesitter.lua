@@ -1,40 +1,37 @@
 return {
-    {
-        'nvim-treesitter/nvim-treesitter',
-        event = 'VeryLazy',
-        build = ':TSUpdate',
-        lazy = vim.fn.argc(-1) == 0, -- load treesitter early when opening a file from the cmdline
-        init = function(plugin)
-            -- PERF: add nvim-treesitter queries to the rtp and it's custom query predicates early
-            -- This is needed because a bunch of plugins no longer `require("nvim-treesitter")`, which
-            -- no longer trigger the **nvim-treesitter** module to be loaded in time.
-            -- Luckily, the only things that those plugins need are the custom queries, which we make available
-            -- during startup.
-            require('lazy.core.loader').add_to_rtp(plugin)
-            require('nvim-treesitter.query_predicates')
+    'nvim-treesitter/nvim-treesitter',
+    event = { 'BufReadPre', 'BufNewFile' },
+    build = ':TSUpdate',
+    lazy = vim.fn.argc(-1) == 0,
+    init = function(plugin)
+        require('lazy.core.loader').add_to_rtp(plugin)
+        require('nvim-treesitter.query_predicates')
+    end,
+    dependencies = {
+        'nvim-treesitter/nvim-treesitter-context',
+        opts = function()
+            return {
+                max_lines = 3,
+                multiline_threshold = 1,
+                min_window_height = 20,
+            }
         end,
-        dependencies = {
-            {
-                'nvim-treesitter/nvim-treesitter-context',
-                opts = {
-                    max_lines = 3,
-                    multiline_threshold = 1,
-                    min_window_height = 20,
+        keys = function()
+            return {
+                {
+                    '[[',
+                    function()
+                        vim.schedule(function() require('treesitter-context').go_to_context() end)
+                        return '<Ignore>'
+                    end,
+                    desc = 'Jump to upper context',
+                    expr = true,
                 },
-                keys = {
-                    {
-                        '[[',
-                        function()
-                            vim.schedule(function() require('treesitter-context').go_to_context() end)
-                            return '<Ignore>'
-                        end,
-                        desc = 'Jump to upper context',
-                        expr = true,
-                    },
-                },
-            },
-        },
-        opts = {
+            }
+        end,
+    },
+    opts = function()
+        return {
             ensure_installed = {
                 'c',
                 'vim',
@@ -54,13 +51,9 @@ return {
                     return ok and stats and stats.size > vim.g.bigfile_size
                 end,
             },
-            indent = {
-                enable = true,
-            },
-            incremental_selection = {
-                enable = false,
-            },
-        },
-        config = function(_, opts) require('nvim-treesitter.configs').setup(opts) end,
-    },
+            indent = { enable = true },
+            incremental_selection = { enable = false },
+        }
+    end,
+    config = function(_, opts) require('nvim-treesitter.configs').setup(opts) end,
 }

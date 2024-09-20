@@ -20,12 +20,6 @@ return {
                 },
                 defaults = { file_icons = 'mini' },
                 winopts = {
-                    height = 0.7,
-                    width = 0.55,
-                    row = 0.50,
-                    col = 0.50,
-                    border = 'none',
-                    backdrop = 60,
                     preview = {
                         scrollbar = false,
                         hidden = 'hidden',
@@ -107,30 +101,30 @@ return {
             require('fzf-lua').setup(opts)
             require('fzf-lua').register_ui_select()
         end,
-        keys = {
-            { '<leader>f<', '<cmd>FzfLua resume<cr>', desc = 'Resume last command' },
-            {
-                '<leader>fl',
-                function()
-                    require('fzf-lua').lgrep_curbuf({
-                        winopts = {
-                            height = 0.6,
-                            width = 0.5,
-                            preview = { vertical = 'up:70%' },
-                        },
-                    })
-                end,
-                desc = 'Grep current buffer',
-            },
-            { '<leader>fc', function() require('fzf-lua').highlights() end, desc = 'Highlights' },
-            { '<leader>ff', function() require('fzf-lua').files() end, desc = 'Files' },
-            { '<leader>fo', function() require('fzf-lua').oldfiles() end, desc = 'Oldfiles' },
-            { '<leader>fh', function() require('fzf-lua').help_tags() end, desc = 'Help' },
-            { '<leader>fg', function() require('fzf-lua').live_grep_glob() end, desc = 'Grep' },
-            { '<leader>fg', function() require('fzf-lua').grep_visual() end, desc = 'Grep visual', mode = 'x' },
-            { '<leader>fr', function() require('fzf-lua').live_grep_resume() end, desc = 'Lgrep resume' },
-            { '<leader>fd', function() require('fzf-lua').dap_commands() end, desc = 'Dap commands' },
-            { '<leader>fD', function() require('fzf-lua').dap_configurations() end, desc = 'Dap configs' },
-        },
+        keys = function()
+            return {
+                { '<leader>f<', function() require('fzf-lua').resume() end, desc = 'Resume last command' },
+                {
+                    '<leader>fl',
+                    function()
+                        require('fzf-lua').lgrep_curbuf({
+                            winopts = {
+                                height = 0.6,
+                                width = 0.5,
+                                preview = { vertical = 'up:70%' },
+                            },
+                        })
+                    end,
+                    desc = 'Grep current buffer',
+                },
+                { '<leader>fc', function() require('fzf-lua').highlights() end, desc = 'Highlights' },
+                { '<leader>ff', function() require('fzf-lua').files() end, desc = 'Files' },
+                { '<leader>fo', function() require('fzf-lua').oldfiles() end, desc = 'Oldfiles' },
+                { '<leader>fh', function() require('fzf-lua').help_tags() end, desc = 'Help' },
+                { '<leader>fg', function() require('fzf-lua').live_grep_glob() end, desc = 'Grep' },
+                { '<leader>fg', function() require('fzf-lua').grep_visual() end, desc = 'Grep visual', mode = 'x' },
+                { '<leader>fr', function() require('fzf-lua').live_grep_resume() end, desc = 'Lgrep resume' },
+            }
+        end,
     },
 }
