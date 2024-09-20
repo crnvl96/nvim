@@ -1,5 +1,5 @@
 return {
-    { 'hrsh7th/cmp-nvim-lsp' },
+    -- { 'hrsh7th/cmp-nvim-lsp' },
     { 'williamboman/mason-lspconfig.nvim' },
     { 'williamboman/mason.nvim', build = ':MasonUpdate' },
     {
@@ -38,7 +38,8 @@ return {
                     end
 
                     client.server_capabilities.documentFormattingProvider = false
-                    vim.bo[bufnr].omnifunc = 'v:lua.vim.lsp.omnifunc'
+                    -- vim.bo[bufnr].omnifunc = 'v:lua.vim.lsp.omnifunc'
+                    vim.bo[bufnr].omnifunc = 'v:lua.MiniCompletion.completefunc_lsp'
 
                     set('grr', function() require('fzf-lua').lsp_references() end, 'references')
                     set('grd', function() require('fzf-lua').lsp_definitions() end, 'definitions')
@@ -72,8 +73,8 @@ return {
                     return vim.tbl_deep_extend(
                         'force',
                         {},
-                        vim.lsp.protocol.make_client_capabilities(),
-                        require('cmp_nvim_lsp').default_capabilities()
+                        vim.lsp.protocol.make_client_capabilities()
+                        -- require('cmp_nvim_lsp').default_capabilities()
                     )
                 end,
             }
