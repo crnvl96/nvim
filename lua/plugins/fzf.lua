@@ -122,6 +122,7 @@ return {
             { '<leader>fg', function() require('fzf-lua').live_grep_glob() end, desc = 'grep' },
             { '<leader>fg', function() require('fzf-lua').grep_visual() end, desc = 'grep visual', mode = 'x' },
             { '<leader>fr', function() require('fzf-lua').live_grep_resume() end, desc = 'resume grep' },
+            { '<leader>fx', function() require('fzf-lua').quickfix() end, desc = 'qf' },
         }
     end,
 }
