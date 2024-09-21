@@ -3,6 +3,10 @@ return {
     { 'nvim-neotest/nvim-nio' },
     { 'nvim-lua/plenary.nvim' },
     {
+        'mfussenegger/nvim-dap-python',
+        config = function() require('dap-python').setup('python') end,
+    },
+    {
         'mfussenegger/nvim-dap',
         opts = function()
             return {

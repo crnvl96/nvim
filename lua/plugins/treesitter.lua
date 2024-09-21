@@ -62,9 +62,11 @@ return {
                     'query',
                     'markdown',
                     'markdown_inline',
+                    'lua',
                     'javascript',
                     'typescript',
-                    'lua',
+                    'ninja',
+                    'rst',
                 },
                 highlight = {
                     enable = true,
