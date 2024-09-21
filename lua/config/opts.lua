@@ -3,6 +3,25 @@ vim.g.maplocalleader = ','
 vim.g.whoami = 'crnvl96'
 vim.g.bigfile_size = 1024 * 250
 
+vim.g.palette = {
+  base00 = '#181818',
+  base01 = '#282828',
+  base02 = '#383838',
+  base03 = '#585858',
+  base04 = '#b8b8b8',
+  base05 = '#d8d8d8',
+  base06 = '#e8e8e8',
+  base07 = '#f8f8f8',
+  base08 = '#ab4642',
+  base09 = '#dc9656',
+  base0A = '#f7ca88',
+  base0B = '#a1b56c',
+  base0C = '#86c1b9',
+  base0D = '#7cafc2',
+  base0E = '#ba8baf',
+  base0F = '#a16946',
+}
+
 vim.o.autoread = true
 vim.o.splitbelow = true
 vim.o.splitright = true
@@ -58,35 +77,35 @@ if vim.fn.executable('rg') ~= 0 then vim.o.grepprg = 'rg --vimgrep' end
 vim.cmd('packadd cfilter')
 
 local diagnostic_icons = {
-    ERROR = ' ',
-    WARN = ' ',
-    HINT = ' ',
-    INFO = ' ',
+  ERROR = ' ',
+  WARN = ' ',
+  HINT = ' ',
+  INFO = ' ',
 }
 
 vim.diagnostic.config({
-    virtual_text = {
-        prefix = '',
-        spacing = 2,
-        format = function(diagnostic)
-            local special_sources = {
-                ['Lua Diagnostics.'] = 'lua',
-                ['Lua Syntax Check.'] = 'lua',
-            }
+  virtual_text = {
+    prefix = '',
+    spacing = 2,
+    format = function(diagnostic)
+      local special_sources = {
+        ['Lua Diagnostics.'] = 'lua',
+        ['Lua Syntax Check.'] = 'lua',
+      }
 
-            local source = special_sources[diagnostic.source] or diagnostic.source
-            local icon = diagnostic_icons[vim.diagnostic.severity[diagnostic.severity]]
-            return string.format('%s %s[%s] ', icon, source, diagnostic.code)
-        end,
-    },
-    float = {
-        border = 'rounded',
-        source = 'if_many',
-        prefix = function(diag)
-            local level = vim.diagnostic.severity[diag.severity]
-            local prefix = string.format(' %s ', diagnostic_icons[level])
-            return prefix, 'Diagnostic' .. level:gsub('^%l', string.upper)
-        end,
-    },
-    signs = false,
+      local source = special_sources[diagnostic.source] or diagnostic.source
+      local icon = diagnostic_icons[vim.diagnostic.severity[diagnostic.severity]]
+      return string.format('%s %s[%s] ', icon, source, diagnostic.code)
+    end,
+  },
+  float = {
+    border = 'rounded',
+    source = 'if_many',
+    prefix = function(diag)
+      local level = vim.diagnostic.severity[diag.severity]
+      local prefix = string.format(' %s ', diagnostic_icons[level])
+      return prefix, 'Diagnostic' .. level:gsub('^%l', string.upper)
+    end,
+  },
+  signs = false,
 })

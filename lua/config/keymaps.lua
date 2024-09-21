@@ -17,3 +17,6 @@ vim.keymap.set('n', '<c-u>', '<c-u>zz')
 
 vim.keymap.set('x', '<', '<gv')
 vim.keymap.set('x', '>', '>gv')
+
+vim.keymap.set('n', 'n', '*<esc><cmd>noh<cr><esc>')
+vim.keymap.set('n', 'N', '#<esc><cmd>noh<cr><esc>')
