@@ -75,37 +75,3 @@ vim.opt.completeopt:append('menuone,noinsert,noselect,popup,fuzzy')
 if vim.fn.executable('rg') ~= 0 then vim.o.grepprg = 'rg --vimgrep' end
 
 vim.cmd('packadd cfilter')
-
-local diagnostic_icons = {
-  ERROR = ' ',
-  WARN = ' ',
-  HINT = ' ',
-  INFO = ' ',
-}
-
-vim.diagnostic.config({
-  virtual_text = {
-    prefix = '',
-    spacing = 2,
-    format = function(diagnostic)
-      local special_sources = {
-        ['Lua Diagnostics.'] = 'lua',
-        ['Lua Syntax Check.'] = 'lua',
-      }
-
-      local source = special_sources[diagnostic.source] or diagnostic.source
-      local icon = diagnostic_icons[vim.diagnostic.severity[diagnostic.severity]]
-      return string.format('%s %s[%s] ', icon, source, diagnostic.code)
-    end,
-  },
-  float = {
-    border = 'rounded',
-    source = 'if_many',
-    prefix = function(diag)
-      local level = vim.diagnostic.severity[diag.severity]
-      local prefix = string.format(' %s ', diagnostic_icons[level])
-      return prefix, 'Diagnostic' .. level:gsub('^%l', string.upper)
-    end,
-  },
-  signs = false,
-})

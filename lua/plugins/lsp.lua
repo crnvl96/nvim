@@ -24,53 +24,71 @@ return {
                 enableMoveToFileCodeAction = true,
                 autoUseWorkspaceTsdk = true,
                 experimental = {
+                  maxInlayHintLength = 30,
                   completion = {
                     enableServerSideFuzzyMatch = true,
                   },
                 },
               },
               typescript = {
-                updateImportsOnFileMove = { enabled = 'always' },
-                suggest = {
-                  completeFunctionCalls = true,
+                suggest = { completeFunctionCalls = true },
+                inlayHints = {
+                  functionLikeReturnTypes = { enabled = true },
+                  parameterNames = { enabled = 'literals' },
+                  variableTypes = { enabled = true },
+                },
+              },
+              javascript = {
+                suggest = { completeFunctionCalls = true },
+                inlayHints = {
+                  functionLikeReturnTypes = { enabled = true },
+                  parameterNames = { enabled = 'literals' },
+                  variableTypes = { enabled = true },
                 },
               },
             },
           },
           lua_ls = {
+            on_init = function(client)
+              local path = client.workspace_folders and client.workspace_folders[1] and client.workspace_folders[1].name
+              if
+                not path
+                or not (vim.uv.fs_stat(path .. '/.luarc.json') or vim.uv.fs_stat(path .. '/.luarc.jsonc'))
+              then
+                client.config.settings = vim.tbl_deep_extend('force', client.config.settings, {
+                  Lua = {
+                    runtime = {
+                      version = 'LuaJIT',
+                    },
+                    workspace = {
+                      checkThirdParty = false,
+                      library = {
+                        vim.env.VIMRUNTIME,
+                        '${3rd}/luv/library',
+                      },
+                    },
+                  },
+                })
+                client.notify(
+                  vim.lsp.protocol.Methods.workspace_didChangeConfiguration,
+                  { settings = client.config.settings }
+                )
+              end
+
+              return true
+            end,
             settings = {
               Lua = {
-                runtime = { version = 'LuaJIT' },
-                workspace = {
-                  checkThirdParty = false,
-                  library = { vim.env.VIMRUNTIME, '${3rd}/luv/library', '${3rd}/busted/library' },
+                format = { enable = false },
+                hint = {
+                  enable = true,
+                  arrayIndex = 'Disable',
                 },
+                completion = { callSnippet = 'Replace' },
               },
             },
           },
         },
-        on_attach = function(_, bufnr)
-          local function set(lhs, rhs, desc, mode)
-            vim.keymap.set(mode or 'n', lhs, rhs, { desc = desc, buffer = bufnr })
-          end
-
-          vim.bo[bufnr].omnifunc = 'v:lua.vim.lsp.omnifunc'
-
-          set('grr', function() require('fzf-lua').lsp_references() end, 'references')
-          set('grd', function() require('fzf-lua').lsp_definitions() end, 'definitions')
-          set('gri', function() require('fzf-lua').lsp_implementations() end, 'implementations')
-          set('gry', function() require('fzf-lua').lsp_typedefs() end, 'typedefs')
-          set('gra', function() require('fzf-lua').lsp_code_actions() end, 'code actions')
-          set('grc', function() require('fzf-lua').lsp_incoming_calls() end, 'incoming calls')
-          set('grC', function() require('fzf-lua').lsp_outgoing_calls() end, 'outgoing calls')
-          set('grs', function() require('fzf-lua').lsp_document_symbols() end, 'document symbols')
-          set('grS', function() require('fzf-lua').lsp_workspace_symbols() end, 'workspace symbols')
-          set('grx', function() require('fzf-lua').lsp_document_diagnostics() end, 'document diagnostics')
-          set('grX', function() require('fzf-lua').lsp_workspace_diagnostics() end, 'workspace diagnostics')
-
-          set('grn', vim.lsp.buf.rename, 'rename symbol')
-          set('<C-k>', vim.lsp.buf.signature_help, 'signature help', 'i')
-        end,
         capabilities = function()
           return vim.tbl_deep_extend(
             'force',
@@ -116,14 +134,6 @@ return {
             require('lspconfig')[server_name].setup(server)
           end,
         },
-      })
-
-      vim.api.nvim_create_autocmd('LspAttach', {
-        callback = function(e)
-          local client = vim.lsp.get_client_by_id(e.data.client_id)
-          if not client then return end
-          opts.on_attach(client, e.buf)
-        end,
       })
     end,
   },

@@ -22,7 +22,9 @@ return {
       mappings = {
         show_help = '?',
         go_in_plus = '<cr>',
-        go_out_plus = '<bs>',
+        go_out_plus = '-',
+        go_in = '',
+        go_out = '',
       },
       windows = { width_nofocus = 25 },
       options = { permanent_delete = false },

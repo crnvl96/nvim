@@ -13,7 +13,7 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 
 vim.api.nvim_create_autocmd('FileType', {
   group = vim.api.nvim_create_augroup(vim.g.whoami .. '/filetype_group', {}),
-  pattern = { 'help' },
+  pattern = { 'help', 'qf' },
   callback = function(e) vim.keymap.set('n', 'q', '<cmd>quit<CR>', { buffer = e.buf }) end,
 })
 
