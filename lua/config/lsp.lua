@@ -1,76 +1,73 @@
 local methods = vim.lsp.protocol.Methods
 
--- stylua: ignore
 local function on_attach(client, bufnr)
-  local function set_method(method, lhs, rhs, desc, mode)
-    if client.supports_method(method) then vim.keymap.set(mode or 'n', lhs, rhs, { desc = desc, buffer = bufnr }) end
-  end
+    vim.bo[bufnr].omnifunc = 'v:lua.vim.lsp.omnifunc'
 
-  vim.bo[bufnr].omnifunc = 'v:lua.vim.lsp.omnifunc'
+    local def = methods.textDocument_definition
+    local ref = methods.textDocument_implementation
+    local impl = methods.textDocument_implementation
+    local typedef = methods.textDocument_typeDefinition
+    local codeactions = methods.textDocument_codeAction
+    local rename = methods.textDocument_rename
+    local inlayhint = methods.textDocument_inlayHint
 
-  set_method(methods.textDocument_definition, 'grd', function() require('fzf-lua').lsp_definitions() end, 'LSP Definitions')
-  set_method(methods.textDocument_references, 'grr', function() require('fzf-lua').lsp_references() end, 'LSP References')
-  set_method(methods.textDocument_implementation, 'gri', function() require('fzf-lua').lsp_implementations() end, 'LSP Impls')
-  set_method(methods.textDocument_typeDefinition, 'gry', function() require('fzf-lua').lsp_typedefs() end, 'LSP Typedefs')
-  set_method(methods.textDocument_codeAction, 'gra', function() require('fzf-lua').lsp_code_actions() end, 'LSP Code actions')
-  set_method(methods.textDocument_documentSymbol, 'grs', function() require('fzf-lua').lsp_document_symbols() end, 'LSP Document symbols')
-  set_method(methods.workspace_symbol, 'grS', function() require('fzf-lua').lsp_workspace_symbols() end, 'LSP Workspace symbols')
-  set_method(methods.textDocument_diagnostic, 'grx', function() require('fzf-lua').lsp_document_diagnostics() end, 'LSP Document diagnostics')
-  set_method(methods.workspace_diagnostic, 'grX', function() require('fzf-lua').lsp_workspace_diagnostics() end, 'LSP Workspace diagnostics')
-  set_method(methods.textDocument_rename, 'grn', function() vim.lsp.buf.rename() end, 'Rename symbol')
-  set_method(methods.textDocument_signatureHelp, '<C-k>', function() vim.lsp.buf.signature_help() end, 'Signature help', 'i')
-  set_method(methods.textDocument_inlayHint, '<Leader>ci', function() vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = bufnr }), { bufnr = bufnr }) end, 'Toggle inlay hints')
+    local function toggle_inlayhints()
+        local is_enabled = vim.lsp.inlay_hint.is_enabled({ bufnr = bufnr })
+        vim.lsp.inlay_hint.enable(not is_enabled, { bufnr = bufnr })
+    end
+
+    local maps = {
+        { def, 'grd', '<cmd>FzfLua lsp_definitions<cr>', 'Definitions' },
+        { ref, 'grr', '<cmd>FzfLua lsp_implementations<cr>', 'References' },
+        { impl, 'gri', '<cmd>FzfLua lsp_implementations<cr>', 'Implementations' },
+        { typedef, 'gry', '<cmd>FzfLua lsp_typedefs<cr>', 'Type Definitions' },
+        { codeactions, 'gra', '<cmd>FzfLua lsp_code_actions<cr>', 'Code Actions' },
+        { rename, 'grn', vim.lsp.buf.rename, 'Rename Symbol' },
+        { inlayhint, '<leader>ci', toggle_inlayhints, 'Toggle Inlay Hints' },
+    }
+
+    for _, map in ipairs(maps) do
+        if client.supports_method(map[1]) then
+            vim.keymap.set('n', map[2], map[3], { desc = map[4], buffer = bufnr })
+        end
+    end
 end
 
-local diagnostic_icons = {
-  ERROR = ' ',
-  WARN = ' ',
-  HINT = ' ',
-  INFO = ' ',
-}
-
 vim.diagnostic.config({
-  virtual_text = {
-    prefix = '',
-    spacing = 2,
-    format = function(diagnostic)
-      local special_sources = {
-        ['Lua Diagnostics.'] = 'lua',
-        ['Lua Syntax Check.'] = 'lua',
-      }
-
-      local source = special_sources[diagnostic.source] or diagnostic.source
-      local icon = diagnostic_icons[vim.diagnostic.severity[diagnostic.severity]]
-      return string.format('%s %s[%s] ', icon, source, diagnostic.code)
-    end,
-  },
-  float = {
-    border = 'rounded',
-    source = 'if_many',
-    prefix = function(diag)
-      local level = vim.diagnostic.severity[diag.severity]
-      local prefix = string.format(' %s ', diagnostic_icons[level])
-      return prefix, 'Diagnostic' .. level:gsub('^%l', string.upper)
-    end,
-  },
-  signs = false,
+    virtual_text = {
+        prefix = '',
+        spacing = 2,
+        format = function(diagnostic)
+            return string.format(
+                '%s %s[%s] ',
+                vim.g.diagnostic_icons[vim.diagnostic.severity[diagnostic.severity]],
+                diagnostic.source,
+                diagnostic.code
+            )
+        end,
+    },
+    float = {
+        border = 'rounded',
+        source = 'if_many',
+        prefix = function(diag)
+            local level = vim.diagnostic.severity[diag.severity]
+            return string.format(' %s ', vim.g.diagnostic_icons[level]), 'Diagnostic' .. level:gsub('^%l', string.upper)
+        end,
+    },
+    signs = false,
 })
 
-local register_capability = vim.lsp.handlers[methods.client_registerCapability]
-
 vim.lsp.handlers[methods.client_registerCapability] = function(err, res, ctx)
-  local client = vim.lsp.get_client_by_id(ctx.client_id)
-  if not client then return end
-
-  on_attach(client, vim.api.nvim_get_current_buf())
-
-  return register_capability(err, res, ctx)
+    local client = vim.lsp.get_client_by_id(ctx.client_id)
+    if not client then return end
+    on_attach(client, vim.api.nvim_get_current_buf())
+    return vim.lsp.handlers[methods.client_registerCapability](err, res, ctx)
 end
 
 vim.api.nvim_create_autocmd('LspAttach', {
-  callback = function(e)
-    local client = vim.lsp.get_client_by_id(e.data.client_id)
-    if not client then return end
-    on_attach(client, e.buf)
-  end,
+    callback = function(e)
+        local client = vim.lsp.get_client_by_id(e.data.client_id)
+        if not client then return end
+        on_attach(client, e.buf)
+    end,
 })
