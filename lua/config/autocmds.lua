@@ -16,11 +16,8 @@ vim.api.nvim_create_autocmd('BufReadPre', {
             buffer = e.buf,
             once = true,
             callback = function()
-                local ignore_filetype = { 'gitcommit', 'gitrebase' }
-
                 if vim.bo.buftype ~= '' then return end
-
-                if vim.tbl_contains(ignore_filetype, vim.bo.filetype) then return end
+                if vim.tbl_contains({ 'gitcommit', 'gitrebase' }, vim.bo.filetype) then return end
 
                 local cursor_line = vim.api.nvim_win_get_cursor(0)[1]
                 if cursor_line > 1 then return end
