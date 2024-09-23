@@ -37,8 +37,8 @@ return {
             end
 
             dapui.setup()
-            dap.listeners.before.attach.dapui_config = function() dap.open() end
-            dap.listeners.before.launch.dapui_config = function() dapui.open() end
+            dap.listeners.before.attach.dapui_config = dap.open
+            dap.listeners.before.launch.dapui_config = dapui.open
 
             vscode.json_decode = function(str) return vim.json.decode(json.json_strip_comments(str)) end
             if has_launch then vscode.load_launchjs() end

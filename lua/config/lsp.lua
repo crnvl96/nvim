@@ -3,27 +3,19 @@ local methods = vim.lsp.protocol.Methods
 local function on_attach(client, bufnr)
     vim.bo[bufnr].omnifunc = 'v:lua.vim.lsp.omnifunc'
 
-    local def = methods.textDocument_definition
-    local ref = methods.textDocument_implementation
-    local impl = methods.textDocument_implementation
-    local typedef = methods.textDocument_typeDefinition
-    local codeactions = methods.textDocument_codeAction
-    local rename = methods.textDocument_rename
-    local inlayhint = methods.textDocument_inlayHint
-
     local function toggle_inlayhints()
         local is_enabled = vim.lsp.inlay_hint.is_enabled({ bufnr = bufnr })
         vim.lsp.inlay_hint.enable(not is_enabled, { bufnr = bufnr })
     end
 
     local maps = {
-        { def, 'grd', '<cmd>FzfLua lsp_definitions<cr>', 'Definitions' },
-        { ref, 'grr', '<cmd>FzfLua lsp_implementations<cr>', 'References' },
-        { impl, 'gri', '<cmd>FzfLua lsp_implementations<cr>', 'Implementations' },
-        { typedef, 'gry', '<cmd>FzfLua lsp_typedefs<cr>', 'Type Definitions' },
-        { codeactions, 'gra', '<cmd>FzfLua lsp_code_actions<cr>', 'Code Actions' },
-        { rename, 'grn', vim.lsp.buf.rename, 'Rename Symbol' },
-        { inlayhint, '<leader>ci', toggle_inlayhints, 'Toggle Inlay Hints' },
+        { methods.textDocument_definition, 'grd', '<cmd>FzfLua lsp_definitions<cr>', 'Definitions' },
+        { methods.textDocument_implementation, 'grr', '<cmd>FzfLua lsp_implementations<cr>', 'References' },
+        { methods.textDocument_implementation, 'gri', '<cmd>FzfLua lsp_implementations<cr>', 'Implementations' },
+        { methods.textDocument_typeDefinition, 'gry', '<cmd>FzfLua lsp_typedefs<cr>', 'Type Definitions' },
+        { methods.textDocument_codeAction, 'gra', '<cmd>FzfLua lsp_code_actions<cr>', 'Code Actions' },
+        { methods.textDocument_rename, 'grn', vim.lsp.buf.rename, 'Rename Symbol' },
+        { methods.textDocument_inlayHint, '<leader>ci', toggle_inlayhints, 'Toggle Inlay Hints' },
     }
 
     for _, map in ipairs(maps) do
