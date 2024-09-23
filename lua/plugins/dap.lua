@@ -13,20 +13,13 @@ return {
             local vscode = require('dap.ext.vscode')
             local has_launch = vim.fn.filereadable('.vscode/launch.json')
             local debugpy_path = vim.fn.stdpath('data') .. '/mason/packages/debugpy/venv/bin/python'
+            local dapjs = require('config.debug').dapjs
             local icons = {
                 Stopped = { ' ', 'DiagnosticWarn', 'DapStoppedLine' },
                 Breakpoint = { ' ', 'DiagnosticInfo', nil, nil },
                 BreakpointCondition = { ' ', 'DiagnosticInfo', nil, nil },
                 BreakpointRejected = { ' ', 'DiagnosticError', nil, nil },
                 LogPoint = { ' ', 'DiagnosticInfo', nil, nil },
-            }
-            local javascript_filetypes = {
-                'typescript',
-                'javascript',
-                'typescriptreact',
-                'javascriptreact',
-                'javascript.jsx',
-                'typescript.tsx',
             }
 
             for name, sign in pairs(icons) do
@@ -44,61 +37,7 @@ return {
             if has_launch then vscode.load_launchjs() end
 
             dappy.setup(debugpy_path)
-
-            for _, adapter in ipairs({ 'node', 'pwa-node' }) do
-                vscode.type_to_filetypes[adapter] = javascript_filetypes
-            end
-
-            for _, filetype in ipairs(javascript_filetypes) do
-                if not dap.configurations[filetype] then
-                    dap.configurations[filetype] = {
-                        {
-                            type = 'pwa-node',
-                            request = 'launch',
-                            name = 'Launch file (custom)',
-                            program = '${file}',
-                            cwd = '${workspaceFolder}',
-                        },
-                        {
-                            type = 'pwa-node',
-                            request = 'attach',
-                            name = 'Attach (custom)',
-                            processId = require('dap.utils').pick_process,
-                            cwd = vim.fn.getcwd(),
-                            sourceMaps = true,
-                            resolveSourceMapLocations = { '${workspaceFolder}/**', '!**/node_modules/**' },
-                            skipFiles = { '${workspaceFolder}/node_modules/**/*.js' },
-                        },
-                    }
-                end
-            end
-
-            if not dap.adapters['pwa-node'] then
-                dap.adapters['pwa-node'] = {
-                    type = 'server',
-                    host = 'localhost',
-                    port = '${port}',
-                    executable = {
-                        command = 'node',
-                        args = {
-                            vim.fn.stdpath('data') .. '/mason/packages/js-debug-adapter/js-debug/src/dapDebugServer.js',
-                            '${port}',
-                        },
-                    },
-                }
-            end
-
-            if not dap.adapters['node'] then
-                dap.adapters['node'] = function(cb, config)
-                    if config.type == 'node' then config.type = 'pwa-node' end
-                    local nativeAdapter = dap.adapters['pwa-node']
-                    if type(nativeAdapter) == 'function' then
-                        nativeAdapter(cb, config)
-                    else
-                        cb(nativeAdapter)
-                    end
-                end
-            end
+            dapjs.setup()
         end,
         keys = {
             { '<Leader>db', function() require('dap').toggle_breakpoint() end, desc = 'Breakpoint' },

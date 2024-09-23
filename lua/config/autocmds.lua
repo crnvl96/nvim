@@ -34,7 +34,7 @@ vim.api.nvim_create_autocmd('BufReadPre', {
 })
 
 vim.api.nvim_create_autocmd('FileType', {
-    group = vim.api.nvim_create_augroup('mariasolos/treesitter_folding', { clear = true }),
+    group = vim.api.nvim_create_augroup(vim.g.whoami .. '/treesitter_folding', { clear = true }),
     desc = 'Enable Treesitter folding',
     callback = function(e)
         local ok, stats = pcall(vim.uv.fs_stat, vim.api.nvim_buf_get_name(e.buf))
