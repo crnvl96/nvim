@@ -72,6 +72,7 @@ return {
                 { '<Leader>c', group = 'Code' },
                 { '<Leader>d', group = 'Debug' },
                 { '<Leader>f', group = 'Files' },
+                { '<Leader>h', group = 'Git Hunks' },
                 { '<Leader>x', group = 'Quickfix' },
                 {
                     '<Leader>b',

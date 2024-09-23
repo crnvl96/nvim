@@ -74,28 +74,7 @@ return {
                     return ok and stats and stats.size > vim.g.bigfile_size
                 end,
             },
-            indent = {
-                enable = true,
-                disable = function(_, buf)
-                    if not vim.bo[buf].modifiable then return false end
-
-                    local ok, stats = pcall(vim.uv.fs_stat, vim.api.nvim_buf_get_name(buf))
-
-                    if not ok or not stats or stats.size > vim.g.bigfile_size then
-                        vim.wo[0][0].foldmethod = 'indent'
-
-                        return true
-                    end
-
-                    vim.api.nvim_buf_call(buf, function()
-                        vim.wo[0][0].foldmethod = 'expr'
-                        vim.wo[0][0].foldexpr = 'v:lua.vim.treesitter.foldexpr()'
-                        vim.cmd.normal('zx')
-                    end)
-
-                    return false
-                end,
-            },
+            indent = { enable = true },
             incremental_selection = { enable = false },
         },
         config = function(_, opts) require('nvim-treesitter.configs').setup(opts) end,

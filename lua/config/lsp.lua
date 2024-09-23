@@ -49,11 +49,12 @@ vim.diagnostic.config({
     signs = false,
 })
 
+local registerCapability = vim.lsp.handlers[methods.client_registerCapability]
 vim.lsp.handlers[methods.client_registerCapability] = function(err, res, ctx)
     local client = vim.lsp.get_client_by_id(ctx.client_id)
     if not client then return end
     on_attach(client, vim.api.nvim_get_current_buf())
-    return vim.lsp.handlers[methods.client_registerCapability](err, res, ctx)
+    return registerCapability(err, res, ctx)
 end
 
 vim.api.nvim_create_autocmd('LspAttach', {

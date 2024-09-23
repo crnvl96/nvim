@@ -4,14 +4,12 @@ return {
     { 'hrsh7th/cmp-nvim-lsp' },
     {
         'stevearc/conform.nvim',
-        event = { 'BufWritePre' },
+        event = 'BufWritePre',
         opts = function()
             local function get_first_formatter(buf, ...)
                 for i = 1, select('#', ...) do
                     local formatter = select(i, ...)
-                    if require('conform').get_formatter_info(formatter, buf).available then
-                        return formatter
-                    end
+                    if require('conform').get_formatter_info(formatter, buf).available then return formatter end
                 end
 
                 return select(1, ...)
@@ -20,9 +18,7 @@ return {
             return {
                 notify_on_error = false,
                 formatters_by_ft = {
-                    markdown = function(buf)
-                        return { get_first_formatter(buf, 'prettierd', 'prettier'), 'injected' }
-                    end,
+                    markdown = function(buf) return { get_first_formatter(buf, 'prettierd', 'prettier'), 'injected' } end,
                     json = { 'prettierd', 'prettier', stop_after_first = true },
                     jsonc = { 'prettierd', 'prettier', stop_after_first = true },
                     json5 = { 'prettierd', 'prettier', stop_after_first = true },
@@ -50,104 +46,99 @@ return {
     {
         'neovim/nvim-lspconfig',
         event = { 'BufReadPre', 'BufNewFile' },
-        opts = function()
-            return {
-                ensure_installed = {
-                    'stylua',
-                    'prettierd',
-                    'js-debug-adapter',
-                    'debugpy',
-                    'black',
-                },
-                servers = {
-                    basedpyright = {},
-                    eslint = { settings = { format = false } },
-                    vtsls = {
-                        settings = {
-                            complete_function_calls = true,
-                            vtsls = {
-                                enableMoveToFileCodeAction = true,
-                                autoUseWorkspaceTsdk = true,
-                                experimental = {
-                                    maxInlayHintLength = 30,
-                                    completion = {
-                                        enableServerSideFuzzyMatch = true,
-                                    },
-                                },
+        opts = {
+            ensure_installed = {
+                'stylua',
+                'prettierd',
+                'js-debug-adapter',
+                'debugpy',
+                'black',
+            },
+            servers = {
+                basedpyright = {},
+                eslint = { settings = { format = false } },
+                vtsls = {
+                    settings = {
+                        typescript = {
+                            suggest = { completeFunctionCalls = true },
+                            inlayHints = {
+                                functionLikeReturnTypes = { enabled = true },
+                                parameterNames = { enabled = 'literals' },
+                                variableTypes = { enabled = true },
                             },
-                            typescript = {
-                                suggest = { completeFunctionCalls = true },
-                                inlayHints = {
-                                    functionLikeReturnTypes = { enabled = true },
-                                    parameterNames = { enabled = 'literals' },
-                                    variableTypes = { enabled = true },
-                                },
+                        },
+                        javascript = {
+                            suggest = { completeFunctionCalls = true },
+                            inlayHints = {
+                                functionLikeReturnTypes = { enabled = true },
+                                parameterNames = { enabled = 'literals' },
+                                variableTypes = { enabled = true },
                             },
-                            javascript = {
-                                suggest = { completeFunctionCalls = true },
-                                inlayHints = {
-                                    functionLikeReturnTypes = { enabled = true },
-                                    parameterNames = { enabled = 'literals' },
-                                    variableTypes = { enabled = true },
+                        },
+                        vtsls = {
+                            enableMoveToFileCodeAction = true,
+                            autoUseWorkspaceTsdk = true,
+                            experimental = {
+                                maxInlayHintLength = 30,
+                                completion = {
+                                    enableServerSideFuzzyMatch = true,
                                 },
                             },
                         },
                     },
-                    lua_ls = {
-                        on_init = function(client)
-                            local path = client.workspace_folders
-                                and client.workspace_folders[1]
-                                and client.workspace_folders[1].name
-                            if
-                                not path
-                                or not (
-                                    vim.uv.fs_stat(path .. '/.luarc.json') or vim.uv.fs_stat(path .. '/.luarc.jsonc')
-                                )
-                            then
-                                client.config.settings = vim.tbl_deep_extend('force', client.config.settings, {
-                                    Lua = {
-                                        runtime = {
-                                            version = 'LuaJIT',
-                                        },
-                                        workspace = {
-                                            checkThirdParty = false,
-                                            library = {
-                                                vim.env.VIMRUNTIME,
-                                                '${3rd}/luv/library',
-                                            },
+                },
+                lua_ls = {
+                    on_init = function(client)
+                        local path = client.workspace_folders
+                            and client.workspace_folders[1]
+                            and client.workspace_folders[1].name
+                        if
+                            not path
+                            or not (vim.uv.fs_stat(path .. '/.luarc.json') or vim.uv.fs_stat(path .. '/.luarc.jsonc'))
+                        then
+                            client.config.settings = vim.tbl_deep_extend('force', client.config.settings, {
+                                Lua = {
+                                    runtime = {
+                                        version = 'LuaJIT',
+                                    },
+                                    workspace = {
+                                        checkThirdParty = false,
+                                        library = {
+                                            vim.env.VIMRUNTIME,
+                                            '${3rd}/luv/library',
                                         },
                                     },
-                                })
-                                client.notify(
-                                    vim.lsp.protocol.Methods.workspace_didChangeConfiguration,
-                                    { settings = client.config.settings }
-                                )
-                            end
+                                },
+                            })
+                            client.notify(
+                                vim.lsp.protocol.Methods.workspace_didChangeConfiguration,
+                                { settings = client.config.settings }
+                            )
+                        end
 
-                            return true
-                        end,
-                        settings = {
-                            Lua = {
-                                format = { enable = false },
-                                hint = {
-                                    enable = true,
-                                    arrayIndex = 'Disable',
-                                },
-                                completion = { callSnippet = 'Replace' },
+                        return true
+                    end,
+                    settings = {
+                        Lua = {
+                            format = { enable = false },
+                            hint = {
+                                enable = true,
+                                arrayIndex = 'Disable',
                             },
+                            completion = { callSnippet = 'Replace' },
                         },
                     },
                 },
-                capabilities = function()
-                    return vim.tbl_deep_extend(
-                        'force',
-                        {},
-                        vim.lsp.protocol.make_client_capabilities(),
-                        require('cmp_nvim_lsp').default_capabilities()
-                    )
-                end,
-            }
-        end,
+            },
+            capabilities = function()
+                return vim.tbl_deep_extend(
+                    'force',
+                    {},
+                    vim.lsp.protocol.make_client_capabilities(),
+                    require('cmp_nvim_lsp').default_capabilities()
+                )
+            end,
+        },
         config = function(_, opts)
             local servers = opts.servers
             local capabilities = opts.capabilities()
@@ -156,20 +147,21 @@ return {
 
             local mr = require('mason-registry')
             mr:on('package:install:success', function()
-                vim.defer_fn(function()
-                    require('lazy.core.handler.event').trigger({
-                        event = 'FileType',
-                        buf = vim.api.nvim_get_current_buf(),
-                    })
-                end, 100)
+                vim.defer_fn(
+                    function()
+                        require('lazy.core.handler.event').trigger({
+                            event = 'FileType',
+                            buf = vim.api.nvim_get_current_buf(),
+                        })
+                    end,
+                    100
+                )
             end)
 
             mr.refresh(function()
                 for _, tool in ipairs(opts.ensure_installed) do
                     local p = mr.get_package(tool)
-                    if not p:is_installed() then
-                        p:install()
-                    end
+                    if not p:is_installed() then p:install() end
                 end
             end)
 
@@ -198,9 +190,7 @@ return {
 
             cmp.setup({
                 snippet = {
-                    expand = function(args)
-                        vim.snippet.expand(args.body)
-                    end,
+                    expand = function(args) vim.snippet.expand(args.body) end,
                 },
                 window = {
                     completion = cmp.config.window.bordered(),
