@@ -7,6 +7,7 @@ function M.float_term(cmd, opts)
         ft = 'lazyterm',
         size = { width = 0.7, height = 0.7 },
         persistent = true,
+        border = 'rounded',
     }, opts)
 
     local termkey = vim.inspect({ cmd = cmd or 'shell', cwd = opts.cwd, count = vim.v.count1 })
