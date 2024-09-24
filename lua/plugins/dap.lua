@@ -167,9 +167,5 @@ return {
         { '<Leader>db', function() require('dap').toggle_breakpoint() end, desc = 'Breakpoint' },
         { '<Leader>dc', function() require('dap').continue() end, desc = 'Continue' },
         { '<Leader>dw', function() require('dap.ui.widgets').hover() end, desc = 'Hover' },
-        { '<Leader>dl', '<cmd>FzfLua dap_breakpoints<CR>', desc = 'List Breakpoints' },
-        { '<Leader>dc', '<cmd>FzfLua dap_commands<CR>', desc = 'Commands' },
-        { '<Leader>df', '<cmd>FzfLua dap_frames<CR>', desc = 'Frames' },
-        { '<Leader>dv', '<cmd>FzfLua dap_variables<CR>', desc = 'Variables' },
     },
 }
