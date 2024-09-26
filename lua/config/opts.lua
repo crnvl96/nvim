@@ -1,8 +1,3 @@
-vim.g.mapleader = ' '
-vim.g.maplocalleader = ','
-vim.g.whoami = 'crnvl96'
-vim.g.bigfile_size = 1024 * 250
-
 vim.g.diagnostic_icons = {
     ERROR = ' ',
     WARN = ' ',
@@ -28,6 +23,11 @@ vim.g.palette = {
     base0E = '#ba8baf',
     base0F = '#a16946',
 }
+
+vim.g.mapleader = ' '
+vim.g.maplocalleader = ','
+vim.g.whoami = 'crnvl96'
+vim.g.bigfile_size = 1024 * 250
 
 vim.o.autoread = true
 vim.o.splitbelow = true

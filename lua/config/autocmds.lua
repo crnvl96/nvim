@@ -28,6 +28,12 @@ vim.api.nvim_create_autocmd('BufReadPre', {
 })
 
 vim.api.nvim_create_autocmd('FileType', {
+    group = vim.api.nvim_create_augroup(vim.g.whoami .. '/close_with_q', { clear = true }),
+    pattern = { 'fugitive', 'fugitive-blame', 'qf' },
+    callback = function(e) vim.keymap.set('n', 'q', '<cmd>quit<CR>', { buffer = e.buf }) end,
+})
+
+vim.api.nvim_create_autocmd('FileType', {
     group = vim.api.nvim_create_augroup(vim.g.whoami .. '/treesitter_folding', { clear = true }),
     desc = 'Enable Treesitter folding',
     callback = function(e)
