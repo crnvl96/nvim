@@ -7,7 +7,7 @@ return {
                 sort = function(notif_arr)
                     local not_diagnosing = function(notif)
                         local ignore = {
-                            'lua_ls: Diagnosing',
+                            -- 'lua_ls: Diagnosing',
                             'vtsls: Analyzing',
                         }
 

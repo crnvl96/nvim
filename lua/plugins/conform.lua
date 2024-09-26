@@ -2,16 +2,18 @@ return {
     'stevearc/conform.nvim',
     event = 'BufWritePre',
     config = function()
+        local conform = require('conform')
+
         local function get_first_formatter(buf, ...)
             for i = 1, select('#', ...) do
                 local formatter = select(i, ...)
-                if require('conform').get_formatter_info(formatter, buf).available then return formatter end
+                if conform.get_formatter_info(formatter, buf).available then return formatter end
             end
 
             return select(1, ...)
         end
 
-        require('conform').setup({
+        conform.setup({
             notify_on_error = false,
             formatters_by_ft = {
                 markdown = function(buf) return { get_first_formatter(buf, 'prettierd', 'prettier'), 'injected' } end,
