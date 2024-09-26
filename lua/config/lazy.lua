@@ -24,14 +24,14 @@ require('lazy').setup({
     spec = {
         { import = 'plugins' },
     },
-    defaults = { lazy = true },
+    defaults = { lazy = true, version = false },
     checker = { enabled = false },
     change_detection = { enabled = false },
     rocks = { enabled = false },
     performance = {
         rtp = {
             disabled_plugins = {
-                -- 'netrwPlugin',
+                'netrwPlugin',
                 'tarPlugin',
                 'tutor',
                 'gzip',

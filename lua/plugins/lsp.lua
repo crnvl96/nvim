@@ -130,15 +130,6 @@ return {
             { 'williamboman/mason.nvim', build = ':MasonUpdate' },
         },
         config = function()
-            local capabilities = function()
-                return vim.tbl_deep_extend(
-                    'force',
-                    {},
-                    vim.lsp.protocol.make_client_capabilities()
-                    -- require('cmp_nvim_lsp').default_capabilities()
-                )
-            end
-
             require('mason').setup()
 
             local mr = require('mason-registry')
@@ -172,7 +163,7 @@ return {
                 handlers = {
                     function(server_name)
                         local server = servers[server_name] or {}
-                        server.capabilities = capabilities()
+                        server.capabilities = vim.lsp.protocol.make_client_capabilities()
                         require('lspconfig')[server_name].setup(server)
                     end,
                 },
