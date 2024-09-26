@@ -20,21 +20,7 @@ return {
             },
             sorting = require('cmp.config.default')().sorting,
             preselect = cmp.PreselectMode.None,
-            mapping = cmp.mapping.preset.insert({
-                ['<C-Space>'] = cmp.mapping.complete(),
-                ['<CR>'] = cmp.mapping({
-                    i = function(fallback)
-                        if cmp.visible() and cmp.get_active_entry() then
-                            cmp.confirm({
-                                behavior = cmp.ConfirmBehavior.Replace,
-                                select = false,
-                            })
-                        else
-                            fallback()
-                        end
-                    end,
-                }),
-            }),
+            mapping = cmp.mapping.preset.insert({ ['<C-Space>'] = cmp.mapping.complete() }),
             sources = cmp.config.sources({
                 {
                     name = 'nvim_lsp',

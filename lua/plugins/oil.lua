@@ -1,6 +1,5 @@
 return {
     'stevearc/oil.nvim',
-    enabled = false,
     dependencies = { 'nvim-treesitter/nvim-treesitter' },
     config = function()
         require('oil').setup({
