@@ -3,12 +3,6 @@ vim.api.nvim_create_autocmd('TextYankPost', {
     callback = function() vim.highlight.on_yank({ priority = 250 }) end,
 })
 
-vim.api.nvim_create_autocmd('FileType', {
-    group = vim.api.nvim_create_augroup(vim.g.whoami .. '/close_with_q', { clear = true }),
-    pattern = { 'help', 'qf', 'git', 'gitcommit' },
-    callback = function(e) vim.keymap.set('n', 'q', '<cmd>quit<cr>', { buffer = e.buf }) end,
-})
-
 vim.api.nvim_create_autocmd('BufReadPre', {
     group = vim.api.nvim_create_augroup(vim.g.whoami .. '/goto_last_location', { clear = true }),
     callback = function(e)

@@ -35,17 +35,10 @@ return {
         })
     end,
     keys = {
-        { '<Leader>f,', '<cmd>FzfLua<CR>', desc = 'Menu' },
+        { '<Leader>fj', '<cmd>FzfLua<CR>', desc = 'Menu' },
         { '<Leader>fl', '<cmd>FzfLua lgrep_curbuf<CR>', desc = 'Grep buffer' },
-        { '<Leader>f>', '<cmd>FzfLua resume<CR>', desc = 'Resume' },
-        { '<Leader>fk', '<cmd>FzfLua keymaps<CR>', desc = 'Maps' },
-        { '<Leader>fc', '<cmd>FzfLua highlights<CR>', desc = 'Highlights' },
+        { '<Leader>fr', '<cmd>FzfLua resume<CR>', desc = 'Resume' },
         { '<Leader>ff', '<cmd>FzfLua files<CR>', desc = 'Files' },
-        { '<Leader>fo', '<cmd>FzfLua oldfiles<CR>', desc = 'Oldfiles' },
-        { '<Leader>fh', '<cmd>FzfLua help<CR>', desc = 'Help' },
         { '<Leader>fg', '<cmd>FzfLua live_grep_native<CR>', desc = 'Grep' },
-        { '<Leader>fg', '<cmd>FzfLua grep_visual<CR>', desc = 'Grep visual', mode = 'x' },
-        { '<Leader>fr', '<cmd>FzfLua live_grep_resume<CR>', desc = 'Resume last grep' },
-        { '<Leader>fx', '<cmd>FzfLua quickfix<CR>', desc = 'Quickfix' },
     },
 }

@@ -1,5 +1,6 @@
 return {
     'stevearc/oil.nvim',
+    enabled = false,
     dependencies = { 'nvim-treesitter/nvim-treesitter' },
     config = function()
         require('oil').setup({
@@ -30,12 +31,6 @@ return {
                 ['gx'] = 'actions.open_external',
                 ['g.'] = 'actions.toggle_hidden',
                 ['g\\'] = 'actions.toggle_trash',
-            },
-            git = {
-                -- Return true to automatically git add/mv/rm files
-                add = function() return true end,
-                mv = function() return true end,
-                rm = function() return true end,
             },
         })
     end,

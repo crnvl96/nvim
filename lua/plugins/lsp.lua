@@ -1,27 +1,3 @@
-vim.diagnostic.config({
-    virtual_text = {
-        prefix = '',
-        spacing = 2,
-        format = function(diagnostic)
-            return string.format(
-                '%s %s[%s] ',
-                vim.g.diagnostic_icons[vim.diagnostic.severity[diagnostic.severity]],
-                diagnostic.source,
-                diagnostic.code
-            )
-        end,
-    },
-    float = {
-        border = 'rounded',
-        source = 'if_many',
-        prefix = function(diag)
-            local level = vim.diagnostic.severity[diag.severity]
-            return string.format(' %s ', vim.g.diagnostic_icons[level]), 'Diagnostic' .. level:gsub('^%l', string.upper)
-        end,
-    },
-    signs = false,
-})
-
 local servers = {
     eslint = { settings = { format = false } },
     basedpyright = {},
@@ -102,7 +78,6 @@ local servers = {
     },
 }
 
-local methods = vim.lsp.protocol.Methods
 local function on_attach(client, bufnr)
     vim.bo[bufnr].omnifunc = 'v:lua.vim.lsp.omnifunc'
 
@@ -111,14 +86,22 @@ local function on_attach(client, bufnr)
         vim.lsp.inlay_hint.enable(not is_enabled, { bufnr = bufnr })
     end
 
+    local definitions = vim.lsp.protocol.Methods.textDocument_definition
+    local references = vim.lsp.protocol.Methods.textDocument_references
+    local implementations = vim.lsp.protocol.Methods.textDocument_implementation
+    local typeDefinition = vim.lsp.protocol.Methods.textDocument_typeDefinition
+    local codeAction = vim.lsp.protocol.Methods.textDocument_codeAction
+    local renameSymbol = vim.lsp.protocol.Methods.textDocument_rename
+    local inlayHint = vim.lsp.protocol.Methods.textDocument_inlayHint
+
     local maps = {
-        { methods.textDocument_definition, 'grd', '<cmd>FzfLua lsp_definitions<cr>', 'Definitions' },
-        { methods.textDocument_references, 'grr', '<cmd>FzfLua lsp_references<cr>', 'References' },
-        { methods.textDocument_implementation, 'gri', '<cmd>FzfLua lsp_implementations<cr>', 'Implementations' },
-        { methods.textDocument_typeDefinition, 'gry', '<cmd>FzfLua lsp_typedefs<cr>', 'Type Definitions' },
-        { methods.textDocument_codeAction, 'gra', '<cmd>FzfLua lsp_code_actions<cr>', 'Code Actions' },
-        { methods.textDocument_rename, 'grn', vim.lsp.buf.rename, 'Rename Symbol' },
-        { methods.textDocument_inlayHint, '<leader>ci', toggle_inlayhints, 'Toggle Inlay Hints' },
+        { definitions, 'grd', '<cmd>FzfLua lsp_definitions<cr>', 'Definitions' },
+        { references, 'grr', '<cmd>FzfLua lsp_references<cr>', 'References' },
+        { implementations, 'gri', '<cmd>FzfLua lsp_implementations<cr>', 'Implementations' },
+        { typeDefinition, 'gry', '<cmd>FzfLua lsp_typedefs<cr>', 'Type Definitions' },
+        { codeAction, 'gra', '<cmd>FzfLua lsp_code_actions<cr>', 'Code Actions' },
+        { renameSymbol, 'grn', vim.lsp.buf.rename, 'Rename Symbol' },
+        { inlayHint, '<leader>ci', toggle_inlayhints, 'Toggle Inlay Hints' },
     }
 
     for _, map in ipairs(maps) do
@@ -128,8 +111,8 @@ local function on_attach(client, bufnr)
     end
 end
 
-local registerCapability = vim.lsp.handlers[methods.client_registerCapability]
-vim.lsp.handlers[methods.client_registerCapability] = function(err, res, ctx)
+local registerCapability = vim.lsp.handlers[vim.lsp.protocol.Methods.client_registerCapability]
+vim.lsp.handlers[vim.lsp.protocol.Methods.client_registerCapability] = function(err, res, ctx)
     local client = vim.lsp.get_client_by_id(ctx.client_id)
     if not client then return end
     on_attach(client, vim.api.nvim_get_current_buf())
@@ -141,96 +124,9 @@ return {
         'neovim/nvim-lspconfig',
         event = { 'BufReadPre', 'BufNewFile' },
         dependencies = {
-            {
-                'williamboman/mason-lspconfig.nvim',
-                dependencies = {
-                    {
-                        'williamboman/mason.nvim',
-                        build = ':MasonUpdate',
-                        config = function()
-                            require('mason').setup()
-
-                            local mr = require('mason-registry')
-                            mr:on('package:install:success', function()
-                                vim.defer_fn(
-                                    function()
-                                        require('lazy.core.handler.event').trigger({
-                                            event = 'FileType',
-                                            buf = vim.api.nvim_get_current_buf(),
-                                        })
-                                    end,
-                                    100
-                                )
-                            end)
-
-                            mr.refresh(function()
-                                for _, tool in ipairs({
-                                    'stylua',
-                                    'prettierd',
-                                    'js-debug-adapter',
-                                    'debugpy',
-                                    'black',
-                                }) do
-                                    local p = mr.get_package(tool)
-                                    if not p:is_installed() then p:install() end
-                                end
-                            end)
-                        end,
-                    },
-                },
-            },
-            {
-                'hrsh7th/nvim-cmp',
-                event = 'InsertEnter',
-                dependencies = {
-                    'hrsh7th/cmp-path',
-                    'hrsh7th/cmp-buffer',
-                    'hrsh7th/cmp-nvim-lua',
-                    'hrsh7th/cmp-nvim-lsp',
-                },
-                config = function()
-                    local cmp = require('cmp')
-
-                    cmp.setup({
-                        snippet = {
-                            expand = function(args) vim.snippet.expand(args.body) end,
-                        },
-                        window = {
-                            completion = cmp.config.window.bordered(),
-                            documentation = cmp.config.window.bordered(),
-                        },
-                        sorting = require('cmp.config.default')().sorting,
-                        preselect = cmp.PreselectMode.None,
-                        mapping = cmp.mapping.preset.insert({
-                            ['<C-Space>'] = cmp.mapping.complete(),
-                            ['<CR>'] = cmp.mapping({
-                                i = function(fallback)
-                                    if cmp.visible() and cmp.get_active_entry() then
-                                        cmp.confirm({
-                                            behavior = cmp.ConfirmBehavior.Replace,
-                                            select = false,
-                                        })
-                                    else
-                                        fallback()
-                                    end
-                                end,
-                            }),
-                        }),
-                        sources = cmp.config.sources({
-                            {
-                                name = 'nvim_lsp',
-                                entry_filter = function(entry)
-                                    local type = require('cmp.types').lsp.CompletionItemKind[entry:get_kind()]
-                                    return type ~= 'Text' and type ~= 'Snippet'
-                                end,
-                            },
-                            { name = 'nvim_lua' },
-                            { name = 'path' },
-                            { name = 'buffer' },
-                        }),
-                    })
-                end,
-            },
+            { 'hrsh7th/cmp-nvim-lsp' },
+            { 'williamboman/mason-lspconfig.nvim' },
+            { 'williamboman/mason.nvim', build = ':MasonUpdate' },
         },
         config = function()
             local capabilities = function()
@@ -241,6 +137,34 @@ return {
                     require('cmp_nvim_lsp').default_capabilities()
                 )
             end
+
+            require('mason').setup()
+
+            local mr = require('mason-registry')
+            mr:on('package:install:success', function()
+                vim.defer_fn(
+                    function()
+                        require('lazy.core.handler.event').trigger({
+                            event = 'FileType',
+                            buf = vim.api.nvim_get_current_buf(),
+                        })
+                    end,
+                    100
+                )
+            end)
+
+            mr.refresh(function()
+                for _, tool in ipairs({
+                    'stylua',
+                    'prettierd',
+                    'js-debug-adapter',
+                    'debugpy',
+                    'black',
+                }) do
+                    local p = mr.get_package(tool)
+                    if not p:is_installed() then p:install() end
+                end
+            end)
 
             require('mason-lspconfig').setup({
                 ensure_installed = vim.tbl_keys(servers),
