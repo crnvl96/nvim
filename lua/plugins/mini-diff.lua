@@ -15,4 +15,7 @@ return {
             },
         })
     end,
+    keys = {
+        { '<leader>go', '<cmd>lua MiniDiff.toggle_overlay()<CR>', desc = 'Overlay' },
+    },
 }
