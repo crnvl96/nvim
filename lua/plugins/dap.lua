@@ -29,12 +29,11 @@ return {
             layouts = {
                 {
                     elements = {
-                        { id = 'stacks', size = 0.30 },
-                        { id = 'breakpoints', size = 0.20 },
-                        { id = 'scopes', size = 0.50 },
+                        { id = 'breakpoints', size = 0.30 },
+                        { id = 'scopes', size = 0.70 },
                     },
                     position = 'left',
-                    size = 40,
+                    size = 80,
                 },
             },
         })
@@ -42,90 +41,15 @@ return {
         require('dap').listeners.before.attach.dapui_config = require('dapui').open
         require('dap').listeners.before.launch.dapui_config = require('dapui').open
 
-        require('dap.ext.vscode').json_decode = function(str)
-            return vim.json.decode(require('plenary.json').json_strip_comments(str))
-        end
-
-        if vim.fn.filereadable('.vscode/launch.json') then require('dap.ext.vscode').load_launchjs() end
-
+        require('dap-vscode').setup()
         require('dap-python').setup(vim.fn.stdpath('data') .. '/mason/packages/debugpy/venv/bin/python')
-
-        local javascript_filetypes = {
-            'typescript',
-            'javascript',
-            'typescriptreact',
-            'javascriptreact',
-            'javascript.jsx',
-            'typescript.tsx',
-        }
-
-        for _, adapter in ipairs({ 'node', 'pwa-node' }) do
-            require('dap.ext.vscode').type_to_filetypes[adapter] = javascript_filetypes
-        end
-
-        for _, filetype in ipairs(javascript_filetypes) do
-            if not require('dap').configurations[filetype] then
-                require('dap').configurations[filetype] = {
-                    {
-                        type = 'pwa-node',
-                        request = 'launch',
-                        name = 'Launch file (custom)',
-                        program = '${file}',
-                        cwd = '${workspaceFolder}',
-                    },
-                    {
-                        type = 'pwa-node',
-                        request = 'attach',
-                        name = 'Attach (custom)',
-                        processId = require('dap.utils').pick_process,
-                        cwd = vim.fn.getcwd(),
-                        sourceMaps = true,
-                        resolveSourceMapLocations = { '${workspaceFolder}/**', '!**/node_modules/**' },
-                        skipFiles = { '${workspaceFolder}/node_modules/**/*.js' },
-                    },
-                }
-            end
-        end
-
-        if not require('dap').adapters['pwa-node'] then
-            require('dap').adapters['pwa-node'] = {
-                type = 'server',
-                host = 'localhost',
-                port = '${port}',
-                executable = {
-                    command = 'node',
-                    args = {
-                        vim.fn.stdpath('data') .. '/mason/packages/js-debug-adapter/js-debug/src/dapDebugServer.js',
-                        '${port}',
-                    },
-                },
-            }
-        end
-
-        if not require('dap').adapters['node'] then
-            require('dap').adapters['node'] = function(cb, config)
-                if config.type == 'node' then config.type = 'pwa-node' end
-                local nativeAdapter = require('dap').adapters['pwa-node']
-                if type(nativeAdapter) == 'function' then
-                    nativeAdapter(cb, config)
-                else
-                    cb(nativeAdapter)
-                end
-            end
-        end
+        require('dap-js').setup()
     end,
     keys = {
         { '<Leader>db', function() require('dap').toggle_breakpoint() end, desc = 'Breakpoint' },
         { '<Leader>dc', function() require('dap').continue() end, desc = 'Continue' },
         { '<Leader>dt', function() require('dap').terminate() end, desc = 'Terminate' },
         { '<Leader>du', function() require('dapui').toggle() end, desc = 'Interface' },
-        {
-            '<Leader>de',
-            function()
-                require('dapui').eval()
-                require('dapui').eval()
-            end,
-            desc = 'Eval',
-        },
+        { '<leader>de', function() require('dap.ui.widgets').hover() end, desc = 'Widgets' },
     },
 }

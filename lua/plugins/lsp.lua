@@ -79,7 +79,8 @@ local servers = {
 }
 
 local function on_attach(client, bufnr)
-    vim.bo[bufnr].omnifunc = 'v:lua.vim.lsp.omnifunc'
+    -- vim.bo[bufnr].omnifunc = 'v:lua.vim.lsp.omnifunc'
+    vim.bo[bufnr].omnifunc = 'v:lua.MiniCompletion.completefunc_lsp'
 
     local function toggle_inlayhints()
         local is_enabled = vim.lsp.inlay_hint.is_enabled({ bufnr = bufnr })
@@ -124,7 +125,7 @@ return {
         'neovim/nvim-lspconfig',
         event = { 'BufReadPre', 'BufNewFile' },
         dependencies = {
-            { 'hrsh7th/cmp-nvim-lsp' },
+            -- { 'hrsh7th/cmp-nvim-lsp' },
             { 'williamboman/mason-lspconfig.nvim' },
             { 'williamboman/mason.nvim', build = ':MasonUpdate' },
         },
@@ -133,8 +134,8 @@ return {
                 return vim.tbl_deep_extend(
                     'force',
                     {},
-                    vim.lsp.protocol.make_client_capabilities(),
-                    require('cmp_nvim_lsp').default_capabilities()
+                    vim.lsp.protocol.make_client_capabilities()
+                    -- require('cmp_nvim_lsp').default_capabilities()
                 )
             end
 
