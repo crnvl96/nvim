@@ -1,25 +1,42 @@
 return {
     { 'williamboman/mason-lspconfig.nvim' },
     { 'williamboman/mason.nvim', build = ':MasonUpdate' },
+    { 'echasnovski/mini.fuzzy' },
     {
-        'echasnovski/mini.completion',
+        'hrsh7th/nvim-cmp',
         event = 'InsertEnter',
+        dependencies = {
+            'hrsh7th/cmp-path',
+            'hrsh7th/cmp-buffer',
+            'hrsh7th/cmp-nvim-lua',
+            'hrsh7th/cmp-nvim-lsp',
+        },
         config = function()
-            require('mini.completion').setup({
-                delay = { completion = 100, info = 100, signature = 100 },
+            local cmp = require('cmp')
+
+            cmp.setup({
+                snippet = {
+                    expand = function(args) vim.snippet.expand(args.body) end,
+                },
                 window = {
-                    info = { height = 25, width = 80, border = 'rounded' },
-                    signature = { height = 25, width = 80, border = 'rounded' },
+                    completion = cmp.config.window.bordered(),
+                    documentation = cmp.config.window.bordered(),
                 },
-                lsp_completion = {
-                    source_func = 'omnifunc',
-                    auto_setup = false,
-                    process_items = function(items, base)
-                        items = vim.tbl_filter(function(x) return x.kind ~= 1 and x.kind ~= 15 end, items)
-                        return require('mini.completion').default_process_items(items, base)
-                    end,
-                },
-                set_vim_settings = true,
+                sorting = require('cmp.config.default')().sorting,
+                preselect = cmp.PreselectMode.None,
+                mapping = cmp.mapping.preset.insert({ ['<C-Space>'] = cmp.mapping.complete() }),
+                sources = cmp.config.sources({
+                    {
+                        name = 'nvim_lsp',
+                        entry_filter = function(entry)
+                            local type = require('cmp.types').lsp.CompletionItemKind[entry:get_kind()]
+                            return type ~= 'Text' and type ~= 'Snippet'
+                        end,
+                    },
+                    { name = 'nvim_lua' },
+                    { name = 'path' },
+                    { name = 'buffer' },
+                }),
             })
         end,
     },
@@ -27,13 +44,54 @@ return {
         'neovim/nvim-lspconfig',
         event = { 'BufReadPre', 'BufNewFile' },
         init = function()
+            local function on_attach(client, bufnr)
+                vim.bo[bufnr].omnifunc = 'v:lua.vim.lsp.omnifunc'
+
+                local function toggle_inlayhints()
+                    local is_enabled = vim.lsp.inlay_hint.is_enabled({ bufnr = bufnr })
+                    vim.lsp.inlay_hint.enable(not is_enabled, { bufnr = bufnr })
+                end
+
+                local definitions = vim.lsp.protocol.Methods.textDocument_definition
+                local references = vim.lsp.protocol.Methods.textDocument_references
+                local implementations = vim.lsp.protocol.Methods.textDocument_implementation
+                local typeDefinition = vim.lsp.protocol.Methods.textDocument_typeDefinition
+                local codeAction = vim.lsp.protocol.Methods.textDocument_codeAction
+                local renameSymbol = vim.lsp.protocol.Methods.textDocument_rename
+                local inlayHint = vim.lsp.protocol.Methods.textDocument_inlayHint
+
+                local maps = {
+                    { definitions, 'grd', '<cmd>FzfLua lsp_definitions<cr>', 'Definitions' },
+                    { references, 'grr', '<cmd>FzfLua lsp_references<cr>', 'References' },
+                    { implementations, 'gri', '<cmd>FzfLua lsp_implementations<cr>', 'Implementations' },
+                    { typeDefinition, 'gry', '<cmd>FzfLua lsp_typedefs<cr>', 'Type Definitions' },
+                    { codeAction, 'gra', '<cmd>FzfLua lsp_code_actions<cr>', 'Code Actions' },
+                    { renameSymbol, 'grn', vim.lsp.buf.rename, 'Rename Symbol' },
+                    { inlayHint, '<leader>ci', toggle_inlayhints, 'Toggle Inlay Hints' },
+                }
+
+                for _, map in ipairs(maps) do
+                    if client.supports_method(map[1]) then
+                        vim.keymap.set('n', map[2], map[3], { desc = map[4], buffer = bufnr })
+                    end
+                end
+            end
+
             local registerCapability = vim.lsp.handlers[vim.lsp.protocol.Methods.client_registerCapability]
             vim.lsp.handlers[vim.lsp.protocol.Methods.client_registerCapability] = function(err, res, ctx)
                 local client = vim.lsp.get_client_by_id(ctx.client_id)
                 if not client then return end
-                require('lsp-on-attach').setup(client, vim.api.nvim_get_current_buf())
+                on_attach(client, vim.api.nvim_get_current_buf())
                 return registerCapability(err, res, ctx)
             end
+
+            vim.api.nvim_create_autocmd('LspAttach', {
+                callback = function(e)
+                    local client = vim.lsp.get_client_by_id(e.data.client_id)
+                    if not client then return end
+                    on_attach(client, e.buf)
+                end,
+            })
         end,
         config = function()
             require('mason').setup()
@@ -158,14 +216,6 @@ return {
                         require('lspconfig')[server_name].setup(server)
                     end,
                 },
-            })
-
-            vim.api.nvim_create_autocmd('LspAttach', {
-                callback = function(e)
-                    local client = vim.lsp.get_client_by_id(e.data.client_id)
-                    if not client then return end
-                    require('lsp-on-attach').setup(client, e.buf)
-                end,
             })
         end,
     },

@@ -33,4 +33,13 @@ return {
             vim.notify = require('mini.notify').make_notify()
         end,
     },
+    {
+        'echasnovski/mini.animate',
+        event = 'VeryLazy',
+        config = function()
+            require('mini.animate').setup({
+                scroll = { enable = false },
+            })
+        end,
+    },
 }

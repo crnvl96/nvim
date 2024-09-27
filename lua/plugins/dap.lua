@@ -22,24 +22,7 @@ return {
             local dap = require('dap')
             local dapui = require('dapui')
 
-            dapui.setup({
-                icons = {
-                    collapsed = '',
-                    current_frame = '',
-                    expanded = '',
-                },
-                floating = { border = 'rounded' },
-                layouts = {
-                    {
-                        elements = {
-                            { id = 'breakpoints', size = 0.30 },
-                            { id = 'scopes', size = 0.70 },
-                        },
-                        position = 'left',
-                        size = 80,
-                    },
-                },
-            })
+            dapui.setup({ floating = { border = 'rounded' } })
 
             dap.listeners.before.attach.dapui_config = dapui.open
             dap.listeners.before.launch.dapui_config = dapui.open
@@ -67,74 +50,67 @@ return {
                 'typescript.tsx',
             }
 
-            vim.api.nvim_create_autocmd('FileType', {
-                group = vim.api.nvim_create_augroup(vim.g.whoami .. '/dap_js_setup', { clear = true }),
-                pattern = javascript_filetypes,
-                callback = function()
-                    for _, adapter in ipairs({ 'node', 'pwa-node' }) do
-                        require('dap.ext.vscode').type_to_filetypes[adapter] = javascript_filetypes
-                    end
+            for _, adapter in ipairs({ 'node', 'pwa-node' }) do
+                require('dap.ext.vscode').type_to_filetypes[adapter] = javascript_filetypes
+            end
 
-                    for _, filetype in ipairs(javascript_filetypes) do
-                        if not dap.configurations[filetype] then
-                            dap.configurations[filetype] = {
-                                {
-                                    type = 'pwa-node',
-                                    request = 'launch',
-                                    name = 'Launch file (custom)',
-                                    program = '${file}',
-                                    cwd = '${workspaceFolder}',
-                                },
-                                {
-                                    type = 'pwa-node',
-                                    request = 'attach',
-                                    name = 'Attach (custom)',
-                                    processId = require('dap.utils').pick_process,
-                                    cwd = vim.fn.getcwd(),
-                                    sourceMaps = true,
-                                    resolveSourceMapLocations = { '${workspaceFolder}/**', '!**/node_modules/**' },
-                                    skipFiles = { '${workspaceFolder}/node_modules/**/*.js' },
-                                },
-                            }
-                        end
-                    end
+            for _, filetype in ipairs(javascript_filetypes) do
+                if not dap.configurations[filetype] then
+                    dap.configurations[filetype] = {
+                        {
+                            type = 'pwa-node',
+                            request = 'launch',
+                            name = 'Launch file (custom)',
+                            program = '${file}',
+                            cwd = '${workspaceFolder}',
+                        },
+                        {
+                            type = 'pwa-node',
+                            request = 'attach',
+                            name = 'Attach (custom)',
+                            processId = require('dap.utils').pick_process,
+                            cwd = vim.fn.getcwd(),
+                            sourceMaps = true,
+                            resolveSourceMapLocations = { '${workspaceFolder}/**', '!**/node_modules/**' },
+                            skipFiles = { '${workspaceFolder}/node_modules/**/*.js' },
+                        },
+                    }
+                end
+            end
 
-                    if not dap.adapters['pwa-node'] then
-                        dap.adapters['pwa-node'] = {
-                            type = 'server',
-                            host = 'localhost',
-                            port = '${port}',
-                            executable = {
-                                command = 'node',
-                                args = {
-                                    vim.fn.stdpath('data')
-                                        .. '/mason/packages/js-debug-adapter/js-debug/src/dapDebugServer.js',
-                                    '${port}',
-                                },
-                            },
-                        }
-                    end
+            if not dap.adapters['pwa-node'] then
+                dap.adapters['pwa-node'] = {
+                    type = 'server',
+                    host = 'localhost',
+                    port = '${port}',
+                    executable = {
+                        command = 'node',
+                        args = {
+                            vim.fn.stdpath('data') .. '/mason/packages/js-debug-adapter/js-debug/src/dapDebugServer.js',
+                            '${port}',
+                        },
+                    },
+                }
+            end
 
-                    if not dap.adapters['node'] then
-                        dap.adapters['node'] = function(cb, config)
-                            if config.type == 'node' then config.type = 'pwa-node' end
-                            local nativeAdapter = dap.adapters['pwa-node']
-                            if type(nativeAdapter) == 'function' then
-                                nativeAdapter(cb, config)
-                            else
-                                cb(nativeAdapter)
-                            end
-                        end
+            if not dap.adapters['node'] then
+                dap.adapters['node'] = function(cb, config)
+                    if config.type == 'node' then config.type = 'pwa-node' end
+                    local nativeAdapter = dap.adapters['pwa-node']
+                    if type(nativeAdapter) == 'function' then
+                        nativeAdapter(cb, config)
+                    else
+                        cb(nativeAdapter)
                     end
-                end,
-            })
+                end
+            end
         end,
         keys = {
             { '<Leader>db', function() require('dap').toggle_breakpoint() end, desc = 'Breakpoint' },
             { '<Leader>dc', function() require('dap').continue() end, desc = 'Continue' },
             { '<Leader>dt', function() require('dap').terminate() end, desc = 'Terminate' },
             { '<Leader>du', function() require('dapui').toggle() end, desc = 'Interface' },
-            { '<leader>de', function() require('dap.ui.widgets').hover() end, desc = 'Widgets' },
+            { '<leader>de', function() require('dapui').eval(nil, { enter = true }) end, desc = 'Widgets' },
         },
     },
 }

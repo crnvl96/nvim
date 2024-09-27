@@ -35,10 +35,11 @@ return {
         })
     end,
     keys = {
-        { '<Leader>fl', '<cmd>FzfLua lgrep_curbuf<CR>', desc = 'Grep buffer' },
+        { '<c-p>', '<cmd>FzfLua<CR>', desc = 'FzfLua' },
+        { '<Leader>fl', '<cmd>FzfLua grep_curbuf<CR>', desc = 'Grep buffer' },
         { '<Leader>fr', '<cmd>FzfLua resume<CR>', desc = 'Resume' },
         { '<Leader>ff', '<cmd>FzfLua files<CR>', desc = 'Files' },
-        { '<Leader>fg', '<cmd>FzfLua live_grep_native<CR>', desc = 'Grep' },
+        { '<Leader>fg', '<cmd>FzfLua grep_project<CR>', desc = 'Grep' },
         { '<Leader>fh', '<cmd>FzfLua helptags<CR>', desc = 'Helptags' },
     },
 }
