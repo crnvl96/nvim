@@ -6,6 +6,7 @@
   "mason.nvim": { "branch": "main", "commit": "e2f7f9044ec30067bc11800a9e266664b88cda22" },
   "mini-git": { "branch": "main", "commit": "f75ae3855f595e55e1a8a96521ffa01012632b28" },
   "mini.base16": { "branch": "main", "commit": "aaa564b9c6d34466d542494393ab51efc99b9d0b" },
+  "mini.clue": { "branch": "main", "commit": "8e329f586a7cfd06085859066a4b60965fc4ecce" },
   "mini.completion": { "branch": "main", "commit": "2b877876ec7c77973a512083e2aa3f13c61c2abe" },
   "mini.diff": { "branch": "main", "commit": "24d46798be8a358d38d3adc92c7ebcbb2d6f67e0" },
   "mini.files": { "branch": "main", "commit": "a3a9cce82115a69dba161ac45bda16f4e606f73b" },

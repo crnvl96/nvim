@@ -36,6 +36,8 @@ return {
         keys = {
             { '<leader>go', function() require('mini.diff').toggle_overlay() end, desc = 'Overlay' },
             { '<leader>gb', '<cmd>vert Git blame -C -C -C %<CR>', desc = 'Blame' },
+            { '<leader>gP', '<cmd>Git push<CR>', desc = 'Push' },
+            { '<leader>gp', '<cmd>Git pull<CR>', desc = 'Pull' },
             { '<leader>gc', '<cmd>Git commit<CR>', desc = 'Commit' },
             { '<leader>gi', function() require('mini.git').show_at_cursor() end, desc = 'Inspect' },
             { '<leader>gs', '<cmd>FzfLua git_status<CR>', desc = 'Status' },
