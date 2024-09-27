@@ -1,3 +1,6 @@
 {
-  "diagnostics.globals": ["MiniDeps", "vim"]
+  "diagnostics.globals": ["MiniDeps", "vim"],
+    "diagnostics.disable": [
+        "different-requires"
+    ]
 }

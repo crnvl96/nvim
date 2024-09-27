@@ -35,8 +35,6 @@ return {
         })
     end,
     keys = {
-        { '<Leader><CR>', '<cmd>FzfLua<CR>', desc = 'Menu' },
-        { '<Leader>b', '<cmd>FzfLua buffers<CR>', desc = 'Buffers' },
         { '<Leader>fl', '<cmd>FzfLua lgrep_curbuf<CR>', desc = 'Grep buffer' },
         { '<Leader>fr', '<cmd>FzfLua resume<CR>', desc = 'Resume' },
         { '<Leader>ff', '<cmd>FzfLua files<CR>', desc = 'Files' },

@@ -15,12 +15,6 @@ return {
             options = { permanent_delete = false },
         })
 
-        vim.api.nvim_create_autocmd('User', {
-            desc = 'Add rounded corners to minifiles window',
-            pattern = 'MiniFilesWindowOpen',
-            callback = function(args) vim.api.nvim_win_set_config(args.data.win_id, { border = 'rounded' }) end,
-        })
-
         local function map_split(buf_id, lhs, direction)
             local function rhs()
                 local window = minifiles.get_explorer_state().target_window
@@ -40,12 +34,18 @@ return {
         end
 
         vim.api.nvim_create_autocmd('User', {
+            desc = 'Add rounded corners to minifiles window',
+            pattern = 'MiniFilesWindowOpen',
+            callback = function(args) vim.api.nvim_win_set_config(args.data.win_id, { border = 'rounded' }) end,
+        })
+
+        vim.api.nvim_create_autocmd('User', {
             desc = 'Add minifiles split keymaps',
             pattern = 'MiniFilesBufferCreate',
             callback = function(args)
                 local buf_id = args.data.buf_id
-                map_split(buf_id, '<C-w>s', 'belowright horizontal')
-                map_split(buf_id, '<C-w>v', 'belowright vertical')
+                map_split(buf_id, '<C-s>', 'belowright horizontal')
+                map_split(buf_id, '<C-v>', 'belowright vertical')
             end,
         })
     end,
@@ -55,8 +55,6 @@ return {
             function()
                 local bufname = vim.api.nvim_buf_get_name(0)
                 local path = vim.fn.fnamemodify(bufname, ':p')
-
-                -- Noop if the buffer isn't valid.
                 if path and vim.uv.fs_stat(path) then require('mini.files').open(bufname, false) end
             end,
             desc = 'File explorer',
