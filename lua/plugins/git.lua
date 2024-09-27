@@ -14,6 +14,8 @@ return {
                 callback = function(e)
                     vim.wo.foldexpr = 'v:lua.MiniGit.diff_foldexpr()'
                     vim.keymap.set('n', 'q', '<cmd>quit<CR>', { buffer = e.buf })
+                    vim.keymap.set('n', '>', 'zr', { buffer = e.buf })
+                    vim.keymap.set('n', '<', 'zm', { buffer = e.buf })
                 end,
             })
 
@@ -33,6 +35,9 @@ return {
         end,
         keys = {
             { '<leader>go', function() require('mini.diff').toggle_overlay() end, desc = 'Overlay' },
+            { '<leader>gb', '<cmd>vert Git blame -C -C -C %<CR>', desc = 'Blame' },
+            { '<leader>gc', '<cmd>Git commit<CR>', desc = 'Commit' },
+            { '<leader>gi', function() require('mini.git').show_at_cursor() end, desc = 'Inspect' },
             { '<leader>gs', '<cmd>FzfLua git_status<CR>', desc = 'Status' },
             {
                 '<leader>gd',

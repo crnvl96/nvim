@@ -39,5 +39,6 @@ return {
         { '<Leader>fr', '<cmd>FzfLua resume<CR>', desc = 'Resume' },
         { '<Leader>ff', '<cmd>FzfLua files<CR>', desc = 'Files' },
         { '<Leader>fg', '<cmd>FzfLua live_grep_native<CR>', desc = 'Grep' },
+        { '<Leader>fh', '<cmd>FzfLua helptags<CR>', desc = 'Helptags' },
     },
 }
