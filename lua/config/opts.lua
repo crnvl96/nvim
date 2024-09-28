@@ -77,8 +77,6 @@ vim.opt.diffopt:append('linematch:60')
 vim.opt.wildoptions:append('fuzzy')
 vim.opt.path:append('**')
 vim.opt.wildignore:append('*/node_modules/*,*/dist/*')
--- vim.opt.completeopt:append('fuzzy')
-vim.opt.completeopt:append('fuzzy,menuone,noinsert,noselect,popup')
 
 if vim.fn.executable('rg') ~= 0 then vim.o.grepprg = 'rg --vimgrep' end
 
