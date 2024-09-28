@@ -8,11 +8,4 @@ return {
             callback = function(e) vim.keymap.set('n', 'q', '<cmd>quit<CR>', { buffer = e.buf }) end,
         })
     end,
-    keys = {
-        { '<leader>gB', '<cmd>Git blame -C -C -C<CR>', desc = 'Blame' },
-        { '<leader>gP', '<cmd>Git push<CR>', desc = 'Push' },
-        { '<leader>gl', '<cmd>Git log --oneline --graph -256<CR>', desc = 'Log' },
-        { '<leader>gp', '<cmd>Git pull<CR>', desc = 'Pull' },
-        { '<leader>gc', '<cmd>Git commit<CR>', desc = 'Commit' },
-    },
 }

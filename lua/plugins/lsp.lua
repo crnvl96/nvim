@@ -1,51 +1,92 @@
 return {
     { 'williamboman/mason-lspconfig.nvim' },
     { 'williamboman/mason.nvim', build = ':MasonUpdate' },
-    { 'echasnovski/mini.fuzzy' },
+    { 'echasnovki/mini.fuzzy' },
     {
-        'hrsh7th/nvim-cmp',
+        'echasnovski/mini.completion',
         event = 'InsertEnter',
-        dependencies = {
-            'hrsh7th/cmp-path',
-            'hrsh7th/cmp-buffer',
-            'hrsh7th/cmp-nvim-lua',
-            'hrsh7th/cmp-nvim-lsp',
-        },
         config = function()
-            local cmp = require('cmp')
-
-            cmp.setup({
-                snippet = {
-                    expand = function(args) vim.snippet.expand(args.body) end,
+            require('mini.completion').setup({
+                lsp_completion = {
+                    source_func = 'omnifunc',
+                    auto_setup = false,
+                    process_items = function(items, base)
+                        items = vim.tbl_filter(function(x) return x.kind ~= 1 and x.kind ~= 15 end, items)
+                        -- return require('mini.completion').default_process_items(items, base)
+                        return require('mini.fuzzy').process_lsp_items(items, base)
+                    end,
                 },
                 window = {
-                    completion = cmp.config.window.bordered(),
-                    documentation = cmp.config.window.bordered(),
+                    info = { border = 'rounded' },
+                    signature = { border = 'rounded' },
                 },
-                sorting = require('cmp.config.default')().sorting,
-                preselect = cmp.PreselectMode.None,
-                mapping = cmp.mapping.preset.insert({ ['<C-Space>'] = cmp.mapping.complete() }),
-                sources = cmp.config.sources({
-                    {
-                        name = 'nvim_lsp',
-                        entry_filter = function(entry)
-                            local type = require('cmp.types').lsp.CompletionItemKind[entry:get_kind()]
-                            return type ~= 'Text' and type ~= 'Snippet'
-                        end,
-                    },
-                    { name = 'nvim_lua' },
-                    { name = 'path' },
-                    { name = 'buffer' },
-                }),
+                set_vim_settings = false,
             })
+
+            local keycode = vim.keycode or function(x) return vim.api.nvim_replace_termcodes(x, true, true, true) end
+            local keys = {
+                ['cr'] = keycode('<CR>'),
+                ['ctrl-y'] = keycode('<C-y>'),
+                ['ctrl-y_cr'] = keycode('<C-y><CR>'),
+            }
+
+            _G.cr_action = function()
+                if vim.fn.pumvisible() ~= 0 then
+                    local item_selected = vim.fn.complete_info()['selected'] ~= -1
+                    return item_selected and keys['ctrl-y'] or keys['ctrl-y_cr']
+                else
+                    return keys['cr']
+                end
+            end
+
+            vim.keymap.set('i', '<CR>', 'v:lua._G.cr_action()', { expr = true })
         end,
     },
+    -- {
+    --     'hrsh7th/nvim-cmp',
+    --     event = 'InsertEnter',
+    --     dependencies = {
+    --         'hrsh7th/cmp-path',
+    --         'hrsh7th/cmp-buffer',
+    --         'hrsh7th/cmp-nvim-lua',
+    --         'hrsh7th/cmp-nvim-lsp',
+    --     },
+    --     config = function()
+    --         local cmp = require('cmp')
+    --
+    --         cmp.setup({
+    --             snippet = {
+    --                 expand = function(args) vim.snippet.expand(args.body) end,
+    --             },
+    --             window = {
+    --                 completion = cmp.config.window.bordered(),
+    --                 documentation = cmp.config.window.bordered(),
+    --             },
+    --             sorting = require('cmp.config.default')().sorting,
+    --             preselect = cmp.PreselectMode.None,
+    --             mapping = cmp.mapping.preset.insert({ ['<C-Space>'] = cmp.mapping.complete() }),
+    --             sources = cmp.config.sources({
+    --                 {
+    --                     name = 'nvim_lsp',
+    --                     entry_filter = function(entry)
+    --                         local type = require('cmp.types').lsp.CompletionItemKind[entry:get_kind()]
+    --                         return type ~= 'Text' and type ~= 'Snippet'
+    --                     end,
+    --                 },
+    --                 { name = 'nvim_lua' },
+    --                 { name = 'path' },
+    --                 { name = 'buffer' },
+    --             }),
+    --         })
+    --     end,
+    -- },
     {
         'neovim/nvim-lspconfig',
         event = { 'BufReadPre', 'BufNewFile' },
         init = function()
             local function on_attach(client, bufnr)
-                vim.bo[bufnr].omnifunc = 'v:lua.vim.lsp.omnifunc'
+                -- vim.bo[bufnr].omnifunc = 'v:lua.vim.lsp.omnifunc'
+                vim.bo[bufnr].omnifunc = 'v:lua.MiniCompletion.completefunc_lsp'
 
                 local function toggle_inlayhints()
                     local is_enabled = vim.lsp.inlay_hint.is_enabled({ bufnr = bufnr })
@@ -61,11 +102,11 @@ return {
                 local inlayHint = vim.lsp.protocol.Methods.textDocument_inlayHint
 
                 local maps = {
-                    { definitions, 'grd', '<cmd>FzfLua lsp_definitions<cr>', 'Definitions' },
-                    { references, 'grr', '<cmd>FzfLua lsp_references<cr>', 'References' },
-                    { implementations, 'gri', '<cmd>FzfLua lsp_implementations<cr>', 'Implementations' },
-                    { typeDefinition, 'gry', '<cmd>FzfLua lsp_typedefs<cr>', 'Type Definitions' },
-                    { codeAction, 'gra', '<cmd>FzfLua lsp_code_actions<cr>', 'Code Actions' },
+                    { definitions, 'grd', vim.lsp.buf.definition, 'Definitions' },
+                    { references, 'grr', vim.lsp.buf.references, 'References' },
+                    { implementations, 'gri', vim.lsp.buf.implementation, 'Implementations' },
+                    { typeDefinition, 'gry', vim.lsp.buf.type_definition, 'Type Definitions' },
+                    { codeAction, 'gra', vim.lsp.buf.code_action, 'Code Actions' },
                     { renameSymbol, 'grn', vim.lsp.buf.rename, 'Rename Symbol' },
                     { inlayHint, '<leader>ci', toggle_inlayhints, 'Toggle Inlay Hints' },
                 }

@@ -29,7 +29,7 @@ vim.api.nvim_create_autocmd('BufReadPre', {
 
 vim.api.nvim_create_autocmd('FileType', {
     group = vim.api.nvim_create_augroup(vim.g.whoami .. '/close_with_q', { clear = true }),
-    pattern = { 'qf', 'git', 'gitcommit', 'gitrebase' },
+    pattern = { 'qf', 'git', 'gitcommit', 'gitrebase', 'help' },
     callback = function(e) vim.keymap.set('n', 'q', '<cmd>quit<CR>', { buffer = e.buf }) end,
 })
 
