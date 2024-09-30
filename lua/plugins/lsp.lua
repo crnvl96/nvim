@@ -12,8 +12,8 @@ return {
                     auto_setup = false,
                     process_items = function(items, base)
                         items = vim.tbl_filter(function(x) return x.kind ~= 1 and x.kind ~= 15 end, items)
-                        -- return require('mini.completion').default_process_items(items, base)
-                        return require('mini.fuzzy').process_lsp_items(items, base)
+                        return require('mini.completion').default_process_items(items, base)
+                        -- return require('mini.fuzzy').process_lsp_items(items, base)
                     end,
                 },
                 window = {

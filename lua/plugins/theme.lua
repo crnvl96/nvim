@@ -1,12 +1,13 @@
 return {
-    -- {
-    --     'echasnovski/mini.base16',
-    --     lazy = false,
-    --     priority = 1000,
-    --     config = function()
-    --         require('mini.base16').setup({ palette = vim.g.palette })
-    --     end,
-    -- },
+    {
+        'echasnovski/mini.animate',
+        event = 'VeryLazy',
+        config = function()
+            require('mini.animate').setup({
+                scroll = { enable = false },
+            })
+        end,
+    },
     {
         'echasnovski/mini.icons',
         lazy = false,
@@ -45,15 +46,6 @@ return {
             })
 
             vim.notify = require('mini.notify').make_notify()
-        end,
-    },
-    {
-        'echasnovski/mini.animate',
-        event = 'VeryLazy',
-        config = function()
-            require('mini.animate').setup({
-                scroll = { enable = false },
-            })
         end,
     },
 }

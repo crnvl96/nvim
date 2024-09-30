@@ -26,7 +26,7 @@ return {
             { '<leader>fs', "<cmd>Pick lsp scope='document_symbol'<CR>", desc = 'Pick symbols' },
             { '<leader>fS', "<cmd>Pick lsp scope='workspace_symbol'<CR>", desc = 'Pick Symbols' },
             { '<leader>fh', '<cmd>Pick help<CR>', desc = 'Pick help' },
-            { '<leader>b', '<cmd>Pick buffers<CR>', desc = 'Pick buffers' },
+            { '<leader>fb', '<cmd>Pick buffers<CR>', desc = 'Pick buffers' },
             { '<leader>gb', '<cmd>Pick git_branches<CR>', desc = 'Pick branches' },
             { '<leader>gl', '<cmd>Pick git_commits<CR>', desc = 'Pick commits' },
             { '<leader>gh', '<cmd>Pick git_hunks<CR>', desc = 'Pick hunks' },

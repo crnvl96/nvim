@@ -20,6 +20,6 @@ return {
         })
     end,
     keys = {
-        { '<leader>xx', "<cmd>lua require('quicker').toggle()<CR>", desc = 'Toggle' },
+        { '<leader>xx', "<cmd>lua require('quicker').toggle()<CR>", desc = 'Toggle quickfix list' },
     },
 }
