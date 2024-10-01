@@ -20,6 +20,7 @@ return {
                 local typeDefinition = vim.lsp.protocol.Methods.textDocument_typeDefinition
                 local document_symbol = vim.lsp.protocol.Methods.textDocument_documentSymbol
                 local workspace_symbol = vim.lsp.protocol.Methods.workspace_symbol
+                local diagnostics = vim.lsp.protocol.Methods.textDocument_diagnostic
 
                 local codeAction = vim.lsp.protocol.Methods.textDocument_codeAction
                 local renameSymbol = vim.lsp.protocol.Methods.textDocument_rename
@@ -33,6 +34,8 @@ return {
                     { typeDefinition, 'gry', "<cmd>Pick lsp scope='type_definition'<CR>", 'Type Definitions' },
                     { document_symbol, 'grs', "<cmd>Pick lsp scope='document_symbol'<CR>", 'Document Symbol' },
                     { workspace_symbol, 'grS', "<cmd>Pick lsp scope='workspace_symbol'<CR>", 'Workspace Symbol' },
+                    { diagnostics, 'grx', vim.diagnostic.setqflist, 'Diagnostics' },
+                    { diagnostics, 'grX', vim.diagnostic.setqflist, 'Diagnostics' },
                     { codeAction, 'gra', vim.lsp.buf.code_action, 'Code Actions' },
                     { renameSymbol, 'grn', vim.lsp.buf.rename, 'Rename Symbol' },
                     { inlayHint, '<leader>ci', toggle_inlayhints, 'Toggle Inlay Hints' },

@@ -5,8 +5,9 @@ return {
             delete_to_trash = true,
             watch_for_changes = true,
             keymaps = {
-                ['g?'] = 'actions.show_help',
-                ['<CR>'] = 'actions.select',
+                ['<C-v>'] = false,
+                ['<C-p>'] = false,
+                ['<C-s>'] = false,
                 ['<C-w>v'] = {
                     'actions.select',
                     opts = { vertical = true },
@@ -17,19 +18,13 @@ return {
                     opts = { horizontal = true },
                     desc = 'Open the entry in a horizontal split',
                 },
-                ['<C-t>'] = { 'actions.select', opts = { tab = true }, desc = 'Open the entry in new tab' },
-                ['<C-p>'] = 'actions.preview',
-                ['<C-c>'] = 'actions.close',
-                ['<C-l>'] = 'actions.refresh',
-                ['-'] = 'actions.parent',
-                ['_'] = 'actions.open_cwd',
-                ['`'] = 'actions.cd',
-                ['~'] = { 'actions.cd', opts = { scope = 'tab' }, desc = ':tcd to the current oil directory' },
-                ['gs'] = 'actions.change_sort',
-                ['gx'] = 'actions.open_external',
-                ['g.'] = 'actions.toggle_hidden',
-                ['g\\'] = 'actions.toggle_trash',
             },
+        })
+
+        vim.api.nvim_create_autocmd('FileType', {
+            group = vim.api.nvim_create_augroup(vim.g.whoami .. '/mini_git_setup', { clear = true }),
+            pattern = { 'oil' },
+            callback = function(e) vim.keymap.set('n', 'q', '<cmd>quit<CR>', { buffer = e.buf }) end,
         })
     end,
     keys = {

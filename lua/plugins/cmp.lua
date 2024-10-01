@@ -1,45 +1,43 @@
 return {
-    {
-        'echasnovski/mini.completion',
-        event = 'InsertEnter',
-        config = function()
-            require('mini.completion').setup({
-                lsp_completion = {
-                    source_func = 'omnifunc',
-                    auto_setup = false,
-                    process_items = function(items, base)
-                        items = vim.tbl_filter(function(x) return x.kind ~= 1 and x.kind ~= 15 end, items)
-                        return require('mini.completion').default_process_items(items, base)
-                    end,
-                },
-                window = {
-                    info = { border = 'rounded' },
-                    signature = { border = 'rounded' },
-                },
-                set_vim_settings = false,
-            })
+    'echasnovski/mini.completion',
+    event = 'InsertEnter',
+    config = function()
+        require('mini.completion').setup({
+            lsp_completion = {
+                source_func = 'omnifunc',
+                auto_setup = false,
+                process_items = function(items, base)
+                    items = vim.tbl_filter(function(x) return x.kind ~= 1 and x.kind ~= 15 end, items)
+                    return require('mini.completion').default_process_items(items, base)
+                end,
+            },
+            window = {
+                info = { border = 'rounded' },
+                signature = { border = 'rounded' },
+            },
+            set_vim_settings = false,
+        })
 
-            if vim.fn.has('nvim-0.11') == 1 then vim.opt.completeopt:append('fuzzy,menuone,noinsert,noselect,popup') end
+        if vim.fn.has('nvim-0.11') == 1 then vim.opt.completeopt:append('fuzzy,menuone,noinsert,noselect,popup') end
 
-            local keycode = vim.keycode or function(x) return vim.api.nvim_replace_termcodes(x, true, true, true) end
-            local keys = {
-                ['cr'] = keycode('<CR>'),
-                ['ctrl-y'] = keycode('<C-y>'),
-                ['ctrl-y_cr'] = keycode('<C-y><CR>'),
-            }
+        local keycode = vim.keycode or function(x) return vim.api.nvim_replace_termcodes(x, true, true, true) end
+        local keys = {
+            ['cr'] = keycode('<CR>'),
+            ['ctrl-y'] = keycode('<C-y>'),
+            ['ctrl-y_cr'] = keycode('<C-y><CR>'),
+        }
 
-            _G.cr_action = function()
-                if vim.fn.pumvisible() ~= 0 then
-                    local item_selected = vim.fn.complete_info()['selected'] ~= -1
-                    return item_selected and keys['ctrl-y'] or keys['ctrl-y_cr']
-                else
-                    return keys['cr']
-                end
+        _G.cr_action = function()
+            if vim.fn.pumvisible() ~= 0 then
+                local item_selected = vim.fn.complete_info()['selected'] ~= -1
+                return item_selected and keys['ctrl-y'] or keys['ctrl-y_cr']
+            else
+                return keys['cr']
             end
+        end
 
-            vim.keymap.set('i', '<CR>', 'v:lua._G.cr_action()', { expr = true })
-        end,
-    },
+        vim.keymap.set('i', '<CR>', 'v:lua._G.cr_action()', { expr = true })
+    end,
     -- { 'hrsh7th/cmp-nvim-lsp' },
     -- {
     --     'hrsh7th/nvim-cmp',
