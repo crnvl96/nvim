@@ -28,6 +28,7 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ','
 vim.g.whoami = 'crnvl96'
 vim.g.bigfile_size = 1024 * 250
+vim.g.relative_nr = true
 
 vim.o.autoread = true
 vim.o.splitbelow = true
@@ -57,7 +58,7 @@ vim.o.ignorecase = true
 vim.o.smartcase = true
 vim.o.mouse = 'a'
 vim.o.number = true
-vim.o.relativenumber = true
+vim.o.relativenumber = vim.g.relative_nr
 vim.o.clipboard = 'unnamedplus'
 vim.o.signcolumn = 'yes'
 vim.o.fillchars = 'eob: '
@@ -71,6 +72,7 @@ vim.o.wrap = false
 vim.o.linebreak = true
 vim.o.wildignorecase = true
 vim.o.background = 'dark'
+-- vim.o.background = 'light'
 vim.o.statusline = "%{repeat('─',winwidth('.'))}"
 
 vim.opt.diffopt:append('linematch:60')

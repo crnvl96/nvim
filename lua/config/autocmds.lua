@@ -33,6 +33,16 @@ vim.api.nvim_create_autocmd('FileType', {
     callback = function(e) vim.keymap.set('n', 'q', '<cmd>quit<CR>', { buffer = e.buf }) end,
 })
 
+vim.api.nvim_create_autocmd('BufEnter', {
+    group = vim.api.nvim_create_augroup(vim.g.whoami .. '/fix_colorscheme', { clear = true }),
+    callback = function()
+        vim.api.nvim_set_hl(0, 'NormalFloat', { link = 'Normal' })
+        vim.api.nvim_set_hl(0, 'FloatBorder', { link = 'Normal' })
+        vim.api.nvim_set_hl(0, 'StatusLine', { link = 'Normal' })
+        vim.api.nvim_set_hl(0, 'StatusLineTerm', { link = 'Normal' })
+    end,
+})
+
 vim.api.nvim_create_autocmd('FileType', {
     group = vim.api.nvim_create_augroup(vim.g.whoami .. '/treesitter_folding', { clear = true }),
     desc = 'Enable Treesitter folding',
@@ -50,5 +60,26 @@ vim.api.nvim_create_autocmd('FileType', {
             vim.wo[0][0].foldexpr = 'v:lua.vim.treesitter.foldexpr()'
             vim.cmd.normal('zx')
         end)
+    end,
+})
+
+local line_numbers_group = vim.api.nvim_create_augroup(vim.g.whoami .. '/toggle_line_numbers', { clear = true })
+
+vim.api.nvim_create_autocmd({ 'BufEnter', 'FocusGained', 'InsertLeave', 'CmdlineLeave', 'WinEnter' }, {
+    group = line_numbers_group,
+    desc = 'Toggle relative line numbers on',
+    callback = function()
+        if vim.wo.nu and not vim.startswith(vim.api.nvim_get_mode().mode, 'i') then vim.wo.relativenumber = true end
+    end,
+})
+
+vim.api.nvim_create_autocmd({ 'BufLeave', 'FocusLost', 'InsertEnter', 'CmdlineEnter', 'WinLeave' }, {
+    group = line_numbers_group,
+    desc = 'Toggle relative line numbers off',
+    callback = function(args)
+        if vim.wo.nu then vim.wo.relativenumber = false end
+
+        -- Redraw here to avoid having to first write something for the line numbers to update.
+        if args.event == 'CmdlineEnter' then vim.cmd.redraw() end
     end,
 })

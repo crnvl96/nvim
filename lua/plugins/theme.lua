@@ -1,28 +1,10 @@
 return {
     {
-        'echasnovski/mini.animate',
-        event = 'VeryLazy',
-        config = function()
-            require('mini.animate').setup({
-                scroll = { enable = false },
-            })
-        end,
-    },
-    {
         'echasnovski/mini.icons',
         lazy = false,
         config = function()
             require('mini.icons').setup()
             require('mini.icons').mock_nvim_web_devicons()
-        end,
-    },
-    {
-        'cdmill/neomodern.nvim',
-        lazy = false,
-        priority = 1000,
-        config = function()
-            require('neomodern').setup({ style = 'roseprime' })
-            require('neomodern').load()
         end,
     },
     {

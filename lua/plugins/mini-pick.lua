@@ -13,6 +13,10 @@ return {
                 window = {
                     prompt_cursor = '_',
                     prompt_prefix = '',
+                    config = {
+                        height = math.floor(0.618 * vim.o.lines),
+                        width = math.floor(0.850 * vim.o.columns),
+                    },
                 },
             })
 
@@ -26,6 +30,7 @@ return {
             { '<leader>fs', "<cmd>Pick lsp scope='document_symbol'<CR>", desc = 'Pick symbols' },
             { '<leader>fS', "<cmd>Pick lsp scope='workspace_symbol'<CR>", desc = 'Pick Symbols' },
             { '<leader>fh', '<cmd>Pick help<CR>', desc = 'Pick help' },
+            { '<leader>fr', '<cmd>Pick resume<CR>', desc = 'Pick resume' },
             { '<leader>fb', '<cmd>Pick buffers<CR>', desc = 'Pick buffers' },
             { '<leader>gb', '<cmd>Pick git_branches<CR>', desc = 'Pick branches' },
             { '<leader>gl', '<cmd>Pick git_commits<CR>', desc = 'Pick commits' },
