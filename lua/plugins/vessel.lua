@@ -4,13 +4,8 @@ return {
         local util = require('vessel.util')
         local vessel = require('vessel')
 
-        vessel.opt.window.options.relative = 'editor'
-        vessel.opt.window.options.anchor = 'NW'
-        vessel.opt.window.options.style = 'minimal'
         vessel.opt.window.options.border = 'rounded'
-
         vessel.opt.marks.formatters.header = function() end
-
         vessel.opt.marks.formatters.mark = function(mark, meta)
             -- Makes sure each line number is vertically aligned
             local lnum_fmt = '%' .. #tostring(meta.max_lnum) .. 's'
@@ -40,8 +35,6 @@ return {
                 { line, line_hl }
             )
         end
-
-        vessel.setup()
     end,
     keys = {
         { '<leader>mm', '<Plug>(VesselViewMarks)', desc = 'Show Marks' },

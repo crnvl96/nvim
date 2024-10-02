@@ -6,8 +6,7 @@ return {
         event = { 'BufReadPre', 'BufNewFile' },
         init = function()
             local function on_attach(client, bufnr)
-                -- vim.bo[bufnr].omnifunc = 'v:lua.vim.lsp.omnifunc'
-                vim.bo[bufnr].omnifunc = 'v:lua.MiniCompletion.completefunc_lsp'
+                vim.bo[bufnr].omnifunc = 'v:lua.vim.lsp.omnifunc'
 
                 local function toggle_inlayhints()
                     local is_enabled = vim.lsp.inlay_hint.is_enabled({ bufnr = bufnr })
@@ -182,8 +181,8 @@ return {
                 return vim.tbl_deep_extend(
                     'force',
                     {},
-                    vim.lsp.protocol.make_client_capabilities()
-                    -- require('cmp_nvim_lsp').default_capabilities()
+                    vim.lsp.protocol.make_client_capabilities(),
+                    require('cmp_nvim_lsp').default_capabilities()
                 )
             end
 

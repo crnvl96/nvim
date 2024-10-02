@@ -1,5 +1,8 @@
 vim.keymap.set({ 'n', 'x', 'i' }, '<c-s>', '<esc><cmd>w<cr><esc>')
 vim.keymap.set({ 'n', 'x', 'i' }, '<esc>', '<esc><cmd>noh<cr><esc>')
+vim.keymap.set({ 'n', 'x', 'i' }, '<c-x>c', '<cmd>qa<cr>')
+vim.keymap.set('n', '-', '<cmd>Ex<CR>')
+vim.keymap.set('n', '<leader><space>', ':')
 
 vim.keymap.set({ 'n', 'x' }, 'j', [[v:count == 0 ? 'gj' : 'j']], { expr = true })
 vim.keymap.set({ 'n', 'x' }, 'k', [[v:count == 0 ? 'gk' : 'k']], { expr = true })
@@ -18,5 +21,3 @@ vim.keymap.set('n', '<c-l>', '<c-w>l')
 
 vim.keymap.set('x', '<', '<gv')
 vim.keymap.set('x', '>', '>gv')
-
-vim.keymap.set('n', '-', '<cmd>Ex<CR>')
