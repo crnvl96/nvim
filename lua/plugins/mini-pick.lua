@@ -14,6 +14,7 @@ return {
                     prompt_cursor = '_',
                     prompt_prefix = '',
                     config = {
+                        border = 'rounded',
                         height = math.floor(0.618 * vim.o.lines),
                         width = math.floor(0.850 * vim.o.columns),
                     },
