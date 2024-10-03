@@ -24,3 +24,15 @@ vim.keymap.set('n', '<c-l>', '<c-w>l')
 
 vim.keymap.set('x', '<', '<gv')
 vim.keymap.set('x', '>', '>gv')
+
+local function toggle_background()
+    local current_theme = vim.o.background
+
+    if current_theme == 'dark' then
+        vim.o.background = 'light'
+    else
+        vim.o.background = 'dark'
+    end
+end
+
+vim.keymap.set('n', '<leader>cb', toggle_background, { desc = 'Toggle background' })

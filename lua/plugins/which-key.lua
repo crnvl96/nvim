@@ -10,9 +10,9 @@ return {
             },
         },
         config = function(_, opts)
-            require('which-key').setup(opts)
-
-            require('which-key').add({
+            local wk = require('which-key')
+            wk.setup(opts)
+            wk.add({
                 { '<leader>c', group = 'Code' },
                 { '<leader>d', group = 'Debug' },
                 { '<leader>m', group = 'Search' },
