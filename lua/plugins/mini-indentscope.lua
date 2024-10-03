@@ -1,12 +1,12 @@
 return {
-    'echasnovski/mini.indentscope',
-    event = 'VeryLazy',
-    config = function()
-        require('mini.indentscope').setup({
+    {
+        'echasnovski/mini.indentscope',
+        event = 'VeryLazy',
+        opts = {
             options = {
                 try_as_border = true,
             },
             symbol = '╎',
-        })
-    end,
+        },
+    },
 }

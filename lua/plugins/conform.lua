@@ -1,22 +1,13 @@
 return {
-    'stevearc/conform.nvim',
-    event = 'BufWritePre',
-    config = function()
-        local conform = require('conform')
-
-        local function get_first_formatter(buf, ...)
-            for i = 1, select('#', ...) do
-                local formatter = select(i, ...)
-                if conform.get_formatter_info(formatter, buf).available then return formatter end
-            end
-
-            return select(1, ...)
-        end
-
-        conform.setup({
+    {
+        'stevearc/conform.nvim',
+        event = 'BufWritePre',
+        opts = {
             notify_on_error = false,
             formatters_by_ft = {
-                markdown = function(buf) return { get_first_formatter(buf, 'prettierd', 'prettier'), 'injected' } end,
+                markdown = function(buf)
+                    return { require('functions').get_first_formatter(buf, 'prettierd', 'prettier'), 'injected' }
+                end,
                 json = { 'prettierd', 'prettier', stop_after_first = true },
                 jsonc = { 'prettierd', 'prettier', stop_after_first = true },
                 json5 = { 'prettierd', 'prettier', stop_after_first = true },
@@ -38,6 +29,6 @@ return {
                 timeout_ms = 1000,
                 lsp_format = 'fallback',
             },
-        })
-    end,
+        },
+    },
 }

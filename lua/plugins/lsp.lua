@@ -1,9 +1,50 @@
 return {
-    { 'williamboman/mason-lspconfig.nvim' },
-    { 'williamboman/mason.nvim', build = ':MasonUpdate' },
     {
         'neovim/nvim-lspconfig',
         event = { 'BufReadPre', 'BufNewFile' },
+        dependencies = {
+            {
+                'williamboman/mason-lspconfig.nvim',
+                dependencies = {
+                    {
+                        'williamboman/mason.nvim',
+                        build = ':MasonUpdate',
+                        opts = {
+                            ensure_installed = {
+                                'stylua',
+                                'prettierd',
+                                'js-debug-adapter',
+                                'debugpy',
+                                'black',
+                            },
+                        },
+                        config = function(_, opts)
+                            require('mason').setup(opts)
+
+                            local mr = require('mason-registry')
+                            mr:on('package:install:success', function()
+                                vim.defer_fn(
+                                    function()
+                                        require('lazy.core.handler.event').trigger({
+                                            event = 'FileType',
+                                            buf = vim.api.nvim_get_current_buf(),
+                                        })
+                                    end,
+                                    100
+                                )
+                            end)
+
+                            mr.refresh(function()
+                                for _, tool in ipairs(opts.ensure_installed) do
+                                    local p = mr.get_package(tool)
+                                    if not p:is_installed() then p:install() end
+                                end
+                            end)
+                        end,
+                    },
+                },
+            },
+        },
         init = function()
             local function on_attach(client, bufnr)
                 vim.bo[bufnr].omnifunc = 'v:lua.vim.lsp.omnifunc'
@@ -63,36 +104,8 @@ return {
                 end,
             })
         end,
-        config = function()
-            require('mason').setup()
-
-            local mr = require('mason-registry')
-            mr:on('package:install:success', function()
-                vim.defer_fn(
-                    function()
-                        require('lazy.core.handler.event').trigger({
-                            event = 'FileType',
-                            buf = vim.api.nvim_get_current_buf(),
-                        })
-                    end,
-                    100
-                )
-            end)
-
-            mr.refresh(function()
-                for _, tool in ipairs({
-                    'stylua',
-                    'prettierd',
-                    'js-debug-adapter',
-                    'debugpy',
-                    'black',
-                }) do
-                    local p = mr.get_package(tool)
-                    if not p:is_installed() then p:install() end
-                end
-            end)
-
-            local servers = {
+        opts = {
+            servers = {
                 eslint = { settings = { format = false } },
                 basedpyright = {},
                 ruff = {
@@ -175,23 +188,23 @@ return {
                         },
                     },
                 },
-            }
-
-            local function capabilities()
+            },
+            capabilities = function()
                 return vim.tbl_deep_extend(
                     'force',
                     {},
                     vim.lsp.protocol.make_client_capabilities(),
                     require('cmp_nvim_lsp').default_capabilities()
                 )
-            end
-
+            end,
+        },
+        config = function(_, opts)
             require('mason-lspconfig').setup({
-                ensure_installed = vim.tbl_keys(servers),
+                ensure_installed = vim.tbl_keys(opts.servers),
                 handlers = {
                     function(server_name)
-                        local server = servers[server_name] or {}
-                        server.capabilities = capabilities()
+                        local server = opts.servers[server_name] or {}
+                        server.capabilities = opts.capabilities()
                         require('lspconfig')[server_name].setup(server)
                     end,
                 },

@@ -1,7 +1,14 @@
 return {
-    'echasnovski/mini.files',
-    config = function()
-        require('mini.files').setup({
+    {
+        'echasnovski/mini.files',
+        init = function()
+            vim.api.nvim_create_autocmd('User', {
+                group = vim.api.nvim_create_augroup(vim.g.whoami .. '/mini_files_setup', { clear = true }),
+                pattern = 'MiniFilesWindowOpen',
+                callback = function(args) vim.api.nvim_win_set_config(args.data.win_id, { border = 'rounded' }) end,
+            })
+        end,
+        opts = {
             mappings = {
                 close = 'q',
                 go_in = '',
@@ -24,15 +31,9 @@ return {
                 preview = true,
                 width_preview = 120,
             },
-        })
-
-        vim.api.nvim_create_autocmd('User', {
-            group = vim.api.nvim_create_augroup(vim.g.whoami .. '/mini_files_setup', { clear = true }),
-            pattern = 'MiniFilesWindowOpen',
-            callback = function(args) vim.api.nvim_win_set_config(args.data.win_id, { border = 'rounded' }) end,
-        })
-    end,
-    keys = {
-        { '-', '<cmd>lua MiniFiles.open(vim.api.nvim_buf_get_name(0))<CR>', desc = 'Explorer' },
+        },
+        keys = {
+            { '-', '<cmd>lua MiniFiles.open(vim.api.nvim_buf_get_name(0))<CR>', desc = 'Explorer' },
+        },
     },
 }

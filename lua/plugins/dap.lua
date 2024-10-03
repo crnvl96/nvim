@@ -1,45 +1,97 @@
 return {
-    { 'nvim-neotest/nvim-nio' },
-    { 'nvim-lua/plenary.nvim' },
-    { 'mfussenegger/nvim-dap-python' },
-    { 'rcarriga/nvim-dap-ui' },
     {
         'mfussenegger/nvim-dap',
-        config = function()
-            for name, sign in pairs({
-                Stopped = { ' ', 'DiagnosticWarn', 'DapStoppedLine' },
-                Breakpoint = { ' ', 'DiagnosticInfo', nil, nil },
-                BreakpointCondition = { ' ', 'DiagnosticInfo', nil, nil },
-                BreakpointRejected = { ' ', 'DiagnosticError', nil, nil },
-                LogPoint = { ' ', 'DiagnosticInfo', nil, nil },
-            }) do
-                vim.fn.sign_define(
-                    'Dap' .. name,
-                    { text = sign[1], texthl = sign[2], linehl = sign[3], numhl = sign[3] }
-                )
-            end
-
-            local dap = require('dap')
-            local dapui = require('dapui')
-
-            dapui.setup({ floating = { border = 'rounded' } })
-
-            dap.listeners.before.attach.dapui_config = dapui.open
-            dap.listeners.before.launch.dapui_config = dapui.open
-
-            require('dap.ext.vscode').json_decode = function(str)
-                return vim.json.decode(require('plenary.json').json_strip_comments(str))
-            end
-
-            if vim.fn.filereadable('.vscode/launch.json') then require('dap.ext.vscode').load_launchjs() end
-
-            vim.api.nvim_create_autocmd('FileType', {
-                group = vim.api.nvim_create_augroup(vim.g.whoami .. '/dap_python_setup', { clear = true }),
-                pattern = { 'python' },
-                callback = function()
-                    require('dap-python').setup(vim.fn.stdpath('data') .. '/mason/packages/debugpy/venv/bin/python')
+        dependencies = {
+            {
+                'rcarriga/nvim-dap-ui',
+                opts = {
+                    floating = {
+                        border = 'rounded',
+                    },
+                },
+                config = function(_, opts)
+                    local dap = require('dap')
+                    local dapui = require('dapui')
+                    dapui.setup(opts)
+                    dap.listeners.after.event_initialized['dapui_config'] = function() dapui.open({}) end
+                    dap.listeners.before.event_terminated['dapui_config'] = function() dapui.close({}) end
+                    dap.listeners.before.event_exited['dapui_config'] = function() dapui.close({}) end
                 end,
-            })
+                keys = {
+                    { '<leader>du', function() require('dapui').toggle({}) end, desc = 'Dap UI' },
+                    { '<leader>de', function() require('dapui').eval() end, desc = 'Eval', mode = { 'n', 'v' } },
+                },
+            },
+            {
+                'mfussenegger/nvim-dap-python',
+                opts = {
+                    path = vim.fn.stdpath('data') .. '/mason/packages/debugpy/venv/bin/python',
+                },
+                config = function(_, opts)
+                    local dap_py = require('dap-python')
+
+                    dap_py.setup(opts.path)
+                end,
+            },
+            {
+                'jbyuki/one-small-step-for-vimkind',
+                config = function()
+                    local dap = require('dap')
+                    dap.adapters.nlua = function(callback, conf)
+                        local adapter = {
+                            type = 'server',
+                            host = conf.host or '127.0.0.1',
+                            port = conf.port or 8086,
+                        }
+
+                        if conf.start_neovim then
+                            local dap_run = dap.run
+                            dap.run = function(c)
+                                adapter.port = c.port
+                                adapter.host = c.host
+                            end
+                            require('osv').run_this()
+                            dap.run = dap_run
+                        end
+
+                        callback(adapter)
+                    end
+
+                    dap.configurations.lua = {
+                        {
+                            type = 'nlua',
+                            request = 'attach',
+                            name = 'Run this file',
+                            start_neovim = {},
+                        },
+                        {
+                            type = 'nlua',
+                            request = 'attach',
+                            name = 'Attach to running Neovim instance (port = 8086)',
+                            port = 8086,
+                        },
+                    }
+                end,
+                keys = {
+                    {
+                        '<leader>dl',
+                        function() require('osv').launch({ port = 8086 }) end,
+                        desc = 'Dap UI',
+                        ft = 'lua',
+                    },
+                },
+            },
+        },
+        config = function()
+            local dap = require('dap')
+
+            -- setup dap config by VsCode launch.json file
+            local vscode = require('dap.ext.vscode')
+            local json = require('plenary.json')
+            vscode.json_decode = function(str) return vim.json.decode(json.json_strip_comments(str)) end
+
+            -- Extends dap.configurations with entries read from .vscode/launch.json
+            if vim.fn.filereadable('.vscode/launch.json') then vscode.load_launchjs() end
 
             local javascript_filetypes = {
                 'typescript',
@@ -109,8 +161,6 @@ return {
             { '<Leader>db', function() require('dap').toggle_breakpoint() end, desc = 'Breakpoint' },
             { '<Leader>dc', function() require('dap').continue() end, desc = 'Continue' },
             { '<Leader>dt', function() require('dap').terminate() end, desc = 'Terminate' },
-            { '<Leader>du', function() require('dapui').toggle() end, desc = 'Interface' },
-            { '<leader>de', function() require('dapui').eval(nil, { enter = true }) end, desc = 'Widgets' },
         },
     },
 }

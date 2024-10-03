@@ -1,11 +1,11 @@
 return {
-    'echasnovski/mini.animate',
-    event = 'VeryLazy',
-    config = function()
-        require('mini.animate').setup({
+    {
+        'echasnovski/mini.animate',
+        event = 'VeryLazy',
+        opts = {
             scroll = {
                 enable = false,
             },
-        })
-    end,
+        },
+    },
 }
