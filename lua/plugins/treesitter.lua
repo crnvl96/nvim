@@ -1,10 +1,14 @@
 return {
-    'nvim-treesitter/nvim-treesitter',
-    event = { 'BufReadPre', 'BufNewFile' },
-    build = ':TSUpdate',
-    lazy = vim.fn.argc(-1) == 0,
-    config = function()
-        require('nvim-treesitter.configs').setup({
+    {
+        'nvim-treesitter/nvim-treesitter',
+        event = { 'BufReadPre', 'BufNewFile' },
+        build = ':TSUpdate',
+        lazy = vim.fn.argc(-1) == 0,
+        init = function(plugin)
+            require('lazy.core.loader').add_to_rtp(plugin)
+            require('nvim-treesitter.query_predicates')
+        end,
+        opts = {
             ensure_installed = {
                 'c',
                 'vim',
@@ -29,6 +33,7 @@ return {
             },
             indent = { enable = true },
             incremental_selection = { enable = false },
-        })
-    end,
+        },
+        config = function(_, opts) require('nvim-treesitter.configs').setup(opts) end,
+    },
 }

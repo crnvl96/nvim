@@ -1,27 +1,29 @@
 return {
-    { 'echasnovski/mini.extra' },
     {
         'echasnovski/mini.pick',
         cmd = 'Pick',
-        lazy = false,
-        config = function()
-            require('mini.extra').setup()
-            require('mini.pick').setup({
-                options = {
-                    use_cache = true,
+        dependencies = {
+            { 'echasnovski/mini.extra', opts = {} },
+        },
+        opts = {
+            options = {
+                use_cache = true,
+            },
+            window = {
+                prompt_cursor = '_',
+                prompt_prefix = '',
+                config = {
+                    border = 'rounded',
+                    height = math.floor(0.618 * vim.o.lines),
+                    width = math.floor(0.850 * vim.o.columns),
                 },
-                window = {
-                    prompt_cursor = '_',
-                    prompt_prefix = '',
-                    config = {
-                        border = 'rounded',
-                        height = math.floor(0.618 * vim.o.lines),
-                        width = math.floor(0.850 * vim.o.columns),
-                    },
-                },
-            })
+            },
+        },
+        config = function(_, opts)
+            local pick = require('mini.pick')
 
-            vim.ui.select = require('mini.pick').ui_select
+            pick.setup(opts)
+            vim.ui.select = pick.ui_select
         end,
         keys = {
             { '<leader>ff', '<cmd>Pick files<CR>', desc = 'Pick files' },

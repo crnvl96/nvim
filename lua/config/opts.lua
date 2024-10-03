@@ -108,13 +108,3 @@ vim.diagnostic.config({
     },
     signs = false,
 })
-
-for name, sign in pairs({
-    Stopped = { ' ', 'DiagnosticWarn', 'DapStoppedLine' },
-    Breakpoint = { ' ', 'DiagnosticInfo', nil, nil },
-    BreakpointCondition = { ' ', 'DiagnosticInfo', nil, nil },
-    BreakpointRejected = { ' ', 'DiagnosticError', nil, nil },
-    LogPoint = { ' ', 'DiagnosticInfo', nil, nil },
-}) do
-    vim.fn.sign_define('Dap' .. name, { text = sign[1], texthl = sign[2], linehl = sign[3], numhl = sign[3] })
-end

@@ -27,11 +27,7 @@ return {
                 opts = {
                     path = vim.fn.stdpath('data') .. '/mason/packages/debugpy/venv/bin/python',
                 },
-                config = function(_, opts)
-                    local dap_py = require('dap-python')
-
-                    dap_py.setup(opts.path)
-                end,
+                config = function(_, opts) require('dap-python').setup(opts.path) end,
             },
             {
                 'jbyuki/one-small-step-for-vimkind',
@@ -76,12 +72,26 @@ return {
                     {
                         '<leader>dl',
                         function() require('osv').launch({ port = 8086 }) end,
-                        desc = 'Dap UI',
+                        desc = 'Launch nlua (8086)',
                         ft = 'lua',
                     },
                 },
             },
         },
+        init = function()
+            for name, sign in pairs({
+                Stopped = { ' ', 'DiagnosticWarn', 'DapStoppedLine' },
+                Breakpoint = { ' ', 'DiagnosticInfo', nil, nil },
+                BreakpointCondition = { ' ', 'DiagnosticInfo', nil, nil },
+                BreakpointRejected = { ' ', 'DiagnosticError', nil, nil },
+                LogPoint = { ' ', 'DiagnosticInfo', nil, nil },
+            }) do
+                vim.fn.sign_define(
+                    'Dap' .. name,
+                    { text = sign[1], texthl = sign[2], linehl = sign[3], numhl = sign[3] }
+                )
+            end
+        end,
         config = function()
             local dap = require('dap')
 

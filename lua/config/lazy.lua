@@ -24,6 +24,11 @@ require('lazy').setup({
     spec = {
         { import = 'plugins' },
     },
+    dev = {
+        path = '~/Developer/personal/plugins_dev',
+        patterns = { 'crnvl96' },
+        fallback = false,
+    },
     defaults = { lazy = true, version = false },
     checker = { enabled = false },
     change_detection = { enabled = false },

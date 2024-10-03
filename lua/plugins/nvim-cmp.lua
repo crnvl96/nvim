@@ -1,17 +1,17 @@
 return {
-    { 'hrsh7th/cmp-nvim-lsp' },
     {
         'hrsh7th/nvim-cmp',
-        event = 'InsertEnter',
+        event = { 'InsertEnter' },
         dependencies = {
-            'hrsh7th/cmp-path',
-            'hrsh7th/cmp-buffer',
-            'hrsh7th/cmp-nvim-lua',
+            { 'hrsh7th/cmp-path' },
+            { 'hrsh7th/cmp-buffer' },
+            { 'hrsh7th/cmp-nvim-lua' },
+            { 'hrsh7th/cmp-nvim-lsp' },
         },
-        config = function()
+        opts = function()
             local cmp = require('cmp')
 
-            cmp.setup({
+            return {
                 snippet = { expand = function(args) vim.snippet.expand(args.body) end },
                 window = {
                     completion = cmp.config.window.bordered(),
@@ -32,7 +32,11 @@ return {
                     { name = 'path' },
                     { name = 'buffer' },
                 }),
-            })
+            }
+        end,
+        config = function(_, opts)
+            local cmp = require('cmp')
+            cmp.setup(opts)
         end,
     },
 }
