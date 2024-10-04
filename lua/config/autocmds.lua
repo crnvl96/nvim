@@ -67,23 +67,8 @@ vim.api.nvim_create_autocmd('FileType', {
     end,
 })
 
-local line_numbers_group = vim.api.nvim_create_augroup(vim.g.whoami .. '/toggle_line_numbers', { clear = true })
-
-vim.api.nvim_create_autocmd({ 'BufEnter', 'FocusGained', 'InsertLeave', 'CmdlineLeave', 'WinEnter' }, {
-    desc = 'Toggle relative line numbers on',
-    group = line_numbers_group,
-    callback = function()
-        if vim.wo.nu and not vim.startswith(vim.api.nvim_get_mode().mode, 'i') then vim.wo.relativenumber = true end
-    end,
-})
-
-vim.api.nvim_create_autocmd({ 'BufLeave', 'FocusLost', 'InsertEnter', 'CmdlineEnter', 'WinLeave' }, {
-    desc = 'Toggle relative line numbers off',
-    group = line_numbers_group,
-    callback = function(args)
-        if vim.wo.nu then vim.wo.relativenumber = false end
-
-        -- Redraw here to avoid having to first write something for the line numbers to update.
-        if args.event == 'CmdlineEnter' then vim.cmd.redraw() end
-    end,
+vim.api.nvim_create_autocmd('User', {
+    group = vim.api.nvim_create_augroup(vim.g.whoami .. '/mini_files_setup', { clear = true }),
+    pattern = 'MiniFilesWindowOpen',
+    callback = function(args) vim.api.nvim_win_set_config(args.data.win_id, { border = 'rounded' }) end,
 })

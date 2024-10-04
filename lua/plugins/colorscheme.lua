@@ -4,7 +4,6 @@ return {
     lazy = false,
     priority = 1000,
     opts = {
-        dark_variant = 'moon',
         styles = {
             bold = true,
             italic = false,
