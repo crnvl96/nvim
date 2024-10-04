@@ -5,13 +5,12 @@ return {
             {
                 'rcarriga/nvim-dap-ui',
                 opts = {
-                    floating = {
-                        border = 'rounded',
-                    },
+                    floating = { border = 'rounded' },
                 },
                 config = function(_, opts)
                     local dap = require('dap')
                     local dapui = require('dapui')
+
                     dapui.setup(opts)
                     dap.listeners.after.event_initialized['dapui_config'] = function() dapui.open({}) end
                     dap.listeners.before.event_terminated['dapui_config'] = function() dapui.close({}) end
@@ -24,9 +23,7 @@ return {
             },
             {
                 'mfussenegger/nvim-dap-python',
-                opts = {
-                    path = vim.fn.stdpath('data') .. '/mason/packages/debugpy/venv/bin/python',
-                },
+                opts = { path = vim.fn.stdpath('data') .. '/mason/packages/debugpy/venv/bin/python' },
                 config = function(_, opts) require('dap-python').setup(opts.path) end,
             },
             {
@@ -78,7 +75,7 @@ return {
                 },
             },
         },
-        init = function()
+        config = function()
             for name, sign in pairs({
                 Stopped = { ' ', 'DiagnosticWarn', 'DapStoppedLine' },
                 Breakpoint = { ' ', 'DiagnosticInfo', nil, nil },
@@ -91,8 +88,7 @@ return {
                     { text = sign[1], texthl = sign[2], linehl = sign[3], numhl = sign[3] }
                 )
             end
-        end,
-        config = function()
+
             local dap = require('dap')
 
             -- setup dap config by VsCode launch.json file

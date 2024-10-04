@@ -84,27 +84,3 @@ vim.opt.wildignore:append('*/node_modules/*,*/dist/*')
 if vim.fn.executable('rg') ~= 0 then vim.o.grepprg = 'rg --vimgrep' end
 
 vim.cmd('packadd cfilter')
-
-vim.diagnostic.config({
-    virtual_text = {
-        prefix = '',
-        spacing = 2,
-        format = function(diagnostic)
-            return string.format(
-                '%s %s[%s] ',
-                vim.g.diagnostic_icons[vim.diagnostic.severity[diagnostic.severity]],
-                diagnostic.source,
-                diagnostic.code
-            )
-        end,
-    },
-    float = {
-        border = 'rounded',
-        source = 'if_many',
-        prefix = function(diag)
-            local level = vim.diagnostic.severity[diag.severity]
-            return string.format(' %s ', vim.g.diagnostic_icons[level]), 'Diagnostic' .. level:gsub('^%l', string.upper)
-        end,
-    },
-    signs = false,
-})

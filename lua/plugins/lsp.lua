@@ -53,7 +53,6 @@ return {
                     local is_enabled = vim.lsp.inlay_hint.is_enabled({ bufnr = bufnr })
                     vim.lsp.inlay_hint.enable(not is_enabled, { bufnr = bufnr })
                 end
-
                 local definitions = vim.lsp.protocol.Methods.textDocument_definition
                 local references = vim.lsp.protocol.Methods.textDocument_references
                 local implementations = vim.lsp.protocol.Methods.textDocument_implementation
@@ -191,6 +190,31 @@ return {
             end,
         },
         config = function(_, opts)
+            vim.diagnostic.config({
+                virtual_text = {
+                    prefix = '',
+                    spacing = 2,
+                    format = function(diagnostic)
+                        return string.format(
+                            '%s %s[%s] ',
+                            vim.g.diagnostic_icons[vim.diagnostic.severity[diagnostic.severity]],
+                            diagnostic.source,
+                            diagnostic.code
+                        )
+                    end,
+                },
+                float = {
+                    border = 'rounded',
+                    source = 'if_many',
+                    prefix = function(diag)
+                        local level = vim.diagnostic.severity[diag.severity]
+                        return string.format(' %s ', vim.g.diagnostic_icons[level]),
+                            'Diagnostic' .. level:gsub('^%l', string.upper)
+                    end,
+                },
+                signs = false,
+            })
+
             require('mason-lspconfig').setup({
                 ensure_installed = vim.tbl_keys(opts.servers),
                 handlers = {

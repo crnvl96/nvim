@@ -4,6 +4,14 @@ return {
         cmd = 'Pick',
         dependencies = {
             { 'echasnovski/mini.extra', opts = {} },
+            {
+                'echasnovski/mini.visits',
+                opts = {},
+                keys = {
+                    { '<leader>va', '<cmd>lua MiniVisits.add_label()<CR>', desc = 'Add label' },
+                    { '<leader>vd', '<cmd>lua MiniVisits.remove_label()<CR>', desc = 'Remove label' },
+                },
+            },
         },
         opts = {
             options = {
@@ -27,6 +35,8 @@ return {
         keys = {
             { '<leader>ff', '<cmd>Pick files<CR>', desc = 'Pick files' },
             { '<leader>fl', '<cmd>Pick buf_lines<CR>', desc = 'Pick buflines' },
+            { '<leader>fv', '<cmd>Pick visit_paths<CR>', desc = 'Pick visit paths' },
+            { '<leader>fm', '<cmd>Pick visit_labels<CR>', desc = 'Pick labels' },
             { '<leader>fg', '<cmd>Pick grep_live<CR>', desc = 'Pick grep' },
             { '<leader>fd', '<cmd>Pick diagnostic<CR>', desc = 'Pick diagnostic' },
             { '<leader>fs', "<cmd>Pick lsp scope='document_symbol'<CR>", desc = 'Pick symbols' },
@@ -34,9 +44,6 @@ return {
             { '<leader>fh', '<cmd>Pick help<CR>', desc = 'Pick help' },
             { '<leader>fr', '<cmd>Pick resume<CR>', desc = 'Pick resume' },
             { '<leader>fb', '<cmd>Pick buffers<CR>', desc = 'Pick buffers' },
-            { '<leader>gb', '<cmd>Pick git_branches<CR>', desc = 'Pick branches' },
-            { '<leader>gl', '<cmd>Pick git_commits<CR>', desc = 'Pick commits' },
-            { '<leader>gh', '<cmd>Pick git_hunks<CR>', desc = 'Pick hunks' },
         },
     },
 }

@@ -11,6 +11,7 @@
   "mini.files": { "branch": "main", "commit": "1b5ada9d3a0df36cfbf7f50a314646c0673b8c87" },
   "mini.icons": { "branch": "main", "commit": "a2742459f0ee32806c2438ca06b4d8b331f3f4d4" },
   "mini.pick": { "branch": "main", "commit": "6d66ae9eb0b75261f1842788dda611285b6f065f" },
+  "mini.visits": { "branch": "main", "commit": "ef2f388158f3651e4b45faac2897d1bacbb0c398" },
   "nvim-cmp": { "branch": "main", "commit": "ae644feb7b67bf1ce4260c231d1d4300b19c6f30" },
   "nvim-dap": { "branch": "master", "commit": "7ff6936010b7222fea2caea0f67ed77f1b7c60dd" },
   "nvim-dap-python": { "branch": "master", "commit": "db72bf6ab9f75fe841e8e11e772ee7fef6f484f1" },
@@ -21,6 +22,7 @@
   "one-small-step-for-vimkind": { "branch": "main", "commit": "0f0d5bc67786c36edc2cb6fb5faa5c09dd1a6e10" },
   "plenary.nvim": { "branch": "master", "commit": "2d9b06177a975543726ce5c73fca176cedbffe9d" },
   "rose-pine": { "branch": "main", "commit": "8b1fd252255a7f2c41b4192a787ab62660b29f72" },
+  "vessel.nvim": { "branch": "main", "commit": "778c1f31efdbcaf662d9256ee9dba015143818fc" },
   "vim-fugitive": { "branch": "master", "commit": "d4877e54cef67f5af4f950935b1ade19ed6b7370" },
   "which-key.nvim": { "branch": "main", "commit": "8badb359f7ab8711e2575ef75dfe6fbbd87e4821" }
 }

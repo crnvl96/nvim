@@ -21,6 +21,7 @@ return {
                 { '<leader>h', group = 'Git hunks' },
                 { '<leader>t', group = 'Toggle' },
                 { '<leader>x', group = 'Quickfix' },
+                { '<leader>v', group = 'Visits' },
             })
         end,
     },
