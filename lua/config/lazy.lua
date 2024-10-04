@@ -26,7 +26,7 @@ require('lazy').setup({
         { import = 'plugins' },
     },
     dev = {
-        path = '~/Developer/personal/plugins_dev',
+        path = '~/Developer/personal/nvim_plugins_dev',
         patterns = { 'crnvl96' },
         fallback = false,
     },
