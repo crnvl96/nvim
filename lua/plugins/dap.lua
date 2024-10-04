@@ -119,13 +119,22 @@ return {
             end
         end
     end,
-        -- stylua: ignore
-        keys = {
-            { '<Leader>db', function() require('dap').toggle_breakpoint() end, desc = 'Set breakpoint' },
-            { '<Leader>dc', function() require('dap').continue() end, desc = 'Dap continue' },
-            { '<Leader>dt', function() require('dap').terminate() end, desc = 'Dap terminate session' },
-            { '<Leader>du', function() require('dapui').toggle() end, desc = 'Dap UI' },
-            { '<Leader>dl', function() require('osv').launch({ port = 8086 }) end, desc = 'Launch nlua (8086)', ft = 'lua' },
-            { '<Leader>de', function() require('dapui').eval(nil, { enter = true }) end, desc = 'Dap Eval', mode = { 'n', 'v' } },
+    keys = {
+        { '<Leader>db', function() require('dap').toggle_breakpoint() end, desc = 'Set breakpoint' },
+        { '<Leader>dc', function() require('dap').continue() end, desc = 'Dap continue' },
+        { '<Leader>dt', function() require('dap').terminate() end, desc = 'Dap terminate session' },
+        { '<Leader>du', function() require('dapui').toggle() end, desc = 'Dap UI' },
+        {
+            '<Leader>dl',
+            function() require('osv').launch({ port = 8086 }) end,
+            desc = 'Launch nlua (8086)',
+            ft = 'lua',
         },
+        {
+            '<Leader>de',
+            function() require('dapui').eval(nil, { enter = true }) end,
+            desc = 'Dap Eval',
+            mode = { 'n', 'v' },
+        },
+    },
 }
