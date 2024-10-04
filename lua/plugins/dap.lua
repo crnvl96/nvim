@@ -12,13 +12,18 @@ return {
                     local dapui = require('dapui')
 
                     dapui.setup(opts)
-                    dap.listeners.after.event_initialized['dapui_config'] = function() dapui.open({}) end
-                    dap.listeners.before.event_terminated['dapui_config'] = function() dapui.close({}) end
-                    dap.listeners.before.event_exited['dapui_config'] = function() dapui.close({}) end
+                    dap.listeners.after.event_initialized['dapui_config'] = function() dapui.open() end
+                    dap.listeners.before.event_terminated['dapui_config'] = function() dapui.close() end
+                    dap.listeners.before.event_exited['dapui_config'] = function() dapui.close() end
                 end,
                 keys = {
-                    { '<leader>du', function() require('dapui').toggle({}) end, desc = 'Dap UI' },
-                    { '<leader>de', function() require('dapui').eval() end, desc = 'Eval', mode = { 'n', 'v' } },
+                    { '<leader>du', function() require('dapui').toggle() end, desc = 'Dap UI' },
+                    {
+                        '<leader>de',
+                        function() require('dapui').eval(nil, { enter = true }) end,
+                        desc = 'Eval',
+                        mode = { 'n', 'v' },
+                    },
                 },
             },
             {
@@ -30,6 +35,7 @@ return {
                 'jbyuki/one-small-step-for-vimkind',
                 config = function()
                     local dap = require('dap')
+
                     dap.adapters.nlua = function(callback, conf)
                         local adapter = {
                             type = 'server',
