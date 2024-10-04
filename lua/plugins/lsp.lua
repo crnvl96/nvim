@@ -3,47 +3,8 @@ return {
         'neovim/nvim-lspconfig',
         event = { 'BufReadPre', 'BufNewFile' },
         dependencies = {
-            {
-                'williamboman/mason-lspconfig.nvim',
-                dependencies = {
-                    {
-                        'williamboman/mason.nvim',
-                        build = ':MasonUpdate',
-                        opts = {
-                            ensure_installed = {
-                                'stylua',
-                                'prettierd',
-                                'js-debug-adapter',
-                                'debugpy',
-                                'black',
-                            },
-                        },
-                        config = function(_, opts)
-                            require('mason').setup(opts)
-
-                            local mr = require('mason-registry')
-                            mr:on('package:install:success', function()
-                                vim.defer_fn(
-                                    function()
-                                        require('lazy.core.handler.event').trigger({
-                                            event = 'FileType',
-                                            buf = vim.api.nvim_get_current_buf(),
-                                        })
-                                    end,
-                                    100
-                                )
-                            end)
-
-                            mr.refresh(function()
-                                for _, tool in ipairs(opts.ensure_installed) do
-                                    local p = mr.get_package(tool)
-                                    if not p:is_installed() then p:install() end
-                                end
-                            end)
-                        end,
-                    },
-                },
-            },
+            { 'williamboman/mason-lspconfig.nvim' },
+            { 'williamboman/mason.nvim', build = ':MasonUpdate' },
         },
         init = function()
             local function on_attach(client, bufnr)
@@ -155,6 +116,13 @@ return {
             })
         end,
         opts = {
+            ensure_installed = {
+                'stylua',
+                'prettierd',
+                'js-debug-adapter',
+                'debugpy',
+                'black',
+            },
             servers = {
                 eslint = { settings = { format = false } },
                 basedpyright = {},
@@ -274,13 +242,39 @@ return {
                 signs = false,
             })
 
-            require('mason-lspconfig').setup({
+            local mason = require('mason')
+            local mr = require('mason-registry')
+
+            mason.setup()
+            mr:on('package:install:success', function()
+                vim.defer_fn(
+                    function()
+                        require('lazy.core.handler.event').trigger({
+                            event = 'FileType',
+                            buf = vim.api.nvim_get_current_buf(),
+                        })
+                    end,
+                    100
+                )
+            end)
+
+            mr.refresh(function()
+                for _, tool in ipairs(opts.ensure_installed) do
+                    local p = mr.get_package(tool)
+                    if not p:is_installed() then p:install() end
+                end
+            end)
+
+            local mason_lspconfig = require('mason-lspconfig')
+            local lspconfig = require('lspconfig')
+
+            mason_lspconfig.setup({
                 ensure_installed = vim.tbl_keys(opts.servers),
                 handlers = {
                     function(server_name)
                         local server = opts.servers[server_name] or {}
                         server.capabilities = opts.capabilities()
-                        require('lspconfig')[server_name].setup(server)
+                        lspconfig[server_name].setup(server)
                     end,
                 },
             })

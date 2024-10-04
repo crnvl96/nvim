@@ -4,14 +4,7 @@ return {
         cmd = 'Pick',
         dependencies = {
             { 'echasnovski/mini.extra', opts = {} },
-            {
-                'echasnovski/mini.visits',
-                opts = {},
-                keys = {
-                    { '<leader>va', '<cmd>lua MiniVisits.add_label()<CR>', desc = 'Add label' },
-                    { '<leader>vd', '<cmd>lua MiniVisits.remove_label()<CR>', desc = 'Remove label' },
-                },
-            },
+            { 'echasnovski/mini.visits', opts = {} },
         },
         opts = {
             options = {

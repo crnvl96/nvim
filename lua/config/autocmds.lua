@@ -33,7 +33,7 @@ vim.api.nvim_create_autocmd('FileType', {
     desc = 'Close some general filetypes with Q',
     group = vim.api.nvim_create_augroup(vim.g.whoami .. '/close_with_q', { clear = true }),
     pattern = { 'qf', 'git', 'gitcommit', 'gitrebase', 'help' },
-    callback = function(e) vim.keymap.set('n', 'q', '<cmd>quit<CR>', { buffer = e.buf }) end,
+    callback = function(e) vim.keymap.set('n', 'q', '<Cmd>quit<CR>', { buffer = e.buf }) end,
 })
 
 vim.api.nvim_create_autocmd('BufEnter', {
