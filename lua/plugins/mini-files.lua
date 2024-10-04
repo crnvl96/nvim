@@ -33,7 +33,7 @@ return {
             },
         },
         keys = {
-            { '-', '<cmd>lua MiniFiles.open(vim.api.nvim_buf_get_name(0))<CR>', desc = 'Explorer' },
+            { '-', '<cmd>lua MiniFiles.open(vim.api.nvim_buf_get_name(0))<CR>', desc = 'Explorer (Mini.files)' },
         },
     },
 }

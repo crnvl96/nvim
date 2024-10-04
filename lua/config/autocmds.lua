@@ -1,9 +1,11 @@
 vim.api.nvim_create_autocmd('TextYankPost', {
+    desc = 'Briefly highlight yanked lines',
     group = vim.api.nvim_create_augroup(vim.g.whoami .. '/highlight_on_yank', { clear = true }),
     callback = function() vim.highlight.on_yank({ priority = 250 }) end,
 })
 
 vim.api.nvim_create_autocmd('BufReadPre', {
+    desc = 'Go to last location, if possible, when opening a buffer',
     group = vim.api.nvim_create_augroup(vim.g.whoami .. '/goto_last_location', { clear = true }),
     callback = function(e)
         vim.api.nvim_create_autocmd('FileType', {
@@ -28,12 +30,14 @@ vim.api.nvim_create_autocmd('BufReadPre', {
 })
 
 vim.api.nvim_create_autocmd('FileType', {
+    desc = 'Close some general filetypes with Q',
     group = vim.api.nvim_create_augroup(vim.g.whoami .. '/close_with_q', { clear = true }),
     pattern = { 'qf', 'git', 'gitcommit', 'gitrebase', 'help' },
     callback = function(e) vim.keymap.set('n', 'q', '<cmd>quit<CR>', { buffer = e.buf }) end,
 })
 
 vim.api.nvim_create_autocmd('BufEnter', {
+    desc = 'Fix some general highlight groups',
     group = vim.api.nvim_create_augroup(vim.g.whoami .. '/fix_colorscheme', { clear = true }),
     callback = function()
         vim.api.nvim_set_hl(0, 'NormalFloat', { link = 'Normal' })
@@ -44,8 +48,8 @@ vim.api.nvim_create_autocmd('BufEnter', {
 })
 
 vim.api.nvim_create_autocmd('FileType', {
-    group = vim.api.nvim_create_augroup(vim.g.whoami .. '/treesitter_folding', { clear = true }),
     desc = 'Enable Treesitter folding',
+    group = vim.api.nvim_create_augroup(vim.g.whoami .. '/treesitter_folding', { clear = true }),
     callback = function(e)
         local ok, stats = pcall(vim.uv.fs_stat, vim.api.nvim_buf_get_name(e.buf))
         if not ok or not stats or stats.size > (250 * 1024) then
@@ -66,16 +70,16 @@ vim.api.nvim_create_autocmd('FileType', {
 local line_numbers_group = vim.api.nvim_create_augroup(vim.g.whoami .. '/toggle_line_numbers', { clear = true })
 
 vim.api.nvim_create_autocmd({ 'BufEnter', 'FocusGained', 'InsertLeave', 'CmdlineLeave', 'WinEnter' }, {
-    group = line_numbers_group,
     desc = 'Toggle relative line numbers on',
+    group = line_numbers_group,
     callback = function()
         if vim.wo.nu and not vim.startswith(vim.api.nvim_get_mode().mode, 'i') then vim.wo.relativenumber = true end
     end,
 })
 
 vim.api.nvim_create_autocmd({ 'BufLeave', 'FocusLost', 'InsertEnter', 'CmdlineEnter', 'WinLeave' }, {
-    group = line_numbers_group,
     desc = 'Toggle relative line numbers off',
+    group = line_numbers_group,
     callback = function(args)
         if vim.wo.nu then vim.wo.relativenumber = false end
 

@@ -49,33 +49,92 @@ return {
             local function on_attach(client, bufnr)
                 vim.bo[bufnr].omnifunc = 'v:lua.vim.lsp.omnifunc'
 
-                local function toggle_inlayhints()
-                    local is_enabled = vim.lsp.inlay_hint.is_enabled({ bufnr = bufnr })
-                    vim.lsp.inlay_hint.enable(not is_enabled, { bufnr = bufnr })
+                if client.supports_method(vim.lsp.protocol.Methods.textDocument_definition) then
+                    vim.keymap.set(
+                        'n',
+                        'gd',
+                        "<cmd>Pick lsp scope='definition'<CR>",
+                        { desc = 'Lsp: go to definitions', buffer = bufnr }
+                    )
                 end
-                local definitions = vim.lsp.protocol.Methods.textDocument_definition
-                local references = vim.lsp.protocol.Methods.textDocument_references
-                local implementations = vim.lsp.protocol.Methods.textDocument_implementation
-                local typeDefinition = vim.lsp.protocol.Methods.textDocument_typeDefinition
 
-                local codeAction = vim.lsp.protocol.Methods.textDocument_codeAction
-                local renameSymbol = vim.lsp.protocol.Methods.textDocument_rename
-                local inlayHint = vim.lsp.protocol.Methods.textDocument_inlayHint
+                if client.supports_method(vim.lsp.protocol.Methods.textDocument_references) then
+                    vim.keymap.set(
+                        'n',
+                        'gr',
+                        "<cmd>Pick lsp scope='references'<CR>",
+                        { desc = 'Lsp: go to references', buffer = bufnr }
+                    )
+                end
 
-                local maps = {
-                    { definitions, 'gd', "<cmd>Pick lsp scope='definition'<CR>", 'Definitions' },
-                    { references, 'gr', "<cmd>Pick lsp scope='references'<CR>", 'References' },
-                    { implementations, 'gi', "<cmd>Pick lsp scope='implementation'<CR>", 'Implementations' },
-                    { typeDefinition, 'gy', "<cmd>Pick lsp scope='type_definition'<CR>", 'Type Definitions' },
-                    { codeAction, 'ga', vim.lsp.buf.code_action, 'Code Actions' },
-                    { renameSymbol, 'gn', vim.lsp.buf.rename, 'Rename Symbol' },
-                    { inlayHint, '<leader>ci', toggle_inlayhints, 'Toggle Inlay Hints' },
-                }
+                if client.supports_method(vim.lsp.protocol.Methods.textDocument_implementation) then
+                    vim.keymap.set(
+                        'n',
+                        'gi',
+                        "<cmd>Pick lsp scope='implementation'<CR>",
+                        { desc = 'Lsp: go to implementations', buffer = bufnr }
+                    )
+                end
 
-                for _, map in ipairs(maps) do
-                    if client.supports_method(map[1]) then
-                        vim.keymap.set('n', map[2], map[3], { desc = map[4], buffer = bufnr })
-                    end
+                if client.supports_method(vim.lsp.protocol.Methods.textDocument_typeDefinition) then
+                    vim.keymap.set(
+                        'n',
+                        'gy',
+                        "<cmd>Pick lsp scope='type_definition'<CR>",
+                        { desc = 'Lsp: go to type definition', buffer = bufnr }
+                    )
+                end
+
+                if client.supports_method(vim.lsp.protocol.Methods.textDocument_codeAction) then
+                    vim.keymap.set(
+                        'n',
+                        'ga',
+                        function() vim.lsp.buf.code_action() end,
+                        { desc = 'Lsp: code actions', buffer = bufnr }
+                    )
+                end
+
+                if client.supports_method(vim.lsp.protocol.Methods.textDocument_rename) then
+                    vim.keymap.set(
+                        'n',
+                        'gn',
+                        function() vim.lsp.buf.rename() end,
+                        { desc = 'Lsp: rename symbol under cursor', buffer = bufnr }
+                    )
+                end
+
+                if client.supports_method(vim.lsp.protocol.Methods.workspace_diagnostic) then
+                    vim.keymap.set(
+                        'n',
+                        '<leader>fd',
+                        '<cmd>Pick diagnostic<CR>',
+                        { desc = 'Lsp: Pick diagnostics', buffer = bufnr }
+                    )
+                end
+
+                if client.supports_method(vim.lsp.protocol.Methods.document_symbol) then
+                    vim.keymap.set(
+                        'n',
+                        '<leader>fs',
+                        "<cmd>Pick lsp scope='document_symbol'<CR>",
+                        { desc = 'Lsp: Pick document symbols', buffer = bufnr }
+                    )
+                end
+
+                if client.supports_method(vim.lsp.protocol.Methods.workspace_symbol) then
+                    vim.keymap.set(
+                        'n',
+                        '<leader>fS',
+                        "<cmd>Pick lsp scope='workspace_symbol'<CR>",
+                        { desc = 'Lsp: Pick workspace symbols', buffer = bufnr }
+                    )
+                end
+
+                if client.supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
+                    vim.keymap.set('n', '<leader>ci', function()
+                        local is_enabled = vim.lsp.inlay_hint.is_enabled({ bufnr = bufnr })
+                        vim.lsp.inlay_hint.enable(not is_enabled, { bufnr = bufnr })
+                    end, { desc = 'Lsp: toggle inlay hints', buffer = bufnr })
                 end
             end
 

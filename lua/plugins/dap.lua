@@ -21,7 +21,7 @@ return {
                     {
                         '<leader>de',
                         function() require('dapui').eval(nil, { enter = true }) end,
-                        desc = 'Eval',
+                        desc = 'Dap Eval',
                         mode = { 'n', 'v' },
                     },
                 },
@@ -170,9 +170,9 @@ return {
             end
         end,
         keys = {
-            { '<Leader>db', function() require('dap').toggle_breakpoint() end, desc = 'Breakpoint' },
-            { '<Leader>dc', function() require('dap').continue() end, desc = 'Continue' },
-            { '<Leader>dt', function() require('dap').terminate() end, desc = 'Terminate' },
+            { '<Leader>db', function() require('dap').toggle_breakpoint() end, desc = 'Set breakpoint' },
+            { '<Leader>dc', function() require('dap').continue() end, desc = 'Dap continue' },
+            { '<Leader>dt', function() require('dap').terminate() end, desc = 'Dap terminate session' },
         },
     },
 }
