@@ -24,12 +24,8 @@ return {
                     vim.keymap.del('n', 'grn')
                     vim.keymap.del('n', 'grr')
 
-                    set(
-                        'n',
-                        'gr',
-                        "<cmd>Pick lsp scope='references'<CR>",
-                        { desc = 'Lsp: go to references', buffer = bufnr }
-                    )
+                    local cmd = "<cmd>Pick lsp scope='references'<CR>"
+                    set('n', 'gr', cmd, { desc = 'Lsp: go to references', buffer = bufnr })
                 end
 
                 if client.supports_method(vim.lsp.protocol.Methods.textDocument_implementation) then
