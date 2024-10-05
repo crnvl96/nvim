@@ -1,12 +1,11 @@
 return function(INPUT_LINE_NUMBER, CURSOR_LINE, CURSOR_COLUMN)
     -- print("INPUT_LINE_NUMBER:", INPUT_LINE_NUMBER, "CURSOR_LINE:", CURSOR_LINE, "CURSOR_COLUMN:", CURSOR_COLUMN)
     vim.opt.encoding = 'utf-8'
-    vim.opt.clipboard = 'unnamed'
     vim.opt.compatible = false
     vim.opt.number = true
     vim.opt.relativenumber = true
     vim.opt.termguicolors = true
-    vim.opt.clipboard = 'unnamedplus'
+    vim.opt.clipboard = 'unnamedplus' -- Sync with system clipboard
     vim.o.ignorecase = true
     vim.o.smartcase = true
     vim.opt.showmode = true
