@@ -4,8 +4,8 @@ vim.keymap.set({ 'n', 'x', 'i' }, '<Esc>', '<Esc><Cmd>noh<CR><Esc>', { desc = 'B
 vim.keymap.set({ 'n', 'x' }, 'j', [[v:count == 0 ? 'gj' : 'j']], { expr = true, desc = 'Move down by visual line' })
 vim.keymap.set({ 'n', 'x' }, 'k', [[v:count == 0 ? 'gk' : 'k']], { expr = true, desc = 'Move up by visual line' })
 
-vim.keymap.set('n', '<c-d>', '<c-d>zz', { desc = 'Move window down and center' })
-vim.keymap.set('n', '<c-u>', '<c-u>zz', { desc = 'Move window up and center' })
+vim.keymap.set({ 'n', 'x' }, '<c-d>', '<c-d>zz', { desc = 'Move window down and center' })
+vim.keymap.set({ 'n', 'x' }, '<c-u>', '<c-u>zz', { desc = 'Move window up and center' })
 
 vim.keymap.set('x', 'p', 'P', { desc = 'Better paste (do not populate the yank register)' })
 

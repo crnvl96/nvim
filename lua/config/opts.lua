@@ -71,6 +71,7 @@ vim.o.wrap = false
 vim.o.linebreak = true
 vim.o.wildignorecase = true
 vim.o.background = 'dark'
+-- vim.o.background = 'light'
 vim.o.statusline = "%{repeat('─',winwidth('.'))}"
 
 vim.opt.diffopt:append('linematch:60')
