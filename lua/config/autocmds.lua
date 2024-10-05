@@ -66,9 +66,3 @@ vim.api.nvim_create_autocmd('FileType', {
         end)
     end,
 })
-
-vim.api.nvim_create_autocmd('User', {
-    group = vim.api.nvim_create_augroup(vim.g.whoami .. '/mini_files_setup', { clear = true }),
-    pattern = 'MiniFilesWindowOpen',
-    callback = function(args) vim.api.nvim_win_set_config(args.data.win_id, { border = 'rounded' }) end,
-})
