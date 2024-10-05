@@ -61,7 +61,6 @@ vim.o.number = true
 vim.o.relativenumber = vim.g.relative_nr
 vim.o.clipboard = 'unnamedplus'
 vim.o.signcolumn = 'yes'
-vim.o.fillchars = 'eob: '
 vim.o.termguicolors = true
 vim.o.undofile = true
 vim.o.updatetime = 300
@@ -78,6 +77,7 @@ vim.opt.diffopt:append('linematch:60')
 vim.opt.wildoptions:append('fuzzy')
 vim.opt.path:append('**')
 vim.opt.wildignore:append('*/node_modules/*,*/dist/*')
+vim.opt.fillchars:append({ diff = '╱', eob = ' ' })
 
 if vim.fn.executable('rg') ~= 0 then vim.o.grepprg = 'rg --vimgrep' end
 
