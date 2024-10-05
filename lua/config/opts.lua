@@ -30,7 +30,6 @@ vim.g.whoami = 'crnvl96'
 vim.g.bigfile_size = 1024 * 250
 vim.g.relative_nr = true
 
-vim.o.guicursor = ''
 vim.o.autoread = true
 vim.o.splitbelow = true
 vim.o.splitright = true
