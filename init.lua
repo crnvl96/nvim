@@ -17,7 +17,7 @@ end
 local minideps = require('mini.deps')
 minideps.setup({ path = { package = path_package } })
 
-local add, now, later = minideps.add, minideps.now, minideps.later
+local now, later = minideps.now, minideps.later
 
 ---@param modname string
 ---@return function
@@ -35,24 +35,13 @@ now(rc('opts'))
 now(rc('keymaps'))
 now(rc('autocmds'))
 
-now(rp('colorscheme'))
-now(rp('mini-icons'))
-
-now(rp('plenary'))
-now(rp('nvim-nio'))
-
-now(rp('mason'))
-
-later(rp('treesitter'))
-later(rp('mini-ai'))
-later(rp('mini-extra'))
-later(rp('mini-visits'))
+now(rp('theme'))
+now(rp('dependencies'))
 
 later(rp('conform'))
 later(rp('nvim-cmp'))
 later(rp('lsp'))
 later(rp('mini-files'))
 later(rp('mini-pick'))
-later(rp('diffview'))
-later(rp('neogit'))
-later(rp('dap'))
+later(rp('debug'))
+later(rp('git'))

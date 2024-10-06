@@ -29,21 +29,12 @@ vim.api.nvim_create_autocmd('BufReadPre', {
     end,
 })
 
-vim.api.nvim_create_autocmd('FileType', {
-    desc = 'Close some general filetypes with Q',
-    group = vim.api.nvim_create_augroup(vim.g.whoami .. '/close_with_q', { clear = true }),
-    pattern = { 'qf', 'git', 'gitcommit', 'gitrebase', 'help' },
-    callback = function(e) vim.keymap.set('n', 'q', '<Cmd>quit<CR>', { buffer = e.buf }) end,
-})
-
 vim.api.nvim_create_autocmd('BufEnter', {
     desc = 'Fix some general highlight groups',
     group = vim.api.nvim_create_augroup(vim.g.whoami .. '/fix_colorscheme', { clear = true }),
     callback = function()
         vim.api.nvim_set_hl(0, 'NormalFloat', { link = 'Normal' })
         vim.api.nvim_set_hl(0, 'FloatBorder', { link = 'Normal' })
-        vim.api.nvim_set_hl(0, 'StatusLine', { link = 'Normal' })
-        vim.api.nvim_set_hl(0, 'StatusLineTerm', { link = 'Normal' })
     end,
 })
 
