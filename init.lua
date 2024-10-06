@@ -37,11 +37,8 @@ now(rc('autocmds'))
 
 now(rp('theme'))
 now(rp('dependencies'))
+now(rp('lsp'))
 
-later(rp('conform'))
-later(rp('nvim-cmp'))
-later(rp('lsp'))
-later(rp('mini-files'))
 later(rp('mini-pick'))
 later(rp('debug'))
 later(rp('git'))

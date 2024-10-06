@@ -3,60 +3,109 @@ local add = deps.add
 
 add('williamboman/mason-lspconfig.nvim')
 add('neovim/nvim-lspconfig')
+add('stevearc/conform.nvim')
+add('hrsh7th/cmp-nvim-lsp')
+add('hrsh7th/cmp-path')
+add('hrsh7th/cmp-buffer')
+add('hrsh7th/cmp-nvim-lua')
+add('hrsh7th/nvim-cmp')
+
+local conform = require('conform')
+local function get_first_formatter(buffer, ...)
+    for i = 1, select('#', ...) do
+        local formatter = select(i, ...)
+        if conform.get_formatter_info(formatter, buffer).available then return formatter end
+    end
+
+    return select(1, ...)
+end
+
+conform.setup({
+    notify_on_error = false,
+    formatters_by_ft = {
+        markdown = function(buf) return { get_first_formatter(buf, 'prettierd', 'prettier'), 'injected' } end,
+        json = { 'prettierd', 'prettier', stop_after_first = true },
+        jsonc = { 'prettierd', 'prettier', stop_after_first = true },
+        json5 = { 'prettierd', 'prettier', stop_after_first = true },
+        lua = { 'stylua' },
+        typescript = { 'prettierd', 'prettier', stop_after_first = true },
+        typescriptreact = { 'prettierd', 'prettier', stop_after_first = true },
+        javascript = { 'prettierd', 'prettier', stop_after_first = true },
+        javascriptreact = { 'prettierd', 'prettier', stop_after_first = true },
+        python = { 'black' },
+    },
+    formatters = {
+        injected = {
+            options = {
+                ignore_errors = true,
+            },
+        },
+    },
+    format_on_save = {
+        timeout_ms = 1000,
+        lsp_format = 'fallback',
+    },
+})
+
+local cmp = require('cmp')
+cmp.setup({
+    snippet = { expand = function(args) vim.snippet.expand(args.body) end },
+    window = {
+        completion = cmp.config.window.bordered(),
+        documentation = cmp.config.window.bordered(),
+    },
+    sorting = require('cmp.config.default')().sorting,
+    preselect = cmp.PreselectMode.None,
+    mapping = cmp.mapping.preset.insert({
+        ['<C-Space>'] = cmp.mapping.complete(),
+    }),
+    sources = cmp.config.sources({
+        {
+            name = 'nvim_lsp',
+            entry_filter = function(entry)
+                local type = require('cmp.types').lsp.CompletionItemKind[entry:get_kind()]
+                return type ~= 'Text' and type ~= 'Snippet'
+            end,
+        },
+        { name = 'nvim_lua' },
+        { name = 'path' },
+        { name = 'buffer' },
+    }),
+})
 
 local function on_attach(client, bufnr)
-    local set = vim.keymap.set
+    local m = vim.lsp.protocol.Methods
+    local map = function(method, lhs, rhs, desc, mode)
+        local sup = client.supports_method(method)
+        local setmap = function() vim.keymap.set(mode or 'n', lhs, rhs, { desc = desc, buffer = bufnr }) end
+
+        if sup then setmap() end
+    end
+
     vim.bo[bufnr].omnifunc = 'v:lua.vim.lsp.omnifunc'
 
-    if client.supports_method(vim.lsp.protocol.Methods.textDocument_definition) then
-        set('n', 'gd', "<cmd>Pick lsp scope='definition'<CR>", { desc = 'Lsp: go to definitions', buffer = bufnr })
-    end
+    map(m.textDocument_definition, 'gd', "<cmd>Pick lsp scope='definition'<CR>", 'Go to definition')
+    map(m.textDocument_references, 'gR', "<cmd>Pick lsp scope='references'<CR>", 'List references')
+    map(m.textDocument_implementation, 'gi', "<cmd>Pick lsp scope='implementation'<CR>", 'List implementations')
+    map(m.textDocument_typeDefinition, 'gy', "<cmd>Pick lsp scope='type_definition'<CR>", 'Go to type definition')
+    map(m.textDocument_codeAction, 'gy', vim.lsp.buf.code_action, 'List code actions')
+    map(m.textDocument_rename, 'gn', vim.lsp.buf.rename, 'Rename symbol under cursor')
+    map(m.workspace_diagnostics, '<Leader>fd', '<cmd>Pick diagnostic<CR>', 'List workspace diagnostics')
+    map(m.document_symbol, '<Leader>fs', "<cmd>Pick lsp scope='document_symbol'<CR>", 'List document symbols')
+    map(m.workspace_symbol, '<Leader>fS', "<cmd>Pick lsp scope='workspace_symbol'<CR>", 'List workspace symbols')
 
-    if client.supports_method(vim.lsp.protocol.Methods.textDocument_references) then
-        local cmd = "<cmd>Pick lsp scope='references'<CR>"
-        set('n', 'gR', cmd, { desc = 'Lsp: go to references', buffer = bufnr })
-    end
+    map(
+        m.textDocument_inlayHint,
+        '<Leader>ci',
+        function() vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = bufnr }), { bufnr = bufnr }) end,
+        'Toggle inlay hints'
+    )
+    map(m.textDocument_signatureHelp, '<C-k>', function()
+        local cmp = require('cmp')
+        if cmp.visible() then cmp.close() end
 
-    if client.supports_method(vim.lsp.protocol.Methods.textDocument_implementation) then
-        local cmd = "<cmd>Pick lsp scope='implementation'<CR>"
-        set('n', 'gi', cmd, { desc = 'Lsp: go to implementations', buffer = bufnr })
-    end
-
-    if client.supports_method(vim.lsp.protocol.Methods.textDocument_typeDefinition) then
-        local cmd = "<cmd>Pick lsp scope='type_definition'<CR>"
-        set('n', 'gy', cmd, { desc = 'Lsp: go to type definition', buffer = bufnr })
-    end
-
-    if client.supports_method(vim.lsp.protocol.Methods.textDocument_codeAction) then
-        set('n', 'ga', function() vim.lsp.buf.code_action() end, { desc = 'Lsp: code actions', buffer = bufnr })
-    end
-
-    if client.supports_method(vim.lsp.protocol.Methods.textDocument_rename) then
-        local cmd = function() vim.lsp.buf.rename() end
-        set('n', 'gn', cmd, { desc = 'Lsp: rename symbol under cursor', buffer = bufnr })
-    end
-
-    if client.supports_method(vim.lsp.protocol.Methods.workspace_diagnostic) then
-        set('n', '<leader>fd', '<cmd>Pick diagnostic<CR>', { desc = 'Lsp: Pick diagnostics', buffer = bufnr })
-    end
-
-    if client.supports_method(vim.lsp.protocol.Methods.document_symbol) then
-        local cmd = "<cmd>Pick lsp scope='document_symbol'<CR>"
-        set('n', '<leader>fs', cmd, { desc = 'Lsp: Pick document symbols', buffer = bufnr })
-    end
-
-    if client.supports_method(vim.lsp.protocol.Methods.workspace_symbol) then
-        local cmd = "<cmd>Pick lsp scope='workspace_symbol'<CR>"
-        set('n', '<leader>fS', cmd, { desc = 'Lsp: Pick workspace symbols', buffer = bufnr })
-    end
-
-    if client.supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
-        local cmd = function()
-            vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = bufnr }), { bufnr = bufnr })
-        end
-
-        vim.keymap.set('n', '<leader>ci', cmd, { desc = 'Lsp: toggle inlay hints', buffer = bufnr })
-    end
+        vim.lsp.buf.signature_help()
+    end, 'Signature help', 'i')
 end
 
 local registerCapability = vim.lsp.handlers[vim.lsp.protocol.Methods.client_registerCapability]
