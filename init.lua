@@ -44,6 +44,7 @@ now(rp('nvim-nio'))
 now(rp('mason'))
 
 later(rp('treesitter'))
+later(rp('mini-ai'))
 later(rp('mini-extra'))
 later(rp('mini-visits'))
 
