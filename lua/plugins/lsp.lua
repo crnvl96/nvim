@@ -88,7 +88,7 @@ local function on_attach(client, bufnr)
     map(m.textDocument_references, 'gR', "<cmd>Pick lsp scope='references'<CR>", 'List references')
     map(m.textDocument_implementation, 'gi', "<cmd>Pick lsp scope='implementation'<CR>", 'List implementations')
     map(m.textDocument_typeDefinition, 'gy', "<cmd>Pick lsp scope='type_definition'<CR>", 'Go to type definition')
-    map(m.textDocument_codeAction, 'gy', vim.lsp.buf.code_action, 'List code actions')
+    map(m.textDocument_codeAction, 'ga', vim.lsp.buf.code_action, 'List code actions')
     map(m.textDocument_rename, 'gn', vim.lsp.buf.rename, 'Rename symbol under cursor')
     map(m.workspace_diagnostics, '<Leader>fd', '<cmd>Pick diagnostic<CR>', 'List workspace diagnostics')
     map(m.document_symbol, '<Leader>fs', "<cmd>Pick lsp scope='document_symbol'<CR>", 'List document symbols')
@@ -166,39 +166,29 @@ local servers = {
         },
     },
     lua_ls = {
-        on_init = function(client)
-            local path = client.workspace_folders and client.workspace_folders[1] and client.workspace_folders[1].name
-            if not path or not (vim.uv.fs_stat(path .. '/.luarc.json') or vim.uv.fs_stat(path .. '/.luarc.jsonc')) then
-                client.config.settings = vim.tbl_deep_extend('force', client.config.settings, {
-                    Lua = {
-                        runtime = {
-                            version = 'LuaJIT',
-                        },
-                        workspace = {
-                            checkThirdParty = false,
-                            library = {
-                                vim.env.VIMRUNTIME,
-                                '${3rd}/luv/library',
-                            },
-                        },
-                    },
-                })
-                client.notify(
-                    vim.lsp.protocol.Methods.workspace_didChangeConfiguration,
-                    { settings = client.config.settings }
-                )
-            end
-
-            return true
-        end,
         settings = {
             Lua = {
-                format = { enable = false },
-                hint = {
-                    enable = true,
-                    arrayIndex = 'Disable',
+                runtime = {
+                    -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
+                    version = 'LuaJIT',
+                    -- Setup your lua path
+                    path = vim.split(package.path, ';'),
                 },
-                completion = { callSnippet = 'Replace' },
+                diagnostics = {
+                    -- Get the language server to recognize common globals
+                    globals = { 'vim', 'describe', 'it', 'before_each', 'after_each' },
+                    disable = { 'need-check-nil' },
+                    -- Don't make workspace diagnostic, as it consumes too much CPU and RAM
+                    workspaceDelay = -1,
+                },
+                workspace = {
+                    -- Don't analyze code from submodules
+                    ignoreSubmodules = true,
+                },
+                -- Do not send telemetry data containing a randomized but unique identifier
+                telemetry = {
+                    enable = false,
+                },
             },
         },
     },

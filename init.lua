@@ -42,3 +42,17 @@ now(rp('lsp'))
 later(rp('mini-pick'))
 later(rp('debug'))
 later(rp('git'))
+later(rp('dev'))
+
+-- dev
+now(function()
+    -- disabled since we do will not use it anymore
+    -- minideps.add('MunifTanjim/nui.nvim')
+    minideps.add({
+        source = 'crnvl96/lazydocker.nvim',
+        -- new version branch
+        checkout = 'v2.0.0',
+    })
+
+    require('lazydocker').setup()
+end)
