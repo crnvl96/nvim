@@ -71,13 +71,16 @@ vim.o.wrap = false
 vim.o.linebreak = true
 vim.o.background = 'dark'
 vim.o.wildignorecase = true
-vim.o.statusline = "%{repeat('─',winwidth('.'))}"
 
 vim.opt.diffopt:append('linematch:60')
 vim.opt.wildoptions:append('fuzzy')
 vim.opt.path:append('**')
 vim.opt.wildignore:append('*/node_modules/*,*/dist/*')
 vim.opt.fillchars:append({ diff = '╱', eob = ' ' })
+
+if vim.fn.has('nvim-0.11') == 1 then
+    vim.opt.completeopt:append('fuzzy') -- Use fuzzy matching for built-in completion
+end
 
 if vim.fn.executable('rg') ~= 0 then vim.o.grepprg = 'rg --vimgrep' end
 

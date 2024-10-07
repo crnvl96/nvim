@@ -4,11 +4,18 @@ local add = deps.add
 add('williamboman/mason-lspconfig.nvim')
 add('neovim/nvim-lspconfig')
 add('stevearc/conform.nvim')
-add('hrsh7th/cmp-nvim-lsp')
-add('hrsh7th/cmp-path')
-add('hrsh7th/cmp-buffer')
-add('hrsh7th/cmp-nvim-lua')
-add('hrsh7th/nvim-cmp')
+add({ source = 'saghen/blink.cmp', checkout = 'v0.*' })
+
+local blink = require('blink.cmp')
+blink.setup({
+    accept = { auto_brackets = { enabled = true } },
+    trigger = { signature_help = { enabled = true } },
+    keymap = {
+        accept = '<CR>',
+        select_prev = { '<Up>', '<C-p>' },
+        select_next = { '<Down>', '<C-n>' },
+    },
+})
 
 local conform = require('conform')
 local function get_first_formatter(buffer, ...)
@@ -45,32 +52,6 @@ conform.setup({
         timeout_ms = 1000,
         lsp_format = 'fallback',
     },
-})
-
-local cmp = require('cmp')
-cmp.setup({
-    snippet = { expand = function(args) vim.snippet.expand(args.body) end },
-    window = {
-        completion = cmp.config.window.bordered(),
-        documentation = cmp.config.window.bordered(),
-    },
-    sorting = require('cmp.config.default')().sorting,
-    preselect = cmp.PreselectMode.None,
-    mapping = cmp.mapping.preset.insert({
-        ['<C-Space>'] = cmp.mapping.complete(),
-    }),
-    sources = cmp.config.sources({
-        {
-            name = 'nvim_lsp',
-            entry_filter = function(entry)
-                local type = require('cmp.types').lsp.CompletionItemKind[entry:get_kind()]
-                return type ~= 'Text' and type ~= 'Snippet'
-            end,
-        },
-        { name = 'nvim_lua' },
-        { name = 'path' },
-        { name = 'buffer' },
-    }),
 })
 
 local function on_attach(client, bufnr)
@@ -194,14 +175,7 @@ local servers = {
     },
 }
 
-local capabilities = function()
-    return vim.tbl_deep_extend(
-        'force',
-        {},
-        vim.lsp.protocol.make_client_capabilities(),
-        require('cmp_nvim_lsp').default_capabilities()
-    )
-end
+local capabilities = vim.lsp.protocol.make_client_capabilities()
 
 local mason_lspconfig = require('mason-lspconfig')
 local lspconfig = require('lspconfig')
@@ -211,7 +185,7 @@ mason_lspconfig.setup({
     handlers = {
         function(server_name)
             local server = servers[server_name] or {}
-            server.capabilities = capabilities()
+            server.capabilities = capabilities
             lspconfig[server_name].setup(server)
         end,
     },
