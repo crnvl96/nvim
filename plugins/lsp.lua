@@ -1,59 +1,3 @@
-local deps = require('mini.deps')
-local add = deps.add
-
-add('williamboman/mason-lspconfig.nvim')
-add('neovim/nvim-lspconfig')
-add('stevearc/conform.nvim')
-add({ source = 'saghen/blink.cmp', checkout = 'v0.*' })
-
-local blink = require('blink.cmp')
-blink.setup({
-    accept = { auto_brackets = { enabled = true } },
-    trigger = { signature_help = { enabled = true } },
-    keymap = {
-        accept = '<CR>',
-        select_prev = { '<Up>', '<C-p>' },
-        select_next = { '<Down>', '<C-n>' },
-    },
-})
-
-local conform = require('conform')
-local function get_first_formatter(buffer, ...)
-    for i = 1, select('#', ...) do
-        local formatter = select(i, ...)
-        if conform.get_formatter_info(formatter, buffer).available then return formatter end
-    end
-
-    return select(1, ...)
-end
-
-conform.setup({
-    notify_on_error = false,
-    formatters_by_ft = {
-        markdown = function(buf) return { get_first_formatter(buf, 'prettierd', 'prettier'), 'injected' } end,
-        json = { 'prettierd', 'prettier', stop_after_first = true },
-        jsonc = { 'prettierd', 'prettier', stop_after_first = true },
-        json5 = { 'prettierd', 'prettier', stop_after_first = true },
-        lua = { 'stylua' },
-        typescript = { 'prettierd', 'prettier', stop_after_first = true },
-        typescriptreact = { 'prettierd', 'prettier', stop_after_first = true },
-        javascript = { 'prettierd', 'prettier', stop_after_first = true },
-        javascriptreact = { 'prettierd', 'prettier', stop_after_first = true },
-        python = { 'black' },
-    },
-    formatters = {
-        injected = {
-            options = {
-                ignore_errors = true,
-            },
-        },
-    },
-    format_on_save = {
-        timeout_ms = 1000,
-        lsp_format = 'fallback',
-    },
-})
-
 local function on_attach(client, bufnr)
     local m = vim.lsp.protocol.Methods
     local map = function(method, lhs, rhs, desc, mode)
@@ -63,7 +7,7 @@ local function on_attach(client, bufnr)
         if sup then setmap() end
     end
 
-    vim.bo[bufnr].omnifunc = 'v:lua.vim.lsp.omnifunc'
+    vim.o.omnifunc = 'v:lua.MiniCompletion.completefunc_lsp'
 
     map(m.textDocument_definition, 'gd', "<cmd>Pick lsp scope='definition'<CR>", 'Go to definition')
     map(m.textDocument_references, 'gR', "<cmd>Pick lsp scope='references'<CR>", 'List references')
@@ -81,15 +25,12 @@ local function on_attach(client, bufnr)
         function() vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = bufnr }), { bufnr = bufnr }) end,
         'Toggle inlay hints'
     )
-    map(m.textDocument_signatureHelp, '<C-k>', function()
-        local cmp = require('cmp')
-        if cmp.visible() then cmp.close() end
-
-        vim.lsp.buf.signature_help()
-    end, 'Signature help', 'i')
 end
 
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+
 local registerCapability = vim.lsp.handlers[vim.lsp.protocol.Methods.client_registerCapability]
+
 vim.lsp.handlers[vim.lsp.protocol.Methods.client_registerCapability] = function(err, res, ctx)
     local client = vim.lsp.get_client_by_id(ctx.client_id)
     if not client then return end
@@ -175,18 +116,13 @@ local servers = {
     },
 }
 
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-
-local mason_lspconfig = require('mason-lspconfig')
-local lspconfig = require('lspconfig')
-
-mason_lspconfig.setup({
+require('mason-lspconfig').setup({
     ensure_installed = vim.tbl_keys(servers),
     handlers = {
         function(server_name)
             local server = servers[server_name] or {}
             server.capabilities = capabilities
-            lspconfig[server_name].setup(server)
+            require('lspconfig')[server_name].setup(server)
         end,
     },
 })

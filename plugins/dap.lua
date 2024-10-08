@@ -1,18 +1,12 @@
-local deps = require('mini.deps')
-local add = deps.add
-
-add('mfussenegger/nvim-dap-python')
-add('jbyuki/one-small-step-for-vimkind')
-add('rcarriga/nvim-dap-ui')
-add('mfussenegger/nvim-dap')
-
-for name, sign in pairs({
+local icons = {
     Stopped = { ' ', 'DiagnosticWarn', 'DapStoppedLine' },
     Breakpoint = { ' ', 'DiagnosticInfo', nil, nil },
     BreakpointCondition = { ' ', 'DiagnosticInfo', nil, nil },
     BreakpointRejected = { ' ', 'DiagnosticError', nil, nil },
     LogPoint = { ' ', 'DiagnosticInfo', nil, nil },
-}) do
+}
+
+for name, sign in pairs(icons) do
     vim.fn.sign_define('Dap' .. name, { text = sign[1], texthl = sign[2], linehl = sign[3], numhl = sign[3] })
 end
 
@@ -132,9 +126,3 @@ vim.api.nvim_create_autocmd('FileType', {
         )
     end,
 })
-
-vim.keymap.set('n', '<Leader>db', function() require('dap').toggle_breakpoint() end, { desc = 'Set breakpoint' })
-vim.keymap.set('n', '<Leader>dc', function() require('dap').continue() end, { desc = 'Dap continue' })
-vim.keymap.set('n', '<Leader>dt', function() require('dap').terminate() end, { desc = 'Dap terminate session' })
-vim.keymap.set('n', '<Leader>du', function() require('dapui').toggle() end, { desc = 'Dap UI' })
-vim.keymap.set('n', '<Leader>de', function() require('dapui').eval(nil, { enter = true }) end, { desc = 'Dap Eval' })

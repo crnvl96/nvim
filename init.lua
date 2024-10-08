@@ -17,40 +17,52 @@ end
 local minideps = require('mini.deps')
 minideps.setup({ path = { package = path_package } })
 
-local now, later = minideps.now, minideps.later
+local add = minideps.add
+local now = minideps.now
+local later = minideps.later
 
----@param modname string
----@return function
-local function rc(modname)
-    return function() require('config.' .. modname) end
-end
+now(function() require('config.opts') end)
 
----@param modname string
----@return function
-local function rp(modname)
-    return function() require('plugins.' .. modname) end
-end
-
-now(rc('opts'))
-now(rc('keymaps'))
-now(rc('autocmds'))
-
-now(rp('theme'))
-now(rp('dependencies'))
-now(rp('lsp'))
-
-later(rp('mini-pick'))
-later(rp('debug'))
-later(rp('git'))
-later(rp('dev'))
-
--- dev
 now(function()
-    -- disabled since we do will not use it anymore
-    -- minideps.add('MunifTanjim/nui.nvim')
-    minideps.add({
+    add('nvim-neotest/nvim-nio')
+    add('nvim-lua/plenary.nvim')
+    add({ source = 'williamboman/mason.nvim', hooks = { post_checkout = function() vim.cmd('MasonUpdate') end } })
+    add({ source = 'nvim-treesitter/nvim-treesitter', hooks = { post_checkout = function() vim.cmd('TSUpdate') end } })
+    add('williamboman/mason-lspconfig.nvim')
+    add('neovim/nvim-lspconfig')
+    add('stevearc/conform.nvim')
+    add('mfussenegger/nvim-dap-python')
+    add('jbyuki/one-small-step-for-vimkind')
+    add('rcarriga/nvim-dap-ui')
+    add('mfussenegger/nvim-dap')
+    add('tpope/vim-fugitive')
+end)
+
+now(function() require('plugins.mason') end)
+now(function() require('plugins.mini-completion') end)
+now(function() require('plugins.lsp') end)
+
+now(function() require('plugins.mini-extra') end)
+now(function() require('plugins.mini-icons') end)
+now(function() require('plugins.mini-misc') end)
+now(function() require('plugins.mini-hues') end)
+now(function() require('plugins.mini-statusline') end)
+now(function() require('plugins.mini-tabline') end)
+now(function() require('plugins.treesitter') end)
+
+later(function() require('plugins.mini-pick') end)
+later(function() require('plugins.mini-indentscope') end)
+later(function() require('plugins.mini-bufremove') end)
+later(function() require('plugins.conform') end)
+later(function() require('plugins.dap') end)
+later(function() require('plugins.mini-doc') end)
+later(function() require('plugins.mini-test') end)
+
+later(function() require('config.keymaps') end)
+
+later(function()
+    add({
         source = 'crnvl96/lazydocker.nvim',
-        -- new version branch
         checkout = 'v2.0.0',
     })
 
