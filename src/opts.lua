@@ -10,6 +10,7 @@ vim.o.expandtab = true
 vim.o.ignorecase = true
 vim.o.smartcase = true
 vim.o.number = true
+vim.o.timeoutlen = 200
 vim.o.relativenumber = true
 vim.o.signcolumn = 'yes'
 
@@ -20,6 +21,7 @@ vim.o.guicursor = ''
 vim.o.splitbelow = true
 vim.o.splitright = true
 vim.o.virtualedit = 'block'
+vim.o.splitkeep = 'screen'
 
 vim.o.swapfile = false
 vim.o.undofile = true

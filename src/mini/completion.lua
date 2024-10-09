@@ -1,11 +1,13 @@
 local function process_items(items, base)
     -- Don't show 'Text' and 'Snippet' suggestions
-    items = vim.tbl_filter(function(x) return x.kind ~= 1 and x.kind ~= 15 end, items)
-    return require('mini.completion').default_process_items(items, base)
+    return require('mini.completion').default_process_items(
+        vim.tbl_filter(function(el) return el.kind ~= 1 and el.kind ~= 15 end, items),
+        base
+    )
 end
 
 require('mini.completion').setup({
-    delay = { completion = 10 ^ 7, info = 100, signature = 50 },
+    delay = { completion = 100, info = 100, signature = 50 },
     lsp_completion = {
         source_func = 'omnifunc',
         auto_setup = false,

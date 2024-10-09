@@ -1,3 +1,6 @@
+MiniDeps.add('williamboman/mason-lspconfig.nvim')
+MiniDeps.add('neovim/nvim-lspconfig')
+
 local function on_attach(client, bufnr)
     local m = vim.lsp.protocol.Methods
     local map = function(method, lhs, rhs, desc, mode)

@@ -1,3 +1,5 @@
+MiniDeps.add({ source = 'williamboman/mason.nvim', hooks = { post_checkout = function() vim.cmd('MasonUpdate') end } })
+
 require('mason').setup()
 
 local tools = {

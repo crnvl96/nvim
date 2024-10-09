@@ -24,7 +24,6 @@ local function delete_other_buffers()
     vim.cmd('redraw!')
 end
 
-vim.keymap.set('n', '-', '<cmd>Ex<CR>')
 vim.keymap.set({ 'n', 'x', 'i' }, '<C-s>', '<Esc><Cmd>w<CR><Esc>', { desc = 'Save buffer' })
 vim.keymap.set({ 'n', 'x', 'i' }, '<Esc>', '<Esc><Cmd>noh<CR><Esc>', { desc = 'Better Esc' })
 vim.keymap.set({ 'n', 'x' }, 'j', [[v:count == 0 ? 'gj' : 'j']], { expr = true, desc = 'Move down by visual line' })
@@ -38,13 +37,11 @@ vim.keymap.set('n', '<c-left>', '<Cmd>vertical resize -20<CR>', { desc = 'Increa
 vim.keymap.set('n', '<c-right>', '<Cmd>vertical resize +20<CR>', { desc = 'Decrease window width' })
 vim.keymap.set('x', '<', '<gv', { desc = 'Indent visually selected lines' })
 vim.keymap.set('x', '>', '>gv', { desc = 'Dedent visually selected lines' })
--- https://github.com/mhinz/vim-galore#saner-behavior-of-n-and-n
-vim.keymap.set('n', 'n', "'Nn'[v:searchforward].'zv'", { expr = true, desc = 'Next Search Result' })
-vim.keymap.set('x', 'n', "'Nn'[v:searchforward]", { expr = true, desc = 'Next Search Result' })
-vim.keymap.set('o', 'n', "'Nn'[v:searchforward]", { expr = true, desc = 'Next Search Result' })
-vim.keymap.set('n', 'N', "'nN'[v:searchforward].'zv'", { expr = true, desc = 'Prev Search Result' })
-vim.keymap.set('x', 'N', "'nN'[v:searchforward]", { expr = true, desc = 'Prev Search Result' })
-vim.keymap.set('o', 'N', "'nN'[v:searchforward]", { expr = true, desc = 'Prev Search Result' })
+vim.keymap.set('n', '>', '<cmd>bnext<CR>', { desc = 'Next buffer' })
+vim.keymap.set('n', '<', '<cmd>bprev<CR>', { desc = 'Prev buffer' })
+vim.keymap.set('n', '<Leader>de', function() require('dapui').eval(nil, { enter = true }) end, { desc = 'Dap Eval' })
+
+-- Mini.Pick
 vim.keymap.set('n', '<leader>ff', '<cmd>Pick files<CR>', { desc = 'Pick files' })
 vim.keymap.set('n', '<leader>fk', '<cmd>Pick keymaps<CR>', { desc = 'Pick keymaps' })
 vim.keymap.set('n', '<leader>fl', "<cmd>Pick buf_lines scope='current'<CR>", { desc = 'Pick buflines' })
@@ -53,13 +50,30 @@ vim.keymap.set('n', '<leader>fg', '<cmd>Pick grep_live<CR>', { desc = 'Pick grep
 vim.keymap.set('n', '<leader>fh', '<cmd>Pick help<CR>', { desc = 'Pick help' })
 vim.keymap.set('n', '<leader>fr', '<cmd>Pick resume<CR>', { desc = 'Pick resume' })
 vim.keymap.set('n', '<leader>fb', '<cmd>Pick buffers<CR>', { desc = 'Pick buffers' })
+
+-- DAP
 vim.keymap.set('n', '<Leader>db', function() require('dap').toggle_breakpoint() end, { desc = 'Set breakpoint' })
 vim.keymap.set('n', '<Leader>dc', function() require('dap').continue() end, { desc = 'Dap continue' })
 vim.keymap.set('n', '<Leader>dt', function() require('dap').terminate() end, { desc = 'Dap terminate session' })
 vim.keymap.set('n', '<Leader>du', function() require('dapui').toggle() end, { desc = 'Dap UI' })
+
+-- Mini.BufRemove
 vim.keymap.set('n', '<leader>bd', '<cmd>lua MiniBufremove.delete(0, false)<CR>', { desc = 'Delete current buffer' })
-vim.keymap.set('n', '>', '<cmd>bnext<CR>', { desc = 'Next buffer' })
-vim.keymap.set('n', '<', '<cmd>bprev<CR>', { desc = 'Prev buffer' })
 vim.keymap.set('n', '<leader>bo', delete_other_buffers, { desc = 'Delete all other buffers ' })
-vim.keymap.set('n', '<Leader>de', function() require('dapui').eval(nil, { enter = true }) end, { desc = 'Dap Eval' })
+
+-- Mini.Completion
 vim.keymap.set('i', '<CR>', 'v:lua._G.cr_action()', { expr = true })
+
+--Mini.Files
+vim.keymap.set('n', '-', '<cmd>lua MiniFiles.open()<CR>')
+
+-- Mini.Diff
+vim.keymap.set('n', '<leader>go', '<cmd>lua MiniDiff.toggle_overlay()<CR>', { desc = 'Git overlay' })
+
+-- https://github.com/mhinz/vim-galore#saner-behavior-of-n-and-n
+vim.keymap.set('n', 'n', "'Nn'[v:searchforward].'zv'", { expr = true, desc = 'Next Search Result' })
+vim.keymap.set('x', 'n', "'Nn'[v:searchforward]", { expr = true, desc = 'Next Search Result' })
+vim.keymap.set('o', 'n', "'Nn'[v:searchforward]", { expr = true, desc = 'Next Search Result' })
+vim.keymap.set('n', 'N', "'nN'[v:searchforward].'zv'", { expr = true, desc = 'Prev Search Result' })
+vim.keymap.set('x', 'N', "'nN'[v:searchforward]", { expr = true, desc = 'Prev Search Result' })
+vim.keymap.set('o', 'N', "'nN'[v:searchforward]", { expr = true, desc = 'Prev Search Result' })
