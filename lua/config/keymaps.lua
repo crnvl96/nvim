@@ -7,13 +7,3 @@ vim.keymap.set('n', '<c-left>', '<Cmd>vertical resize -20<CR>', { desc = 'Increa
 vim.keymap.set('n', '<c-right>', '<Cmd>vertical resize +20<CR>', { desc = 'Decrease window width' })
 vim.keymap.set('x', '<', '<gv', { desc = 'Indent visually selected lines' })
 vim.keymap.set('x', '>', '>gv', { desc = 'Dedent visually selected lines' })
-vim.keymap.set('n', '>', '<cmd>bnext<CR>', { desc = 'Next buffer' })
-vim.keymap.set('n', '<', '<cmd>bprev<CR>', { desc = 'Prev buffer' })
-
--- https://github.com/mhinz/vim-galore#saner-behavior-of-n-and-n
-vim.keymap.set('n', 'n', "'Nn'[v:searchforward].'zv'", { expr = true, desc = 'Next Search Result' })
-vim.keymap.set('x', 'n', "'Nn'[v:searchforward]", { expr = true, desc = 'Next Search Result' })
-vim.keymap.set('o', 'n', "'Nn'[v:searchforward]", { expr = true, desc = 'Next Search Result' })
-vim.keymap.set('n', 'N', "'nN'[v:searchforward].'zv'", { expr = true, desc = 'Prev Search Result' })
-vim.keymap.set('x', 'N', "'nN'[v:searchforward]", { expr = true, desc = 'Prev Search Result' })
-vim.keymap.set('o', 'N', "'nN'[v:searchforward]", { expr = true, desc = 'Prev Search Result' })

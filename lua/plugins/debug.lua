@@ -1,3 +1,5 @@
+MiniDeps.add('nvim-lua/plenary.nvim')
+MiniDeps.add('nvim-neotest/nvim-nio')
 MiniDeps.add('mfussenegger/nvim-dap-python')
 MiniDeps.add('jbyuki/one-small-step-for-vimkind')
 MiniDeps.add('rcarriga/nvim-dap-ui')
@@ -120,7 +122,7 @@ end
 
 vim.api.nvim_create_autocmd('FileType', {
     desc = 'Setup lua debug specific keymaps',
-    group = vim.api.nvim_create_augroup(vim.g.whoami .. '/crnvl96_dap_group', { clear = true }),
+    group = vim.api.nvim_create_augroup('crnvl96_dap_group', { clear = true }),
     pattern = { 'lua' },
     callback = function()
         vim.keymap.set(

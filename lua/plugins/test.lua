@@ -1,3 +1,5 @@
+require('mini.test').setup()
+require('mini.doc').setup()
 MiniDeps.add('danymat/neogen')
 
 require('neogen').setup({

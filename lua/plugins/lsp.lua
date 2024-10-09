@@ -1,6 +1,15 @@
 MiniDeps.add('williamboman/mason-lspconfig.nvim')
 MiniDeps.add('neovim/nvim-lspconfig')
+MiniDeps.add('stevearc/conform.nvim')
+MiniDeps.add({
+    source = 'williamboman/mason.nvim',
+    hooks = { post_checkout = function() vim.cmd('MasonUpdate') end },
+})
 
+vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
+
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+local registerCapability = vim.lsp.handlers[vim.lsp.protocol.Methods.client_registerCapability]
 local servers = {
     eslint = { settings = { format = false } },
     basedpyright = {},
@@ -71,6 +80,31 @@ local servers = {
     },
 }
 
+local function get_first_formatter(buffer, ...)
+    for i = 1, select('#', ...) do
+        local formatter = select(i, ...)
+        if require('conform').get_formatter_info(formatter, buffer).available then return formatter end
+    end
+
+    return select(1, ...)
+end
+
+local keycode = vim.keycode or function(x) return vim.api.nvim_replace_termcodes(x, true, true, true) end
+local keys = {
+    ['cr'] = keycode('<CR>'),
+    ['ctrl-y'] = keycode('<C-y>'),
+    ['ctrl-y_cr'] = keycode('<C-y><CR>'),
+}
+
+local function CR_Action()
+    if vim.fn.pumvisible() ~= 0 then
+        local item_selected = vim.fn.complete_info()['selected'] ~= -1
+        return item_selected and keys['ctrl-y'] or keys['ctrl-y_cr']
+    else
+        return keys['cr']
+    end
+end
+
 local function on_attach(client, bufnr)
     local m = vim.lsp.protocol.Methods
     local map = function(method, lhs, rhs, desc, mode)
@@ -100,9 +134,70 @@ local function on_attach(client, bufnr)
     )
 end
 
-local capabilities = vim.lsp.protocol.make_client_capabilities()
+require('mason').setup()
 
-local registerCapability = vim.lsp.handlers[vim.lsp.protocol.Methods.client_registerCapability]
+require('mason-registry').refresh(function()
+    for _, tool in ipairs({
+        'stylua',
+        'prettierd',
+        'js-debug-adapter',
+        'debugpy',
+        'black',
+    }) do
+        local pkg = require('mason-registry').get_package(tool)
+        if not pkg:is_installed() then pkg:install() end
+    end
+end)
+
+require('mini.completion').setup({
+    delay = { completion = 100, info = 100, signature = 50 },
+    lsp_completion = {
+        source_func = 'omnifunc',
+        auto_setup = false,
+        process_items = function(items, base)
+            -- Don't show 'Text' and 'Snippet' suggestions
+            return require('mini.completion').default_process_items(
+                vim.tbl_filter(function(el) return el.kind ~= 1 and el.kind ~= 15 end, items),
+                base
+            )
+        end,
+    },
+    window = {
+        info = { border = 'double' },
+        signature = { border = 'double' },
+    },
+    mappings = {
+        force_twostep = '<C-n>',
+        force_fallback = '<A-n>',
+    },
+})
+
+require('conform').setup({
+    notify_on_error = false,
+    formatters_by_ft = {
+        markdown = function(buf) return { get_first_formatter(buf, 'prettierd', 'prettier'), 'injected' } end,
+        json = { 'prettierd', 'prettier', stop_after_first = true },
+        jsonc = { 'prettierd', 'prettier', stop_after_first = true },
+        json5 = { 'prettierd', 'prettier', stop_after_first = true },
+        lua = { 'stylua' },
+        typescript = { 'prettierd', 'prettier', stop_after_first = true },
+        typescriptreact = { 'prettierd', 'prettier', stop_after_first = true },
+        javascript = { 'prettierd', 'prettier', stop_after_first = true },
+        javascriptreact = { 'prettierd', 'prettier', stop_after_first = true },
+        python = { 'black' },
+    },
+    formatters = {
+        injected = {
+            options = {
+                ignore_errors = true,
+            },
+        },
+    },
+    format_on_save = {
+        timeout_ms = 1000,
+        lsp_format = 'fallback',
+    },
+})
 
 vim.lsp.handlers[vim.lsp.protocol.Methods.client_registerCapability] = function(err, res, ctx)
     local client = vim.lsp.get_client_by_id(ctx.client_id)
@@ -129,3 +224,7 @@ require('mason-lspconfig').setup({
         end,
     },
 })
+
+if vim.fn.has('nvim-0.11') == 1 then vim.opt.completeopt:append('fuzzy') end
+
+vim.keymap.set('i', '<CR>', CR_Action, { expr = true })
