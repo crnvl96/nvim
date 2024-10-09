@@ -8,6 +8,12 @@ miniclue.setup({
         miniclue.gen_clues.registers(),
         miniclue.gen_clues.windows({ submode_resize = true }),
         miniclue.gen_clues.z(),
+        { mode = 'n', keys = '<Leader>b', desc = '+Buffers' },
+        { mode = 'n', keys = '<Leader>c', desc = '+Code' },
+        { mode = 'n', keys = '<Leader>d', desc = '+DAP' },
+        { mode = 'n', keys = '<Leader>f', desc = '+Files' },
+        { mode = 'n', keys = '<Leader>g', desc = '+Git' },
+        { mode = 'n', keys = '<Leader>o', desc = '+Operators' },
     },
     triggers = {
         { mode = 'n', keys = '<Leader>' }, -- Leader triggers

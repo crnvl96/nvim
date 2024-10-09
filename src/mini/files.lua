@@ -23,5 +23,7 @@ require('mini.files').setup({
 vim.api.nvim_create_autocmd('User', {
     group = vim.api.nvim_create_augroup(vim.g.whoami .. '/mini_files', {}),
     pattern = 'MiniFilesWindowOpen',
-    callback = function(args) vim.api.nvim_win_set_config(args.data.win_id, { border = 'rounded' }) end,
+    callback = function(args) vim.api.nvim_win_set_config(args.data.win_id, { border = 'double' }) end,
 })
+
+vim.keymap.set('n', '-', '<cmd>lua MiniFiles.open()<CR>')

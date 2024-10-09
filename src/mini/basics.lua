@@ -15,3 +15,6 @@ require('mini.basics').setup({
         relnum_in_visual_mode = false,
     },
 })
+
+vim.o.pumblend = 0
+vim.o.winblend = 0

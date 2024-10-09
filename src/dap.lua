@@ -131,3 +131,10 @@ vim.api.nvim_create_autocmd('FileType', {
         )
     end,
 })
+
+-- DAP
+vim.keymap.set('n', '<Leader>db', function() require('dap').toggle_breakpoint() end, { desc = 'Set breakpoint' })
+vim.keymap.set('n', '<Leader>dc', function() require('dap').continue() end, { desc = 'Dap continue' })
+vim.keymap.set('n', '<Leader>dt', function() require('dap').terminate() end, { desc = 'Dap terminate session' })
+vim.keymap.set('n', '<Leader>du', function() require('dapui').toggle() end, { desc = 'Dap UI' })
+vim.keymap.set('n', '<Leader>de', function() require('dapui').eval(nil, { enter = true }) end, { desc = 'Dap Eval' })
