@@ -15,11 +15,8 @@ vim.o.relativenumber = true
 vim.o.signcolumn = 'yes'
 
 vim.o.mouse = 'a'
-vim.o.clipboard = 'unnamedplus'
 
 vim.o.guicursor = ''
-vim.o.splitbelow = true
-vim.o.splitright = true
 vim.o.virtualedit = 'block'
 vim.o.splitkeep = 'screen'
 

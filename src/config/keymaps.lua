@@ -24,13 +24,9 @@ local function delete_other_buffers()
     vim.cmd('redraw!')
 end
 
-vim.keymap.set({ 'n', 'x', 'i' }, '<C-s>', '<Esc><Cmd>w<CR><Esc>', { desc = 'Save buffer' })
 vim.keymap.set({ 'n', 'x', 'i' }, '<Esc>', '<Esc><Cmd>noh<CR><Esc>', { desc = 'Better Esc' })
-vim.keymap.set({ 'n', 'x' }, 'j', [[v:count == 0 ? 'gj' : 'j']], { expr = true, desc = 'Move down by visual line' })
-vim.keymap.set({ 'n', 'x' }, 'k', [[v:count == 0 ? 'gk' : 'k']], { expr = true, desc = 'Move up by visual line' })
 vim.keymap.set({ 'n', 'x' }, '<c-d>', '<c-d>zz', { desc = 'Move window down and center' })
 vim.keymap.set({ 'n', 'x' }, '<c-u>', '<c-u>zz', { desc = 'Move window up and center' })
-vim.keymap.set('x', 'p', 'P', { desc = 'Better paste (do not populate the yank register)' })
 vim.keymap.set('n', '<c-up>', '<Cmd>resize +5<CR>', { desc = 'Increase window height' })
 vim.keymap.set('n', '<c-down>', '<Cmd>resize -5<CR>', { desc = 'Decrease window height' })
 vim.keymap.set('n', '<c-left>', '<Cmd>vertical resize -20<CR>', { desc = 'Increase window width' })
@@ -39,7 +35,6 @@ vim.keymap.set('x', '<', '<gv', { desc = 'Indent visually selected lines' })
 vim.keymap.set('x', '>', '>gv', { desc = 'Dedent visually selected lines' })
 vim.keymap.set('n', '>', '<cmd>bnext<CR>', { desc = 'Next buffer' })
 vim.keymap.set('n', '<', '<cmd>bprev<CR>', { desc = 'Prev buffer' })
-vim.keymap.set('n', '<Leader>de', function() require('dapui').eval(nil, { enter = true }) end, { desc = 'Dap Eval' })
 
 -- Mini.Pick
 vim.keymap.set('n', '<leader>ff', '<cmd>Pick files<CR>', { desc = 'Pick files' })
@@ -56,6 +51,7 @@ vim.keymap.set('n', '<Leader>db', function() require('dap').toggle_breakpoint() 
 vim.keymap.set('n', '<Leader>dc', function() require('dap').continue() end, { desc = 'Dap continue' })
 vim.keymap.set('n', '<Leader>dt', function() require('dap').terminate() end, { desc = 'Dap terminate session' })
 vim.keymap.set('n', '<Leader>du', function() require('dapui').toggle() end, { desc = 'Dap UI' })
+vim.keymap.set('n', '<Leader>de', function() require('dapui').eval(nil, { enter = true }) end, { desc = 'Dap Eval' })
 
 -- Mini.BufRemove
 vim.keymap.set('n', '<leader>bd', '<cmd>lua MiniBufremove.delete(0, false)<CR>', { desc = 'Delete current buffer' })
