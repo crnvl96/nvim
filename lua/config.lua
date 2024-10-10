@@ -3,7 +3,14 @@ local M = {
         package = vim.fn.stdpath('data') .. '/site/',
     },
     lsp = {
-        capabilities = vim.lsp.protocol.make_client_capabilities(),
+        capabilities = function()
+            return vim.tbl_deep_extend(
+                'force',
+                {},
+                vim.lsp.protocol.make_client_capabilities()
+                -- require('cmp_nvim_lsp').default_capabilities()
+            )
+        end,
         setup_dynamic_capabilities = function(callback)
             local registerCapability = vim.lsp.handlers[vim.lsp.protocol.Methods.client_registerCapability]
             vim.lsp.handlers[vim.lsp.protocol.Methods.client_registerCapability] = function(err, res, ctx)
@@ -24,34 +31,14 @@ local M = {
 
             vim.o.omnifunc = 'v:lua.MiniCompletion.completefunc_lsp'
 
-            map(m.textDocument_definition, 'gd', "<cmd>Pick lsp scope='definition'<CR>", 'Go to definition')
-            map(m.textDocument_references, 'gR', "<cmd>Pick lsp scope='references'<CR>", 'List references')
-            map(m.textDocument_implementation, 'gi', "<cmd>Pick lsp scope='implementation'<CR>", 'List implementations')
-            map(
-                m.textDocument_typeDefinition,
-                'gy',
-                "<cmd>Pick lsp scope='type_definition'<CR>",
-                'Go to type definition'
-            )
             map(m.textDocument_codeAction, 'ga', vim.lsp.buf.code_action, 'List code actions')
             map(m.textDocument_rename, 'gn', vim.lsp.buf.rename, 'Rename symbol under cursor')
-            map(m.workspace_diagnostics, '<Leader>fd', '<cmd>Pick diagnostic<CR>', 'List workspace diagnostics')
-            map(m.document_symbol, '<Leader>fs', "<cmd>Pick lsp scope='document_symbol'<CR>", 'List document symbols')
-            map(
-                m.workspace_symbol,
-                '<Leader>fS',
-                "<cmd>Pick lsp scope='workspace_symbol'<CR>",
-                'List workspace symbols'
-            )
-
-            map(
-                m.textDocument_inlayHint,
-                '<Leader>ci',
-                function()
-                    vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = bufnr }), { bufnr = bufnr })
-                end,
-                'Toggle inlay hints'
-            )
+            map(m.textDocument_definition, 'gd', vim.lsp.buf.definition, 'Go to definition')
+            map(m.textDocument_references, 'gR', vim.lsp.buf.references, 'List references')
+            map(m.textDocument_implementation, 'gi', vim.lsp.buf.implementation, 'List implementations')
+            map(m.textDocument_typeDefinition, 'gy', vim.lsp.buf.type_definition, 'Go to type definition')
+            map(m.workspace_diagnostics, 'gX', vim.diagnostic.setqflist, 'List workspace diagnostics')
+            map(m.document_symbol, 'gs', vim.lsp.buf.document_symbol, 'List document symbols')
         end,
         servers = {
             eslint = { settings = { format = false } },
@@ -124,6 +111,16 @@ local M = {
         },
     },
     plugins = {
+        mini_bufremove = {
+            delete_other_buffers = function()
+                local current = vim.api.nvim_get_current_buf()
+                for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+                    if current ~= buf then require('mini.bufremove').wipeout(buf, true) end
+                end
+
+                vim.cmd('redraw!')
+            end,
+        },
         mason = {
             tools = {
                 'stylua',
@@ -314,14 +311,6 @@ local M = {
             },
         },
     },
-    delete_other_buffers = function()
-        local current = vim.api.nvim_get_current_buf()
-        for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-            if current ~= buf then require('mini.bufremove').wipeout(buf, true) end
-        end
-
-        vim.cmd('redraw!')
-    end,
 }
 
 return M
