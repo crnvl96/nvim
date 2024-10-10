@@ -60,6 +60,7 @@ now(function()
     o.cursorline = true
     o.linebreak = true
     o.number = true
+    o.switchbuf = 'uselast'
     o.splitbelow = true
     o.splitright = true
     o.ruler = false
@@ -91,6 +92,7 @@ end)
 ---
 
 later(function()
+    set('x', 'p', 'P')
     set('n', '-', '<cmd>Ex<CR>', { desc = 'Netrw' })
     set('n', '<C-H>', '<C-w>h', { desc = 'Focus on left window' })
     set('n', '<C-J>', '<C-w>j', { desc = 'Focus on below window' })
@@ -109,6 +111,8 @@ later(function()
     set('n', '<c-right>', '<Cmd>vertical resize +20<CR>', { desc = 'Decrease window width' })
     set('x', '<', '<gv', { desc = 'Indent visually selected lines' })
     set('x', '>', '>gv', { desc = 'Dedent visually selected lines' })
+    set('n', '[[', '<cmd>cprev<cr>zvzz', { desc = 'Previous quickfix item' })
+    set('n', ']]', '<cmd>cnext<cr>zvzz', { desc = 'Next quickfix item' })
 end)
 
 ---
@@ -290,12 +294,17 @@ end)
 --- FZF
 ---
 
-now(function()
-    add({ source = 'junegunn/fzf', hooks = { post_checkout = function() vim.fn['fzf#install']() end } })
-    add('junegunn/fzf.vim')
-    set('n', '<leader>ff', '<cmd>Files<CR>', { desc = 'Files' })
-    set('n', '<leader>fg', '<cmd>Rg<CR>', { desc = 'Grep' })
-    set('n', '<leader>fh', '<cmd>Helptags<CR>', { desc = 'Help' })
+later(function()
+    -- add({ source = 'junegunn/fzf', hooks = { post_checkout = function() vim.fn['fzf#install']() end } })
+    -- add('junegunn/fzf.vim')
+
+    add('ibhagwan/fzf-lua')
+    require('fzf-lua').setup({ 'telescope' })
+
+    set('n', '<leader>ff', '<cmd>FzfLua files<CR>', { desc = 'Files' })
+    set('n', '<leader>fg', '<cmd>FzfLua grep_project<CR>', { desc = 'Grep' })
+    set('n', '<leader>fh', '<cmd>FzfLua helptags<CR>', { desc = 'Help' })
+    set('n', '<leader>fl', '<cmd>FzfLua blines<CR>', { desc = 'lines' })
 end)
 
 ---
