@@ -60,7 +60,7 @@ now(function()
     o.cursorline = true
     o.linebreak = true
     o.number = true
-    o.switchbuf = 'uselast'
+    o.switchbuf = 'useopen'
     o.splitbelow = true
     o.splitright = true
     o.ruler = false
@@ -122,13 +122,6 @@ end)
 now(function()
     au('TextYankPost', '*', function() vim.highlight.on_yank() end, 'Highlight yanked text')
 
-    au(
-        'User',
-        'MiniFilesWindowOpen',
-        function(args) vim.api.nvim_win_set_config(args.data.win_id, { border = 'double' }) end,
-        'Setup MiniFiles window config'
-    )
-
     au('LspAttach', '*', function(e)
         local client = vim.lsp.get_client_by_id(e.data.client_id)
         if not client then return end
@@ -144,11 +137,14 @@ now(function()
             callback = function()
                 if vim.bo.buftype ~= '' then return end
                 if vim.tbl_contains(ignore, vim.bo.filetype) then return end
+
                 local cursor_line = vim.api.nvim_win_get_cursor(0)[1]
                 if cursor_line > 1 then return end
+
                 local mark_line = vim.api.nvim_buf_get_mark(0, [["]])[1]
                 local n_lines = vim.api.nvim_buf_line_count(0)
                 if not (1 <= mark_line and mark_line <= n_lines) then return end
+
                 vim.cmd([[normal! g`"zv]])
                 if center then vim.cmd('normal! zz') end
             end,
@@ -164,12 +160,6 @@ end)
 ---
 
 now(function() Config.lsp.setup_dynamic_capabilities(Config.lsp.on_attach) end)
-
----
---- Git integration
----
-
-later(function() add('tpope/vim-fugitive') end)
 
 ---
 --- Colorscheme
@@ -190,21 +180,48 @@ now(
 --- Completion
 ---
 
-later(function()
-    require('mini.completion').setup({
-        lsp_completion = {
-            source_func = 'omnifunc',
-            auto_setup = false,
-            process_items = function(items, base)
-                -- Don't show 'Text' and 'Snippet' suggestions
-                items = vim.tbl_filter(function(x) return x.kind ~= 1 and x.kind ~= 15 end, items)
-                return require('mini.completion').default_process_items(items, base)
-            end,
+now(function()
+    add('hrsh7th/cmp-nvim-lsp')
+    add('hrsh7th/cmp-buffer')
+    add('hrsh7th/cmp-path')
+    add('hrsh7th/cmp-cmdline')
+    add({ source = 'iguanacucumber/magazine.nvim', name = 'nvim-cmp' })
+
+    local cmp = require('cmp')
+
+    cmp.setup({
+        snippet = {
+            expand = function(args) vim.snippet.expand(args.body) end,
         },
-        window = {
-            info = { border = 'double' },
-            signature = { border = 'double' },
+        mapping = cmp.mapping.preset.insert({
+            ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+            ['<C-f>'] = cmp.mapping.scroll_docs(4),
+            ['<C-Space>'] = cmp.mapping.complete(),
+            ['<C-e>'] = cmp.mapping.abort(),
+            ['<CR>'] = cmp.mapping.confirm({ select = false }),
+        }),
+        sources = cmp.config.sources({
+            { name = 'nvim_lsp' },
+        }, {
+            { name = 'buffer' },
+        }),
+    })
+
+    cmp.setup.cmdline({ '/', '?' }, {
+        mapping = cmp.mapping.preset.cmdline(),
+        sources = {
+            { name = 'buffer' },
         },
+    })
+
+    cmp.setup.cmdline(':', {
+        mapping = cmp.mapping.preset.cmdline(),
+        sources = cmp.config.sources({
+            { name = 'path' },
+        }, {
+            { name = 'cmdline' },
+        }),
+        matching = { disallow_symbol_nonprefix_matching = false },
     })
 
     if vim.fn.has('nvim-0.11') == 1 then vim.opt.completeopt:append('fuzzy') end
@@ -295,17 +312,29 @@ end)
 ---
 
 later(function()
-    -- add({ source = 'junegunn/fzf', hooks = { post_checkout = function() vim.fn['fzf#install']() end } })
-    -- add('junegunn/fzf.vim')
-
     add('ibhagwan/fzf-lua')
-    require('fzf-lua').setup({ 'telescope' })
+
+    require('fzf-lua').setup({
+        'telescope',
+        winopts = {
+            preview = {
+                layout = 'vertical',
+                vertical = 'up:60%',
+            },
+        },
+    })
 
     set('n', '<leader>ff', '<cmd>FzfLua files<CR>', { desc = 'Files' })
     set('n', '<leader>fg', '<cmd>FzfLua grep_project<CR>', { desc = 'Grep' })
     set('n', '<leader>fh', '<cmd>FzfLua helptags<CR>', { desc = 'Help' })
     set('n', '<leader>fl', '<cmd>FzfLua blines<CR>', { desc = 'lines' })
 end)
+
+---
+--- Git integration
+---
+
+later(function() add('tpope/vim-fugitive') end)
 
 ---
 --- Debugging tools

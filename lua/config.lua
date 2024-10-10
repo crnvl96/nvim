@@ -7,8 +7,8 @@ local M = {
             return vim.tbl_deep_extend(
                 'force',
                 {},
-                vim.lsp.protocol.make_client_capabilities()
-                -- require('cmp_nvim_lsp').default_capabilities()
+                vim.lsp.protocol.make_client_capabilities(),
+                require('cmp_nvim_lsp').default_capabilities()
             )
         end,
         setup_dynamic_capabilities = function(callback)
@@ -111,16 +111,6 @@ local M = {
         },
     },
     plugins = {
-        mini_bufremove = {
-            delete_other_buffers = function()
-                local current = vim.api.nvim_get_current_buf()
-                for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-                    if current ~= buf then require('mini.bufremove').wipeout(buf, true) end
-                end
-
-                vim.cmd('redraw!')
-            end,
-        },
         mason = {
             tools = {
                 'stylua',
