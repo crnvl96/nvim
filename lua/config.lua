@@ -29,16 +29,23 @@ local M = {
                 if sup then setmap() end
             end
 
+            local wrap_fzf = function(module)
+                module = 'lsp_' .. module
+                return function() require('fzf-lua')[module]() end
+            end
+
             vim.o.omnifunc = 'v:lua.MiniCompletion.completefunc_lsp'
 
             map(m.textDocument_codeAction, 'ga', vim.lsp.buf.code_action, 'List code actions')
             map(m.textDocument_rename, 'gn', vim.lsp.buf.rename, 'Rename symbol under cursor')
-            map(m.textDocument_definition, 'gd', vim.lsp.buf.definition, 'Go to definition')
-            map(m.textDocument_references, 'gR', vim.lsp.buf.references, 'List references')
-            map(m.textDocument_implementation, 'gi', vim.lsp.buf.implementation, 'List implementations')
-            map(m.textDocument_typeDefinition, 'gy', vim.lsp.buf.type_definition, 'Go to type definition')
-            map(m.workspace_diagnostics, 'gX', vim.diagnostic.setqflist, 'List workspace diagnostics')
-            map(m.document_symbol, 'gs', vim.lsp.buf.document_symbol, 'List document symbols')
+            map(m.textDocument_definition, 'gd', wrap_fzf('definitions'), 'Go to definition')
+            map(m.textDocument_references, 'gR', wrap_fzf('references'), 'List references')
+            map(m.textDocument_implementation, 'gi', wrap_fzf('implementations'), 'List implementations')
+            map(m.textDocument_typeDefinition, 'gy', wrap_fzf('typedefs'), 'Go to type definition')
+            map(m.workspace_diagnostics, 'gx', wrap_fzf('document_diagnostics'), 'List document diagnostics')
+            map(m.workspace_diagnostics, 'gX', wrap_fzf('workspace_diagnostics'), 'List workspace diagnostics')
+            map(m.document_symbol, 'gs', wrap_fzf('document_symbols'), 'List document symbols')
+            map(m.document_symbol, 'gS', wrap_fzf('live_workspace_symbols'), 'List workspace symbols')
         end,
         servers = {
             eslint = { settings = { format = false } },
@@ -265,6 +272,17 @@ local M = {
                                     sourceMaps = true,
                                     resolveSourceMapLocations = { '${workspaceFolder}/**', '!**/node_modules/**' },
                                     skipFiles = { '${workspaceFolder}/node_modules/**/*.js' },
+                                },
+
+                                {
+                                    name = 'Launch via NPM',
+                                    type = 'pwa-node',
+                                    request = 'launch',
+                                    cwd = '${workspaceFolder}',
+                                    runtimeExecutable = 'npm',
+                                    runtimeArgs = { 'run', 'start:debug' }, -- Use 'run' instead of 'run-script' for npm scripts
+                                    console = 'integratedTerminal', -- (Optional) You can specify where to run the script (e.g., terminal)
+                                    skipFiles = { '<node_internals>/**' }, -- (Optional) Skips Node.js internal files in debug view
                                 },
                             }
                         end

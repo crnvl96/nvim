@@ -93,15 +93,15 @@ end)
 
 later(function()
     set('x', 'p', 'P')
-    set('n', '-', '<cmd>Ex<CR>', { desc = 'Netrw' })
-    set('n', '<C-H>', '<C-w>h', { desc = 'Focus on left window' })
-    set('n', '<C-J>', '<C-w>j', { desc = 'Focus on below window' })
-    set('n', '<C-K>', '<C-w>k', { desc = 'Focus on above window' })
-    set('n', '<C-L>', '<C-w>l', { desc = 'Focus on right window' })
+    set('n', '-', '<Cmd>Ex<CR>', { desc = 'Netrw' })
+    set('n', '<C-h>', '<C-w>h', { desc = 'Focus on left window' })
+    set('n', '<C-j>', '<C-w>j', { desc = 'Focus on below window' })
+    set('n', '<C-k>', '<C-w>k', { desc = 'Focus on above window' })
+    set('n', '<C-l>', '<C-w>l', { desc = 'Focus on right window' })
     set({ 'n', 'x' }, 'j', [[v:count == 0 ? 'gj' : 'j']], { expr = true })
     set({ 'n', 'x' }, 'k', [[v:count == 0 ? 'gk' : 'k']], { expr = true })
-    set('n', '<C-S>', '<Cmd>silent! update | redraw<CR>', { desc = 'Save' })
-    set({ 'i', 'x' }, '<C-S>', '<Esc><Cmd>silent! update | redraw<CR>', { desc = 'Save and go to Normal mode' })
+    set('n', '<C-s>', '<Cmd>silent! update | redraw<CR>', { desc = 'Save' })
+    set({ 'i', 'x' }, '<C-s>', '<Esc><Cmd>silent! update | redraw<CR>', { desc = 'Save and go to Normal mode' })
     set({ 'n', 'x', 'i' }, '<Esc>', '<Esc><Cmd>noh<CR><Esc>', { desc = 'Better Esc' })
     set({ 'n', 'x' }, '<c-d>', '<c-d>zz', { desc = 'Move window down and center' })
     set({ 'n', 'x' }, '<c-u>', '<c-u>zz', { desc = 'Move window up and center' })
@@ -315,7 +315,6 @@ later(function()
     add('ibhagwan/fzf-lua')
 
     require('fzf-lua').setup({
-        'telescope',
         winopts = {
             preview = {
                 layout = 'vertical',
@@ -327,7 +326,11 @@ later(function()
     set('n', '<leader>ff', '<cmd>FzfLua files<CR>', { desc = 'Files' })
     set('n', '<leader>fg', '<cmd>FzfLua grep_project<CR>', { desc = 'Grep' })
     set('n', '<leader>fh', '<cmd>FzfLua helptags<CR>', { desc = 'Help' })
-    set('n', '<leader>fl', '<cmd>FzfLua blines<CR>', { desc = 'lines' })
+    set('n', '<leader>fl', '<cmd>FzfLua blines<CR>', { desc = 'Lines' })
+    set('n', '<leader>fc', '<cmd>FzfLua command_history<CR>', { desc = 'Command history' })
+    set('n', '<leader>gg', '<cmd>FzfLua git_status<CR>', { desc = 'Git status' })
+    set('n', '<leader>fo', '<cmd>FzfLua oldfiles<CR>', { desc = 'Oldfiles' })
+    set('n', '<leader>fk', '<cmd>FzfLua keymaps<CR>', { desc = 'Keymaps' })
 end)
 
 ---
