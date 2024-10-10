@@ -142,6 +142,20 @@ local M = {
 
                 return select(1, ...)
             end,
+            formatters_by_ft = function(callback)
+                return {
+                    markdown = function(buf) return { callback(buf, 'prettierd', 'prettier'), 'injected' } end,
+                    json = { 'prettierd', 'prettier', stop_after_first = true },
+                    jsonc = { 'prettierd', 'prettier', stop_after_first = true },
+                    json5 = { 'prettierd', 'prettier', stop_after_first = true },
+                    lua = { 'stylua' },
+                    typescript = { 'prettierd', 'prettier', stop_after_first = true },
+                    typescriptreact = { 'prettierd', 'prettier', stop_after_first = true },
+                    javascript = { 'prettierd', 'prettier', stop_after_first = true },
+                    javascriptreact = { 'prettierd', 'prettier', stop_after_first = true },
+                    python = { 'black' },
+                }
+            end,
         },
         treesitter = {
             parsers = {

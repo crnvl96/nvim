@@ -13,33 +13,80 @@ deps.setup({ path = { package = Config.path.package } })
 local add, now, later = deps.add, deps.now, deps.later
 
 now(function()
-    vim.o.guicursor = ''
-    vim.o.splitkeep = 'screen'
-    vim.o.number = true
-    vim.o.relativenumber = true
-    vim.o.timeoutlen = 200
-    vim.o.swapfile = false
-    vim.o.shiftwidth = 2
-    vim.o.scrolloff = 8
-    vim.o.pumblend = 0
-    vim.o.winblend = 0
-    vim.o.list = false
-    vim.o.background = 'dark'
-    vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
+    local o = vim.o
+    local opt = vim.opt
+    local g = vim.g
+
+    g.mapleader = ' '
+    g.maplocalleader = ','
+    o.mouse = 'a'
+    o.guicursor = ''
+    o.splitkeep = 'screen'
+    o.relativenumber = true
+    o.timeoutlen = 200
+    o.swapfile = false
+    o.shiftwidth = 2
+    o.scrolloff = 8
+    o.pumblend = 0
+    o.winblend = 0
+    o.list = false
+    o.background = 'dark'
+    o.formatexpr = "v:lua.require'conform'.formatexpr()"
+    o.undofile = true
+    o.backup = false
+    o.writebackup = false
+    o.breakindent = true
+    o.cursorline = true
+    o.linebreak = true
+    o.number = true
+    o.splitbelow = true
+    o.splitright = true
+    o.ruler = false
+    o.showmode = false
+    o.wrap = false
+    o.signcolumn = 'yes'
+    o.ignorecase = true
+    o.incsearch = true
+    o.infercase = true
+    o.smartcase = true
+    o.smartindent = true
+    o.completeopt = 'menuone,noinsert,noselect'
+    o.virtualedit = 'block'
+    o.formatoptions = 'qjl1'
+    o.termguicolors = true
+    o.clipboard = 'unnamedplus'
+
+    opt.shortmess:append('WcC')
+
     if vim.fn.executable('rg') ~= 0 then vim.o.grepprg = 'rg --vimgrep' end
+
+    vim.cmd('filetype plugin indent on')
     vim.cmd('packadd cfilter')
+    if vim.fn.exists('syntax_on') ~= 1 then vim.cmd([[syntax enable]]) end
+    vim.opt.fillchars:append('vert:║,horiz:═,horizdown:╦,horizup:╩,verthoriz:╬,vertleft:╣,vertright:╠')
 end)
 
-now(
-    function()
-        require('mini.basics').setup({
-            options = {
-                extra_ui = true,
-                win_borders = 'double',
-            },
-        })
+now(function()
+    local gr = function(name) vim.api.nvim_create_augroup(name or 'Crnvl96DefaultGroup', {}) end
+    local au = function(event, pattern, callback, desc)
+        vim.api.nvim_create_autocmd(event, { group = gr(), pattern = pattern, callback = callback, desc = desc })
     end
-)
+
+    au('TextYankPost', '*', function() vim.highlight.on_yank() end, 'Highlight yanked text')
+
+    au('LspAttach', '*', function(e)
+        local client = vim.lsp.get_client_by_id(e.data.client_id)
+        if not client then return end
+        Config.lsp.on_attach(client, e.buf)
+    end, 'Lsp attach function')
+
+    au(
+        'User',
+        'MiniFilesWindowOpen',
+        function(args) vim.api.nvim_win_set_config(args.data.win_id, { border = 'double' }) end,
+        'Setup MiniFiles window config'
+    )
+end)
 
 now(function()
     local misc = require('mini.misc')
@@ -67,8 +114,8 @@ now(function()
         end,
     })
 
-    icons.mock_nvim_web_devicons()
-    icons.tweak_lsp_kind()
+    later(icons.mock_nvim_web_devicons)
+    later(icons.tweak_lsp_kind)
 end)
 
 now(
@@ -82,13 +129,7 @@ now(
     end
 )
 
-now(function() add('nvim-neotest/nvim-nio') end)
-
-now(function() add('nvim-lua/plenary.nvim') end)
-
 now(function() require('mini.extra').setup() end)
-
-now(function() require('mini.visits').setup() end)
 
 now(function()
     -- stylua: ignore
@@ -116,14 +157,6 @@ now(function()
                 require('lspconfig')[server_name].setup(server)
             end,
         },
-    })
-
-    vim.api.nvim_create_autocmd('LspAttach', {
-        callback = function(e)
-            local client = vim.lsp.get_client_by_id(e.data.client_id)
-            if not client then return end
-            Config.lsp.on_attach(client, e.buf)
-        end,
     })
 end)
 
@@ -155,20 +188,7 @@ later(function()
 
     require('conform').setup({
         notify_on_error = false,
-        formatters_by_ft = {
-            markdown = function(buf)
-                return { Config.plugins.conform.get_first_formatter(buf, 'prettierd', 'prettier'), 'injected' }
-            end,
-            json = { 'prettierd', 'prettier', stop_after_first = true },
-            jsonc = { 'prettierd', 'prettier', stop_after_first = true },
-            json5 = { 'prettierd', 'prettier', stop_after_first = true },
-            lua = { 'stylua' },
-            typescript = { 'prettierd', 'prettier', stop_after_first = true },
-            typescriptreact = { 'prettierd', 'prettier', stop_after_first = true },
-            javascript = { 'prettierd', 'prettier', stop_after_first = true },
-            javascriptreact = { 'prettierd', 'prettier', stop_after_first = true },
-            python = { 'black' },
-        },
+        formatters_by_ft = Config.plugins.conform.formatters_by_ft(Config.plugins.conform.get_first_formatter),
         formatters = {
             injected = {
                 options = {
@@ -205,28 +225,34 @@ later(function()
     if vim.fn.has('nvim-0.11') == 1 then vim.opt.completeopt:append('fuzzy') end
 end)
 
-later(function()
-    require('mini.files').setup({
-        windows = {
-            preview = true,
-            width_preview = 80,
-        },
-        mappings = {
-            go_in = '',
-            go_in_plus = '<CR>',
-            go_out = '',
-            go_out_plus = '-',
-        },
-    })
+---
+--- File explorer
+---
 
-    vim.api.nvim_create_autocmd('User', {
-        group = vim.api.nvim_create_augroup('crnvl96_mini_files', {}),
-        pattern = 'MiniFilesWindowOpen',
-        callback = function(args) vim.api.nvim_win_set_config(args.data.win_id, { border = 'double' }) end,
-    })
-end)
+later(
+    function()
+        require('mini.files').setup({
+            windows = {
+                preview = true,
+                width_preview = 80,
+            },
+            mappings = {
+                go_in = '',
+                go_in_plus = '<CR>',
+                go_out = '',
+                go_out_plus = '-',
+            },
+        })
+    end
+)
+
+---
+--- General picker (fd, grep, lsp...)
+---
 
 later(function()
+    require('mini.visits').setup()
+
     require('mini.pick').setup({
         options = {
             use_cache = true,
@@ -243,52 +269,13 @@ later(function()
     vim.ui.select = require('mini.pick').ui_select
 end)
 
-later(
-    function()
-        require('mini.clue').setup({
-            clues = {
-                require('mini.clue').gen_clues.builtin_completion(),
-                require('mini.clue').gen_clues.g(),
-                require('mini.clue').gen_clues.marks(),
-                require('mini.clue').gen_clues.registers(),
-                require('mini.clue').gen_clues.windows({ submode_resize = true }),
-                require('mini.clue').gen_clues.z(),
-                { mode = 'n', keys = '<Leader>b', desc = '+Buffers' },
-                { mode = 'n', keys = '<Leader>c', desc = '+Code' },
-                { mode = 'n', keys = '<Leader>d', desc = '+DAP' },
-                { mode = 'n', keys = '<Leader>f', desc = '+Files' },
-                { mode = 'n', keys = '<Leader>g', desc = '+Git' },
-                { mode = 'n', keys = '<Leader>o', desc = '+Operators' },
-            },
-            triggers = {
-                { mode = 'n', keys = '<Leader>' },
-                { mode = 'x', keys = '<Leader>' },
-                { mode = 'n', keys = [[\]] },
-                { mode = 'n', keys = '[' },
-                { mode = 'n', keys = ']' },
-                { mode = 'x', keys = '[' },
-                { mode = 'x', keys = ']' },
-                { mode = 'i', keys = '<C-x>' },
-                { mode = 'n', keys = 'g' },
-                { mode = 'x', keys = 'g' },
-                { mode = 'n', keys = "'" },
-                { mode = 'n', keys = '`' },
-                { mode = 'x', keys = "'" },
-                { mode = 'x', keys = '`' },
-                { mode = 'n', keys = '"' },
-                { mode = 'x', keys = '"' },
-                { mode = 'i', keys = '<C-r>' },
-                { mode = 'c', keys = '<C-r>' },
-                { mode = 'n', keys = '<C-w>' },
-                { mode = 'n', keys = 'z' },
-                { mode = 'x', keys = 'z' },
-            },
-            window = { config = { width = 'auto', border = 'double' }, delay = 200 },
-        })
-    end
-)
+---
+--- Debugging tools
+---
 
 later(function()
+    add('nvim-neotest/nvim-nio')
+    add('nvim-lua/plenary.nvim')
     add('mfussenegger/nvim-dap-python')
     add('jbyuki/one-small-step-for-vimkind')
     add('rcarriga/nvim-dap-ui')
@@ -300,12 +287,15 @@ later(function()
     Config.plugins.dap.setup.javascript()
 end)
 
-later(function() require('mini.test').setup() end)
-
-later(function() require('mini.doc').setup() end)
+---
+--- Development focused plugins
+---
 
 later(function()
     add('danymat/neogen')
+
+    require('mini.test').setup()
+    require('mini.doc').setup()
 
     require('neogen').setup({
         languages = {
@@ -315,10 +305,21 @@ later(function()
     })
 end)
 
+---
+--- Keymaps
+---
+
 later(function()
     local set = vim.keymap.set
 
-    set('x', 'p', 'P')
+    set('n', '<C-H>', '<C-w>h', { desc = 'Focus on left window' })
+    set('n', '<C-J>', '<C-w>j', { desc = 'Focus on below window' })
+    set('n', '<C-K>', '<C-w>k', { desc = 'Focus on above window' })
+    set('n', '<C-L>', '<C-w>l', { desc = 'Focus on right window' })
+    set({ 'n', 'x' }, 'j', [[v:count == 0 ? 'gj' : 'j']], { expr = true })
+    set({ 'n', 'x' }, 'k', [[v:count == 0 ? 'gk' : 'k']], { expr = true })
+    set('n', '<C-S>', '<Cmd>silent! update | redraw<CR>', { desc = 'Save' })
+    set({ 'i', 'x' }, '<C-S>', '<Esc><Cmd>silent! update | redraw<CR>', { desc = 'Save and go to Normal mode' })
     set({ 'n', 'x', 'i' }, '<Esc>', '<Esc><Cmd>noh<CR><Esc>', { desc = 'Better Esc' })
     set({ 'n', 'x' }, '<c-d>', '<c-d>zz', { desc = 'Move window down and center' })
     set({ 'n', 'x' }, '<c-u>', '<c-u>zz', { desc = 'Move window up and center' })
@@ -347,7 +348,10 @@ later(function()
     set('n', '<Leader>de', function() require('dapui').eval(nil, { enter = true }) end, { desc = 'Dap Eval' })
 end)
 
--- Development plugins
+---
+--- Development Plugins
+---
+
 MiniDeps.later(function()
     MiniDeps.add({
         source = 'crnvl96/lazydocker.nvim',
