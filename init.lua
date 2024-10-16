@@ -34,9 +34,14 @@ later(function()
 end)
 
 now(function()
-    add('olimorris/onedarkpro.nvim')
+    add('sainnhe/edge')
 
-    vim.cmd('colorscheme onedark')
+    vim.g.edge_style = 'aura'
+    vim.g.edge_dim_foreground = 1
+    vim.g.edge_disable_italic_comment = 1
+    vim.g.edge_better_performance = 1
+
+    vim.cmd('colorscheme edge')
 end)
 
 now(function()
