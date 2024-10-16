@@ -1,3 +1,10 @@
+MiniDeps.add({
+    source = 'stevearc/conform.nvim',
+    depends = {
+        { source = 'williamboman/mason.nvim' },
+    },
+})
+
 local get_first_formatter = function(buffer, ...)
     for i = 1, select('#', ...) do
         local formatter = select(i, ...)
