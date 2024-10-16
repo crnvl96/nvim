@@ -26,10 +26,7 @@ now(function() source('settings.lua') end)
 
 later(function() add('tpope/vim-fugitive') end)
 
-later(function()
-    require('mini.doc').setup()
-    require('mini.statusline').setup()
-end)
+later(function() source('mini.lua') end)
 
 later(function()
     add('stevearc/oil.nvim')
