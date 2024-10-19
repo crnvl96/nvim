@@ -6,10 +6,9 @@ MiniDeps.add({
 })
 
 require('nvim-treesitter.configs').setup({
-    -- stylua: ignore
-    ensure_installed = { 'bash', 'c', 'gitcommit', 'html', 'javascript', 'json', 'json5', 'jsonc', 'lua',
-    'markdown', 'markdown_inline', 'query', 'regex', 'toml', 'tsx', 'typescript', 'vim', 'vimdoc', 'yaml', },
+    ensure_installed = Lang.get_parsers(),
     auto_install = true,
+    sync_install = false,
     indent = { enable = true },
     highlight = {
         enable = true,

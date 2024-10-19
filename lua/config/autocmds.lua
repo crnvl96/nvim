@@ -32,19 +32,28 @@ vim.api.nvim_create_autocmd('BufReadPost', {
     end,
 })
 
-vim.api.nvim_create_autocmd('VimEnter', {
-    group = vim.api.nvim_create_augroup('Crnvl96RegisterDynamicCapabilities', {}),
-    callback = function() end,
-})
-
-vim.api.nvim_create_autocmd('FileType', {
-    group = vim.api.nvim_create_augroup('Crnvl96DisableCompletion', {}),
-    pattern = { 'clap_input' },
-    callback = function(e) vim.b[e.buf].minicompletion_disable = true end,
-})
-
 vim.api.nvim_create_autocmd('FileType', {
     group = vim.api.nvim_create_augroup('Crnvl96CloseWithQ', {}),
     pattern = { 'fugitive', 'fugitiveblame', 'gitcommit', 'gitrebase', 'qf' },
     callback = function(e) vim.keymap.set('n', 'q', '<cmd>close!<CR>', { buffer = e.buf }) end,
+})
+
+vim.api.nvim_create_autocmd({ 'BufWritePre' }, {
+    group = vim.api.nvim_create_augroup('Crnvl96AutoCreateDirs', {}),
+    callback = function(event)
+        if event.match:match('^%w%w+:[\\/][\\/]') then return end
+        local file = vim.uv.fs_realpath(event.match) or event.match
+        vim.fn.mkdir(vim.fn.fnamemodify(file, ':p:h'), 'p')
+    end,
+})
+
+vim.api.nvim_create_autocmd({ 'FileType' }, {
+    group = vim.api.nvim_create_augroup('Crnvl96HandleLargeFiles', {}),
+    pattern = 'bigfile',
+    callback = function(ev)
+        vim.cmd('syntax off')
+        vim.opt_local.foldmethod = 'manual'
+        vim.opt_local.spell = false
+        vim.schedule(function() vim.bo[ev.buf].syntax = vim.filetype.match({ buf = ev.buf }) or '' end)
+    end,
 })

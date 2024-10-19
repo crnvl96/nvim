@@ -1,6 +1,11 @@
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
+
+vim.g.loaded_netrwPlugin = 1
+vim.g.loaded_netrw = 1
+
 vim.o.backup = false
+vim.o.swapfile = false
 vim.o.mouse = 'a'
 vim.o.guicursor = ''
 vim.o.switchbuf = 'usetab'
@@ -56,3 +61,18 @@ vim.cmd('filetype plugin indent on')
 vim.cmd('packadd cfilter')
 
 vim.diagnostic.config({ signs = false })
+
+vim.filetype.add({
+    pattern = {
+        ['.*'] = {
+            function(path, buf)
+                return vim.bo[buf]
+                        and vim.bo[buf].filetype ~= 'bigfile'
+                        and path
+                        and vim.fn.getfsize(path) > 1024 * 250
+                        and 'bigfile'
+                    or nil
+            end,
+        },
+    },
+})

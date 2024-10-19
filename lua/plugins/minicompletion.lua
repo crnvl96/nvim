@@ -11,18 +11,14 @@ require('mini.completion').setup({
 })
 
 if vim.fn.has('nvim-0.11') == 1 then vim.opt.completeopt:append('fuzzy') end
-
 local keycode = vim.keycode or function(x) return vim.api.nvim_replace_termcodes(x, true, true, true) end
-local function action()
-    local pum_visible = vim.fn.pumvisible() ~= 0
 
-    if pum_visible then
+vim.keymap.set('i', '<CR>', function()
+    if vim.fn.pumvisible() ~= 0 then
         local info = vim.fn.complete_info()
         local item_selected = info.selected ~= -1
         return item_selected and keycode('<C-y>') or keycode('<C-y><CR>')
     end
 
     return keycode('<CR>')
-end
-
-vim.keymap.set('i', '<CR>', action, { expr = true })
+end, { expr = true })

@@ -1,0 +1,15 @@
+return {
+  ["conform.nvim"] = "f5bd8419f8a29451e20bdb1061a54fe13d5c8de3",
+  ["ed-cmd.nvim"] = "07e502fd3512caec99a6f7d48cd46a1108f419a3",
+  ["lazydocker.nvim"] = "968b1674164ba65a4ce56c2704a9711f2010c7db",
+  ["mason-lspconfig.nvim"] = "25c11854aa25558ee6c03432edfa0df0217324be",
+  ["mason.nvim"] = "e2f7f9044ec30067bc11800a9e266664b88cda22",
+  ["mini.nvim"] = "8d94201fece82559881362da80063a4842b6c4c4",
+  ["nvim-dap"] = "7ff6936010b7222fea2caea0f67ed77f1b7c60dd",
+  ["nvim-dap-ui"] = "ffa89839f97bad360e78428d5c740fdad9a0ff02",
+  ["nvim-lspconfig"] = "84f867753f659bfd9319f75bd5eb273a315f2da5",
+  ["nvim-nio"] = "a428f309119086dc78dd4b19306d2d67be884eee",
+  ["nvim-treesitter"] = "df20c049694474021cffb2cc8687c809adc1cbba",
+  ["plenary.nvim"] = "2d9b06177a975543726ce5c73fca176cedbffe9d",
+  ["vim-fugitive"] = "d4877e54cef67f5af4f950935b1ade19ed6b7370"
+}

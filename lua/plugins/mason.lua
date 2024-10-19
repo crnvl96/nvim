@@ -6,13 +6,8 @@ MiniDeps.add({
 })
 
 require('mason').setup()
-
 require('mason-registry').refresh(function()
-    for _, tool in ipairs({
-        'stylua',
-        'prettierd',
-        'js-debug-adapter',
-    }) do
+    for _, tool in ipairs(Lang.get_tools()) do
         local pkg = require('mason-registry').get_package(tool)
         if not pkg:is_installed() then pkg:install() end
     end

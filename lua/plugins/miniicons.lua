@@ -1,4 +1,6 @@
-require('mini.icons').setup({
+local mini_icons = require('mini.icons')
+
+mini_icons.setup({
     style = 'ascii',
     use_file_extension = function(ext, _)
         local suf3, suf4 = ext:sub(-3), ext:sub(-4)
@@ -6,6 +8,5 @@ require('mini.icons').setup({
     end,
 })
 
-require('mini.icons').mock_nvim_web_devicons()
-
-MiniDeps.later(require('mini.icons').tweak_lsp_kind)
+MiniIcons.mock_nvim_web_devicons()
+MiniDeps.later(MiniIcons.tweak_lsp_kind)

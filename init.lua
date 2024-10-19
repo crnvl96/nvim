@@ -13,26 +13,27 @@ end
 require('mini.deps').setup({ path = { package = path_package } })
 local now, later = MiniDeps.now, MiniDeps.later
 
+Lang = require('utils.lang')
+
 now(function() require('config.opts') end)
 now(function() require('config.keymaps') end)
 now(function() require('config.autocmds') end)
-
 now(function() require('plugins.minibase16') end)
 now(function() require('plugins.miniicons') end)
-
-now(function() require('plugins.telescope') end)
+now(function() require('plugins.minipick') end)
 now(function() require('plugins.minicompletion') end)
 
 later(function() require('plugins.mason') end)
 later(function() require('plugins.treesitter') end)
 later(function() require('plugins.lspconfig') end)
-
 later(function() require('plugins.conform') end)
 later(function() require('plugins.dap') end)
-
-later(function() require('plugins.oil') end)
+later(function() require('plugins.minibufremove') end)
+later(function() require('plugins.minifiles') end)
 later(function() require('plugins.fugitive') end)
 later(function() require('plugins.minidoc') end)
+later(function() require('plugins.miniclue') end)
+later(function() require('plugins.ed-cmd') end)
 
 ---
 --- Development Plugins
