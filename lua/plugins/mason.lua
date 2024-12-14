@@ -4,12 +4,11 @@ return {
   lazy = false,
   opts = {},
   config = function(_, opts)
-    local M = require('config.functions')
     require('mason').setup(opts)
 
     -- PERF: lazyly update and install missing mason tools
-    M.au('User', {
-      group = M.group('crnvl96-mason-install-tools', { clear = true }),
+    Au('User', {
+      group = Group('mason-install-tools'),
       pattern = 'VeryLazy',
       callback = function()
         local mr = require('mason-registry')
@@ -37,19 +36,13 @@ return {
             'stylua',
             'selene',
 
-            -- rust
-            'bacon-ls',
-            'rust-analyzer',
-            'bacon',
-            'codelldb',
-
-            -- toml
-            'taplo',
-
             -- python
             'basedpyright',
             'ruff',
             'debugpy',
+
+            -- LaTex
+            'tectonic',
           }) do
             local p = mr.get_package(tool)
             if not p:is_installed() then p:install() end

@@ -14,61 +14,34 @@ return {
     require('lazy.core.loader').add_to_rtp(plugin)
     require('nvim-treesitter.query_predicates')
   end,
-  opts = {
-    highlight = {
-      enable = true,
-    },
-    indent = {
-      enable = true,
-    },
-    ensure_installed = {
-      'bash',
+  opts = function()
+    HasExecutable('tree-sitter')
+    HasGlobalVar('ts_parsers')
+    HasGlobalVar('bigfile')
 
-      -- vimdiff
-      'diff',
+    return {
+      highlight = {
+        enable = true,
+        disable = function(_, buf)
+          local ctx = { buf = buf }
+          return MatchFileType(ctx, { 'tex', 'bigfile' })
+        end,
+      },
+      indent = {
+        enable = true,
+      },
+      sync_install = false,
+      auto_install = true,
+      ensure_installed = vim.list_extend(vim.g.ts_parsers, {
+        -- js/ts
+        'javascript',
+        'typescript',
+        'tsx',
 
-      'html',
-
-      -- markdown
-      'markdown',
-      'markdown_inline',
-
-      'printf',
-      'query',
-      'regex',
-      'toml',
-      'vim',
-      'vimdoc',
-      'xml',
-      'yaml',
-
-      -- json
-      'json',
-      'jsonc',
-
-      -- lua
-      'lua',
-      'luadoc',
-      'luap',
-
-      -- c
-      'c',
-
-      -- js/ts
-      'jsdoc',
-      'javascript',
-      'tsx',
-      'typescript',
-
-      -- rust
-      'rust',
-      'ron',
-
-      -- python
-      'ninja',
-      'rst',
-      'python',
-    },
-  },
+        -- python
+        'python',
+      }),
+    }
+  end,
   config = function(_, opts) require('nvim-treesitter.configs').setup(opts) end,
 }

@@ -14,24 +14,21 @@ return {
     show_help = false,
     show_keys = false,
     spec = {
-      -- Normal mode
       {
         mode = { 'n' },
         { '<leader>b', group = 'buffers' },
         { '<leader>c', group = 'code' },
-        { '<leader>u', group = 'toggle' },
         { '<leader>f', group = 'files' },
-        { '<leader>o', group = 'overseer' },
-        { '<leader>x', group = 'trouble' },
-      },
-      -- Normal and visual mode
-      {
-        mode = { 'n', 'v' },
-        { 'gr', group = 'lsp' },
-        { '<leader>d', group = 'dap' },
-        { '<leader>i', group = 'ia' },
         { '<leader>g', group = 'git' },
-        { '<leader>h', group = 'hunks' },
+        { '<leader>i', group = 'ai' },
+        { '<leader>l', group = 'lsp' },
+        { '<leader>u', group = 'toggle' },
+      },
+      {
+        mode = { 'v' },
+        { '<leader>d', group = 'dap' },
+        { '<leader>g', group = 'git' },
+        { '<leader>i', group = 'ai' },
         { '<leader>l', group = 'lsp' },
       },
     },

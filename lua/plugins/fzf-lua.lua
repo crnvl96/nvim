@@ -2,12 +2,10 @@ return {
   'ibhagwan/fzf-lua',
   cmd = 'FzfLua',
   init = function()
-    local M = require('config.functions')
-
-    M.au('User', {
+    Au('User', {
       pattern = 'VeryLazy',
-      group = M.group('crnvl96-snacks', { clear = true }),
-      callback = function() M.on_load('fzf-lua', require('fzf-lua').register_ui_select) end,
+      group = Group('fzf-register-ui-select'),
+      callback = function() OnLoad('fzf-lua', require('fzf-lua').register_ui_select) end,
     })
   end,
   opts = function()
@@ -21,11 +19,11 @@ return {
       },
       winopts = {
         row = 0.50,
+        border = 'double',
         preview = {
           hidden = 'hidden',
           vertical = 'down:50%',
           horizontal = 'right:50%',
-
           layout = 'flex',
           flip_columns = 120,
         },
@@ -48,13 +46,13 @@ return {
   keys = {
     { '<c-j>', '<c-j>', ft = 'fzf', mode = 't', nowait = true },
     { '<c-k>', '<c-k>', ft = 'fzf', mode = 't', nowait = true },
-    { '<leader>ff', '<cmd>FzfLua files<cr>', desc = 'files' },
-    { '<leader>fb', '<cmd>FzfLua buffers sort_mru=true sort_lastused=true<cr>', desc = 'buffers' },
-    { '<leader>fo', '<cmd>FzfLua oldfiles<cr>', desc = 'oldfiles' },
-    { '<leader>fl', '<cmd>FzfLua blines<cr>', desc = 'blines' },
-    { '<leader>fg', '<cmd>FzfLua live_grep_glob<cr>', desc = 'grep' },
-    { '<leader>fr', '<cmd>FzfLua resume<cr>', desc = 'resume' },
-    { '<leader>fh', '<cmd>FzfLua helptags<cr>', desc = 'help' },
-    { '<leader>fk', '<cmd>FzfLua keymaps<cr>', desc = 'maps' },
+    { '<leader>ff', '<cmd>FzfLua files<cr>', desc = 'fzf: files' },
+    { '<leader>fb', '<cmd>FzfLua buffers sort_mru=true sort_lastused=true<cr>', desc = 'fzf: buffers' },
+    { '<leader>fo', '<cmd>FzfLua oldfiles<cr>', desc = 'fzf: oldfiles' },
+    { '<leader>fl', '<cmd>FzfLua blines<cr>', desc = 'fzf: blines' },
+    { '<leader>fg', '<cmd>FzfLua live_grep_glob<cr>', desc = 'fzf: grep' },
+    { '<leader>fr', '<cmd>FzfLua resume<cr>', desc = 'fzf: resume' },
+    { '<leader>fh', '<cmd>FzfLua helptags<cr>', desc = 'fzf: help' },
+    { '<leader>fk', '<cmd>FzfLua keymaps<cr>', desc = 'fzf: maps' },
   },
 }

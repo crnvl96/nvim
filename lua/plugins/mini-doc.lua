@@ -3,6 +3,6 @@ return {
   ft = 'lua',
   opts = {},
   keys = {
-    { '<leader>cg', '<cmd>lua MiniDoc.generate()<cr>', desc = 'generate plugin doc', ft = 'lua' },
+    { '<leader>cg', '<cmd>lua MiniDoc.generate()<cr>', desc = 'minidoc: generate plugin doc', ft = 'lua' },
   },
 }
