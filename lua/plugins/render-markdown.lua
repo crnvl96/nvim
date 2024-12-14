@@ -1,6 +1,5 @@
 return {
-  {
-    'MeanderingProgrammer/render-markdown.nvim',
-    ft = { 'markdown', 'codecompanion', 'md' },
-  },
+  'MeanderingProgrammer/render-markdown.nvim',
+  enabled = false,
+  ft = { 'markdown', 'codecompanion', 'md' },
 }
