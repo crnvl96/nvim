@@ -61,8 +61,8 @@ return {
     }
   end,
   keys = {
-    { '<Leader>ia', '<cmd>CodeCompanionActions<cr>', desc = 'Actions', mode = { 'n', 'v' } },
-    { '<Leader>ic', '<cmd>CodeCompanionChat<cr>', desc = 'Chat', mode = { 'n', 'v' } },
+    { '<Leader>ii', '<cmd>CodeCompanionActions<cr>', desc = 'Actions', mode = { 'n', 'v' } },
+    { '<Leader>ic', '<cmd>CodeCompanionChat toggle<cr>', desc = 'Chat', mode = { 'n', 'v' } },
     { 'ga', '<cmd>CodeCompanionChat Add<cr>', desc = 'Add to chat', mode = 'v' },
   },
 }
