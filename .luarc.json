@@ -1,0 +1,19 @@
+{
+    "diagnostics.globals": [
+        "vim",
+        "MiniDeps",
+        "MiniExtra",
+        "MiniCompletion",
+        "MiniDiff",
+        "MiniMisc",
+        "MiniPick",
+        "MiniIcons",
+        "MiniFiles",
+        "MiniVisits",
+        "MiniNotify",
+        "MiniClue",
+        "Miniclue",
+        "MiniClues",
+        "Snacks"
+    ]
+}
