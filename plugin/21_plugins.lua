@@ -40,7 +40,7 @@ later(function()
   require('nvim-treesitter.configs').setup({
     highlight = {
       enable = true,
-      disable = function(_, buf) return vim.tbl_contains({ 'tex', 'bigfile' }, vim.bo[buf].filetype) end,
+      disable = function(_, buf) return vim.tbl_contains({ 'tex' }, vim.bo[buf].filetype) end,
     },
     indent = {
       enable = true,
