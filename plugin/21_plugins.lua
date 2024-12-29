@@ -1,13 +1,15 @@
-Later(function() Add({ source = 'nvim-lua/plenary.nvim' }) end)
-Later(function() Add({ source = 'lambdalisue/vim-suda' }) end)
-Later(function() Add({ source = 'ficcdaf/academic.nvim' }) end)
-Later(function() Add({ source = 'mechatroner/rainbow_csv' }) end)
-Later(function() Add({ source = 'HakonHarnes/img-clip.nvim' }) end)
-Later(function() Add({ source = 'mfussenegger/nvim-lint' }) end)
-Later(function() Add({ source = 'lervag/vimtex' }) end)
+local add, later = MiniDeps.add, MiniDeps.later
 
-Later(function()
-  Add({
+later(function() add({ source = 'nvim-lua/plenary.nvim' }) end)
+later(function() add({ source = 'lambdalisue/vim-suda' }) end)
+later(function() add({ source = 'ficcdaf/academic.nvim' }) end)
+later(function() add({ source = 'mechatroner/rainbow_csv' }) end)
+later(function() add({ source = 'HakonHarnes/img-clip.nvim' }) end)
+later(function() add({ source = 'mfussenegger/nvim-lint' }) end)
+later(function() add({ source = 'lervag/vimtex' }) end)
+
+later(function()
+  add({
     source = 'psliwka/vim-dirtytalk',
     hooks = {
       post_checkout = function() vim.cmd('DirtytalkUpdate') end,
@@ -15,32 +17,32 @@ Later(function()
   })
 end)
 
-Later(function()
-  Add({
+later(function()
+  add({
     source = 'iamcco/markdown-preview.nvim',
     hooks = {
       post_checkout = function()
-        Later(function() vim.fn['mkdp#util#install']() end)
+        later(function() vim.fn['mkdp#util#install']() end)
       end,
       post_install = function()
-        Later(function() vim.fn['mkdp#util#install']() end)
+        later(function() vim.fn['mkdp#util#install']() end)
       end,
     },
   })
 end)
 
-Later(function()
-  Add({
+later(function()
+  add({
     source = 'williamboman/mason.nvim',
     hooks = { post_checkout = function() vim.cmd('MasonUpdate') end },
   })
 
   require('mason').setup()
-  Later(RefreshMasonRegistry)
+  later(Config.refresh_registry)
 end)
 
-Later(function()
-  Add({
+later(function()
+  add({
     source = 'nvim-treesitter/nvim-treesitter',
     hooks = { post_checkout = function() vim.cmd('TSUpdate') end },
   })
@@ -77,13 +79,13 @@ Later(function()
   })
 end)
 
-Later(function()
-  Add({ source = 'saghen/blink.compat' })
-  Add({
+later(function()
+  add({ source = 'saghen/blink.compat' })
+  add({
     source = 'Saghen/blink.cmp',
     hooks = {
-      post_checkout = function(params) DepsBuild(params, { 'cargo', 'build', '--release' }) end,
-      post_install = function(params) DepsBuild(params, { 'cargo', 'build', '--release' }) end,
+      post_checkout = function(params) Config.build(params, { 'cargo', 'build', '--release' }) end,
+      post_install = function(params) Config.build(params, { 'cargo', 'build', '--release' }) end,
     },
   })
 
@@ -166,8 +168,8 @@ Later(function()
   })
 end)
 
-Later(function()
-  Add({ source = 'olimorris/codecompanion.nvim' })
+later(function()
+  add({ source = 'olimorris/codecompanion.nvim' })
 
   local path = vim.fn.stdpath('config') .. '/anthropic'
   local file = io.open(path, 'r')
@@ -197,8 +199,8 @@ Later(function()
   })
 end)
 
-Later(function()
-  Add({ source = 'stevearc/conform.nvim' })
+later(function()
+  add({ source = 'stevearc/conform.nvim' })
 
   require('conform').setup({
     notify_on_error = true,
@@ -252,22 +254,24 @@ Later(function()
   })
 end)
 
-Later(function()
-  Add({ source = 'neovim/nvim-lspconfig' })
+later(function()
+  add({ source = 'neovim/nvim-lspconfig' })
+
+  local capabilities = Config.capabilities()
 
   require('lspconfig').vtsls.setup({
-    capabilities = Capabilities(),
+    capabilities = capabilities,
     root_dir = function(_, buffer) return buffer and vim.fs.root(buffer, { 'package.json' }) end,
     single_file_support = false, -- avoid setting up vtsls on deno projects
   })
 
   require('lspconfig').denols.setup({
-    capabilities = Capabilities(),
+    capabilities = capabilities,
     root_dir = function(_, buffer) return buffer and vim.fs.root(buffer, { 'deno.json', 'deno.jsonc' }) end,
   })
 
   require('lspconfig').basedpyright.setup({
-    capabilities = Capabilities(),
+    capabilities = capabilities,
     settings = {
       basedpyright = {
         typeCheckingMode = 'basic', -- Options: "off", "basic", "strict"
@@ -276,7 +280,7 @@ Later(function()
   })
 
   require('lspconfig').lua_ls.setup({
-    capabilities = Capabilities(),
+    capabilities = capabilities,
     settings = {
       Lua = {
         workspace = { checkThirdParty = false },
@@ -287,10 +291,10 @@ Later(function()
   })
 end)
 
-Later(function()
-  Add({ source = 'mfussenegger/nvim-dap-python' })
-  Add({ source = 'theHamsta/nvim-dap-virtual-text' })
-  Add({ source = 'mfussenegger/nvim-dap' })
+later(function()
+  add({ source = 'mfussenegger/nvim-dap-python' })
+  add({ source = 'theHamsta/nvim-dap-virtual-text' })
+  add({ source = 'mfussenegger/nvim-dap' })
 
   local function json_decode(data)
     local decode = vim.json.decode

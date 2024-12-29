@@ -1,47 +1,42 @@
-Add, Now, Later = MiniDeps.add, MiniDeps.now, MiniDeps.later
-
-function Extend(b, n)
-  local base = vim.deepcopy(b or {})
-  local new = vim.deepcopy(n or {})
-
-  local function is_array(t)
-    for i, _ in pairs(t) do
-      if type(i) ~= 'number' then return false end
-    end
-
-    return true
-  end
-
-  if is_array(base) and is_array(new) then return vim.list_extend(base, new) end
-
-  local function merge(dest, src)
-    for k, v in pairs(src) do
-      local tgt = rawget(dest, k)
-
-      if type(v) == 'table' and type(tgt) == 'table' then
-        if is_array(v) and is_array(tgt) then
-          dest[k] = vim.list_extend(vim.deepcopy(tgt), v)
-        else
-          merge(tgt, v)
-        end
-      else
-        dest[k] = vim.deepcopy(v)
-      end
-    end
-
-    return dest
-  end
-
-  return merge(base, new)
-end
-
 ---@class LinterConfig
 ---@field cond? fun(buf: number): boolean
 ---@field linters string[]
 
+local function is_array(t)
+  for i, _ in pairs(t) do
+    if type(i) ~= 'number' then return false end
+  end
+
+  return true
+end
+
+local function merge(dest, src)
+  for k, v in pairs(src) do
+    local tgt = rawget(dest, k)
+
+    if type(v) == 'table' and type(tgt) == 'table' then
+      if is_array(v) and is_array(tgt) then
+        dest[k] = vim.list_extend(vim.deepcopy(tgt), v)
+      else
+        merge(tgt, v)
+      end
+    else
+      dest[k] = vim.deepcopy(v)
+    end
+  end
+
+  return dest
+end
+
+function Config.extend(b, n)
+  local base = vim.deepcopy(b or {})
+  local new = vim.deepcopy(n or {})
+  if is_array(base) and is_array(new) then return vim.list_extend(base, new) end
+  return merge(base, new)
+end
+
 ---@return table<string, LinterConfig>
-function LintersByFT()
-  ---@type table<string, LinterConfig>
+function Config.linters_by_ft()
   return {
     lua = {
       cond = function(buf) return vim.fs.root(buf, { 'selene.toml' }) ~= nil end,
@@ -57,7 +52,7 @@ function LintersByFT()
   }
 end
 
-function ToggleQF()
+function Config.toggle_quickfix()
   local quickfix_wins = vim.tbl_filter(
     function(win_id) return vim.fn.getwininfo(win_id)[1].quickfix == 1 end,
     vim.api.nvim_tabpage_list_wins(0)
@@ -67,28 +62,24 @@ function ToggleQF()
   vim.cmd(command)
 end
 
-function Capabilities()
+function Config.capabilities()
   local ok = pcall(require, 'blink.cmp')
   local default = vim.lsp.protocol.make_client_capabilities()
-
   if not ok then
     vim.notify('blink.cmp must be installed to have access to full capabilities.', vim.log.levels.ERROR)
     return default
   end
-
   return require('blink.cmp').get_lsp_capabilities(default)
 end
 
-function OnAttach(client, bufnr)
+function Config.on_attach(client, bufnr)
   client.server_capabilities.documentFormattingProvider = false
   client.server_capabilities.documentRangeFormattingProvider = false
 
-  -- vim.bo[bufnr].omnifunc = 'v:lua.MiniCompletion.completefunc_lsp'
-
-  LspOnAttachMaps(bufnr)
+  Config.on_attach_maps(bufnr)
 end
 
-function Clues()
+function Config.clues()
   return {
     { mode = 'n', keys = '<Leader>b', desc = '+Buffer' },
     { mode = 'n', keys = '<Leader>c', desc = '+Code' },
@@ -103,7 +94,7 @@ function Clues()
   }
 end
 
-function Triggers()
+function Config.triggers()
   return {
     { mode = 'n', keys = '<Leader>' },
     { mode = 'x', keys = '<Leader>' },
@@ -131,7 +122,7 @@ function Triggers()
   }
 end
 
-function RegisterMultigrepPicker()
+function Config.multigrep()
   MiniPick.registry.multigrep = function()
     local process
     local symbol = '::'
@@ -227,7 +218,7 @@ function RegisterMultigrepPicker()
   end
 end
 
-function DepsBuild(params, build_cmd)
+function Config.build(params, build_cmd)
   vim.notify('Building ' .. params.name, vim.log.levels.INFO)
   local obj = vim.system(build_cmd, { cwd = params.path }):wait()
   if obj.code == 0 then
@@ -237,7 +228,7 @@ function DepsBuild(params, build_cmd)
   end
 end
 
-function RefreshMasonRegistry()
+function Config.refresh_registry()
   local mr = require('mason-registry')
 
   mr.refresh(function()

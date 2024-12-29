@@ -1,20 +1,22 @@
-Add({ name = 'mini.nvim' })
+local add, now, later = MiniDeps.add, MiniDeps.now, MiniDeps.later
 
-Now(function() vim.cmd('colorscheme minigrey') end)
+add({ name = 'mini.nvim' })
 
-Later(function() require('mini.extra').setup() end)
-Later(function() require('mini.diff').setup() end)
-Later(function() require('mini.doc').setup() end)
-Later(function() require('mini.git').setup() end)
-Later(function() require('mini.operators').setup() end)
-Later(function() require('mini.visits').setup() end)
+now(function() vim.cmd('colorscheme minigrey') end)
 
-Now(function()
+later(function() require('mini.extra').setup() end)
+later(function() require('mini.diff').setup() end)
+later(function() require('mini.doc').setup() end)
+later(function() require('mini.git').setup() end)
+later(function() require('mini.operators').setup() end)
+later(function() require('mini.visits').setup() end)
+
+now(function()
   require('mini.misc').setup_auto_root()
   require('mini.misc').setup_termbg_sync()
 end)
 
-Now(function()
+now(function()
   require('mini.notify').setup({
     content = {
       sort = function(notif_arr)
@@ -28,7 +30,7 @@ Now(function()
   vim.notify = MiniNotify.make_notify()
 end)
 
-Now(function()
+now(function()
   require('mini.icons').setup({
     use_file_extension = function(ext, _)
       local suf3, suf4 = ext:sub(-3), ext:sub(-4)
@@ -38,14 +40,14 @@ Now(function()
 
   MiniIcons.mock_nvim_web_devicons()
 
-  Later(MiniIcons.tweak_lsp_kind)
+  later(MiniIcons.tweak_lsp_kind)
 end)
 
-Later(function()
+later(function()
   local miniclue = require('mini.clue')
   miniclue.setup({
     clues = {
-      Clues(),
+      Config.clues(),
       miniclue.gen_clues.builtin_completion(),
       miniclue.gen_clues.g(),
       miniclue.gen_clues.marks(),
@@ -53,12 +55,12 @@ Later(function()
       miniclue.gen_clues.windows({ submode_resize = true }),
       miniclue.gen_clues.z(),
     },
-    triggers = Triggers(),
+    triggers = Config.triggers(),
     window = { delay = 200, config = { width = 'auto' } },
   })
 end)
 
-Later(
+later(
   function()
     require('mini.files').setup({
       mappings = {
@@ -73,7 +75,7 @@ Later(
   end
 )
 
-Later(function()
+later(function()
   require('mini.pick').setup({
     options = {
       use_cache = true,
@@ -86,5 +88,5 @@ Later(function()
 
   vim.ui.select = MiniPick.ui_select
 
-  RegisterMultigrepPicker()
+  Config.multigrep()
 end)

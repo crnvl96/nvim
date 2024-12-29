@@ -55,7 +55,7 @@ s('ic', 'CodeCompanionChat Toggle', 'codecompanion: toggle chat buffer', 'x')
 s('ii', 'CodeCompanionActions', 'codecompanion: show actions')
 s('ii', 'CodeCompanionActions', 'codecompanion: show actions', 'x')
 
-function LspOnAttachMaps(bufnr)
+function Config.on_attach_maps(bufnr)
   local function ls(lhs, rhs, desc, mode)
     lhs = '<Leader>' .. lhs
     rhs = '<Cmd>' .. rhs .. '<CR>'

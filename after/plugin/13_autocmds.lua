@@ -3,12 +3,11 @@ vim.api.nvim_create_autocmd('LspAttach', {
   callback = function(e)
     local client = vim.lsp.get_client_by_id(e.data.client_id)
     if not client then return end
-    OnAttach(client, e.buf)
+    Config.on_attach(client, e.buf)
   end,
 })
 
-local linters_by_ft = LintersByFT()
-
+local linters_by_ft = Config.linters_by_ft()
 vim.api.nvim_create_autocmd({ 'BufWritePost', 'BufReadPost', 'InsertLeave' }, {
   group = vim.api.nvim_create_augroup('crnvl96-nvim-lint', { clear = true }),
   callback = function(event)
