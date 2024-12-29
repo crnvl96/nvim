@@ -1,5 +1,3 @@
-vim.opt.spelllang = { 'en', 'programming' }
-
 vim.opt.completeopt:append('fuzzy')
 vim.opt.wildoptions:append('fuzzy')
 

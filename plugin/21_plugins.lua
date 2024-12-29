@@ -2,20 +2,10 @@ local add, later = MiniDeps.add, MiniDeps.later
 
 later(function() add({ source = 'nvim-lua/plenary.nvim' }) end)
 later(function() add({ source = 'lambdalisue/vim-suda' }) end)
-later(function() add({ source = 'ficcdaf/academic.nvim' }) end)
 later(function() add({ source = 'mechatroner/rainbow_csv' }) end)
 later(function() add({ source = 'HakonHarnes/img-clip.nvim' }) end)
 later(function() add({ source = 'mfussenegger/nvim-lint' }) end)
 later(function() add({ source = 'lervag/vimtex' }) end)
-
-later(function()
-  add({
-    source = 'psliwka/vim-dirtytalk',
-    hooks = {
-      post_checkout = function() vim.cmd('DirtytalkUpdate') end,
-    },
-  })
-end)
 
 later(function()
   add({
