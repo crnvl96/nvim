@@ -2,6 +2,9 @@
 ---@field cond? fun(buf: number): boolean
 ---@field linters string[]
 
+--- Checks if a lua table is an array or not
+---@param t table
+---@return boolean
 local function is_array(t)
   for i, _ in pairs(t) do
     if type(i) ~= 'number' then return false end
