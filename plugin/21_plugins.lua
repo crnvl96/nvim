@@ -80,6 +80,7 @@ later(function()
   })
 
   require('blink.compat').setup()
+
   require('blink.cmp').setup({
     enabled = function()
       return not vim.tbl_contains({ 'minifiles', 'markdown' }, vim.bo.filetype)
@@ -104,7 +105,7 @@ later(function()
       },
     },
     completion = {
-      ghost_text = { enabled = true },
+      ghost_text = { enabled = false },
       trigger = { show_on_insert_on_trigger_character = false },
       keyword = { range = 'full' },
       accept = { auto_brackets = { enabled = false } },
