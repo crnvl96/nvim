@@ -39,7 +39,6 @@ now(function()
   })
 
   MiniIcons.mock_nvim_web_devicons()
-
   later(MiniIcons.tweak_lsp_kind)
 end)
 
@@ -69,7 +68,7 @@ later(
         go_out = '',
         go_out_plus = '-',
       },
-      windows = { width_nofocus = 25, preview = true, width_preview = 120 },
+      windows = { width_nofocus = 25, preview = true, width_preview = 50 },
       options = { permanent_delete = false },
     })
   end
@@ -81,12 +80,11 @@ later(function()
       use_cache = true,
     },
     window = {
-      prompt_cursor = '_',
+      prompt_cursor = ':',
       prompt_prefix = '',
     },
   })
 
   vim.ui.select = MiniPick.ui_select
-
   Config.multigrep()
 end)
