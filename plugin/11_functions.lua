@@ -98,7 +98,7 @@ end
 function Config.linters_by_ft()
   return {
     lua = {
-      condddd = function(buf) return vim.fs.root(buf, { 'selene.toml' }) ~= nil end,
+      cond = function(buf) return vim.fs.root(buf, { 'selene.toml' }) ~= nil end,
       linters = { 'selene' },
     },
     python = { linters = { 'ruff' } },
