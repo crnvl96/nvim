@@ -27,6 +27,8 @@ set('n', '<C-w>-', '<Cmd>resize -5<CR>', { remap = true })
 set('n', '<C-w><', '<Cmd>vertical resize -20<CR>', { remap = true })
 set('n', '<C-w>>', '<Cmd>vertical resize +20<CR>', { remap = true })
 
+set('n', 'K', [[<Cmd>lua vim.lsp.buf.hover({border="single"})<CR>]], { remap = true })
+
 set({ 'n', 'v', 'i' }, '<Esc>', '<Esc><Cmd>nohl<CR><Esc>')
 set({ 'n', 'i', 'x' }, '<C-s>', '<Esc><Cmd>w<CR><Esc>')
 
