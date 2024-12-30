@@ -1,7 +1,3 @@
----@class LinterConfig
----@field cond? fun(buf: number): boolean
----@field linters string[]
-
 --- Checks if a lua table is an array or not
 ---@param t table
 ---@return boolean
@@ -38,11 +34,71 @@ function Config.extend(b, n)
   return merge(base, new)
 end
 
+function Config.check_cli_requirements()
+  local tools = {
+    'zathura',
+    'tex-fmt',
+    'tree-sitter',
+    'rg',
+    'rustc',
+    'npm',
+  }
+
+  for _, cli in ipairs(tools) do
+    if vim.fn.executable(cli) ~= 1 then
+      local msg = cli .. ' is not installed in the system.'
+      local lvl = vim.log.levels.ERROR
+
+      vim.notify(msg, lvl)
+    end
+  end
+end
+
+function Config.json_decode(data)
+  local decode = vim.json.decode
+  local strip_comments = require('plenary.json').json_strip_comments
+  data = strip_comments(data)
+
+  return decode(data)
+end
+
+--- Retrieve a LLM (in this case, from anthropic) from a local file, and returns it
+--- to be integrated with relevant plugins.
+---
+--- This is done this way to avoid exposing the private key in the running shell session via environment keys.
+---@return string?
+function Config.retrieve_llm_key()
+  ---@type string
+  local path = vim.fn.stdpath('config') .. '/anthropic'
+  ---@type file*?
+  local file = io.open(path, 'r')
+  ---@type string?
+  local key
+
+  if file then
+    ---@type string?
+    key = file:read('*a'):gsub('%s+$', '')
+    file:close()
+  end
+
+  return key or nil
+end
+
+---@return string?
+function Config.get_install_path(tool)
+  local path = require('mason-registry').get_package(tool):get_install_path()
+  return path or nil
+end
+
+---@class LinterConfig
+---@field cond? fun(buf: number): boolean
+---@field linters string[]
+
 ---@return table<string, LinterConfig>
 function Config.linters_by_ft()
   return {
     lua = {
-      cond = function(buf) return vim.fs.root(buf, { 'selene.toml' }) ~= nil end,
+      condddd = function(buf) return vim.fs.root(buf, { 'selene.toml' }) ~= nil end,
       linters = { 'selene' },
     },
     python = { linters = { 'ruff' } },
@@ -52,6 +108,51 @@ function Config.linters_by_ft()
     typescriptreact = { linters = { 'eslint_d' } },
     ['javascript.tsx'] = { linters = { 'eslint_d' } },
     ['typescript.tsx'] = { linters = { 'eslint_d' } },
+  }
+end
+
+function Config.formatters_by_ft()
+  return {
+    markdown = { 'prettierd', 'injected' },
+    css = { 'prettierd' },
+    tex = { 'tex-fmt' },
+    html = { 'prettierd' },
+    json = { 'prettierd' },
+    toml = { 'taplo' },
+    lua = { 'stylua' },
+    javascript = { 'deno_fmt', 'prettierd' },
+    typescript = { 'deno_fmt', 'prettierd' },
+    javascriptreact = { 'deno_fmt', 'prettierd' },
+    typescriptreact = { 'deno_fmt', 'prettierd' },
+    ['javascript.tsx'] = { 'deno_fmt', 'prettierd' },
+    ['typescript.tsx'] = { 'deno_fmt', 'prettierd' },
+    python = { 'ruff_fix', 'ruff_organize_imports', 'ruff_format' },
+  }
+end
+
+function Config.formatters_settings()
+  return {
+    injected = { ignore_errors = true },
+    prettierd = {
+      condition = function()
+        local buffer = vim.api.nvim_get_current_buf()
+        return (
+          vim.tbl_contains({
+            'javascript',
+            'javascriptreact',
+            'javascript.jsx',
+            'typescript',
+            'typescriptreact',
+            'typescript.tsx',
+          }, vim.bo[buffer].filetype) and not vim.fs.root(buffer, { 'package.json' })
+        ) or true
+      end,
+    },
+    deno_fmt = {
+      condition = function()
+        return vim.fs.root(vim.api.nvim_get_current_buf(), { 'deno.json', 'deno.jsonc' }) and true or false
+      end,
+    },
   }
 end
 

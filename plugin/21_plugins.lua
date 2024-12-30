@@ -162,13 +162,10 @@ end)
 later(function()
   add({ source = 'olimorris/codecompanion.nvim' })
 
-  local path = vim.fn.stdpath('config') .. '/anthropic'
-  local file = io.open(path, 'r')
-  local key
-
-  if file then
-    key = file:read('*a'):gsub('%s+$', '')
-    file:close()
+  local key = Config.retrieve_llm_key()
+  if not key then
+    vim.notify('An `anthropic` key must be set for a proper config setup', vim.log.levels.ERROR)
+    return
   end
 
   require('codecompanion').setup({
@@ -193,55 +190,13 @@ end)
 later(function()
   add({ source = 'stevearc/conform.nvim' })
 
+  local formatters_by_ft = Config.formatters_by_ft()
+  local formatters = Config.formatters_settings()
+
   require('conform').setup({
     notify_on_error = true,
-    formatters_by_ft = {
-      markdown = { 'prettierd', 'injected' },
-      css = { 'prettierd' },
-      tex = { 'tex-fmt' },
-      html = { 'prettierd' },
-      json = { 'prettierd' },
-      toml = { 'taplo' },
-      lua = { 'stylua' },
-      javascript = { 'deno_fmt', 'prettierd' },
-      typescript = { 'deno_fmt', 'prettierd' },
-      javascriptreact = { 'deno_fmt', 'prettierd' },
-      typescriptreact = { 'deno_fmt', 'prettierd' },
-      ['javascript.tsx'] = { 'deno_fmt', 'prettierd' },
-      ['typescript.tsx'] = { 'deno_fmt', 'prettierd' },
-      python = { 'ruff_fix', 'ruff_organize_imports', 'ruff_format' },
-    },
-    format_on_save = function()
-      return {
-        timeout_ms = 3000,
-        async = false,
-        quiet = false,
-        lsp_format = 'fallback',
-      }
-    end,
-    formatters = {
-      injected = { ignore_errors = true },
-      prettierd = {
-        condition = function()
-          local buffer = vim.api.nvim_get_current_buf()
-          return (
-            vim.tbl_contains({
-              'javascript',
-              'javascriptreact',
-              'javascript.jsx',
-              'typescript',
-              'typescriptreact',
-              'typescript.tsx',
-            }, vim.bo[buffer].filetype) and not vim.fs.root(buffer, { 'package.json' })
-          ) or true
-        end,
-      },
-      deno_fmt = {
-        condition = function()
-          return vim.fs.root(vim.api.nvim_get_current_buf(), { 'deno.json', 'deno.jsonc' }) and true or false
-        end,
-      },
-    },
+    formatters_by_ft = formatters_by_ft,
+    formatters = formatters,
   })
 end)
 
@@ -275,7 +230,7 @@ later(function()
     settings = {
       Lua = {
         workspace = { checkThirdParty = false },
-        codeLens = { enable = true },
+        codeLens = { enable = false },
         doc = { privateName = { '^_' } },
       },
     },
@@ -287,17 +242,17 @@ later(function()
   add({ source = 'theHamsta/nvim-dap-virtual-text' })
   add({ source = 'mfussenegger/nvim-dap' })
 
-  local function json_decode(data)
-    local decode = vim.json.decode
-    local strip_comments = require('plenary.json').json_strip_comments
-    data = strip_comments(data)
-
-    return decode(data)
-  end
-
   vim.api.nvim_set_hl(0, 'DapStoppedLine', { default = true, link = 'Visual' })
 
   require('nvim-dap-virtual-text').setup({ virt_text_pos = 'eol' })
-  require('dap-python').setup(require('mason-registry').get_package('debugpy'):get_install_path() .. '/venv/bin/python')
-  require('dap.ext.vscode').json_decode = json_decode
+
+  local debugpy_path = Config.get_install_path('debugpy')
+
+  if not debugpy_path then
+    vim.notify('You need to install `debugpy` for dap to work properly', vim.log.levels.ERROR)
+    return
+  end
+
+  require('dap-python').setup(debugpy_path .. '/venv/bin/python')
+  require('dap.ext.vscode').json_decode = Config.json_decode
 end)
