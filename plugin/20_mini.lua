@@ -28,6 +28,7 @@ now(function()
   })
 
   vim.notify = MiniNotify.make_notify()
+  Config.check_cli_requirements()
 end)
 
 now(function()
@@ -80,7 +81,7 @@ later(function()
       use_cache = true,
     },
     window = {
-      prompt_cursor = ':',
+      prompt_cursor = '|',
       prompt_prefix = '',
     },
   })
