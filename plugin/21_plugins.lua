@@ -28,7 +28,7 @@ later(function()
   })
 
   require('mason').setup()
-  later(Config.refresh_registry)
+  later(Lang.refresh_mason_registry)
 end)
 
 later(function()
@@ -47,25 +47,7 @@ later(function()
     },
     sync_install = false,
     auto_install = true,
-    ensure_installed = {
-      'c',
-      'vim',
-      'vimdoc',
-      'query',
-      'markdown',
-      'markdown_inline',
-
-      -- lua
-      'lua',
-
-      -- js/ts
-      'javascript',
-      'typescript',
-      'tsx',
-
-      -- python
-      'python',
-    },
+    ensure_installed = Lang.treesitter_parsers_by_ft(),
   })
 end)
 
@@ -190,8 +172,8 @@ end)
 later(function()
   add({ source = 'stevearc/conform.nvim' })
 
-  local formatters_by_ft = Config.formatters_by_ft()
-  local formatters = Config.formatters_settings()
+  local formatters_by_ft = Lang.formatters_by_ft()
+  local formatters = Lang.formatters_settings()
 
   require('conform').setup({
     notify_on_error = true,
@@ -202,72 +184,7 @@ end)
 
 later(function()
   add({ source = 'neovim/nvim-lspconfig' })
-
-  local capabilities = Config.capabilities()
-
-  require('lspconfig').vtsls.setup({
-    capabilities = capabilities,
-    root_dir = function(_, buffer) return buffer and vim.fs.root(buffer, { 'package.json' }) end,
-    single_file_support = false, -- avoid setting up vtsls on deno projects
-  })
-
-  require('lspconfig').denols.setup({
-    capabilities = capabilities,
-    root_dir = function(_, buffer) return buffer and vim.fs.root(buffer, { 'deno.json', 'deno.jsonc' }) end,
-  })
-
-  require('lspconfig').basedpyright.setup({
-    capabilities = capabilities,
-    settings = {
-      basedpyright = {
-        typeCheckingMode = 'basic', -- Options: "off", "basic", "strict"
-      },
-    },
-  })
-
-  require('lspconfig').lua_ls.setup({
-    capabilities = capabilities,
-    on_init = function(client)
-      if client.workspace_folders then
-        local path = client.workspace_folders[1].name
-        if vim.loop.fs_stat(path .. '/.luarc.json') or vim.loop.fs_stat(path .. '/.luarc.jsonc') then return end
-      end
-
-      client.config.settings.Lua = vim.tbl_deep_extend('force', client.config.settings.Lua, {
-        diagnostics = {
-          globals = {
-            'vim',
-            'MiniPick',
-            'MiniClue',
-            'MiniDeps',
-            'MiniNotify',
-            'MiniIcons',
-          },
-        },
-        runtime = {
-          version = 'LuaJIT',
-        },
-        workspace = {
-          checkThirdParty = false,
-          library = {
-            vim.env.VIMRUNTIME,
-            '${3rd}/luv/library',
-          },
-        },
-      })
-    end,
-    settings = {
-      Lua = {
-        -- Using stylua for formatting.
-        format = { enable = false },
-        hint = {
-          enable = true,
-          arrayIndex = 'Disable',
-        },
-        completion = { callSnippet = 'Replace' },
-      },
-    },
-  })
+  Lang.setup_lsp_servers()
 end)
 
 later(function()
@@ -276,16 +193,8 @@ later(function()
   add({ source = 'mfussenegger/nvim-dap' })
 
   vim.api.nvim_set_hl(0, 'DapStoppedLine', { default = true, link = 'Visual' })
-
   require('nvim-dap-virtual-text').setup({ virt_text_pos = 'eol' })
-
-  local debugpy_path = Config.get_install_path('debugpy')
-
-  if not debugpy_path then
-    vim.notify('You need to install `debugpy` for dap to work properly', vim.log.levels.ERROR)
-    return
-  end
-
-  require('dap-python').setup(debugpy_path .. '/venv/bin/python')
   require('dap.ext.vscode').json_decode = Config.json_decode
+
+  Lang.setup_lang_servers()
 end)

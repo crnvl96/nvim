@@ -14,5 +14,3 @@ if not vim.loop.fs_stat(mini_path) then
 end
 
 require('mini.deps').setup()
-
-_G.Config = {}

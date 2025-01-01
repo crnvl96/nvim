@@ -7,7 +7,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
   end,
 })
 
-local linters_by_ft = Config.linters_by_ft()
+local linters_by_ft = Lang.linters_by_ft()
 vim.api.nvim_create_autocmd({ 'BufWritePost', 'BufReadPost', 'InsertLeave' }, {
   group = vim.api.nvim_create_augroup('crnvl96-nvim-lint', { clear = true }),
   callback = function(e)

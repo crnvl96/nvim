@@ -1,37 +1,13 @@
---- Checks if a lua table is an array or not
----@param t table
----@return boolean
-local function is_array(t)
-  for i, _ in pairs(t) do
-    if type(i) ~= 'number' then return false end
-  end
+_G.Config = {}
+_G.Lang = {}
 
-  return true
-end
-
-local function merge(dest, src)
-  for k, v in pairs(src) do
-    local tgt = rawget(dest, k)
-
-    if type(v) == 'table' and type(tgt) == 'table' then
-      if is_array(v) and is_array(tgt) then
-        dest[k] = vim.list_extend(vim.deepcopy(tgt), v)
-      else
-        merge(tgt, v)
-      end
-    else
-      dest[k] = vim.deepcopy(v)
-    end
-  end
-
-  return dest
-end
+local H = {}
 
 function Config.extend(b, n)
   local base = vim.deepcopy(b or {})
   local new = vim.deepcopy(n or {})
-  if is_array(base) and is_array(new) then return vim.list_extend(base, new) end
-  return merge(base, new)
+  if H.is_array(base) and H.is_array(new) then return vim.list_extend(base, new) end
+  return H.merge(base, new)
 end
 
 function Config.check_cli_requirements()
@@ -94,8 +70,9 @@ end
 ---@field cond? fun(buf: number): boolean
 ---@field linters string[]
 
+--- Returns a list of linters grouped by the filetype they should run on
 ---@return table<string, LinterConfig>
-function Config.linters_by_ft()
+function Lang.linters_by_ft()
   return {
     lua = {
       cond = function(buf) return vim.fs.root(buf, { 'selene.toml' }) ~= nil end,
@@ -111,7 +88,7 @@ function Config.linters_by_ft()
   }
 end
 
-function Config.formatters_by_ft()
+function Lang.formatters_by_ft()
   return {
     markdown = { 'prettierd', 'injected' },
     css = { 'prettierd' },
@@ -130,7 +107,7 @@ function Config.formatters_by_ft()
   }
 end
 
-function Config.formatters_settings()
+function Lang.formatters_settings()
   return {
     injected = { ignore_errors = true },
     prettierd = {
@@ -156,6 +133,114 @@ function Config.formatters_settings()
   }
 end
 
+function Lang.treesitter_parsers_by_ft()
+  return {
+    'c',
+    'vim',
+    'vimdoc',
+    'query',
+    'markdown',
+    'markdown_inline',
+
+    -- lua
+    'lua',
+
+    -- js/ts
+    'javascript',
+    'typescript',
+    'tsx',
+
+    -- python
+    'python',
+  }
+end
+
+function Lang.setup_lsp_servers()
+  local capabilities = Config.capabilities()
+
+  require('lspconfig').vtsls.setup({
+    capabilities = capabilities,
+    root_dir = function(_, buffer) return buffer and vim.fs.root(buffer, { 'package.json' }) end,
+    single_file_support = false, -- avoid setting up vtsls on deno projects
+  })
+
+  require('lspconfig').denols.setup({
+    capabilities = capabilities,
+    root_dir = function(_, buffer) return buffer and vim.fs.root(buffer, { 'deno.json', 'deno.jsonc' }) end,
+  })
+
+  require('lspconfig').basedpyright.setup({
+    capabilities = capabilities,
+    settings = {
+      basedpyright = {
+        typeCheckingMode = 'basic', -- Options: "off", "basic", "strict"
+      },
+    },
+  })
+
+  require('lspconfig').lua_ls.setup({
+    capabilities = capabilities,
+    on_init = function(client)
+      if client.workspace_folders then
+        local path = client.workspace_folders[1].name
+        if vim.loop.fs_stat(path .. '/.luarc.json') or vim.loop.fs_stat(path .. '/.luarc.jsonc') then return end
+      end
+
+      client.config.settings.Lua = vim.tbl_deep_extend('force', client.config.settings.Lua, {
+        diagnostics = {
+          globals = {
+            'vim',
+            'MiniPick',
+            'MiniClue',
+            'MiniDeps',
+            'MiniNotify',
+            'MiniIcons',
+          },
+        },
+        runtime = {
+          version = 'LuaJIT',
+        },
+        workspace = {
+          checkThirdParty = false,
+          library = {
+            vim.env.VIMRUNTIME,
+            '${3rd}/luv/library',
+          },
+        },
+      })
+    end,
+    settings = {
+      Lua = {
+        -- Using stylua for formatting.
+        format = { enable = false },
+        hint = {
+          enable = true,
+          arrayIndex = 'Disable',
+        },
+        -- completion = { callSnippet = 'Replace' },
+        completion = {
+          callSnippet = 'Disable',
+          keywordSnippet = 'Disable',
+        },
+      },
+    },
+  })
+end
+
+function Lang.setup_lang_servers()
+  ---
+  --- Python debug adapter
+  ---
+  local debugpy_path = Config.get_install_path('debugpy')
+
+  if not debugpy_path then
+    vim.notify('You need to install `debugpy` for dap to work properly', vim.log.levels.ERROR)
+    return
+  end
+
+  require('dap-python').setup(debugpy_path .. '/venv/bin/python')
+end
+
 function Config.toggle_quickfix()
   local quickfix_wins = vim.tbl_filter(
     function(win_id) return vim.fn.getwininfo(win_id)[1].quickfix == 1 end,
@@ -169,11 +254,15 @@ end
 function Config.capabilities()
   local ok = pcall(require, 'blink.cmp')
   local default = vim.lsp.protocol.make_client_capabilities()
+
   if not ok then
     vim.notify('blink.cmp must be installed to have access to full capabilities.', vim.log.levels.ERROR)
     return default
   end
-  return require('blink.cmp').get_lsp_capabilities(default)
+
+  return require('blink.cmp').get_lsp_capabilities(vim.tbl_deep_extend('force', default, {
+    textDocument = { completion = { completionItem = { snippetSupport = false } } },
+  }))
 end
 
 function Config.on_attach(client, bufnr)
@@ -332,7 +421,7 @@ function Config.build(params, build_cmd)
   end
 end
 
-function Config.refresh_registry()
+function Lang.refresh_mason_registry()
   local mr = require('mason-registry')
 
   mr.refresh(function()
@@ -360,4 +449,33 @@ function Config.refresh_registry()
       if not p:is_installed() then p:install() end
     end
   end)
+end
+
+--- Checks if a lua table is an array or not
+---@param t table
+---@return boolean
+function H.is_array(t)
+  for i, _ in pairs(t) do
+    if type(i) ~= 'number' then return false end
+  end
+
+  return true
+end
+
+function H.merge(dest, src)
+  for k, v in pairs(src) do
+    local tgt = rawget(dest, k)
+
+    if type(v) == 'table' and type(tgt) == 'table' then
+      if H.is_array(v) and H.is_array(tgt) then
+        dest[k] = vim.list_extend(vim.deepcopy(tgt), v)
+      else
+        H.merge(tgt, v)
+      end
+    else
+      dest[k] = vim.deepcopy(v)
+    end
+  end
+
+  return dest
 end
