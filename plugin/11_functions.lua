@@ -86,29 +86,28 @@ function Plugin.minipick_opts()
     },
     window = {
       config = function()
-        local height, width, starts, ends
+        local height, width, col, row
         local win_width = vim.o.columns
         local win_height = vim.o.lines
 
         if win_height <= 25 then
           height = math.min(win_height, 18)
           width = win_width
-          starts = 1
-          ends = win_height
+          col = 1
+          row = win_height
         else
-          width = math.floor(win_width * 0.5) -- 50%
-          height = math.floor(win_height * 0.3) -- 30%
-          starts = math.floor((win_width - width) / 2)
-          -- center prompt: height * (50% + 30%)
-          -- center window: height * [50% + (30% / 2)]
-          ends = math.floor(win_height * 0.65)
+          width = math.floor(win_width * 0.618)
+          height = math.floor(win_height * 0.618)
+          col = math.floor(0.5 * (vim.o.columns - width))
+          row = math.floor(0.5 * (vim.o.lines - height))
         end
 
         return {
-          col = starts,
-          row = ends,
+          col = col,
+          row = row,
           height = height,
           width = width,
+          anchor = 'NW',
           style = 'minimal',
           border = { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
         }
