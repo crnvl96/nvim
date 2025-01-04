@@ -1,7 +1,324 @@
 _G.Config = {}
 _G.Lang = {}
+_G.Plugin = {}
 
 local H = {}
+
+function Plugin.mininotify_opts()
+  return {
+    content = {
+      sort = function(notif_arr)
+        return MiniNotify.default_sort(
+          vim.tbl_filter(function(notif) return not vim.startswith(notif.msg, 'lua_ls: Diagnosing') end, notif_arr)
+        )
+      end,
+    },
+  }
+end
+
+function Plugin.miniicons_opts()
+  return {
+    use_file_extension = function(ext, _)
+      local suf3, suf4 = ext:sub(-3), ext:sub(-4)
+      return suf3 ~= 'scm' and suf3 ~= 'txt' and suf3 ~= 'yml' and suf4 ~= 'json' and suf4 ~= 'yaml'
+    end,
+  }
+end
+
+function Plugin.miniclue_opts()
+  local miniclue = require('mini.clue')
+
+  return {
+    clues = {
+      Config.clues(),
+      miniclue.gen_clues.builtin_completion(),
+      miniclue.gen_clues.g(),
+      miniclue.gen_clues.marks(),
+      miniclue.gen_clues.registers(),
+      miniclue.gen_clues.windows({ submode_resize = true }),
+      miniclue.gen_clues.z(),
+    },
+    triggers = Config.triggers(),
+    window = { delay = 200, config = { width = 'auto' } },
+  }
+end
+
+function Plugin.minifiles_opts()
+  return {
+    mappings = {
+      go_in = '',
+      go_in_plus = '<CR>',
+      go_out = '',
+      go_out_plus = '-',
+    },
+    windows = { width_nofocus = 25, preview = true, width_preview = 50 },
+    options = { permanent_delete = false },
+  }
+end
+
+function Plugin.minipick_opts()
+  return {
+    delay = {
+      async = 10,
+      busy = 30,
+    },
+    options = {
+      use_cache = true,
+    },
+    source = {
+      items = nil,
+      name = nil,
+      cwd = nil,
+
+      match = nil,
+      preview = nil,
+      show = function(buf_id, items, query, opts)
+        require('mini.pick').default_show(
+          buf_id,
+          items,
+          query,
+          vim.tbl_deep_extend('force', { show_icons = true, icons = {} }, opts or {})
+        )
+      end,
+
+      choose = nil,
+      choose_marked = nil,
+    },
+    window = {
+      config = function()
+        local height, width, starts, ends
+        local win_width = vim.o.columns
+        local win_height = vim.o.lines
+
+        if win_height <= 25 then
+          height = math.min(win_height, 18)
+          width = win_width
+          starts = 1
+          ends = win_height
+        else
+          width = math.floor(win_width * 0.5) -- 50%
+          height = math.floor(win_height * 0.3) -- 30%
+          starts = math.floor((win_width - width) / 2)
+          -- center prompt: height * (50% + 30%)
+          -- center window: height * [50% + (30% / 2)]
+          ends = math.floor(win_height * 0.65)
+        end
+
+        return {
+          col = starts,
+          row = ends,
+          height = height,
+          width = width,
+          style = 'minimal',
+          border = { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+        }
+      end,
+
+      prompt_cursor = '|',
+      prompt_prefix = '',
+    },
+    mappings = {
+      caret_left = '<Left>',
+      caret_right = '<Right>',
+
+      choose = '<CR>',
+      choose_in_split = '<C-s>',
+      choose_in_tabpage = '<C-t>',
+      choose_in_vsplit = '<C-v>',
+      choose_marked = '<C-CR>',
+
+      delete_char = '<BS>',
+      delete_char_right = '<S-BS>',
+      delete_left = '<A-BS>',
+      delete_word = '<C-w>',
+
+      mark = '<C-x>',
+      mark_all = '<C-a>',
+
+      move_start = '<C-g>',
+      move_down = '<C-n>',
+      move_up = '<C-p>',
+
+      paste = '<A-p>',
+
+      refine = '<C-Space>',
+      refine_marked = '<M-Space>',
+
+      scroll_up = '<C-u>',
+      scroll_down = '<C-d>',
+      scroll_left = '<C-h>',
+      scroll_right = '<C-l>',
+
+      stop = '<Esc>',
+
+      toggle_info = '<S-Tab>',
+      toggle_preview = '<Tab>',
+
+      send_to_qflist = {
+        char = '<C-q>',
+        func = function() vim.fn.setqflist(H.minipick_parse_matches(), 'r') end,
+      },
+    },
+  }
+end
+
+function Plugin.treesitter_opts()
+  return {
+    highlight = {
+      enable = true,
+      disable = function(_, buf) return vim.tbl_contains({ 'tex' }, vim.bo[buf].filetype) end,
+    },
+    indent = {
+      enable = true,
+    },
+    sync_install = false,
+    auto_install = true,
+    ensure_installed = Lang.treesitter_parsers_by_ft(),
+  }
+end
+
+function Plugin.blink_opts()
+  return {
+    enabled = function()
+      return not vim.tbl_contains({ 'minifiles', 'markdown' }, vim.bo.filetype)
+        and vim.bo.buftype ~= 'prompt'
+        and vim.b.completion ~= false
+    end,
+    appearance = {
+      use_nvim_cmp_as_default = false,
+      nerd_font_variant = 'mono',
+    },
+    keymap = {
+      preset = 'default',
+      ['<C-n>'] = { 'select_next' },
+      ['<C-p>'] = { 'select_prev' },
+      ['<Tab>'] = { 'select_next' },
+      ['<S-Tab>'] = { 'select_prev' },
+      cmdline = {
+        ['<C-n>'] = { 'show', 'select_next' },
+        ['<C-p>'] = { 'select_prev' },
+        ['<Tab>'] = { 'select_next' },
+        ['<S-Tab>'] = { 'select_prev' },
+      },
+    },
+    completion = {
+      ghost_text = { enabled = false },
+      trigger = { show_on_insert_on_trigger_character = false },
+      keyword = { range = 'full' },
+      accept = { auto_brackets = { enabled = false } },
+      list = { selection = function(ctx) return ctx.mode == 'cmdline' and 'auto_insert' or 'preselect' end },
+      menu = {
+        border = 'single',
+        scrollbar = false,
+        draw = {
+          treesitter = { 'lsp' },
+          columns = { { 'kind_icon' }, { 'label', 'label_description', gap = 1 } },
+          components = {
+            kind_icon = {
+              ellipsis = false,
+              text = function(ctx)
+                local kind_icon, _, _ = require('mini.icons').get('lsp', ctx.kind)
+                return kind_icon
+              end,
+              highlight = function(ctx)
+                local _, hl, _ = require('mini.icons').get('lsp', ctx.kind)
+                return hl
+              end,
+            },
+          },
+        },
+      },
+      documentation = {
+        auto_show = true,
+        auto_show_delay_ms = 500,
+        window = {
+          border = 'single',
+          scrollbar = false,
+        },
+      },
+    },
+    sources = {
+      transform_items = function(_, items)
+        return vim.tbl_filter(
+          function(item) return item.kind ~= require('blink.cmp.types').CompletionItemKind.Snippet end,
+          items
+        )
+      end,
+
+      default = { 'lsp', 'path', 'buffer' },
+      per_filetype = {
+        codecompanion = { 'codecompanion', 'path' },
+      },
+      providers = {
+        codecompanion = {
+          name = 'CodeCompanion',
+          module = 'codecompanion.providers.completion.blink',
+          enabled = true,
+        },
+      },
+    },
+    signature = {
+      enabled = true,
+      window = { border = 'single' },
+    },
+  }
+end
+
+function Plugin.codecompanion_opts()
+  local key = Config.retrieve_llm_key()
+
+  if not key then
+    vim.notify('An `anthropic` key must be set for a proper config setup', vim.log.levels.ERROR)
+    return
+  end
+
+  return {
+    strategies = {
+      chat = { adapter = 'anthropic' },
+      inline = { adapter = 'anthropic' },
+      cmd = { adapter = 'anthropic' },
+    },
+    adapters = {
+      anthropic = require('codecompanion.adapters').extend('anthropic', {
+        env = { api_key = key },
+        schema = {
+          model = {
+            default = 'claude-3-5-haiku-20241022',
+          },
+        },
+      }),
+    },
+  }
+end
+
+function Plugin.conform_opts()
+  local formatters_by_ft = Lang.formatters_by_ft()
+  local formatters = Lang.formatters_settings()
+
+  return {
+    notify_on_error = true,
+    formatters_by_ft = formatters_by_ft,
+    formatters = formatters,
+  }
+end
+
+function Config.minipick_set_hls()
+  local highlight = vim.api.nvim_set_hl
+
+  highlight(0, 'MiniPickBorder', { link = 'Pmenu' })
+  highlight(0, 'MiniPickBorderBusy', { link = 'Pmenu' })
+  highlight(0, 'MiniPickBorderText', { link = 'Pmenu' })
+  highlight(0, 'MiniPickIconDirectory', { link = 'Pmenu' })
+  highlight(0, 'MiniPickIconFile', { link = 'Pmenu' })
+  highlight(0, 'MiniPickNormal', { link = 'Pmenu' })
+  highlight(0, 'MiniPickHeader', { link = 'Title' })
+  highlight(0, 'MiniPickMatchCurrent', { link = 'PmenuThumb' })
+  highlight(0, 'MiniPickMatchMarked', { link = 'FloatTitle' })
+  highlight(0, 'MiniPickMatchRanges', { link = 'Title' })
+  highlight(0, 'MiniPickPreviewLine', { link = 'PmenuThumb' })
+  highlight(0, 'MiniPickPreviewRegion', { link = 'PmenuThumb' })
+  highlight(0, 'MiniPickPrompt', { link = 'Pmenu' })
+end
 
 function Config.extend(b, n)
   local base = vim.deepcopy(b or {})
@@ -478,4 +795,28 @@ function H.merge(dest, src)
   end
 
   return dest
+end
+
+function H.minipick_parse_matches()
+  local list = {}
+  local matches = require('mini.pick').get_picker_matches().all
+
+  for _, match in ipairs(matches) do
+    if type(match) == 'table' then
+      table.insert(list, match)
+    else
+      local path, lnum, col, search = string.match(match, '(.-)%z(%d+)%z(%d+)%z%s*(.+)')
+      local text = path and string.format('%s [%s:%s]  %s', path, lnum, col, search)
+      local filename = path or vim.trim(match):match('%s+(.+)')
+
+      table.insert(list, {
+        filename = filename or match,
+        lnum = lnum or 1,
+        col = col or 1,
+        text = text or match,
+      })
+    end
+  end
+
+  return list
 end
