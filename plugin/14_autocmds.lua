@@ -13,14 +13,22 @@ vim.api.nvim_create_autocmd('VimResized', {
 })
 
 vim.api.nvim_create_autocmd('BufReadPost', {
-  group = vim.api.nvim_create_augroup('crnvl96-restore-last-loc', { clear = true }),
-  callback = function(event)
-    local exclude = { 'gitcommit' }
-    local buf = event.buf
-    if vim.tbl_contains(exclude, vim.bo[buf].filetype) or vim.b[buf].last_loc_restored then return end
-    vim.b[buf].last_loc_restored = true
-    local mark = vim.api.nvim_buf_get_mark(buf, '"')
-    local lcount = vim.api.nvim_buf_line_count(buf)
-    if mark[1] > 0 and mark[1] <= lcount then pcall(vim.api.nvim_win_set_cursor, 0, mark) end
+  group = vim.api.nvim_create_augroup('crnvl96-auto-last-position', { clear = true }),
+  callback = function(e)
+    local position = vim.api.nvim_buf_get_mark(e.buf, [["]])
+    local winid = vim.fn.bufwinid(e.buf)
+    pcall(vim.api.nvim_win_set_cursor, winid, position)
   end,
+})
+
+vim.api.nvim_create_autocmd('QuickFixCmdPost', {
+  group = vim.api.nvim_create_augroup('crnvl96-auto-open-qf', { clear = true }),
+  pattern = '[^lc]*',
+  callback = function() vim.cmd('cwindow') end,
+})
+
+vim.api.nvim_create_autocmd('QuickFixCmdPost', {
+  group = vim.api.nvim_create_augroup('crnvl96-auto-open-lc', { clear = true }),
+  pattern = 'l*',
+  callback = function() vim.cmd('lwindow') end,
 })
