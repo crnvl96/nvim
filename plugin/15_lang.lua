@@ -1,13 +1,11 @@
 local add = MiniDeps.add
 
-local tools = {
+for _, cli in ipairs({
   'tree-sitter',
   'rg',
   'rustc',
   'npm',
-}
-
-for _, cli in ipairs(tools) do
+}) do
   if vim.fn.executable(cli) ~= 1 then
     local msg = cli .. ' is not installed in the system.'
     local lvl = vim.log.levels.ERROR

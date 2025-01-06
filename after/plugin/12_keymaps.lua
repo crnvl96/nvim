@@ -1,86 +1,65 @@
-local set = vim.keymap.set
+local S, LS = Config.S, Config.LS
 
-local function s(lhs, rhs, opts, mode)
-  lhs = '<Leader>' .. lhs
-  rhs = '<Cmd>' .. rhs .. '<CR>'
-  mode = mode or 'n'
-  set(mode, lhs, rhs, type(opts) == 'string' and { desc = opts } or opts)
+S('ch', 'lua MiniNotify.show_history()', 'mini.notify: show notification history')
+
+S('dB', 'lua require("dap").clear_breakpoints()', 'dap: clear all breakpoints')
+S('db', 'lua require("dap").toggle_breakpoint()', 'dap: toggle breakpoint')
+S('dC', 'lua require("dap").run_to_cursor()', 'dap: run to cursor')
+S('dc', 'lua require("dap").continue()', 'dap: continue execution')
+S('de', 'lua require("dap.ui.widgets").hover()', 'dap: hover (eval)')
+S('dR', 'lua require("dap.repl").toggle({}, "belowright split")', 'dap: repl')
+S('ds', 'lua require("dap.ui.widgets").sidebar(require("dap.ui.widgets").scopes, {}, "vsplit").toggle()', 'dap: scopes')
+S('dT', 'lua require("dap").terminate()', 'dap: terminate session')
+
+S('f=', 'Pick spellsuggest', 'minipick: spellsuggest')
+S('f:', 'Pick history scope=":"', 'minipick: ":" history')
+S('f/', 'Pick history scope="/"', 'minipick: "/" history')
+
+S('fb', 'Pick buffers', 'minipick: buffers')
+S('ff', 'Pick files', 'minipick: files')
+S('fg', 'Pick multigrep', 'minipick: multigrep')
+S('fh', 'Pick help', 'minipick: help tags')
+S('fH', 'Pick git_hunks', 'minipick: git hunks')
+S('fk', 'Pick keymaps', 'minipick: keymaps')
+S('fl', 'Pick buf_lines scope="current" preserve_order="true"', 'minipick: lines (current)')
+S('fo', 'Pick visit_paths preserve_order=true', 'minipick: visit paths (cwd)')
+S('fr', 'Pick resume', 'minipick: resume')
+S('fX', 'Pick diagnostic scope="all"', 'minipick: diagnostic workspace')
+S('fx', 'Pick diagnostic scope="current"', 'minipick: diagnostic buffer')
+
+S('ga', 'Git commit --amend', 'minigit: amend last commit')
+S('gc', 'Git commit', 'minigit: commit')
+S('gD', 'Git diff --cached', 'minigit: show diff of added files')
+S('gd', 'Git diff', 'minigit: diff')
+S('gh', 'Pick git_hunks', 'minigit: git hunks')
+S('gl', 'Git log --pretty=format:\\%h\\ \\%as\\ │\\ \\%s --topo-order --follow -- %', 'minigit: log buffer')
+S('gL', 'Git log --pretty=format:\\%h\\ \\%as\\ │\\ \\%s --topo-order -256', 'minigit: log')
+S('go', 'lua MiniDiff.toggle_overlay()', 'minidiff: toggle diff overlay')
+S('gs', 'Git', 'minigit: status')
+S('gx', 'lua vim.fn.setqflist(MiniDiff.export("qf"))', 'minidiff: setqflist')
+
+S('ia', 'CodeCompanionChat Add', 'codecompanion: add to chat buffer', 'x')
+S('ic', 'CodeCompanionChat Toggle', 'codecompanion: toggle chat buffer')
+S('ic', 'CodeCompanionChat Toggle', 'codecompanion: toggle chat buffer', 'x')
+S('ii', 'CodeCompanionActions', 'codecompanion: show actions')
+S('ii', 'CodeCompanionActions', 'codecompanion: show actions', 'x')
+
+function Config.on_attach_maps(buf)
+  LS(buf, 'la', 'lua vim.lsp.buf.code_action()', 'lsp: code action')
+  LS(buf, 'lc', 'Pick lsp scope="declaration"', 'lsp: declaration')
+  LS(buf, 'ld', 'Pick lsp scope="definition"', 'lsp: definition')
+  LS(buf, 'le', 'lua vim.lsp.buf.hover({border="single"})', 'lsp: hover on cursor')
+  LS(buf, 'lh', 'lua vim.lsp.buf.signature_help({border="single"})', 'lsp: arguments popup')
+  LS(buf, 'li', 'Pick lsp scope="implementation"', 'lsp: implementation')
+  LS(buf, 'lj', 'lua vim.diagnostic.goto_next()', 'lsp: next diagnostic')
+  LS(buf, 'lk', 'lua vim.diagnostic.goto_prev()', 'lsp: prev diagnostic')
+  LS(buf, 'll', 'lua vim.diagnostic.open_float({boder="single"})', 'lsp: diagnostics popup')
+  LS(buf, 'ln', 'lua vim.lsp.buf.rename()', 'lsp: rename symbol under cursor')
+  LS(buf, 'lr', 'Pick lsp scope="references"', 'lsp: references')
+  LS(buf, 'ls', 'Pick lsp scope="document_symbol"', 'lsp: doc symbols')
+  LS(buf, 'lw', 'Pick lsp scope="workspace_symbol"', 'lsp: workspace symbols')
+  LS(buf, 'lx', 'lua vim.lsp.diagnostic.setqflist()', 'lsp: populate qf list with diagnocsits')
+  LS(buf, 'ly', 'Pick lsp scope="type_definition"', 'lsp: type definition')
 end
 
-set('n', '-', '<Cmd>lua MiniFiles.open(vim.api.nvim_buf_get_name(0))<CR>')
-
-s('bb', 'b#', 'buffer: go to last')
-s('bd', 'bd', 'buffer: delete current')
-
-s('ch', 'lua MiniNotify.show_history()', 'mini.notify: show notification history')
-
-s('dB', 'lua require("dap").clear_breakpoints()', 'dap: clear all breakpoints')
-s('db', 'lua require("dap").toggle_breakpoint()', 'dap: toggle breakpoint')
-s('dC', 'lua require("dap").run_to_cursor()', 'dap: run to cursor')
-s('dc', 'lua require("dap").continue()', 'dap: continue execution')
-s('de', 'lua require("dap.ui.widgets").hover()', 'dap: hover (eval)')
-s('dR', 'lua require("dap.repl").toggle({}, "belowright split")', 'dap: repl')
-s('ds', 'lua require("dap.ui.widgets").sidebar(require("dap.ui.widgets").scopes, {}, "vsplit").toggle()', 'dap: scopes')
-s('dT', 'lua require("dap").terminate()', 'dap: terminate session')
-
-s('f=', 'Pick spellsuggest', 'minipick: spellsuggest')
-s('f:', 'Pick history scope=":"', 'minipick: ":" history')
-s('f/', 'Pick history scope="/"', 'minipick: "/" history')
-
-s('fb', 'Pick buffers', 'minipick: buffers')
-s('ff', 'Pick files', 'minipick: files')
-s('fg', 'Pick multigrep', 'minipick: multigrep')
-s('fh', 'Pick help', 'minipick: help tags')
-s('fH', 'Pick git_hunks', 'minipick: git hunks')
-s('fk', 'Pick keymaps', 'minipick: keymaps')
-s('fl', 'Pick buf_lines scope="current" preserve_order="true"', 'minipick: lines (current)')
-s('fo', 'Pick visit_paths preserve_order=true', 'minipick: visit paths (cwd)')
-s('fr', 'Pick resume', 'minipick: resume')
-s('fX', 'Pick diagnostic scope="all"', 'minipick: diagnostic workspace')
-s('fx', 'Pick diagnostic scope="current"', 'minipick: diagnostic buffer')
-
-s('ga', 'Git commit --amend', 'minigit: amend last commit')
-s('gc', 'Git commit', 'minigit: commit')
-s('gD', 'Git diff --cached', 'minigit: show diff of added files')
-s('gd', 'Git diff', 'minigit: diff')
-s('gh', 'Pick git_hunks', 'minigit: git hunks')
-s('gl', 'Git log --pretty=format:\\%h\\ \\%as\\ │\\ \\%s --topo-order --follow -- %', 'minigit: log buffer')
-s('gL', 'Git log --pretty=format:\\%h\\ \\%as\\ │\\ \\%s --topo-order -256', 'minigit: log')
-s('go', 'lua MiniDiff.toggle_overlay()', 'minidiff: toggle diff overlay')
-s('gs', 'Git', 'minigit: status')
-s('gx', 'lua vim.fn.setqflist(MiniDiff.export("qf"))', 'minidiff: setqflist')
--- s('gs', 'lua MiniGit.show_at_cursor()', 'minigit: show at cursor')
--- s('gs', 'lua MiniGit.show_at_cursor()', 'minigit: show at cursor', 'x')
-
-s('ia', 'CodeCompanionChat Add', 'codecompanion: add to chat buffer', 'x')
-s('ic', 'CodeCompanionChat Toggle', 'codecompanion: toggle chat buffer')
-s('ic', 'CodeCompanionChat Toggle', 'codecompanion: toggle chat buffer', 'x')
-s('ii', 'CodeCompanionActions', 'codecompanion: show actions')
-s('ii', 'CodeCompanionActions', 'codecompanion: show actions', 'x')
-
-function Config.on_attach_maps(bufnr)
-  local function ls(lhs, rhs, desc, mode)
-    lhs = '<Leader>' .. lhs
-    rhs = '<Cmd>' .. rhs .. '<CR>'
-    mode = mode or 'n'
-    set(mode, lhs, rhs, { desc = desc, buffer = bufnr })
-  end
-
-  ls('la', 'lua vim.lsp.buf.code_action()', 'lsp: code action')
-  ls('lc', 'Pick lsp scope="declaration"', 'lsp: declaration')
-  ls('ld', 'Pick lsp scope="definition"', 'lsp: definition')
-  ls('le', 'lua vim.lsp.buf.hover({border="single"})', 'lsp: hover on cursor')
-  ls('lh', 'lua vim.lsp.buf.signature_help({border="single"})', 'lsp: arguments popup')
-  ls('li', 'Pick lsp scope="implementation"', 'lsp: implementation')
-  ls('lj', 'lua vim.diagnostic.goto_next()', 'lsp: next diagnostic')
-  ls('lk', 'lua vim.diagnostic.goto_prev()', 'lsp: prev diagnostic')
-  ls('ll', 'lua vim.diagnostic.open_float({boder="single"})', 'lsp: diagnostics popup')
-  ls('ln', 'lua vim.lsp.buf.rename()', 'lsp: rename symbol under cursor')
-  ls('lr', 'Pick lsp scope="references"', 'lsp: references')
-  ls('ls', 'Pick lsp scope="document_symbol"', 'lsp: doc symbols')
-  ls('lw', 'Pick lsp scope="workspace_symbol"', 'lsp: workspace symbols')
-  ls('lx', 'lua vim.lsp.diagnostic.setqflist()', 'lsp: populate qf list with diagnocsits')
-  ls('ly', 'Pick lsp scope="type_definition"', 'lsp: type definition')
-end
-
-s('xx', 'lua Config.toggle_quickfix()', 'quickfix list: toggle')
+S('xx', 'lua Config.toggle_quickfix()', 'quickfix list: toggle')

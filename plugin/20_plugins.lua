@@ -1,4 +1,5 @@
 local add, now, later = MiniDeps.add, MiniDeps.now, MiniDeps.later
+local Set, S, LS = Config.Set, Config.S, Config.LS
 
 add({ name = 'mini.nvim' })
 
@@ -9,6 +10,11 @@ later(function() require('mini.diff').setup() end)
 later(function() require('mini.doc').setup() end)
 later(function() require('mini.operators').setup() end)
 later(function() require('mini.visits').setup() end)
+
+later(function()
+  S('ba', 'b#', '[B]uffer [A]lternate')
+  S('bd', 'bd', '[B]uffer [D]elete')
+end)
 
 now(function()
   local function filter(el) return not vim.startswith(el.msg, 'lua_ls: Diagnosing') end
@@ -104,6 +110,8 @@ later(function()
     windows = { width_nofocus = 25, preview = true, width_preview = 50 },
     options = { permanent_delete = false },
   })
+
+  Set('n', '-', '<Cmd>lua MiniFiles.open(vim.api.nvim_buf_get_name(0))<CR>')
 end)
 
 later(function()
@@ -392,7 +400,7 @@ later(function()
 
   require('blink.cmp').setup({
     enabled = function()
-      return not vim.tbl_contains({ 'minifiles', 'markdown' }, vim.bo.filetype)
+      return not vim.tbl_contains({ 'minifiles', 'markdown', 'deck' }, vim.bo.filetype)
         and vim.bo.buftype ~= 'prompt'
         and vim.b.completion ~= false
     end,
@@ -422,6 +430,7 @@ later(function()
       menu = {
         border = 'single',
         scrollbar = false,
+        -- auto_show = function(ctx) return ctx.mode ~= 'cmdline' end,
         draw = {
           treesitter = { 'lsp' },
           columns = { { 'kind_icon' }, { 'label', gap = 1 } },

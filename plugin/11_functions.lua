@@ -1,11 +1,27 @@
 _G.Config = {}
 local H = {}
 
+Config.Set = vim.keymap.set
+
 function Config.extend(b, n)
   local base = vim.deepcopy(b or {})
   local new = vim.deepcopy(n or {})
   if H.is_array(base) and H.is_array(new) then return vim.list_extend(base, new) end
   return H.merge(base, new)
+end
+
+function Config.S(lhs, rhs, opts, mode)
+  lhs = '<Leader>' .. lhs
+  rhs = '<Cmd>' .. rhs .. '<CR>'
+  mode = mode or 'n'
+  Config.Set(mode, lhs, rhs, type(opts) == 'string' and { desc = opts } or opts)
+end
+
+function Config.LS(bufnr, lhs, rhs, desc, mode)
+  lhs = '<Leader>' .. lhs
+  rhs = '<Cmd>' .. rhs .. '<CR>'
+  mode = mode or 'n'
+  Config.Set(mode, lhs, rhs, { desc = desc, buffer = bufnr })
 end
 
 function Config.toggle_quickfix()
