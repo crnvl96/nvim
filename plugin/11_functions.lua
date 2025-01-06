@@ -1,7 +1,4 @@
 _G.Config = {}
-_G.Lang = {}
-_G.Plugin = {}
-
 local H = {}
 
 function Config.extend(b, n)

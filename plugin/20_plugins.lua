@@ -2,16 +2,23 @@ local add, now, later = MiniDeps.add, MiniDeps.now, MiniDeps.later
 
 add({ name = 'mini.nvim' })
 
+now(function() vim.cmd('colorscheme minigrey') end)
+
+later(function() require('mini.extra').setup() end)
+later(function() require('mini.diff').setup() end)
+later(function() require('mini.doc').setup() end)
+later(function() require('mini.operators').setup() end)
+later(function() require('mini.visits').setup() end)
+
 now(function()
-  require('mini.notify').setup({
-    content = {
-      sort = function(notif_arr)
-        return MiniNotify.default_sort(
-          vim.tbl_filter(function(notif) return not vim.startswith(notif.msg, 'lua_ls: Diagnosing') end, notif_arr)
-        )
-      end,
-    },
-  })
+  local function filter(el) return not vim.startswith(el.msg, 'lua_ls: Diagnosing') end
+
+  local function sort(list)
+    list = vim.tbl_filter(filter, list)
+    return MiniNotify.default_sort(list)
+  end
+
+  require('mini.notify').setup({ content = { sort = sort } })
 
   vim.notify = MiniNotify.make_notify()
 end)
@@ -30,16 +37,8 @@ now(function()
   })
 
   MiniIcons.mock_nvim_web_devicons()
-  MiniDeps.later(MiniIcons.tweak_lsp_kind)
+  later(MiniIcons.tweak_lsp_kind)
 end)
-
-now(function() vim.cmd('colorscheme minigrey') end)
-
-later(function() require('mini.extra').setup() end)
-later(function() require('mini.diff').setup() end)
-later(function() require('mini.doc').setup() end)
-later(function() require('mini.operators').setup() end)
-later(function() require('mini.visits').setup() end)
 
 later(function()
   local miniclue = require('mini.clue')
@@ -317,4 +316,276 @@ later(function()
       },
     })
   end
+end)
+
+later(function() add({ source = 'nvim-lua/plenary.nvim' }) end)
+later(function() add({ source = 'lambdalisue/vim-suda' }) end)
+later(function() add({ source = 'mechatroner/rainbow_csv' }) end)
+later(function() add({ source = 'HakonHarnes/img-clip.nvim' }) end)
+later(function() add({ source = 'mfussenegger/nvim-lint' }) end)
+later(function() add({ source = 'lervag/vimtex' }) end)
+later(function() add({ source = 'tpope/vim-fugitive' }) end)
+
+later(function()
+  add({
+    source = 'iamcco/markdown-preview.nvim',
+    hooks = {
+      post_checkout = function()
+        later(function() vim.fn['mkdp#util#install']() end)
+      end,
+      post_install = function()
+        later(function() vim.fn['mkdp#util#install']() end)
+      end,
+    },
+  })
+end)
+
+later(function()
+  add({
+    source = 'williamboman/mason.nvim',
+    hooks = { post_checkout = function() vim.cmd('MasonUpdate') end },
+  })
+
+  require('mason').setup()
+
+  later(function()
+    local mr = require('mason-registry')
+
+    mr.refresh(function()
+      for _, tool in ipairs(Mason_tools) do
+        local p = mr.get_package(tool)
+        if not p:is_installed() then p:install() end
+      end
+    end)
+  end)
+end)
+
+later(function()
+  add({
+    source = 'nvim-treesitter/nvim-treesitter',
+    hooks = { post_checkout = function() vim.cmd('TSUpdate') end },
+  })
+
+  require('nvim-treesitter.configs').setup({
+    highlight = {
+      enable = true,
+      disable = function(_, buf) return vim.tbl_contains({ 'tex' }, vim.bo[buf].filetype) end,
+    },
+    indent = {
+      enable = true,
+    },
+    sync_install = false,
+    auto_install = true,
+    ensure_installed = Treesitter_parsers,
+  })
+end)
+
+later(function()
+  add({ source = 'saghen/blink.compat' })
+  add({ source = 'xzbdmw/colorful-menu.nvim' })
+  add({
+    source = 'Saghen/blink.cmp',
+    hooks = {
+      post_checkout = function(params) Config.build(params, { 'cargo', 'build', '--release' }) end,
+      post_install = function(params) Config.build(params, { 'cargo', 'build', '--release' }) end,
+    },
+  })
+
+  require('blink.compat').setup()
+  require('colorful-menu').setup()
+
+  require('blink.cmp').setup({
+    enabled = function()
+      return not vim.tbl_contains({ 'minifiles', 'markdown' }, vim.bo.filetype)
+        and vim.bo.buftype ~= 'prompt'
+        and vim.b.completion ~= false
+    end,
+    appearance = {
+      use_nvim_cmp_as_default = false,
+      nerd_font_variant = 'mono',
+    },
+    keymap = {
+      preset = 'default',
+      ['<C-n>'] = { 'select_next' },
+      ['<C-p>'] = { 'select_prev' },
+      ['<Tab>'] = { 'select_next' },
+      ['<S-Tab>'] = { 'select_prev' },
+      cmdline = {
+        ['<C-n>'] = { 'show', 'select_next' },
+        ['<C-p>'] = { 'select_prev' },
+        ['<Tab>'] = { 'select_next' },
+        ['<S-Tab>'] = { 'select_prev' },
+      },
+    },
+    completion = {
+      ghost_text = { enabled = false },
+      trigger = { show_on_insert_on_trigger_character = false },
+      keyword = { range = 'full' },
+      accept = { auto_brackets = { enabled = false } },
+      list = { selection = function(ctx) return ctx.mode == 'cmdline' and 'auto_insert' or 'preselect' end },
+      menu = {
+        border = 'single',
+        scrollbar = false,
+        draw = {
+          treesitter = { 'lsp' },
+          columns = { { 'kind_icon' }, { 'label', gap = 1 } },
+          components = {
+            label = {
+              text = require('colorful-menu').blink_components_text,
+              highlight = require('colorful-menu').blink_components_highlight,
+            },
+            kind_icon = {
+              ellipsis = false,
+              text = function(ctx)
+                local kind_icon, _, _ = require('mini.icons').get('lsp', ctx.kind)
+                return kind_icon
+              end,
+              highlight = function(ctx)
+                local _, hl, _ = require('mini.icons').get('lsp', ctx.kind)
+                return hl
+              end,
+            },
+          },
+        },
+      },
+      documentation = {
+        auto_show = true,
+        auto_show_delay_ms = 500,
+        window = {
+          border = 'single',
+          scrollbar = false,
+        },
+      },
+    },
+    sources = {
+      transform_items = function(_, items)
+        return vim.tbl_filter(
+          function(item) return item.kind ~= require('blink.cmp.types').CompletionItemKind.Snippet end,
+          items
+        )
+      end,
+
+      default = { 'lsp', 'path', 'buffer' },
+      per_filetype = {
+        codecompanion = { 'codecompanion', 'path' },
+      },
+      providers = {
+        codecompanion = {
+          name = 'CodeCompanion',
+          module = 'codecompanion.providers.completion.blink',
+          enabled = true,
+        },
+      },
+    },
+    signature = {
+      enabled = true,
+      window = { border = 'single' },
+    },
+  })
+end)
+
+later(function()
+  add({ source = 'olimorris/codecompanion.nvim' })
+
+  --- Retrieve a LLM (in this case, from anthropic) from a local file, and returns it
+  --- to be integrated with relevant plugins.
+  ---
+  --- This is done this way to avoid exposing the private key in the running shell session via environment keys.
+  ---@return string?
+  local function retrieve_llm_key()
+    ---@type string
+    local path = vim.fn.stdpath('config') .. '/anthropic'
+    ---@type file*?
+    local file = io.open(path, 'r')
+    ---@type string?
+    local key
+
+    if file then
+      ---@type string?
+      key = file:read('*a'):gsub('%s+$', '')
+      file:close()
+    end
+
+    return key or nil
+  end
+
+  local key = retrieve_llm_key()
+
+  if not key then
+    vim.notify('An `anthropic` key must be set for a proper config setup', vim.log.levels.ERROR)
+    return
+  end
+
+  require('codecompanion').setup({
+    strategies = {
+      chat = { adapter = 'anthropic' },
+      inline = { adapter = 'anthropic' },
+      cmd = { adapter = 'anthropic' },
+    },
+    adapters = {
+      anthropic = require('codecompanion.adapters').extend('anthropic', {
+        env = { api_key = key },
+        schema = {
+          model = {
+            default = 'claude-3-5-haiku-20241022',
+          },
+        },
+      }),
+    },
+  })
+end)
+
+later(function()
+  add({ source = 'stevearc/conform.nvim' })
+  require('conform').setup({
+    notify_on_error = true,
+    formatters_by_ft = Formatters.by_ft,
+    formatters = Formatters.specs,
+  })
+end)
+
+later(function()
+  add({ source = 'neovim/nvim-lspconfig' })
+
+  local ok = pcall(require, 'blink.cmp')
+  local capabilities = vim.lsp.protocol.make_client_capabilities()
+
+  if not ok then
+    vim.notify('blink.cmp must be installed to have access to full capabilities.', vim.log.levels.ERROR)
+  end
+
+  capabilities = require('blink.cmp').get_lsp_capabilities(vim.tbl_deep_extend('force', capabilities, {
+    textDocument = {
+      completion = {
+        completionItem = {
+          snippetSupport = false,
+        },
+      },
+    },
+  }))
+
+  for server, config in pairs(Servers) do
+    config = vim.tbl_deep_extend('force', config or {}, { capabilities = capabilities })
+    require('lspconfig')[server].setup(config)
+  end
+end)
+
+later(function()
+  add({ source = 'theHamsta/nvim-dap-virtual-text' })
+  add({ source = 'mfussenegger/nvim-dap' })
+
+  vim.api.nvim_set_hl(0, 'DapStoppedLine', { default = true, link = 'Visual' })
+  require('nvim-dap-virtual-text').setup({ virt_text_pos = 'eol' })
+
+  local function json_decode(data)
+    local decode = vim.json.decode
+    local strip_comments = require('plenary.json').json_strip_comments
+    data = strip_comments(data)
+
+    return decode(data)
+  end
+
+  require('dap.ext.vscode').json_decode = json_decode
+
+  Debuggers_by_ft()
 end)
