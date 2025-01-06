@@ -16,5 +16,4 @@ return {
   ["plenary.nvim"] = "2d9b06177a975543726ce5c73fca176cedbffe9d",
   rainbow_csv = "3dbbfd7d17536aebfb80f571255548495574c32b",
   ["vim-suda"] = "9adda7d195222d4e2854efb2a88005a120296c47",
-  vimtex = "b8bb79b5fb27e9030ade92e75cd9375416f2c666"
 }

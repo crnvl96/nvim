@@ -323,7 +323,6 @@ later(function() add({ source = 'lambdalisue/vim-suda' }) end)
 later(function() add({ source = 'mechatroner/rainbow_csv' }) end)
 later(function() add({ source = 'HakonHarnes/img-clip.nvim' }) end)
 later(function() add({ source = 'mfussenegger/nvim-lint' }) end)
-later(function() add({ source = 'lervag/vimtex' }) end)
 later(function() add({ source = 'tpope/vim-fugitive' }) end)
 
 later(function()
@@ -367,10 +366,7 @@ later(function()
   })
 
   require('nvim-treesitter.configs').setup({
-    highlight = {
-      enable = true,
-      disable = function(_, buf) return vim.tbl_contains({ 'tex' }, vim.bo[buf].filetype) end,
-    },
+    highlight = { enable = true },
     indent = {
       enable = true,
     },

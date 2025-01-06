@@ -1,9 +1,6 @@
 vim.opt.completeopt:append('fuzzy')
 vim.opt.wildoptions:append('fuzzy')
 
-vim.g.vimtex_compiler_method = 'tectonic'
-vim.g.vimtex_view_method = 'zathura'
-
 vim.g.mkdp_filetypes = { 'markdown', 'md' }
 
 vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"

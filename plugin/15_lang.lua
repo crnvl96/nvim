@@ -1,8 +1,6 @@
 local add = MiniDeps.add
 
 local tools = {
-  'zathura',
-  'tex-fmt',
   'tree-sitter',
   'rg',
   'rustc',
@@ -34,9 +32,6 @@ _G.Mason_tools = {
   'basedpyright',
   'ruff',
   'debugpy',
-
-  -- LaTex
-  'tectonic',
 }
 
 _G.Treesitter_parsers = {
@@ -63,7 +58,6 @@ _G.Formatters = {
   by_ft = {
     markdown = { 'prettierd', 'injected' },
     css = { 'prettierd' },
-    tex = { 'tex-fmt' },
     html = { 'prettierd' },
     json = { 'prettierd' },
     toml = { 'taplo' },
