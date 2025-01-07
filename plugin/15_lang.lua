@@ -5,6 +5,7 @@ for _, cli in ipairs({
   'rg',
   'rustc',
   'npm',
+  'fzf',
 }) do
   if vim.fn.executable(cli) ~= 1 then
     local msg = cli .. ' is not installed in the system.'

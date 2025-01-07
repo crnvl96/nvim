@@ -17,11 +17,35 @@ function Config.S(lhs, rhs, opts, mode)
   Config.Set(mode, lhs, rhs, type(opts) == 'string' and { desc = opts } or opts)
 end
 
+function Config.SM(lhs, rhs, opts, mode)
+  lhs = '<Leader>' .. lhs
+  mode = mode or 'n'
+
+  local new_rhs = function()
+    vim.cmd("normal! m'")
+    vim.cmd(rhs)
+  end
+
+  Config.Set(mode, lhs, new_rhs, type(opts) == 'string' and { desc = opts } or opts)
+end
+
 function Config.LS(bufnr, lhs, rhs, desc, mode)
   lhs = '<Leader>' .. lhs
   rhs = '<Cmd>' .. rhs .. '<CR>'
   mode = mode or 'n'
   Config.Set(mode, lhs, rhs, { desc = desc, buffer = bufnr })
+end
+
+function Config.LSM(bufnr, lhs, rhs, desc, mode)
+  lhs = '<Leader>' .. lhs
+  mode = mode or 'n'
+
+  new_rhs = function()
+    vim.cmd("normal! m'")
+    vim.cmd(rhs)
+  end
+
+  Config.Set(mode, lhs, new_rhs, { desc = desc, buffer = bufnr })
 end
 
 function Config.toggle_quickfix()
