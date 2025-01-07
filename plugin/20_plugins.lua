@@ -1,5 +1,5 @@
 local add, now, later = MiniDeps.add, MiniDeps.now, MiniDeps.later
-local Set, S, SM, LSM = Config.Set, Config.S, Config.SM, Config.LSM
+local Set, S, LSM = Config.Set, Config.S, Config.LSM
 
 add({ name = 'mini.nvim' })
 
@@ -12,7 +12,12 @@ later(function() require('mini.align').setup() end)
 later(function() require('mini.operators').setup() end)
 later(function() require('mini.visits').setup() end)
 
-later(function() add({ source = 'nvim-lua/plenary.nvim' }) end)
+later(function()
+  require('mini.pick').setup()
+  vim.ui.select = MiniPick.ui_select
+end)
+
+now(function() add({ source = 'nvim-lua/plenary.nvim' }) end)
 later(function() add({ source = 'lambdalisue/vim-suda' }) end)
 later(function() add({ source = 'HakonHarnes/img-clip.nvim' }) end)
 
@@ -68,14 +73,6 @@ later(function()
     LSM(buf, 'ls', 'lua vim.lsp.buf.document_symbol()', 'lsp: document symbol')
     LSM(buf, 'lS', 'lua vim.lsp.buf.workspace_symbol()', 'lsp: workspace symbol')
     LSM(buf, 'ly', 'lua vim.lsp.buf.type_definition()', 'lsp: type definition')
-
-    -- LSM(buf, 'lc', 'Pick lsp scope="declaration"', 'lsp: declaration')
-    -- LSM(buf, 'ld', 'Pick lsp scope="definition"', 'lsp: definition')
-    -- LSM(buf, 'li', 'Pick lsp scope="implementation"', 'lsp: implementation')
-    -- LSM(buf, 'lr', 'Pick lsp scope="references"', 'lsp: references')
-    -- LSM(buf, 'ls', 'Pick lsp scope="document_symbol"', 'lsp: doc symbols')
-    -- LSM(buf, 'lw', 'Pick lsp scope="workspace_symbol"', 'lsp: workspace symbols')
-    -- LSM(buf, 'ly', 'Pick lsp scope="type_definition"', 'lsp: type definition')
   end
 
   local register_capability = vim.lsp.handlers[vim.lsp.protocol.Methods.client_registerCapability]
@@ -124,6 +121,12 @@ later(function()
       { mode = 'n', keys = '<Leader>l', desc = '+LSP' },
       { mode = 'n', keys = '<Leader>n', desc = '+Notification' },
       { mode = 'n', keys = '<Leader>x', desc = '+List' },
+
+      { mode = 'n', keys = '<Leader>wj', postkeys = '<Leader>w', desc = 'Down' },
+      { mode = 'n', keys = '<Leader>wk', postkeys = '<Leader>w', desc = 'Up' },
+      { mode = 'n', keys = '<Leader>wh', postkeys = '<Leader>w', desc = 'Left' },
+      { mode = 'n', keys = '<Leader>wl', postkeys = '<Leader>w', desc = 'Right' },
+
       miniclue.gen_clues.builtin_completion(),
       miniclue.gen_clues.g(),
       miniclue.gen_clues.marks(),
@@ -176,196 +179,6 @@ later(function()
 
   Set('n', '-', '<Cmd>lua MiniFiles.open(vim.api.nvim_buf_get_name(0))<CR>')
 end)
-
--- later(function()
---   require('mini.pick').setup({
---     delay = {
---       async = 10,
---       busy = 30,
---     },
---     options = {
---       use_cache = true,
---     },
---     source = {
---       items = nil,
---       name = nil,
---       cwd = nil,
---
---       match = nil,
---       preview = nil,
---       show = function(buf_id, items, query, opts)
---         require('mini.pick').default_show(
---           buf_id,
---           items,
---           query,
---           vim.tbl_deep_extend('force', { show_icons = true, icons = {} }, opts or {})
---         )
---       end,
---
---       choose = nil,
---       choose_marked = nil,
---     },
---     window = {
---       config = function()
---         local height, width
---         local win_width = vim.o.columns
---         local win_height = vim.o.lines
---
---         if win_height <= 25 then
---           height = math.min(win_height, 18)
---           width = win_width
---         else
---           width = math.floor(win_width * 0.618)
---           height = math.floor(win_height * 0.618)
---         end
---
---         return {
---           height = height,
---           width = width,
---         }
---       end,
---
---       prompt_cursor = '|',
---       prompt_prefix = '',
---     },
---     mappings = {
---       caret_left = '<Left>',
---       caret_right = '<Right>',
---       choose = '<CR>',
---       choose_in_split = '<C-s>',
---       choose_in_tabpage = '<C-t>',
---       choose_in_vsplit = '<C-v>',
---       choose_marked = '<C-CR>',
---       delete_char = '<BS>',
---       delete_char_right = '<S-BS>',
---       delete_left = '<A-BS>',
---       delete_word = '<C-w>',
---       mark = '<C-x>',
---       mark_all = '<C-a>',
---       move_start = '<C-g>',
---       move_down = '<C-n>',
---       move_up = '<C-p>',
---       paste = '<A-p>',
---       refine = '<C-Space>',
---       refine_marked = '<M-Space>',
---       scroll_up = '<C-u>',
---       scroll_down = '<C-d>',
---       scroll_left = '<C-h>',
---       scroll_right = '<C-l>',
---       stop = '<Esc>',
---       toggle_info = '<S-Tab>',
---       toggle_preview = '<Tab>',
---     },
---   })
---
---   vim.ui.select = MiniPick.ui_select
---
---   MiniPick.registry.multigrep = function()
---     local process
---     local symbol = '::'
---     local set_items_opts = { do_match = false }
---     local spawn_opts = { cwd = vim.uv.cwd() }
---
---     local match = function(_, _, query)
---       pcall(vim.loop.process_kill, process)
---       if #query == 0 then return MiniPick.set_picker_items({}, set_items_opts) end
---       local full_query = table.concat(query)
---       local parts = vim.split(full_query, symbol, { plain = true })
---
---       -- First part is always the search pattern
---       local search_pattern = parts[1] and parts[1] ~= '' and parts[1] or nil
---
---       local command = {
---         'rg',
---         '--color=never',
---         '--no-heading',
---         '--with-filename',
---         '--line-number',
---         '--column',
---         '--smart-case',
---       }
---
---       -- Add search pattern if exists
---       if search_pattern then
---         table.insert(command, '-e')
---         table.insert(command, search_pattern)
---       end
---
---       -- Process file patterns
---       local include_patterns = {}
---       local exclude_patterns = {}
---
---       for i = 2, #parts do
---         local pattern = parts[i]
---         if pattern:sub(1, 1) == '!' then
---           table.insert(exclude_patterns, pattern:sub(2))
---         else
---           table.insert(include_patterns, pattern)
---         end
---       end
---
---       if #include_patterns > 0 then
---         for _, pattern in ipairs(include_patterns) do
---           table.insert(command, '-g')
---           table.insert(command, pattern)
---         end
---       end
---
---       if #exclude_patterns > 0 then
---         for _, pattern in ipairs(exclude_patterns) do
---           table.insert(command, '-g')
---           table.insert(command, '!' .. pattern)
---         end
---       end
---
---       process = MiniPick.set_picker_items_from_cli(command, {
---         postprocess = function(lines)
---           local results = {}
---           for _, line in ipairs(lines) do
---             if line ~= '' then
---               local file, lnum, col = line:match('([^:]+):(%d+):(%d+):(.*)')
---               if file then
---                 results[#results + 1] = {
---                   path = file,
---                   lnum = tonumber(lnum),
---                   col = tonumber(col),
---                   text = line,
---                 }
---               end
---             end
---           end
---           return results
---         end,
---         set_items_opts = set_items_opts,
---         spawn_opts = spawn_opts,
---       })
---     end
---
---     return MiniPick.start({
---       source = {
---         items = {},
---         name = 'Multi Grep',
---         match = match,
---         show = function(buf_id, items_to_show, query)
---           MiniPick.default_show(buf_id, items_to_show, query, { show_icons = true })
---         end,
---         choose = MiniPick.default_choose,
---       },
---     })
---   end
---
---   SM('fb', 'Pick buffers', '[F]ind [B]uffers')
---   SM('ff', 'Pick files', '[F]ind [F]iles')
---   SM('fg', 'Pick multigrep', '[F]ind Multi[G]rep')
---   SM('fh', 'Pick help', '[F]ind [H]elptags')
---   SM('fH', 'Pick git_hunks', '[F]ind Git [H]unks')
---   SM('fk', 'Pick keymaps', '[F]ind [K]eymaps')
---   SM('fl', 'Pick buf_lines scope="current" preserve_order="true"', '[F]ind Buffer [L]ines')
---   SM('fo', 'Pick visit_paths preserve_order=true', '[F]ind [O]ldfiles')
---   SM('fr', 'Pick resume', '[F]ind [R]esume Last Picker')
---   SM('fD', 'Pick diagnostic scope="all"', '[F]ind [D]iagnostics')
---   SM('fd', 'Pick diagnostic scope="current"', '[F]ind [D]iagnostics (Buffer)')
--- end)
 
 later(function()
   add({ source = 'mfussenegger/nvim-lint' })
@@ -488,68 +301,14 @@ later(function()
 
   add({ source = 'kevinhwang91/nvim-bqf' })
 
-  local fn = vim.fn
-
-  function _G.qftf(info)
-    local items
-    local ret = {}
-    -- The name of item in list is based on the directory of quickfix window.
-    -- Change the directory for quickfix window make the name of item shorter.
-    -- It's a good opportunity to change current directory in quickfixtextfunc :)
-    --
-    -- local alterBufnr = fn.bufname('#') -- alternative buffer is the buffer before enter qf window
-    -- local root = getRootByAlterBufnr(alterBufnr)
-    -- vim.cmd(('noa lcd %s'):format(fn.fnameescape(root)))
-    --
-    if info.quickfix == 1 then
-      items = fn.getqflist({ id = info.id, items = 0 }).items
-    else
-      items = fn.getloclist(info.winid, { id = info.id, items = 0 }).items
-    end
-    local limit = 31
-    local fnameFmt1, fnameFmt2 = '%-' .. limit .. 's', '…%.' .. (limit - 1) .. 's'
-    local validFmt = '%s │%5d:%-3d│%s %s'
-    for i = info.start_idx, info.end_idx do
-      local e = items[i]
-      local fname = ''
-      local str
-      if e.valid == 1 then
-        if e.bufnr > 0 then
-          fname = fn.bufname(e.bufnr)
-          if fname == '' then
-            fname = '[No Name]'
-          else
-            fname = fname:gsub('^' .. vim.env.HOME, '~')
-          end
-          -- char in fname may occur more than 1 width, ignore this issue in order to keep performance
-          if #fname <= limit then
-            fname = fnameFmt1:format(fname)
-          else
-            fname = fnameFmt2:format(fname:sub(1 - limit))
-          end
-        end
-        local lnum = e.lnum > 99999 and -1 or e.lnum
-        local col = e.col > 999 and -1 or e.col
-        local qtype = e.type == '' and '' or ' ' .. e.type:sub(1, 1):upper()
-        str = validFmt:format(fname, lnum, col, qtype, e.text)
-      else
-        str = e.text
-      end
-      table.insert(ret, str)
-    end
-    return ret
-  end
-
-  vim.o.qftf = '{info -> v:lua._G.qftf(info)}'
-
   require('bqf').setup({
     auto_enable = true,
-    auto_resize_height = true,
+    auto_resize_height = false,
     preview = {
-      win_height = 12,
-      win_vheight = 12,
+      win_height = 20,
+      win_vheight = 20,
       delay_syntax = 80,
-      border = { '┏', '━', '┓', '┃', '┛', '━', '┗', '┃' },
+      border = 'single',
       show_title = false,
       should_preview_cb = function(bufnr)
         local ret = true
@@ -575,9 +334,22 @@ later(function()
 end)
 
 later(function()
+  add({ source = 'aaronik/treewalker.nvim' })
+
+  require('treewalker').setup({
+    highlight = true,
+    highlight_duration = 250,
+    highlight_group = 'CursorLine',
+  })
+
+  S('wj', 'Treewalker Down', 'Down (Treewalker)')
+  S('wk', 'Treewalker Up', 'Up (Treewalker)')
+  S('wh', 'Treewalker Left', 'Left (Treewalker)')
+  S('wl', 'Treewalker Right', 'Right (Treewalker)')
+end)
+
+later(function()
   add({ source = 'saghen/blink.compat' })
-  add({ source = 'xzbdmw/colorful-menu.nvim' })
-  add({ source = 'mikavilpas/blink-ripgrep.nvim' })
 
   add({
     source = 'Saghen/blink.cmp',
@@ -588,7 +360,6 @@ later(function()
   })
 
   require('blink.compat').setup()
-  require('colorful-menu').setup()
 
   require('blink.cmp').setup({
     enabled = function()
@@ -618,31 +389,18 @@ later(function()
       trigger = { show_on_insert_on_trigger_character = false },
       keyword = { range = 'full' },
       accept = { auto_brackets = { enabled = false } },
-      list = { selection = function(ctx) return ctx.mode == 'cmdline' and 'auto_insert' or 'preselect' end },
+      list = {
+        selection = {
+          preselect = function(ctx) return ctx.mode ~= 'cmdline' end,
+          auto_insert = function(ctx) return ctx.mode == 'cmdline' end,
+        },
+      },
       menu = {
         border = 'single',
         scrollbar = false,
-        -- auto_show = function(ctx) return ctx.mode ~= 'cmdline' end,
         draw = {
           treesitter = { 'lsp' },
           columns = { { 'kind_icon' }, { 'label', gap = 1 } },
-          components = {
-            label = {
-              text = require('colorful-menu').blink_components_text,
-              highlight = require('colorful-menu').blink_components_highlight,
-            },
-            kind_icon = {
-              ellipsis = false,
-              text = function(ctx)
-                local kind_icon, _, _ = require('mini.icons').get('lsp', ctx.kind)
-                return kind_icon
-              end,
-              highlight = function(ctx)
-                local _, hl, _ = require('mini.icons').get('lsp', ctx.kind)
-                return hl
-              end,
-            },
-          },
         },
       },
       documentation = {
@@ -662,20 +420,9 @@ later(function()
         )
       end,
 
-      default = { 'lsp', 'path', 'ripgrep' },
+      default = { 'lsp', 'path', 'buffer' },
       per_filetype = {
-        codecompanion = { 'codecompanion', 'path', 'ripgrep' },
-      },
-      providers = {
-        codecompanion = {
-          name = 'CodeCompanion',
-          module = 'codecompanion.providers.completion.blink',
-          enabled = true,
-        },
-        ripgrep = {
-          module = 'blink-ripgrep',
-          name = 'Ripgrep',
-        },
+        codecompanion = { 'path' },
       },
     },
     signature = {
@@ -688,7 +435,7 @@ later(function()
   vim.opt.wildoptions:append('fuzzy')
 end)
 
-later(function()
+now(function()
   add({ source = 'olimorris/codecompanion.nvim' })
 
   --- Retrieve a LLM (in this case, from anthropic) from a local file, and returns it
@@ -740,9 +487,7 @@ later(function()
 
   S('ic', 'CodeCompanionChat Add', 'A[I] Add to [C]hat Buffer', 'x')
   S('it', 'CodeCompanionChat Toggle', 'A[I] [T]oggle Chat Buffer')
-  S('it', 'CodeCompanionChat Toggle', 'A[I] [T]oggle Chat Buffer', 'x')
   S('ia', 'CodeCompanionActions', 'A[I] Show [A]ctions')
-  S('ia', 'CodeCompanionActions', 'A[I] Show [A]ctions', 'x')
 end)
 
 later(function()
@@ -827,6 +572,25 @@ later(function()
 end)
 
 later(function()
+  add({ source = 'kevinhwang91/promise-async' })
+  add({ source = 'chrisgrieser/nvim-origami' })
+  add({ source = 'kevinhwang91/nvim-ufo' })
+
+  require('origami').setup({
+    keepFoldsAcrossSessions = false,
+  })
+
+  require('ufo').setup({
+    provider_selector = function(_, ft, _)
+      local lspWithOutFolding = { 'markdown', 'sh', 'css', 'html', 'python' }
+      if vim.tbl_contains(lspWithOutFolding, ft) then return { 'treesitter', 'indent' } end
+      return { 'lsp', 'indent' }
+    end,
+    open_fold_hl_timeout = 800,
+  })
+end)
+
+later(function()
   add({ source = 'hrsh7th/nvim-deck' })
 
   local deck = require('deck')
@@ -835,7 +599,8 @@ later(function()
     pattern = 'DeckStart',
     callback = function(e)
       local ctx = e.data.ctx
-      ctx.keymap('n', '<Esc>', function() ctx.set_preview_mode(false) end)
+
+      ctx.keymap('n', '<CR>', deck.action_mapping('default'))
       ctx.keymap('n', '<Tab>', deck.action_mapping('choose_action'))
       ctx.keymap('n', '<C-l>', deck.action_mapping('refresh'))
       ctx.keymap('n', 'i', deck.action_mapping('prompt'))
@@ -843,24 +608,20 @@ later(function()
       ctx.keymap('n', '@', deck.action_mapping('toggle_select'))
       ctx.keymap('n', '*', deck.action_mapping('toggle_select_all'))
       ctx.keymap('n', 'p', deck.action_mapping('toggle_preview_mode'))
-      ctx.keymap('n', 'd', deck.action_mapping('delete'))
-      ctx.keymap('n', '<CR>', deck.action_mapping('default'))
-      ctx.keymap('n', 'o', deck.action_mapping('open'))
-      ctx.keymap('n', 'O', deck.action_mapping('open_keep'))
+      ctx.keymap('n', 'q', function() ctx.hide() end)
+
       ctx.keymap('n', 's', deck.action_mapping('open_split'))
       ctx.keymap('n', 'v', deck.action_mapping('open_vsplit'))
-      ctx.keymap('n', 'N', deck.action_mapping('create'))
+
       ctx.keymap('n', '<C-u>', deck.action_mapping('scroll_preview_up'))
       ctx.keymap('n', '<C-d>', deck.action_mapping('scroll_preview_down'))
 
-      ctx.prompt()
+      if ctx.name == 'buf_lines' then ctx.keymap('n', '<CR>', deck.action_mapping('goto_line')) end
     end,
   })
 
   function _G.files()
     deck.start({
-      require('deck.builtin.source.recent_files')(),
-      require('deck.builtin.source.buffers')(),
       require('deck.builtin.source.files')({
         root_dir = vim.fn.getcwd(),
         ignore_globs = {
@@ -868,6 +629,12 @@ later(function()
           '**/.git/**',
         },
       }),
+    })
+  end
+
+  function _G.oldfiles()
+    deck.start({
+      require('deck.builtin.source.recent_files')(),
     })
   end
 
@@ -890,19 +657,44 @@ later(function()
     }))
   end
 
-  function _G.git()
-    deck.start(require('deck.builtin.source.git')({
-      cwd = vim.fn.getcwd(),
-    }))
+  function _G.helpgrep() deck.start(require('deck.builtin.source.helpgrep')()) end
+
+  function _G.buflines()
+    local win = vim.api.nvim_get_current_win()
+    local bufnr = vim.api.nvim_get_current_buf()
+
+    require('deck').start({
+      name = 'buf_lines',
+      execute = function(ctx)
+        for lnum, l in ipairs(vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)) do
+          ctx.item({ display_text = l, bufnr = bufnr, lnum = lnum })
+        end
+
+        ctx.done()
+      end,
+      actions = {
+        {
+          name = 'goto_line',
+          resolve = function(ctx) return #ctx.get_action_items() > 0 end,
+          execute = function(ctx)
+            local item = ctx.get_cursor_item()
+
+            local lnum = item.lnum
+
+            pcall(vim.api.nvim_set_current_win, win)
+            pcall(vim.api.nvim_win_set_cursor, win, { lnum or 1, 0 })
+
+            ctx.hide()
+          end,
+        },
+      },
+    })
   end
 
-  deck.register_start_preset('files', files)
-  deck.register_start_preset('buffers', buffers)
-  deck.register_start_preset('grep', grep)
-  deck.register_start_preset('git', git)
-
+  S('fl', 'lua _G.buflines()', '[F]ind Buf[l]ines')
+  S('fb', 'lua _G.buffers()', '[F]ind [B]uffers')
   S('ff', 'lua _G.files()', '[F]ind [F]iles')
-  S('fb', 'lua _G.files()', '[F]ind [B]uffers')
+  S('fo', 'lua _G.oldfiles()', '[F]ind [O]ld Files')
   S('fg', 'lua _G.grep()', '[F]ind [G]rep')
-  S('gg', 'lua _G.git()', '[G]it To[g]gle')
+  S('fh', 'lua _G.helpgrep()', '[F]ind [H]elp')
 end)

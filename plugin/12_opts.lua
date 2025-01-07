@@ -47,6 +47,11 @@ vim.o.virtualedit = 'block'
 vim.o.wildignorecase = true
 vim.o.wrap = false
 vim.o.writebackup = false
+vim.o.qftf = '{info -> v:lua._G.qftf(info)}'
+vim.opt.foldlevel = 99
+vim.opt.foldlevelstart = 99
+vim.o.foldcolumn = '0'
+vim.o.foldenable = true
 
 if vim.fn.exists('syntax_on') ~= 1 then vim.cmd('syntax enable') end
 vim.cmd('filetype plugin indent on')
