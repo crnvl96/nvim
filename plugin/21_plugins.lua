@@ -611,36 +611,72 @@ MiniDeps.later(function()
 
       ctx.keymap('n', '<C-u>', deck.action_mapping('scroll_preview_up'))
       ctx.keymap('n', '<C-d>', deck.action_mapping('scroll_preview_down'))
-
-      if ctx.name == 'buf_lines' then ctx.keymap('n', '<CR>', deck.action_mapping('goto_line')) end
     end,
   })
 
-  function _G.files()
-    deck.start({
-      require('deck.builtin.source.files')({
-        root_dir = vim.fn.getcwd(),
-        ignore_globs = {
-          '**/node_modules/**',
-          '**/.git/**',
-        },
-      }),
-    })
-  end
+  vim.keymap.set('n', '<Leader>fr', function()
+    local ctx = require('deck').get_history()[1]
+    if ctx then ctx.show() end
+  end, { desc = 'Resume last context' })
 
-  function _G.oldfiles()
-    deck.start({
-      require('deck.builtin.source.recent_files')(),
-    })
-  end
+  vim.keymap.set(
+    'n',
+    '<Leader>fl',
+    function()
+      deck.start(require('deck.builtin.source.lines')({
+        bufnrs = { vim.api.nvim_get_current_buf() },
+      }))
+    end,
+    { desc = 'Buffer lines' }
+  )
 
-  function _G.buffers()
-    deck.start({
-      require('deck.builtin.source.buffers')(),
-    })
-  end
+  vim.keymap.set(
+    'n',
+    '<Leader>ff',
+    function()
+      deck.start({
+        require('deck.builtin.source.files')({
+          root_dir = vim.fn.getcwd(),
+          ignore_globs = {
+            '**/node_modules/**',
+            '**/.git/**',
+          },
+        }),
+      })
+    end,
+    { desc = 'Find files' }
+  )
 
-  function _G.grep()
+  vim.keymap.set(
+    'n',
+    '<Leader>fb',
+    function()
+      deck.start({
+        require('deck.builtin.source.buffers')(),
+      })
+    end,
+    { desc = 'Buffers' }
+  )
+
+  vim.keymap.set(
+    'n',
+    '<Leader>fh',
+    function() deck.start(require('deck.builtin.source.helpgrep')()) end,
+    { desc = 'Help tags' }
+  )
+
+  vim.keymap.set(
+    'n',
+    '<Leader>fo',
+    function()
+      deck.start({
+        require('deck.builtin.source.recent_files')(),
+      })
+    end,
+    { desc = 'Oldfiles' }
+  )
+
+  vim.keymap.set('n', '<Leader>fg', function()
     local pattern = vim.fn.input('grep: ')
     if #pattern == 0 then return vim.notify('Canceled', vim.log.levels.INFO) end
     deck.start(require('deck.builtin.source.grep')({
@@ -651,48 +687,7 @@ MiniDeps.later(function()
         '**/.git/**',
       },
     }))
-  end
-
-  function _G.helpgrep() deck.start(require('deck.builtin.source.helpgrep')()) end
-
-  function _G.buflines()
-    local win = vim.api.nvim_get_current_win()
-    local bufnr = vim.api.nvim_get_current_buf()
-
-    require('deck').start({
-      name = 'buf_lines',
-      execute = function(ctx)
-        for lnum, l in ipairs(vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)) do
-          ctx.item({ display_text = l, lnum = lnum })
-        end
-
-        ctx.done()
-      end,
-      actions = {
-        {
-          name = 'goto_line',
-          resolve = function(ctx) return #ctx.get_action_items() > 0 end,
-          execute = function(ctx)
-            local item = ctx.get_cursor_item()
-
-            local lnum = item.lnum
-
-            pcall(vim.api.nvim_set_current_win, win)
-            pcall(vim.api.nvim_win_set_cursor, win, { lnum or 1, 0 })
-
-            ctx.hide()
-          end,
-        },
-      },
-    })
-  end
-
-  vim.keymap.set('n', '<Leader>fl', '<Cmd>lua _G.buflines()<CR>', { desc = 'Find lines' })
-  vim.keymap.set('n', '<Leader>fb', '<Cmd>lua _G.buffers()<CR>', { desc = 'Buffers' })
-  vim.keymap.set('n', '<Leader>ff', '<Cmd>lua _G.files()<CR>', { desc = 'Find files' })
-  vim.keymap.set('n', '<Leader>fo', '<Cmd>lua _G.oldfiles()<CR>', { desc = 'Oldfiles' })
-  vim.keymap.set('n', '<Leader>fg', '<Cmd>lua _G.grep()<CR>', { desc = 'Grep' })
-  vim.keymap.set('n', '<Leader>fh', '<Cmd>lua _G.helpgrep()<CR>', { desc = 'Help tags' })
+  end, { desc = 'Grep' })
 end)
 
 MiniDeps.later(function()
