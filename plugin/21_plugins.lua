@@ -578,7 +578,7 @@ MiniDeps.later(function()
   MiniDeps.add({ source = 'chrisgrieser/nvim-origami' })
   MiniDeps.add({ source = 'kevinhwang91/nvim-ufo' })
 
-  require('origami').setup({ keepFoldsAcrossSessions = false })
+  require('origami').setup({ keepFoldsAcrossSessions = false, hOnlyOpensOnFirstColumn = true })
 
   require('ufo').setup({
     provider_selector = function(_, ft, _)
