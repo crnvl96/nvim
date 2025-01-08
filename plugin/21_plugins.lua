@@ -591,7 +591,7 @@ MiniDeps.later(function()
 end)
 
 MiniDeps.later(function()
-  MiniDeps.add({ source = 'hrsh7th/nvim-deck' })
+  MiniDeps.add({ source = 'crnvl96/nvim-deck' })
 
   local deck = require('deck')
 
@@ -610,13 +610,26 @@ MiniDeps.later(function()
       ctx.keymap('n', 'p', deck.action_mapping('toggle_preview_mode'))
       ctx.keymap('n', 'q', function() ctx.hide() end)
 
+      ctx.keymap('n', 'S', deck.action_mapping('substitute'))
+
       ctx.keymap('n', 's', deck.action_mapping('open_split'))
       ctx.keymap('n', 'v', deck.action_mapping('open_vsplit'))
 
-      ctx.keymap('n', '<C-u>', deck.action_mapping('scroll_preview_up'))
-      ctx.keymap('n', '<C-d>', deck.action_mapping('scroll_preview_down'))
+      ctx.keymap('n', '<C-b>', deck.action_mapping('scroll_preview_up'))
+      ctx.keymap('n', '<C-f>', deck.action_mapping('scroll_preview_down'))
     end,
   })
+
+  vim.keymap.set(
+    'n',
+    '<Leader>gg',
+    function()
+      deck.start(require('deck.builtin.source.git')({
+        cwd = vim.uv.cwd(),
+      }))
+    end,
+    { desc = 'Git' }
+  )
 
   vim.keymap.set('n', '<Leader>fr', function()
     local ctx = require('deck').get_history()[1]
@@ -640,7 +653,7 @@ MiniDeps.later(function()
     function()
       deck.start({
         require('deck.builtin.source.files')({
-          root_dir = vim.fn.getcwd(),
+          root_dir = vim.uv.cwd(),
           ignore_globs = {
             '**/node_modules/**',
             '**/.git/**',
@@ -680,18 +693,22 @@ MiniDeps.later(function()
     { desc = 'Oldfiles' }
   )
 
-  vim.keymap.set('n', '<Leader>fg', function()
-    local pattern = vim.fn.input('grep: ')
-    if #pattern == 0 then return vim.notify('Canceled', vim.log.levels.INFO) end
-    deck.start(require('deck.builtin.source.grep')({
-      pattern = pattern,
-      root_dir = vim.fn.getcwd(),
-      ignore_globs = {
-        '**/node_modules/**',
-        '**/.git/**',
-      },
-    }))
-  end, { desc = 'Grep' })
+  vim.keymap.set(
+    'n',
+    '<Leader>fg',
+    function()
+      deck.start(require('deck.builtin.source.grep')({
+        dynamic = true,
+        root_dir = vim.uv.cwd(),
+        allow_glob_patterns = true,
+        ignore_globs = {
+          '**/node_modules/**',
+          '**/.git/**',
+        },
+      }))
+    end,
+    { desc = 'Grep' }
+  )
 end)
 
 MiniDeps.later(function()
