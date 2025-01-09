@@ -102,9 +102,6 @@ vim.keymap.set({ 'n', 'i', 'x' }, '<C-s>', '<Esc><Cmd>w<CR><Esc>')
 vim.keymap.set('x', '>', '>gv')
 vim.keymap.set('x', '<', '<gv')
 
-vim.keymap.set('n', '<Leader>ba', '<Cmd>b#<CR>', { desc = 'Alternate buffer' })
-vim.keymap.set('n', '<Leader>bd', '<Cmd>bd<CR>', { desc = 'Delete current buffer' })
-
 vim.api.nvim_create_autocmd('TextYankPost', {
   group = vim.api.nvim_create_augroup('crnvl96-highlight-on-yank', { clear = true }),
   callback = function() (vim.hl or vim.highlight).on_yank() end,
