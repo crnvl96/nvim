@@ -199,6 +199,11 @@ vim.keymap.set('n', '<C-w>-', '<Cmd>resize -5<CR>', { remap = true })
 vim.keymap.set('n', '<C-w><', '<Cmd>vertical resize -20<CR>', { remap = true })
 vim.keymap.set('n', '<C-w>>', '<Cmd>vertical resize +20<CR>', { remap = true })
 
+vim.keymap.set('n', '<C-Up>', '<Cmd>resize +5<CR>', { remap = true })
+vim.keymap.set('n', '<C-Down>', '<Cmd>resize -5<CR>', { remap = true })
+vim.keymap.set('n', '<C-Left>', '<Cmd>vertical resize -20<CR>', { remap = true })
+vim.keymap.set('n', '<C-Right>', '<Cmd>vertical resize +20<CR>', { remap = true })
+
 vim.keymap.set({ 'n', 'v', 'i' }, '<Esc>', '<Esc><Cmd>nohl<CR><Esc>')
 vim.keymap.set({ 'n', 'i', 'x' }, '<C-s>', '<Esc><Cmd>w<CR><Esc>')
 

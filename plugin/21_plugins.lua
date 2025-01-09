@@ -1,20 +1,5 @@
-MiniDeps.now(function()
-  for _, cli in ipairs({
-    'tree-sitter',
-    'rg',
-    'rustc',
-    'npm',
-  }) do
-    if vim.fn.executable(cli) ~= 1 then
-      local msg = cli .. ' is not installed in the system.'
-      local lvl = vim.log.levels.ERROR
-
-      vim.notify(msg, lvl)
-    end
-  end
-end)
-
 MiniDeps.now(function() MiniDeps.add({ name = 'mini.nvim' }) end)
+MiniDeps.now(function() vim.cmd('colorscheme minigrey') end)
 
 MiniDeps.now(function()
   require('mini.notify').setup({
@@ -30,29 +15,13 @@ MiniDeps.now(function()
   vim.keymap.set('n', '<Leader>nh', '<Cmd>lua MiniNotify.show_history()<CR>', { desc = 'Show notification history' })
 end)
 
-MiniDeps.now(function() require('mini.misc').setup_termbg_sync() end)
-MiniDeps.now(function() vim.cmd('colorscheme minigrey') end)
-
 MiniDeps.now(function()
-  MiniDeps.add({ source = 'folke/snacks.nvim' })
-
-  require('snacks').setup({
-    indent = { enabled = true },
-  })
-end)
-
-MiniDeps.now(function()
-  require('mini.icons').setup({
-    use_file_extension = function(ext, _)
-      local suf3, suf4 = ext:sub(-3), ext:sub(-4)
-      return suf3 ~= 'scm' and suf3 ~= 'txt' and suf3 ~= 'yml' and suf4 ~= 'json' and suf4 ~= 'yaml'
-    end,
-  })
-
+  require('mini.icons').setup()
   MiniIcons.mock_nvim_web_devicons()
   MiniDeps.later(MiniIcons.tweak_lsp_kind)
 end)
 
+MiniDeps.later(function() vim.ui.select = require('mini.pick').ui_select end)
 MiniDeps.later(function() require('mini.doc').setup() end)
 MiniDeps.later(function() require('mini.align').setup() end)
 MiniDeps.later(function() require('mini.operators').setup() end)
@@ -61,11 +30,8 @@ MiniDeps.later(function() MiniDeps.add({ source = 'lambdalisue/vim-suda' }) end)
 MiniDeps.later(function() MiniDeps.add({ source = 'HakonHarnes/img-clip.nvim' }) end)
 MiniDeps.later(function() MiniDeps.add({ source = 'tpope/vim-sleuth' }) end)
 MiniDeps.later(function() MiniDeps.add({ source = 'tpope/vim-fugitive' }) end)
-
-MiniDeps.later(function()
-  require('mini.pick').setup()
-  vim.ui.select = MiniPick.ui_select
-end)
+MiniDeps.later(function() MiniDeps.add({ source = 'junegunn/fzf', hooks = Hooks.fzf }) end)
+MiniDeps.later(function() MiniDeps.add({ source = 'iamcco/markdown-preview.nvim', hooks = Hooks.mkdp }) end)
 
 MiniDeps.later(function()
   MiniDeps.add({ source = 'hat0uma/csvview.nvim' })
@@ -73,14 +39,7 @@ MiniDeps.later(function()
 end)
 
 MiniDeps.later(function()
-  require('mini.diff').setup({ view = { style = 'sign' } })
-  vim.keymap.set('n', '<Leader>go', '<Cmd>lua MiniDiff.toggle_overlay(0)<CR>', { desc = 'Toggle diff overlay' })
-end)
-
-MiniDeps.later(function()
-  local minifiles = require('mini.files')
-
-  minifiles.setup({
+  require('mini.files').setup({
     mappings = {
       go_in = '',
       go_in_plus = '<CR>',
@@ -92,22 +51,6 @@ MiniDeps.later(function()
   })
 
   vim.keymap.set('n', '-', '<Cmd>lua MiniFiles.open(vim.api.nvim_buf_get_name(0))<CR>')
-end)
-
-MiniDeps.later(function()
-  MiniDeps.add({
-    source = 'iamcco/markdown-preview.nvim',
-    hooks = {
-      post_checkout = function()
-        MiniDeps.later(function() vim.fn['mkdp#util#install']() end)
-      end,
-      post_install = function()
-        MiniDeps.later(function() vim.fn['mkdp#util#install']() end)
-      end,
-    },
-  })
-
-  vim.g.mkdp_filetypes = { 'markdown', 'md' }
 end)
 
 MiniDeps.later(function()
@@ -187,7 +130,6 @@ MiniDeps.later(function()
         -- javascript/typescript
         'vtsls',
         'eslint_d',
-        'deno',
         'prettierd',
 
         -- lua
@@ -208,20 +150,6 @@ MiniDeps.later(function()
 end)
 
 MiniDeps.later(function()
-  MiniDeps.add({
-    source = 'junegunn/fzf',
-    hooks = {
-      post_checkout = function()
-        MiniDeps.later(function() vim.fn['fzf#install']() end)
-      end,
-      post_install = function()
-        MiniDeps.later(function() vim.fn['fzf#install']() end)
-      end,
-    },
-  })
-end)
-
-MiniDeps.later(function()
   MiniDeps.add({ source = 'kevinhwang91/nvim-bqf' })
 
   require('bqf').setup({
@@ -238,10 +166,8 @@ MiniDeps.later(function()
         local bufname = vim.api.nvim_buf_get_name(bufnr)
         local fsize = vim.fn.getfsize(bufname)
         if fsize > 100 * 1024 then
-          -- skip file size greater than 100k
           ret = false
         elseif bufname:match('^fugitive://') then
-          -- skip fugitive buffer
           ret = false
         end
         return ret
@@ -257,22 +183,8 @@ MiniDeps.later(function()
 end)
 
 MiniDeps.later(function()
-  MiniDeps.add({ source = 'aaronik/treewalker.nvim' })
-
-  require('treewalker').setup({
-    highlight = true,
-    highlight_duration = 250,
-    highlight_group = 'CursorLine',
-  })
-
-  vim.keymap.set('n', '<Leader>wj', '<Cmd>Treewalker Down<CR>', { desc = 'Treewalker down' })
-  vim.keymap.set('n', '<Leader>wk', '<Cmd>Treewalker Up<CR>', { desc = 'Treewalker up' })
-  vim.keymap.set('n', '<Leader>wh', '<Cmd>Treewalker Left<CR>', { desc = 'Treewalker left' })
-  vim.keymap.set('n', '<Leader>wl', '<Cmd>Treewalker Right<CR>', { desc = 'Treewalker right' })
-end)
-
-MiniDeps.later(function()
   MiniDeps.add({ source = 'saghen/blink.compat' })
+
   MiniDeps.add({
     source = 'Saghen/blink.cmp',
     hooks = {
@@ -372,7 +284,19 @@ MiniDeps.later(function()
 
   require('codecompanion').setup({
     strategies = {
-      chat = { adapter = 'anthropic' },
+      chat = {
+        adapter = 'anthropic',
+        keymaps = {
+          completion = {
+            modes = {
+              i = '<C-Space>',
+            },
+            index = 1,
+            callback = 'keymaps.completion',
+            description = 'Completion Menu',
+          },
+        },
+      },
       inline = { adapter = 'anthropic' },
       cmd = { adapter = 'anthropic' },
     },
@@ -388,9 +312,9 @@ MiniDeps.later(function()
     },
   })
 
-  vim.keymap.set('x', '<Leader>ic', '<Cmd>CodeCompanionChat Add<CR>', { desc = 'Add to chat buffer' })
-  vim.keymap.set('n', '<Leader>it', '<Cmd>CodeCompanionChat Toggle<CR>', { desc = 'Toggle chat buffer' })
-  vim.keymap.set('n', '<Leader>ia', '<Cmd>CodeCompanionActions<CR>', { desc = 'Show AI actions' })
+  vim.keymap.set('x', '<Leader>cc', '<Cmd>CodeCompanionChat Add<CR>', { desc = 'Add to chat buffer' })
+  vim.keymap.set('n', '<Leader>ct', '<Cmd>CodeCompanionChat Toggle<CR>', { desc = 'Toggle chat buffer' })
+  vim.keymap.set('n', '<Leader>ca', '<Cmd>CodeCompanionActions<CR>', { desc = 'Show AI actions' })
 end)
 
 MiniDeps.later(function()
@@ -405,36 +329,16 @@ MiniDeps.later(function()
       json = { 'prettierd' },
       toml = { 'taplo' },
       lua = { 'stylua' },
-      javascript = { 'deno_fmt', 'prettierd' },
-      typescript = { 'deno_fmt', 'prettierd' },
-      javascriptreact = { 'deno_fmt', 'prettierd' },
-      typescriptreact = { 'deno_fmt', 'prettierd' },
-      ['javascript.tsx'] = { 'deno_fmt', 'prettierd' },
-      ['typescript.tsx'] = { 'deno_fmt', 'prettierd' },
+      javascript = { 'prettierd' },
+      typescript = { 'prettierd' },
+      javascriptreact = { 'prettierd' },
+      typescriptreact = { 'prettierd' },
+      ['javascript.tsx'] = { 'prettierd' },
+      ['typescript.tsx'] = { 'prettierd' },
       python = { 'ruff_fix', 'ruff_organize_imports', 'ruff_format' },
     },
     formatters = {
       injected = { ignore_errors = true },
-      prettierd = {
-        condition = function()
-          local buffer = vim.api.nvim_get_current_buf()
-          return (
-            vim.tbl_contains({
-              'javascript',
-              'javascriptreact',
-              'javascript.jsx',
-              'typescript',
-              'typescriptreact',
-              'typescript.tsx',
-            }, vim.bo[buffer].filetype) and not vim.fs.root(buffer, { 'package.json' })
-          ) or true
-        end,
-      },
-      deno_fmt = {
-        condition = function()
-          return vim.fs.root(vim.api.nvim_get_current_buf(), { 'deno.json', 'deno.jsonc' }) and true or false
-        end,
-      },
     },
   })
 
@@ -476,10 +380,7 @@ MiniDeps.later(function()
   for server, config in pairs({
     vtsls = {
       root_dir = function(_, buffer) return buffer and vim.fs.root(buffer, { 'package.json' }) end,
-      single_file_support = false, -- avoid setting up vtsls on deno projects
-    },
-    denols = {
-      root_dir = function(_, buffer) return buffer and vim.fs.root(buffer, { 'deno.json', 'deno.jsonc' }) end,
+      single_file_support = false,
     },
     basedpyright = {
       settings = {
@@ -520,13 +421,11 @@ MiniDeps.later(function()
       end,
       settings = {
         Lua = {
-          -- Using stylua for formatting.
           format = { enable = false },
           hint = {
             enable = true,
             arrayIndex = 'Disable',
           },
-          -- completion = { callSnippet = 'Replace' },
           completion = {
             callSnippet = 'Disable',
             keywordSnippet = 'Disable',
@@ -591,7 +490,7 @@ MiniDeps.later(function()
 end)
 
 MiniDeps.later(function()
-  MiniDeps.add({ source = 'crnvl96/nvim-deck' })
+  MiniDeps.add({ source = 'hrsh7th/nvim-deck' })
 
   local deck = require('deck')
 
@@ -700,7 +599,6 @@ MiniDeps.later(function()
       deck.start(require('deck.builtin.source.grep')({
         dynamic = true,
         root_dir = vim.uv.cwd(),
-        allow_glob_patterns = true,
         ignore_globs = {
           '**/node_modules/**',
           '**/.git/**',
@@ -712,25 +610,66 @@ MiniDeps.later(function()
 end)
 
 MiniDeps.later(function()
+  MiniDeps.add({ source = 'Vigemus/iron.nvim' })
+
+  local iron = require('iron.core')
+  iron.setup({
+    config = {
+      scratch_repl = true,
+      repl_definition = {
+        sh = {
+          command = { 'bash' },
+        },
+        python = {
+          command = { 'uv', 'run', 'python' },
+          format = require('iron.fts.common').bracketed_paste_python,
+        },
+      },
+      repl_open_cmd = require('iron.view').right(40),
+    },
+    keymaps = {
+      send_motion = '<Leader>ic',
+      visual_send = '<Leader>ic',
+      send_file = '<Leader>if',
+      send_line = '<Leader>il',
+      send_paragraph = '<Leader>ip',
+      send_until_cursor = '<Leader>iu',
+      send_mark = '<Leader>im',
+      cr = '<Leader>i<cr>',
+      interrupt = '<Leader>i<space>',
+      exit = '<Leader>iq',
+      clear = '<Leader>id',
+    },
+    highlight = {
+      italic = true,
+    },
+    ignore_blank_lines = false,
+  })
+
+  -- iron also has a list of commands, see :h iron-commands for all available commands
+  vim.keymap.set('n', '<space>rs', '<cmd>IronRepl<cr>')
+  vim.keymap.set('n', '<space>rr', '<cmd>IronRestart<cr>')
+  vim.keymap.set('n', '<space>rf', '<cmd>IronFocus<cr>')
+  vim.keymap.set('n', '<space>rh', '<cmd>IronHide<cr>')
+end)
+
+MiniDeps.later(function()
   local miniclue = require('mini.clue')
 
   miniclue.setup({
     clues = {
       { mode = 'n', keys = '<Leader>b', desc = '+Buffer' },
+      { mode = 'n', keys = '<Leader>c', desc = '+CodeCompanion' },
+      { mode = 'n', keys = '<Leader>c', desc = '+CodeCompanion' },
       { mode = 'n', keys = '<Leader>d', desc = '+Debug' },
       { mode = 'n', keys = '<Leader>f', desc = '+Files' },
       { mode = 'n', keys = '<Leader>g', desc = '+Git' },
       { mode = 'x', keys = '<Leader>g', desc = '+Git' },
-      { mode = 'n', keys = '<Leader>i', desc = '+IA' },
-      { mode = 'x', keys = '<Leader>i', desc = '+IA' },
+      { mode = 'n', keys = '<Leader>i', desc = '+Iron' },
+      { mode = 'x', keys = '<Leader>i', desc = '+Iron' },
       { mode = 'n', keys = '<Leader>l', desc = '+LSP' },
       { mode = 'n', keys = '<Leader>n', desc = '+Notification' },
       { mode = 'n', keys = '<Leader>x', desc = '+List' },
-
-      { mode = 'n', keys = '<Leader>wj', postkeys = '<Leader>w', desc = 'Down' },
-      { mode = 'n', keys = '<Leader>wk', postkeys = '<Leader>w', desc = 'Up' },
-      { mode = 'n', keys = '<Leader>wh', postkeys = '<Leader>w', desc = 'Left' },
-      { mode = 'n', keys = '<Leader>wl', postkeys = '<Leader>w', desc = 'Right' },
 
       miniclue.gen_clues.builtin_completion(),
       miniclue.gen_clues.g(),
