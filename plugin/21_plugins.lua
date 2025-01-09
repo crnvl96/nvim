@@ -184,14 +184,7 @@ end)
 
 MiniDeps.later(function()
   MiniDeps.add({ source = 'saghen/blink.compat' })
-
-  MiniDeps.add({
-    source = 'Saghen/blink.cmp',
-    hooks = {
-      post_checkout = function(params) Config.build(params, { 'cargo', 'build', '--release' }) end,
-      post_install = function(params) Config.build(params, { 'cargo', 'build', '--release' }) end,
-    },
-  })
+  MiniDeps.add({ source = 'Saghen/blink.cmp', hooks = Hooks.blink })
 
   require('blink.compat').setup()
   require('blink.cmp').setup({
@@ -289,7 +282,7 @@ MiniDeps.later(function()
         keymaps = {
           completion = {
             modes = {
-              i = '<C-Space>',
+              i = '<C-t>',
             },
             index = 1,
             callback = 'keymaps.completion',
