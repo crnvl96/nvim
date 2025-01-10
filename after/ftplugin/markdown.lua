@@ -1,3 +1,5 @@
 vim.cmd('setlocal spell wrap')
 
-vim.keymap.set('n', '<Leader>mt', '<Cmd>MarkdownPreviewToggle<CR>', { desc = 'Toggle preview' })
+local set = vim.keymap.set
+
+set('n', '<Leader>mt', '<Cmd>MarkdownPreviewToggle<CR>', { desc = 'Toggle preview' })
