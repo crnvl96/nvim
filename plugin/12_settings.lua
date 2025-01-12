@@ -1,49 +1,3 @@
-function _G.qftf(info)
-  local items
-  local ret = {}
-
-  if info.quickfix == 1 then
-    items = vim.fn.getqflist({ id = info.id, items = 0 }).items
-  else
-    items = vim.fn.getloclist(info.winid, { id = info.id, items = 0 }).items
-  end
-
-  local limit = 62
-  local fnameFmt1, fnameFmt2 = '%-' .. limit .. 's', '…%.' .. (limit - 1) .. 's'
-  local validFmt = '%s │%5d:%-3d│%s %s'
-
-  for i = info.start_idx, info.end_idx do
-    local e = items[i]
-    local fname = ''
-    local str
-    if e.valid == 1 then
-      if e.bufnr > 0 then
-        fname = vim.fn.bufname(e.bufnr)
-        if fname == '' then
-          fname = '[No Name]'
-        else
-          fname = fname:gsub('^' .. vim.env.HOME, '~')
-        end
-        -- char in fname may occur more than 1 width, ignore this issue in order to keep performance
-        if #fname <= limit then
-          fname = fnameFmt1:format(fname)
-        else
-          fname = fnameFmt2:format(fname:sub(1 - limit))
-        end
-      end
-      local lnum = e.lnum > 99999 and -1 or e.lnum
-      local col = e.col > 999 and -1 or e.col
-      local qtype = e.type == '' and '' or ' ' .. e.type:sub(1, 1):upper()
-      str = validFmt:format(fname, lnum, col, qtype, e.text)
-    else
-      str = e.text
-    end
-    table.insert(ret, str)
-  end
-
-  return ret
-end
-
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ','
 
@@ -73,7 +27,6 @@ vim.o.list = true
 vim.o.mouse = 'a'
 vim.o.mousescroll = 'ver:2,hor:6'
 vim.o.number = true
-vim.o.qftf = '{info -> v:lua._G.qftf(info)}'
 vim.o.relativenumber = true
 vim.o.ruler = false
 vim.o.scrolloff = 8
@@ -148,6 +101,9 @@ vim.keymap.set({ 'n', 'i', 'x' }, '<C-s>', '<Esc><Cmd>w<CR><Esc>')
 vim.keymap.set('x', '>', '>gv')
 vim.keymap.set('x', '<', '<gv')
 
+vim.keymap.set('n', '<Leader>ba', '<Cmd>b#<CR>', { desc = 'Alternate buffer' })
+vim.keymap.set('n', '<Leader>bd', '<Cmd>bd<CR>', { desc = 'Delete current buffer' })
+
 vim.api.nvim_create_autocmd('TextYankPost', {
   group = vim.api.nvim_create_augroup('crnvl96-highlight-on-yank', { clear = true }),
   callback = function() (vim.hl or vim.highlight).on_yank() end,
@@ -189,26 +145,24 @@ local function on_attach(client, bufnr)
 
   local set = vim.keymap.set
 
-  local hover = '<Cmd>lua vim.lsp.buf.hover({border="single"})<CR>'
   local sign_help = '<Cmd>lua vim.lsp.buf.signature_help({border="single"})<CR>'
   local open_float = '<Cmd>lua vim.diagnostic.open_float({boder="single"})<CR>'
-  local rename = '<Cmd>lua vim.lsp.buf.rename()<CR>'
+
+  local lsp = _G.Deck.lsp()
+
+  set('n', '<Leader>lx', _G.Deck.diagnostics, { desc = 'Diagnostics' })
+  set('n', '<Leader>ld', lsp.definition, { desc = 'Definition', buffer = bufnr })
+  set('n', '<Leader>li', lsp.implementations, { desc = 'Implementation', buffer = bufnr })
+  set('n', '<Leader>lr', lsp.references, { desc = 'References', buffer = bufnr })
+  set('n', '<Leader>ly', lsp.typedefinitions, { desc = 'Type definition', buffer = bufnr })
 
   set('n', '<Leader>la', '<Cmd>lua vim.lsp.buf.code_action()<CR>', { desc = 'Code action', buffer = bufnr })
-  set('n', '<Leader>le', hover, { desc = 'Eval', buffer = bufnr })
+  set('n', '<Leader>le', '<Cmd>lua vim.lsp.buf.hover({border="single"})<CR>', { desc = 'Eval', buffer = bufnr })
   set('n', '<Leader>lh', sign_help, { desc = 'Signature help', buffer = bufnr })
   set('n', '<Leader>lj', '<Cmd>lua vim.diagnostic.goto_next()<CR>', { desc = 'Next diagnostic', buffer = bufnr })
   set('n', '<Leader>lk', '<Cmd>lua vim.diagnostic.goto_prev()<CR>', { desc = 'Previous diagnostic', buffer = bufnr })
   set('n', '<Leader>ll', open_float, { desc = 'Inspect diagnostic', buffer = bufnr })
-  set('n', '<Leader>ln', rename, { desc = 'Rename symbol', buffer = bufnr })
-  set('n', '<Leader>lx', '<Cmd>lua vim.lsp.diagnostic.setqflist()<CR>', { desc = 'Set quickfix list', buffer = bufnr })
-  set('n', '<Leader>lc', '<Cmd>lua vim.lsp.buf.declaration()<CR>', { desc = 'Declaration', buffer = bufnr })
-  set('n', '<Leader>ld', '<Cmd>lua vim.lsp.buf.definition()<CR>', { desc = 'Definition', buffer = bufnr })
-  set('n', '<Leader>li', '<Cmd>lua vim.lsp.buf.implementation()<CR>', { desc = 'Implementation', buffer = bufnr })
-  set('n', '<Leader>lr', '<Cmd>lua vim.lsp.buf.references()<CR>', { desc = 'References', buffer = bufnr })
-  set('n', '<Leader>ls', '<Cmd>lua vim.lsp.buf.document_symbol()<CR>', { desc = 'Doc symbols', buffer = bufnr })
-  set('n', '<Leader>lS', '<Cmd>lua vim.lsp.buf.workspace_symbol()<CR>', { desc = 'Workspace symbols', buffer = bufnr })
-  set('n', '<Leader>ly', '<Cmd>lua vim.lsp.buf.type_definition()<CR>', { desc = 'Type definition', buffer = bufnr })
+  set('n', '<Leader>ln', '<Cmd>lua vim.lsp.buf.rename()<CR>', { desc = 'Rename symbol', buffer = bufnr })
 end
 
 local register_capability = vim.lsp.handlers[vim.lsp.protocol.Methods.client_registerCapability]
