@@ -106,10 +106,10 @@ later(function() require('mini.align').setup() end)
 later(function() require('mini.splitjoin').setup() end)
 later(function() require('mini.operators').setup() end)
 later(function() require('mini.diff').setup({ view = { style = 'sign' } }) end)
-later(function()
-  require('mini.pick').setup()
-  vim.ui.select = require('mini.pick').ui_select
-end)
+-- later(function()
+--   require('mini.pick').setup()
+--   vim.ui.select = require('mini.pick').ui_select
+-- end)
 later(function() add({ source = 'nvim-lua/plenary.nvim' }) end)
 later(function() add({ source = 'tpope/vim-sleuth' }) end)
 later(function() add({ source = 'junegunn/fzf', hooks = hooks.fzf }) end)
@@ -606,6 +606,67 @@ later(function()
       ctx.prompt()
     end,
   })
+
+  vim.ui.select = function(items, opts, on_choice)
+    local win = vim.api.nvim_get_current_win()
+
+    local expand_callable = function(x, ...)
+      if vim.is_callable(x) then return x(...) end
+      return x
+    end
+
+    local item_to_string = function(item)
+      item = expand_callable(item)
+      if type(item) == 'string' then return item end
+      if type(item) == 'table' and type(item.text) == 'string' then return item.text end
+      return vim.inspect(item, { newline = ' ', indent = '' })
+    end
+
+    local fmt = opts.format_item or item_to_string
+
+    local formatted_items = {}
+    for i = 1, #items do
+      table.insert(formatted_items, { text = fmt(items[i]), index = i, item = items[i] })
+    end
+
+    require('deck').start({
+      name = 'ui_select',
+      execute = function(ctx)
+        for _, item in ipairs(formatted_items) do
+          ctx.item({ display_text = item.text, index = item.index, item = item.item })
+        end
+        ctx.done()
+      end,
+      actions = {
+        {
+          name = 'default',
+          resolve = function(ctx) return #ctx.get_action_items() == 1 and ctx.get_action_items()[1].index end,
+          execute = function(ctx)
+            local item = ctx.get_cursor_item()
+            if item == nil then return end
+            vim.api.nvim_win_call(win, function() on_choice(items[item.index], item.index) end)
+            ctx.hide()
+          end,
+        },
+      },
+      previewers = {
+        {
+          name = 'ui_select_preview',
+          resolve = function(_, item) return true end,
+          preview = function(_, item, env)
+            vim.api.nvim_win_call(env.win, function()
+              local buf = vim.api.nvim_win_get_buf(env.win)
+
+              local preview_item = vim.is_callable(opts.preview_item) and opts.preview_item
+                or function(x) return vim.split(vim.inspect(x), '\n') end
+
+              pcall(vim.api.nvim_buf_set_lines, buf, 0, -1, false, preview_item(item.item))
+            end)
+          end,
+        },
+      },
+    })
+  end
 
   set('n', '<Leader>fb', _G.Deck.buffers, { desc = 'Buffers' })
   set('n', '<Leader>ff', _G.Deck.files, { desc = 'Find files' })
