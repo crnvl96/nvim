@@ -14,3 +14,8 @@ if not vim.loop.fs_stat(mini_path) then
 end
 
 require('mini.deps').setup()
+vim.cmd('colorscheme minigrey')
+
+Add, Now, Later = MiniDeps.add, MiniDeps.now, MiniDeps.later
+
+Add({ name = 'mini.nvim' })
