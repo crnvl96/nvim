@@ -480,7 +480,7 @@ Later(function()
     end,
   })
 
-  local buffers = require('lua.plugins.nvim-deck.sources.buffers')
+  local buffers = require('plugins.nvim-deck.sources.buffers')
   local keymaps = require('plugins.nvim-deck.sources.keymaps')
   local git = require('plugins.nvim-deck.sources.git')
   local history = require('plugins.nvim-deck.sources.history')
