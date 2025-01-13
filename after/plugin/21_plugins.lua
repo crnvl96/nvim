@@ -17,6 +17,8 @@ Now(function()
         'basedpyright',
         'ruff',
         'debugpy',
+        -- sql
+        'sqlfluff',
       }) do
         local p = mr.get_package(tool)
         if not p:is_installed() then p:install() end
@@ -85,6 +87,12 @@ Now(function()
 
       -- python
       'python',
+
+      -- sql
+      'sql',
+
+      -- csv
+      'csv',
     },
   })
 end)
@@ -102,6 +110,7 @@ Later(function()
       cond = function(buf) return vim.fs.root(buf, { 'selene.toml' }) ~= nil end,
       linters = { 'selene' },
     },
+    -- sql = { linters = { 'sqlfluff' } },
     python = { linters = { 'ruff' } },
     javascript = { linters = { 'eslint_d' } },
     typescript = { linters = { 'eslint_d' } },
@@ -373,8 +382,10 @@ Later(function()
       css = { 'prettierd' },
       html = { 'prettierd' },
       json = { 'prettierd' },
+      jsonc = { 'prettierd' },
       toml = { 'taplo' },
       lua = { 'stylua' },
+      sql = { 'sqlfluff' },
       javascript = { 'prettierd' },
       typescript = { 'prettierd' },
       javascriptreact = { 'prettierd' },
@@ -385,6 +396,9 @@ Later(function()
     },
     formatters = {
       injected = { ignore_errors = true },
+      sqlfluff = {
+        args = { 'format', '--dialect=ansi', '-' },
+      },
     },
   })
 
@@ -489,7 +503,6 @@ Later(function()
   local help = require('plugins.nvim-deck.sources.help')
   local grep = require('plugins.nvim-deck.sources.grep')
   local files = require('plugins.nvim-deck.sources.files')
-
   local git_st = require('plugins.nvim-deck.sources.git-status')
 
   vim.keymap.set('n', '<Leader>fb', buffers, { desc = 'Buffers' })
