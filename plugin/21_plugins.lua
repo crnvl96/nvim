@@ -1,8 +1,34 @@
-Now(function()
-  Add({ source = 'williamboman/mason.nvim', hooks = { post_checkout = function() vim.cmd('MasonUpdate') end } })
+local deps = require('mini.deps')
+
+local add, now, later = deps.add, deps.now, deps.later
+local set = vim.keymap.set
+
+local build = function(params, cmd)
+  local notif = function(msg, lvl) vim.notify(msg, vim.log.levels[lvl]) end
+  local pref = 'Building ' .. params.name
+
+  notif(pref, 'INFO')
+
+  local obj = vim.system(cmd, { cwd = params.path }):wait()
+  local res = obj.code == 0 and (pref .. ' done') or (pref .. ' failed')
+  local lvl = obj.code == 0 and 'INFO' or 'ERROR'
+
+  notif(res, lvl)
+end
+
+now(function()
+  add({
+    source = 'williamboman/mason.nvim',
+    hooks = {
+      post_checkout = function() vim.cmd('MasonUpdate') end,
+    },
+  })
+
   require('mason').setup()
-  Later(function()
+
+  later(function()
     local mr = require('mason-registry')
+
     mr.refresh(function()
       for _, tool in ipairs({
         -- javascript/typescript
@@ -27,37 +53,43 @@ Now(function()
   end)
 end)
 
-Now(function()
-  require('mini.icons').setup()
-  require('mini.doc').setup()
-  require('mini.align').setup()
-  require('mini.splitjoin').setup()
-  require('mini.operators').setup()
+now(function() require('mini.icons').setup() end)
+
+now(function() require('mini.doc').setup() end)
+
+now(function() require('mini.align').setup() end)
+
+now(function() require('mini.splitjoin').setup() end)
+
+now(function() require('mini.operators').setup() end)
+
+now(function()
   require('mini.diff').setup()
+  vim.keymap.set('n', '<Leader>go', '<Cmd>lua MiniDiff.toggle_overlay()<CR>', { desc = 'Toggle overlay' })
 end)
 
-Now(function()
-  Add('nvim-lua/plenary.nvim')
-  Add('tpope/vim-sleuth')
-  Add('lambdalisue/vim-suda')
-  Add('tpope/vim-fugitive')
-  Add('tpope/vim-rhubarb')
-
-  local function fzf_install()
-    Later(function() vim.fn['fzf#install']() end)
-  end
-
-  Add({
+now(function()
+  add({
     source = 'junegunn/fzf',
     hooks = {
-      post_checkout = fzf_install,
-      post_install = fzf_install,
+      post_checkout = function()
+        later(function() vim.fn['fzf#install']() end)
+      end,
+      post_install = function()
+        later(function() vim.fn['fzf#install']() end)
+      end,
     },
   })
+
+  add('nvim-lua/plenary.nvim')
+  add('tpope/vim-sleuth')
+  add('lambdalisue/vim-suda')
+  add('tpope/vim-fugitive')
+  add('tpope/vim-rhubarb')
 end)
 
-Now(function()
-  Add({
+now(function()
+  add({
     source = 'nvim-treesitter/nvim-treesitter',
     hooks = {
       post_checkout = function() vim.cmd('TSUpdate') end,
@@ -97,149 +129,96 @@ Now(function()
   })
 end)
 
-Now(function()
-  Add('folke/snacks.nvim')
+now(function()
+  add('folke/snacks.nvim')
+
+  vim.api.nvim_set_hl(0, 'SnacksPickerCursorLine', { default = true, bg = '#242526' })
+  vim.api.nvim_set_hl(0, 'SnacksPickerListCursorLine', { default = true, bg = '#242526' })
+  vim.api.nvim_set_hl(0, 'SnacksPickerPreviewCursorLine', { default = true, bg = '#242526' })
+  vim.api.nvim_set_hl(0, 'SnacksPickerBoxCursorLine', { default = true, bg = '#242526' })
+  vim.api.nvim_set_hl(0, 'SnacksPickerInputCursorLine', { default = true, bg = '#242526' })
 
   require('snacks').setup({
     bigfile = { enabled = true },
     indent = { enabled = true },
     input = { enabled = true },
+    notifier = { enabled = true, timeout = 3000 },
+    picker = { enabled = true },
     quickfile = { enabled = true },
+    scratch = { ft = function() return 'markdown' end },
     scroll = { enabled = true },
     statuscolumn = { enabled = true },
     words = { enabled = true },
-    picker = {
-      layout = {
-        cycle = true,
-        preset = 'ivy',
-      },
-      win = {
-        input = {
-          keys = {
-            ['<Esc>'] = 'close',
-            ['<CR>'] = 'confirm',
-            ['G'] = 'list_bottom',
-            ['gg'] = 'list_top',
-            ['j'] = 'list_down',
-            ['k'] = 'list_up',
-            ['/'] = 'toggle_focus',
-            ['q'] = 'close',
-            ['?'] = 'toggle_help',
-            ['<a-m>'] = { 'toggle_maximize', mode = { 'i', 'n' } },
-            ['<a-p>'] = { 'toggle_preview', mode = { 'i', 'n' } },
-            ['<a-w>'] = { 'cycle_win', mode = { 'i', 'n' } },
-            ['<C-w>'] = { '<c-s-w>', mode = { 'i' }, expr = true, desc = 'delete word' },
-            ['<C-Up>'] = { 'history_back', mode = { 'i', 'n' } },
-            ['<C-Down>'] = { 'history_forward', mode = { 'i', 'n' } },
-            ['<Tab>'] = { 'select_and_next', mode = { 'i', 'n' } },
-            ['<S-Tab>'] = { 'select_and_prev', mode = { 'i', 'n' } },
-            ['<Down>'] = { 'list_down', mode = { 'i', 'n' } },
-            ['<Up>'] = { 'list_up', mode = { 'i', 'n' } },
-            ['<c-j>'] = { 'list_down', mode = { 'i', 'n' } },
-            ['<c-k>'] = { 'list_up', mode = { 'i', 'n' } },
-            ['<c-n>'] = { 'list_down', mode = { 'i', 'n' } },
-            ['<c-p>'] = { 'list_up', mode = { 'i', 'n' } },
-            ['<c-b>'] = { 'preview_scroll_up', mode = { 'i', 'n' } },
-            ['<c-d>'] = { 'list_scroll_down', mode = { 'i', 'n' } },
-            ['<c-f>'] = { 'preview_scroll_down', mode = { 'i', 'n' } },
-            ['<c-g>'] = { 'toggle_live', mode = { 'i', 'n' } },
-            ['<c-u>'] = { 'list_scroll_up', mode = { 'i', 'n' } },
-            ['<ScrollWheelDown>'] = { 'list_scroll_wheel_down', mode = { 'i', 'n' } },
-            ['<ScrollWheelUp>'] = { 'list_scroll_wheel_up', mode = { 'i', 'n' } },
-            ['<c-v>'] = { 'edit_vsplit', mode = { 'i', 'n' } },
-            ['<c-s>'] = { 'edit_split', mode = { 'i', 'n' } },
-            ['<c-q>'] = { 'qflist', mode = { 'i', 'n' } },
-            ['<a-i>'] = { 'toggle_ignored', mode = { 'i', 'n' } },
-            ['<a-h>'] = { 'toggle_hidden', mode = { 'i', 'n' } },
-          },
-          b = {
-            minipairs_disable = true,
-          },
-        },
-        list = {
-          keys = {
-            ['<CR>'] = 'confirm',
-            ['gg'] = 'list_top',
-            ['G'] = 'list_bottom',
-            ['i'] = 'focus_input',
-            ['j'] = 'list_down',
-            ['k'] = 'list_up',
-            ['q'] = 'close',
-            ['<Tab>'] = 'select_and_next',
-            ['<S-Tab>'] = 'select_and_prev',
-            ['<Down>'] = 'list_down',
-            ['<Up>'] = 'list_up',
-            ['<c-d>'] = 'list_scroll_down',
-            ['<c-u>'] = 'list_scroll_up',
-            ['zt'] = 'list_scroll_top',
-            ['zb'] = 'list_scroll_bottom',
-            ['zz'] = 'list_scroll_center',
-            ['/'] = 'toggle_focus',
-            ['<ScrollWheelDown>'] = 'list_scroll_wheel_down',
-            ['<ScrollWheelUp>'] = 'list_scroll_wheel_up',
-            ['<c-f>'] = 'preview_scroll_down',
-            ['<c-b>'] = 'preview_scroll_up',
-            ['<c-v>'] = 'edit_vsplit',
-            ['<c-s>'] = 'edit_split',
-            ['<c-j>'] = 'list_down',
-            ['<c-k>'] = 'list_up',
-            ['<c-n>'] = 'list_down',
-            ['<c-p>'] = 'list_up',
-            ['<a-w>'] = 'cycle_win',
-            ['<Esc>'] = 'close',
-          },
-        },
-        preview = {
-          keys = {
-            ['<Esc>'] = 'close',
-            ['q'] = 'close',
-            ['i'] = 'focus_input',
-            ['<ScrollWheelDown>'] = 'list_scroll_wheel_down',
-            ['<ScrollWheelUp>'] = 'list_scroll_wheel_up',
-            ['<a-w>'] = 'cycle_win',
-          },
-        },
-      },
-    },
   })
 
-  local set = vim.keymap.set
+  later(function()
+    _G.dd = function(...) Snacks.debug.inspect(...) end
+    _G.bt = function() Snacks.debug.backtrace() end
+    vim.print = _G.dd
+
+    Snacks.toggle.option('spell', { name = 'Spelling' }):map('<leader>us')
+    Snacks.toggle.option('wrap', { name = 'Wrap' }):map('<leader>uw')
+    Snacks.toggle.option('relativenumber', { name = 'Relative Number' }):map('<leader>uL')
+    Snacks.toggle.diagnostics():map('<leader>ud')
+    Snacks.toggle.line_number():map('<leader>ul')
+    Snacks.toggle.option('conceallevel', { off = 0, on = 2 }):map('<leader>uc')
+    Snacks.toggle.treesitter():map('<leader>uT')
+    Snacks.toggle.option('background', { off = 'light', on = 'dark', name = 'Dark Background' }):map('<leader>ub')
+    Snacks.toggle.inlay_hints():map('<leader>uh')
+    Snacks.toggle.indent():map('<leader>ug')
+    Snacks.toggle.dim():map('<leader>uD')
+  end)
+
+  set('n', '<leader>z', function() Snacks.zen() end, { desc = 'Toggle Zen Mode' })
+  set('n', '<leader><space>', function() Snacks.zen.zoom() end, { desc = 'Toggle Zoom' })
+  set('n', '<leader>.', function() Snacks.scratch() end, { desc = 'Toggle Scratch Buffer' })
+
+  set('n', '<leader>n', function() Snacks.notifier.show_history() end, { desc = 'Notification History' })
+  set('n', '<leader>bd', function() Snacks.bufdelete() end, { desc = 'Delete Buffer' })
+  set('n', '<leader>gb', function() Snacks.git.blame_line() end, { desc = 'Git Blame Line' })
+  set('n', '<leader>un', function() Snacks.notifier.hide() end, { desc = 'Dismiss All Notifications' })
+
+  set({ 'n', 'v' }, '<leader>gB', function() Snacks.gitbrowse() end, { desc = 'Git Browse' })
+
+  set({ 'n', 't' }, ']]', function() Snacks.words.jump(vim.v.count1) end, { desc = 'Next Reference' })
+  set({ 'n', 't' }, '[[', function() Snacks.words.jump(-vim.v.count1) end, { desc = 'Prev Reference' })
+
+  set('n', '<C-t>', function() Snacks.terminal() end, { desc = 'Terminal' })
+  set('t', '<C-t>', '<cmd>close<cr>', { desc = 'Hide Terminal' })
 
   set('n', '<leader>fb', function() Snacks.picker.buffers() end, { desc = 'Buffers' })
-
-  set('n', '<leader>fg', function()
-    Snacks.picker.grep({
-      hidden = true,
-    })
-  end, { desc = 'Grep' })
-
+  set('n', '<leader>fg', function() Snacks.picker.grep({ hidden = true }) end, { desc = 'Grep' })
   set('n', '<leader>ff', function() Snacks.picker.files() end, { desc = 'Find Files' })
   set('n', '<leader>fo', function() Snacks.picker.recent() end, { desc = 'Recent' })
-  set('n', '<leader>gl', function() Snacks.picker.git_log() end, { desc = 'Git Log' })
-  set('n', '<leader>gs', function() Snacks.picker.git_status() end, { desc = 'Git Status' })
   set('n', '<leader>fl', function() Snacks.picker.lines() end, { desc = 'Buffer Lines' })
-  set('n', '<leader>lx', function() Snacks.picker.diagnostics() end, { desc = 'Diagnostics' })
   set('n', '<leader>fh', function() Snacks.picker.help() end, { desc = 'Help Pages' })
   set('n', '<leader>fk', function() Snacks.picker.keymaps() end, { desc = 'Keymaps' })
   set('n', '<leader>fr', function() Snacks.picker.resume() end, { desc = 'Resume' })
   set('n', '<leader>fx', function() Snacks.picker.qflist() end, { desc = 'Quickfix List' })
   set('n', '<leader>fp', function() Snacks.picker.projects() end, { desc = 'Projects' })
   set('n', '<leader>fz', function() Snacks.picker.zoxide() end, { desc = 'Z' })
-  -- LSP
+
+  set('n', '<leader>lx', function() Snacks.picker.diagnostics() end, { desc = 'Diagnostics' })
   set('n', '<leader>ld', function() Snacks.picker.lsp_definitions() end, { desc = 'Goto Definition' })
   set('n', '<leader>lr', function() Snacks.picker.lsp_references() end, { nowait = true, desc = 'References' })
   set('n', '<leader>li', function() Snacks.picker.lsp_implementations() end, { desc = 'Goto Implementation' })
   set('n', '<leader>ly', function() Snacks.picker.lsp_type_definitions() end, { desc = 'Goto T[y]pe Definition' })
   set('n', '<leader>ls', function() Snacks.picker.lsp_symbols() end, { desc = 'LSP Symbols' })
+
+  set('n', '<leader>gl', function() Snacks.picker.git_log() end, { desc = 'Git Log' })
+  set('n', '<leader>gs', function() Snacks.picker.git_status() end, { desc = 'Git Status' })
+  set('n', '<leader>gf', function() Snacks.lazygit.log_file() end, { desc = 'Lazygit Current File History' })
+  set('n', '<leader>gg', function() Snacks.lazygit() end, { desc = 'Lazygit' })
+  set('n', '<leader>gl', function() Snacks.lazygit.log() end, { desc = 'Lazygit Log (cwd)' })
 end)
 
-Later(function()
-  Add('hat0uma/csvview.nvim')
+later(function()
+  add('hat0uma/csvview.nvim')
   require('csvview').setup()
 end)
 
-Later(function()
-  Add({ source = 'mfussenegger/nvim-lint' })
+later(function()
+  add({ source = 'mfussenegger/nvim-lint' })
 
   local linters = {
     lua = {
@@ -259,64 +238,70 @@ Later(function()
   vim.api.nvim_create_autocmd({ 'BufWritePost', 'BufReadPost', 'InsertLeave' }, {
     group = vim.api.nvim_create_augroup('crnvl96-nvim-lint', { clear = true }),
     callback = function(e)
-      local buf = e.buf
-      local ft = vim.bo[buf].filetype
+      local ft = vim.bo[e.buf].filetype
       local conf = linters[ft]
-      if conf and (not conf.cond or conf.cond(buf)) then require('lint').try_lint(conf.linters) end
+
+      if conf and (not conf.cond or conf.cond(e.buf)) then require('lint').try_lint(conf.linters) end
     end,
   })
 end)
 
-Later(function()
-  Add('stevearc/oil.nvim')
-
-  function _G.get_oil_winbar()
-    local bufnr = vim.api.nvim_win_get_buf(vim.g.statusline_winid)
-    local dir = require('oil').get_current_dir(bufnr)
-    if dir then
-      return vim.fn.fnamemodify(dir, ':~')
-    else
-      return vim.api.nvim_buf_get_name(0)
-    end
-  end
-
-  require('oil').setup({
-    watch_for_changes = true,
-    win_options = {
-      winbar = '%!v:lua.get_oil_winbar()',
+later(function()
+  require('mini.files').setup({
+    mappings = {
+      show_help = '?',
+      go_in_plus = '<cr>',
+      go_out_plus = '-',
     },
-    keymaps = {
-      ['g?'] = { 'actions.show_help', mode = 'n' },
-      ['<CR>'] = 'actions.select',
-      ['<C-w>v'] = { 'actions.select', opts = { vertical = true } },
-      ['<C-w>s'] = { 'actions.select', opts = { horizontal = true } },
-      ['<C-w>t'] = { 'actions.select', opts = { tab = true } },
-      ['<f4>'] = 'actions.preview',
-      ['<C-c>'] = { 'actions.close', mode = 'n' },
-      ['<f5>'] = 'actions.refresh',
-      ['-'] = { 'actions.parent', mode = 'n' },
-      ['@'] = { 'actions.open_cwd', mode = 'n' },
-      ['`'] = { 'actions.cd', mode = 'n' },
-      ['~'] = { 'actions.cd', opts = { scope = 'tab' }, mode = 'n' },
-      ['gs'] = { 'actions.change_sort', mode = 'n' },
-      ['gx'] = 'actions.open_external',
-      ['g.'] = { 'actions.toggle_hidden', mode = 'n' },
-      ['g\\'] = { 'actions.toggle_trash', mode = 'n' },
-    },
-    use_default_keymaps = false,
-    view_options = { show_hidden = true },
-    float = { border = 'single' },
-    confirmation = { border = 'single' },
-    progress = { border = 'single' },
-    ssh = { border = 'single' },
-    keymaps_help = { border = 'single' },
+    windows = { width_nofocus = 25 },
   })
 
-  vim.keymap.set('n', '-', require('oil').open)
+  local map_split = function(buf_id, lhs, direction)
+    local minifiles = require('mini.files')
+
+    local function rhs()
+      local window = minifiles.get_explorer_state().target_window
+      if window == nil or minifiles.get_fs_entry().fs_type == 'directory' then return end
+
+      local new_target_window
+      vim.api.nvim_win_call(window, function()
+        vim.cmd(direction .. ' split')
+        new_target_window = vim.api.nvim_get_current_win()
+      end)
+
+      minifiles.set_target_window(new_target_window)
+      minifiles.go_in({ close_on_file = true })
+    end
+
+    vim.keymap.set('n', lhs, rhs, { buffer = buf_id, desc = 'Split ' .. string.sub(direction, 12) })
+  end
+
+  local open = function()
+    local bufname = vim.api.nvim_buf_get_name(0)
+    local path = vim.fn.fnamemodify(bufname, ':p')
+    if path and vim.uv.fs_stat(path) then require('mini.files').open(bufname, false) end
+  end
+
+  vim.api.nvim_create_autocmd('User', {
+    pattern = 'MiniFilesWindowOpen',
+    callback = function(args) vim.api.nvim_win_set_config(args.data.win_id, { border = 'rounded' }) end,
+  })
+
+  vim.api.nvim_create_autocmd('User', {
+    pattern = 'MiniFilesBufferCreate',
+    callback = function(args)
+      local buf_id = args.data.buf_id
+
+      map_split(buf_id, '<C-w>s', 'belowright horizontal')
+      map_split(buf_id, '<C-w>v', 'belowright vertical')
+    end,
+  })
+
+  vim.keymap.set('n', '-', open, { desc = 'File explorer' })
 end)
 
-Later(function()
-  Add({ source = 'kevinhwang91/nvim-bqf' })
+later(function()
+  add({ source = 'kevinhwang91/nvim-bqf' })
 
   require('bqf').setup({
     auto_enable = true,
@@ -325,7 +310,7 @@ Later(function()
       win_height = 20,
       win_vheight = 20,
       delay_syntax = 80,
-      border = 'single',
+      border = 'rounded',
       show_title = false,
       should_preview_cb = function(bufnr)
         local ret = true
@@ -348,15 +333,15 @@ Later(function()
     },
     filter = {
       fzf = {
-        action_for = { ['ctrl-s'] = 'split', ['ctrl-t'] = 'tab drop' },
+        action_for = { ['ctrl-s'] = 'split', ['ctrl-t'] = 'tab drop', ['ctrl-v'] = 'vsplit' },
         extra_opts = { '--bind', 'ctrl-o:toggle-all', '--prompt', '> ', '--delimiter', '│' },
       },
     },
   })
 end)
 
-Later(function()
-  Add({ source = 'Vigemus/iron.nvim' })
+later(function()
+  add({ source = 'Vigemus/iron.nvim' })
 
   require('iron.core').setup({
     config = {
@@ -382,14 +367,14 @@ Later(function()
   vim.keymap.set('n', '<Leader>is', '<cmd>IronSend<cr>', { desc = 'Iron Send' })
 end)
 
-Later(function()
-  Add({ source = 'saghen/blink.compat' })
+later(function()
+  add({ source = 'saghen/blink.compat' })
 
-  Add({
+  add({
     source = 'Saghen/blink.cmp',
     hooks = {
-      post_checkout = function(params) Config.build(params, { 'cargo', 'build', '--release' }) end,
-      post_install = function(params) Config.build(params, { 'cargo', 'build', '--release' }) end,
+      post_checkout = function(params) build(params, { 'cargo', 'build', '--release' }) end,
+      post_install = function(params) build(params, { 'cargo', 'build', '--release' }) end,
     },
   })
 
@@ -430,7 +415,7 @@ Later(function()
         },
       },
       menu = {
-        border = 'single',
+        border = 'rounded',
         scrollbar = false,
         draw = {
           treesitter = { 'lsp' },
@@ -441,7 +426,7 @@ Later(function()
         auto_show = true,
         auto_show_delay_ms = 500,
         window = {
-          border = 'single',
+          border = 'rounded',
           scrollbar = false,
         },
       },
@@ -461,13 +446,13 @@ Later(function()
     },
     signature = {
       enabled = true,
-      window = { border = 'single' },
+      window = { border = 'rounded' },
     },
   })
 end)
 
-Later(function()
-  Add({ source = 'olimorris/codecompanion.nvim' })
+later(function()
+  add({ source = 'olimorris/codecompanion.nvim' })
 
   local path = vim.fn.stdpath('config') .. '/anthropic'
   local file = io.open(path, 'r')
@@ -518,8 +503,8 @@ Later(function()
   vim.keymap.set('v', 'ga', '<Cmd>CodeCompanionChat Add<CR>', { desc = 'Add to chat' })
 end)
 
-Later(function()
-  Add({ source = 'stevearc/conform.nvim' })
+later(function()
+  add({ source = 'stevearc/conform.nvim' })
 
   vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
   vim.g.autoformat = true
@@ -528,6 +513,7 @@ Later(function()
     notify_on_error = true,
     formatters_by_ft = {
       markdown = { 'prettierd', 'injected' },
+      md = { 'prettierd', 'injected' },
       css = { 'prettierd' },
       scss = { 'prettierd' },
       liquid = { 'prettierd' },
@@ -564,12 +550,11 @@ Later(function()
     })
   end
 
-  local function toggle_format()
-    local state = vim.g.autoformat
-    vim.g.autoformat = not state
-
-    vim.notify((vim.g.autoformat and 'Enabled' or 'Disabled') .. ' format on save', vim.log.levels.INFO)
-  end
+  Snacks.toggle({
+    name = 'Autoformat (conform.nvim)',
+    get = function() return vim.g.autoformat end,
+    set = function(enabled) vim.g.autoformat = enabled end,
+  }):map('<leader>uf')
 
   vim.api.nvim_create_autocmd('BufWritePre', {
     callback = function(e)
@@ -578,14 +563,13 @@ Later(function()
     end,
   })
 
-  vim.keymap.set('n', '<Leader>uf', toggle_format, { desc = 'Toggle format on save' })
   vim.keymap.set('n', '<Leader>lf', format, { desc = 'Format current buffer' })
 end)
 
-Later(function()
-  Add({ source = 'theHamsta/nvim-dap-virtual-text' })
-  Add({ source = 'mfussenegger/nvim-dap' })
-  Add({ source = 'mfussenegger/nvim-dap-python' })
+later(function()
+  add({ source = 'theHamsta/nvim-dap-virtual-text' })
+  add({ source = 'mfussenegger/nvim-dap' })
+  add({ source = 'mfussenegger/nvim-dap-python' })
 
   vim.api.nvim_set_hl(0, 'DapStoppedLine', { default = true, link = 'Visual' })
 
@@ -602,7 +586,6 @@ Later(function()
   require('dap-python').setup(require('mason-registry').get_package('debugpy'):get_install_path() .. '/venv/bin/python')
 
   local function dap_scopes() require('dap.ui.widgets').sidebar(require('dap.ui.widgets').scopes, {}, 'vsplit').toggle() end
-  local set = vim.keymap.set
 
   set('n', '<Leader>dR', '<Cmd>lua require("dap.repl").toggle({}, "belowright split")<CR>', { desc = 'Repl' })
   set('n', '<Leader>db', '<Cmd>lua require("dap").toggle_breakpoint()<CR>', { desc = 'Set breakpoint' })
@@ -614,18 +597,87 @@ Later(function()
   set('n', '<Leader>du', '<Cmd>lua require("dap").run_to_cursor()<CR>', { desc = 'Run to cursor' })
 end)
 
-Later(function()
-  Add({ source = 'neovim/nvim-lspconfig' })
+later(function()
+  add({ source = 'neovim/nvim-lspconfig' })
 
   local servers = {
-    vtsls = require('plugins.lsp.servers.vtsls'),
-    basedpyright = require('plugins.lsp.servers.basedpyright'),
-    lua_ls = require('plugins.lsp.servers.lua_ls'),
+    vtsls = {
+      root_dir = function(_, buffer) return buffer and vim.fs.root(buffer, { 'package.json' }) end,
+      single_file_support = false,
+    },
+    basedpyright = {
+      settings = {
+        basedpyright = {
+          typeCheckingMode = 'basic', -- Options: "off", "basic", "strict"
+        },
+      },
+    },
+    lua_ls = {
+      on_init = function(client)
+        if client.workspace_folders then
+          local path = client.workspace_folders[1].name
+          if vim.loop.fs_stat(path .. '/.luarc.json') or vim.loop.fs_stat(path .. '/.luarc.jsonc') then return end
+        end
+
+        client.config.settings.Lua = vim.tbl_deep_extend('force', client.config.settings.Lua, {
+          diagnostics = {
+            globals = {
+              'vim',
+              'MiniPick',
+              'MiniClue',
+              'MiniDeps',
+              'MiniNotify',
+              'MiniIcons',
+            },
+          },
+          runtime = {
+            version = 'LuaJIT',
+          },
+          workspace = {
+            checkThirdParty = false,
+            library = {
+              vim.env.VIMRUNTIME,
+              '${3rd}/luv/library',
+            },
+          },
+        })
+      end,
+      settings = {
+        Lua = {
+          format = { enable = false },
+          hint = {
+            enable = true,
+            arrayIndex = 'Disable',
+          },
+          completion = {
+            callSnippet = 'Disable',
+            keywordSnippet = 'Disable',
+          },
+        },
+      },
+    },
   }
+
+  local ok = pcall(require, 'blink.cmp')
+  if not ok then
+    vim.notify('blink.cmp must be installed to have access to full capabilities.', vim.log.levels.ERROR)
+  end
+
+  local capabilities = require('blink.cmp').get_lsp_capabilities(
+    vim.tbl_deep_extend('force', vim.lsp.protocol.make_client_capabilities(), {
+      textDocument = {
+        completion = {
+          completionItem = {
+            snippetSupport = false,
+          },
+        },
+      },
+    })
+  )
 
   for server, config in pairs(servers) do
     config = config or {}
-    local opts = { capabilities = require('plugins.lsp.capabilities') }
+    local opts = { capabilities = capabilities }
     config = vim.tbl_deep_extend('force', config, opts)
     require('lspconfig')[server].setup(config)
   end
@@ -641,7 +693,7 @@ Later(function()
   })
 end)
 
-Later(function()
+later(function()
   local miniclue = require('mini.clue')
 
   miniclue.setup({
@@ -652,9 +704,44 @@ Later(function()
       miniclue.gen_clues.registers(),
       miniclue.gen_clues.windows({ submode_resize = true }),
       miniclue.gen_clues.z(),
-      require('plugins.mini-clue.clues'),
+      { mode = 'n', keys = '<Leader>b', desc = '+Buffer' },
+      { mode = 'n', keys = '<Leader>c', desc = '+CodeCompanion' },
+      { mode = 'n', keys = '<Leader>c', desc = '+CodeCompanion' },
+      { mode = 'n', keys = '<Leader>d', desc = '+Debug' },
+      { mode = 'n', keys = '<Leader>f', desc = '+Files' },
+      { mode = 'n', keys = '<Leader>g', desc = '+Git' },
+      { mode = 'x', keys = '<Leader>g', desc = '+Git' },
+      { mode = 'n', keys = '<Leader>i', desc = '+Iron' },
+      { mode = 'x', keys = '<Leader>i', desc = '+Iron' },
+      { mode = 'n', keys = '<Leader>l', desc = '+LSP' },
+      { mode = 'n', keys = '<Leader>t', desc = '+Tabs' },
+      { mode = 'n', keys = '<Leader>u', desc = '+Toggle' },
     },
-    triggers = require('plugins.mini-clue.triggers'),
+    triggers = {
+      { mode = 'n', keys = '<Leader>' },
+      { mode = 'x', keys = '<Leader>' },
+      { mode = 'n', keys = '<Localleader>' },
+      { mode = 'x', keys = '<Localleader>' },
+      { mode = 'n', keys = [[\]] },
+      { mode = 'n', keys = '[' },
+      { mode = 'x', keys = '[' },
+      { mode = 'n', keys = ']' },
+      { mode = 'x', keys = ']' },
+      { mode = 'i', keys = '<C-x>' },
+      { mode = 'n', keys = 'g' },
+      { mode = 'x', keys = 'g' },
+      { mode = 'n', keys = "'" },
+      { mode = 'x', keys = "'" },
+      { mode = 'n', keys = '`' },
+      { mode = 'x', keys = '`' },
+      { mode = 'n', keys = '"' },
+      { mode = 'x', keys = '"' },
+      { mode = 'i', keys = '<C-r>' },
+      { mode = 'c', keys = '<C-r>' },
+      { mode = 'n', keys = '<C-w>' },
+      { mode = 'n', keys = 'z' },
+      { mode = 'x', keys = 'z' },
+    },
     window = {
       delay = 200,
       config = {

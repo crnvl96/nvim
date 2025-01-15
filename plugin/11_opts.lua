@@ -21,7 +21,7 @@ vim.o.formatoptions = 'rqnl1j'
 vim.o.grepprg = 'rg --vimgrep'
 vim.o.ignorecase = true
 vim.o.infercase = true
-vim.o.laststatus = 0
+vim.o.laststatus = 2
 vim.o.linebreak = true
 vim.o.list = true
 vim.o.mouse = 'a'
@@ -53,12 +53,13 @@ vim.o.wrap = false
 vim.o.writebackup = false
 
 vim.diagnostic.config({
-  float = { border = 'single' },
+  float = { border = 'rounded' },
   signs = { priority = 9999, severity = { min = 'WARN', max = 'ERROR' } },
   virtual_text = { severity = { min = 'ERROR', max = 'ERROR' } },
   update_in_insert = false,
 })
 
 if vim.fn.exists('syntax_on') ~= 1 then vim.cmd('syntax enable') end
+
 vim.cmd('filetype plugin indent on')
 vim.cmd('packadd cfilter')

@@ -44,13 +44,10 @@ set('n', '<Leader>bd', '<Cmd>bd<CR>', { desc = 'Delete current buffer' })
 set('n', '<Leader>tc', '<Cmd>tabclose<CR>', { desc = 'Close tab' })
 set('n', '<Leader>to', '<Cmd>tabonly<CR>', { desc = 'Close other tabs' })
 
-local sign_help = '<Cmd>lua vim.lsp.buf.signature_help({border="single"})<CR>'
-local open_float = '<Cmd>lua vim.diagnostic.open_float({boder="single"})<CR>'
-
-set('n', '<Leader>la', '<Cmd>lua vim.lsp.buf.code_action()<CR>', { desc = 'Code action', buffer = bufnr })
-set('n', '<Leader>le', '<Cmd>lua vim.lsp.buf.hover({border="single"})<CR>', { desc = 'Eval', buffer = bufnr })
-set('n', '<Leader>lh', sign_help, { desc = 'Signature help', buffer = bufnr })
-set('n', '<Leader>lj', '<Cmd>lua vim.diagnostic.goto_next()<CR>', { desc = 'Next diagnostic', buffer = bufnr })
-set('n', '<Leader>lk', '<Cmd>lua vim.diagnostic.goto_prev()<CR>', { desc = 'Previous diagnostic', buffer = bufnr })
-set('n', '<Leader>ll', open_float, { desc = 'Inspect diagnostic', buffer = bufnr })
-set('n', '<Leader>ln', '<Cmd>lua vim.lsp.buf.rename()<CR>', { desc = 'Rename symbol', buffer = bufnr })
+set('n', '<Leader>la', '<Cmd>lua vim.lsp.buf.code_action()<CR>', { desc = 'Code action' })
+set('n', '<Leader>le', '<Cmd>lua vim.lsp.buf.hover({border="rounded"})<CR>', { desc = 'Eval' })
+set('n', '<Leader>lh', '<Cmd>lua vim.lsp.buf.signature_help({border="rounded"})<CR>', { desc = 'Signature help' })
+set('n', '<Leader>lj', '<Cmd>lua vim.diagnostic.goto_next()<CR>', { desc = 'Next diagnostic' })
+set('n', '<Leader>lk', '<Cmd>lua vim.diagnostic.goto_prev()<CR>', { desc = 'Previous diagnostic' })
+set('n', '<Leader>ll', '<Cmd>lua vim.diagnostic.open_float({boder="rounded"})<CR>', { desc = 'Inspect diagnostic' })
+set('n', '<Leader>ln', '<Cmd>lua vim.lsp.buf.rename()<CR>', { desc = 'Rename symbol' })
