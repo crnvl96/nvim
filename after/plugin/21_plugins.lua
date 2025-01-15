@@ -97,6 +97,142 @@ Now(function()
   })
 end)
 
+Now(function()
+  Add('folke/snacks.nvim')
+
+  require('snacks').setup({
+    bigfile = { enabled = true },
+    indent = { enabled = true },
+    input = { enabled = true },
+    quickfile = { enabled = true },
+    scroll = { enabled = true },
+    statuscolumn = { enabled = true },
+    words = { enabled = true },
+    picker = {
+      layout = {
+        cycle = true,
+        preset = 'ivy',
+      },
+      win = {
+        input = {
+          keys = {
+            ['<Esc>'] = 'close',
+            ['<CR>'] = 'confirm',
+            ['G'] = 'list_bottom',
+            ['gg'] = 'list_top',
+            ['j'] = 'list_down',
+            ['k'] = 'list_up',
+            ['/'] = 'toggle_focus',
+            ['q'] = 'close',
+            ['?'] = 'toggle_help',
+            ['<a-m>'] = { 'toggle_maximize', mode = { 'i', 'n' } },
+            ['<a-p>'] = { 'toggle_preview', mode = { 'i', 'n' } },
+            ['<a-w>'] = { 'cycle_win', mode = { 'i', 'n' } },
+            ['<C-w>'] = { '<c-s-w>', mode = { 'i' }, expr = true, desc = 'delete word' },
+            ['<C-Up>'] = { 'history_back', mode = { 'i', 'n' } },
+            ['<C-Down>'] = { 'history_forward', mode = { 'i', 'n' } },
+            ['<Tab>'] = { 'select_and_next', mode = { 'i', 'n' } },
+            ['<S-Tab>'] = { 'select_and_prev', mode = { 'i', 'n' } },
+            ['<Down>'] = { 'list_down', mode = { 'i', 'n' } },
+            ['<Up>'] = { 'list_up', mode = { 'i', 'n' } },
+            ['<c-j>'] = { 'list_down', mode = { 'i', 'n' } },
+            ['<c-k>'] = { 'list_up', mode = { 'i', 'n' } },
+            ['<c-n>'] = { 'list_down', mode = { 'i', 'n' } },
+            ['<c-p>'] = { 'list_up', mode = { 'i', 'n' } },
+            ['<c-b>'] = { 'preview_scroll_up', mode = { 'i', 'n' } },
+            ['<c-d>'] = { 'list_scroll_down', mode = { 'i', 'n' } },
+            ['<c-f>'] = { 'preview_scroll_down', mode = { 'i', 'n' } },
+            ['<c-g>'] = { 'toggle_live', mode = { 'i', 'n' } },
+            ['<c-u>'] = { 'list_scroll_up', mode = { 'i', 'n' } },
+            ['<ScrollWheelDown>'] = { 'list_scroll_wheel_down', mode = { 'i', 'n' } },
+            ['<ScrollWheelUp>'] = { 'list_scroll_wheel_up', mode = { 'i', 'n' } },
+            ['<c-v>'] = { 'edit_vsplit', mode = { 'i', 'n' } },
+            ['<c-s>'] = { 'edit_split', mode = { 'i', 'n' } },
+            ['<c-q>'] = { 'qflist', mode = { 'i', 'n' } },
+            ['<a-i>'] = { 'toggle_ignored', mode = { 'i', 'n' } },
+            ['<a-h>'] = { 'toggle_hidden', mode = { 'i', 'n' } },
+          },
+          b = {
+            minipairs_disable = true,
+          },
+        },
+        list = {
+          keys = {
+            ['<CR>'] = 'confirm',
+            ['gg'] = 'list_top',
+            ['G'] = 'list_bottom',
+            ['i'] = 'focus_input',
+            ['j'] = 'list_down',
+            ['k'] = 'list_up',
+            ['q'] = 'close',
+            ['<Tab>'] = 'select_and_next',
+            ['<S-Tab>'] = 'select_and_prev',
+            ['<Down>'] = 'list_down',
+            ['<Up>'] = 'list_up',
+            ['<c-d>'] = 'list_scroll_down',
+            ['<c-u>'] = 'list_scroll_up',
+            ['zt'] = 'list_scroll_top',
+            ['zb'] = 'list_scroll_bottom',
+            ['zz'] = 'list_scroll_center',
+            ['/'] = 'toggle_focus',
+            ['<ScrollWheelDown>'] = 'list_scroll_wheel_down',
+            ['<ScrollWheelUp>'] = 'list_scroll_wheel_up',
+            ['<c-f>'] = 'preview_scroll_down',
+            ['<c-b>'] = 'preview_scroll_up',
+            ['<c-v>'] = 'edit_vsplit',
+            ['<c-s>'] = 'edit_split',
+            ['<c-j>'] = 'list_down',
+            ['<c-k>'] = 'list_up',
+            ['<c-n>'] = 'list_down',
+            ['<c-p>'] = 'list_up',
+            ['<a-w>'] = 'cycle_win',
+            ['<Esc>'] = 'close',
+          },
+        },
+        preview = {
+          keys = {
+            ['<Esc>'] = 'close',
+            ['q'] = 'close',
+            ['i'] = 'focus_input',
+            ['<ScrollWheelDown>'] = 'list_scroll_wheel_down',
+            ['<ScrollWheelUp>'] = 'list_scroll_wheel_up',
+            ['<a-w>'] = 'cycle_win',
+          },
+        },
+      },
+    },
+  })
+
+  local set = vim.keymap.set
+
+  set('n', '<leader>fb', function() Snacks.picker.buffers() end, { desc = 'Buffers' })
+
+  set('n', '<leader>fg', function()
+    Snacks.picker.grep({
+      hidden = true,
+    })
+  end, { desc = 'Grep' })
+
+  set('n', '<leader>ff', function() Snacks.picker.files() end, { desc = 'Find Files' })
+  set('n', '<leader>fo', function() Snacks.picker.recent() end, { desc = 'Recent' })
+  set('n', '<leader>gl', function() Snacks.picker.git_log() end, { desc = 'Git Log' })
+  set('n', '<leader>gs', function() Snacks.picker.git_status() end, { desc = 'Git Status' })
+  set('n', '<leader>fl', function() Snacks.picker.lines() end, { desc = 'Buffer Lines' })
+  set('n', '<leader>lx', function() Snacks.picker.diagnostics() end, { desc = 'Diagnostics' })
+  set('n', '<leader>fh', function() Snacks.picker.help() end, { desc = 'Help Pages' })
+  set('n', '<leader>fk', function() Snacks.picker.keymaps() end, { desc = 'Keymaps' })
+  set('n', '<leader>fr', function() Snacks.picker.resume() end, { desc = 'Resume' })
+  set('n', '<leader>fx', function() Snacks.picker.qflist() end, { desc = 'Quickfix List' })
+  set('n', '<leader>fp', function() Snacks.picker.projects() end, { desc = 'Projects' })
+  set('n', '<leader>fz', function() Snacks.picker.zoxide() end, { desc = 'Z' })
+  -- LSP
+  set('n', '<leader>ld', function() Snacks.picker.lsp_definitions() end, { desc = 'Goto Definition' })
+  set('n', '<leader>lr', function() Snacks.picker.lsp_references() end, { nowait = true, desc = 'References' })
+  set('n', '<leader>li', function() Snacks.picker.lsp_implementations() end, { desc = 'Goto Implementation' })
+  set('n', '<leader>ly', function() Snacks.picker.lsp_type_definitions() end, { desc = 'Goto T[y]pe Definition' })
+  set('n', '<leader>ls', function() Snacks.picker.lsp_symbols() end, { desc = 'LSP Symbols' })
+end)
+
 Later(function()
   Add('hat0uma/csvview.nvim')
   require('csvview').setup()
@@ -261,7 +397,7 @@ Later(function()
 
   require('blink.cmp').setup({
     enabled = function()
-      return not vim.tbl_contains({ 'minifiles', 'markdown', 'deck' }, vim.bo.filetype)
+      return not vim.tbl_contains({ 'minifiles', 'markdown' }, vim.bo.filetype)
         and vim.bo.buftype ~= 'prompt'
         and vim.b.completion ~= false
     end,
@@ -393,9 +529,12 @@ Later(function()
     formatters_by_ft = {
       markdown = { 'prettierd', 'injected' },
       css = { 'prettierd' },
-      html = { 'prettierd' },
+      scss = { 'prettierd' },
+      liquid = { 'prettierd' },
       json = { 'prettierd' },
       jsonc = { 'prettierd' },
+      html = { 'prettierd' },
+      yaml = { 'prettierd' },
       toml = { 'taplo' },
       lua = { 'stylua' },
       sql = { 'sqlfluff' },
@@ -476,61 +615,6 @@ Later(function()
 end)
 
 Later(function()
-  Add({ source = 'crnvl96/nvim-deck' })
-
-  local deck = require('deck')
-
-  require('plugins.nvim-deck.actions')
-  require('plugins.nvim-deck.sources.ui-select')
-
-  vim.api.nvim_create_autocmd('User', {
-    pattern = 'DeckStart',
-    callback = function(e)
-      local ctx = e.data.ctx
-
-      ctx.keymap('n', '<CR>', deck.action_mapping('default'))
-      ctx.keymap('n', '<Tab>', deck.action_mapping('choose_action'))
-      ctx.keymap('n', '<C-l>', deck.action_mapping('refresh'))
-      ctx.keymap('n', 'i', deck.action_mapping('prompt'))
-      ctx.keymap('n', 'a', deck.action_mapping('prompt'))
-      ctx.keymap('n', '@', deck.action_mapping('toggle_select'))
-      ctx.keymap('n', '*', deck.action_mapping('toggle_select_all'))
-      ctx.keymap('n', 'p', deck.action_mapping('toggle_preview_mode'))
-      ctx.keymap('n', 'q', function() ctx.hide() end)
-      ctx.keymap('n', 'S', deck.action_mapping('substitute'))
-      ctx.keymap('n', 'N', deck.action_mapping('create'))
-      ctx.keymap('n', 'Q', deck.action_mapping('send_to_quickfix_list'))
-      ctx.keymap('n', 's', deck.action_mapping('open_split'))
-      ctx.keymap('n', 'v', deck.action_mapping('open_vsplit'))
-      ctx.keymap('n', '<C-b>', deck.action_mapping('scroll_preview_up'))
-      ctx.keymap('n', '<C-f>', deck.action_mapping('scroll_preview_down'))
-    end,
-  })
-
-  local buffers = require('plugins.nvim-deck.sources.buffers')
-  local keymaps = require('plugins.nvim-deck.sources.keymaps')
-  local git = require('plugins.nvim-deck.sources.git')
-  local history = require('plugins.nvim-deck.sources.history')
-  local oldfiles = require('plugins.nvim-deck.sources.oldfiles')
-  local buf_lines = require('plugins.nvim-deck.sources.buf_lines')
-  local help = require('plugins.nvim-deck.sources.help')
-  local grep = require('plugins.nvim-deck.sources.grep')
-  local files = require('plugins.nvim-deck.sources.files')
-  local git_st = require('plugins.nvim-deck.sources.git-status')
-
-  vim.keymap.set('n', '<Leader>fb', buffers, { desc = 'Buffers' })
-  vim.keymap.set('n', '<Leader>ff', files, { desc = 'Find files' })
-  vim.keymap.set('n', '<Leader>fg', grep, { desc = 'Grep' })
-  vim.keymap.set('n', '<Leader>fh', help, { desc = 'Help tags' })
-  vim.keymap.set('n', '<Leader>fl', buf_lines, { desc = 'Buffer lines' })
-  vim.keymap.set('n', '<Leader>fo', oldfiles, { desc = 'Oldfiles' })
-  vim.keymap.set('n', '<Leader>fr', history, { desc = 'Resume last context' })
-  vim.keymap.set('n', '<Leader>fk', keymaps, { desc = 'Keymaps' })
-  vim.keymap.set('n', '<Leader>gg', git, { desc = 'Git' })
-  vim.keymap.set('n', '<Leader>gs', git_st, { desc = 'Git Status' })
-end)
-
-Later(function()
   Add({ source = 'neovim/nvim-lspconfig' })
 
   local servers = {
@@ -551,7 +635,8 @@ Later(function()
     callback = function(e)
       local client = vim.lsp.get_client_by_id(e.data.client_id)
       if not client then return end
-      require('plugins.lsp.on_attach')(client, e.buf)
+      client.server_capabilities.documentFormattingProvider = false
+      client.server_capabilities.documentRangeFormattingProvider = false
     end,
   })
 end)
