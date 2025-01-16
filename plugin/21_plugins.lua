@@ -64,7 +64,11 @@ now(function() require('mini.splitjoin').setup() end)
 now(function() require('mini.operators').setup() end)
 
 now(function()
-  require('mini.diff').setup()
+  require('mini.diff').setup({
+    view = {
+      style = 'sign',
+    },
+  })
   vim.keymap.set('n', '<Leader>go', '<Cmd>lua MiniDiff.toggle_overlay()<CR>', { desc = 'Toggle overlay' })
 end)
 
@@ -132,11 +136,8 @@ end)
 now(function()
   add('folke/snacks.nvim')
 
-  vim.api.nvim_set_hl(0, 'SnacksPickerCursorLine', { default = true, bg = '#242526' })
-  vim.api.nvim_set_hl(0, 'SnacksPickerListCursorLine', { default = true, bg = '#242526' })
-  vim.api.nvim_set_hl(0, 'SnacksPickerPreviewCursorLine', { default = true, bg = '#242526' })
-  vim.api.nvim_set_hl(0, 'SnacksPickerBoxCursorLine', { default = true, bg = '#242526' })
-  vim.api.nvim_set_hl(0, 'SnacksPickerInputCursorLine', { default = true, bg = '#242526' })
+  -- vim.api.nvim_set_hl(0, 'SnacksPickerListCursorLine', { default = true, fg = '#f0f0f0' })
+  vim.api.nvim_set_hl(0, 'SnacksPickerMatch', { default = true, bg = '#e3d3a8', fg = '#242526' })
 
   require('snacks').setup({
     bigfile = { enabled = true },
@@ -193,6 +194,7 @@ now(function()
   set('n', '<leader>fl', function() Snacks.picker.lines() end, { desc = 'Buffer Lines' })
   set('n', '<leader>fh', function() Snacks.picker.help() end, { desc = 'Help Pages' })
   set('n', '<leader>fk', function() Snacks.picker.keymaps() end, { desc = 'Keymaps' })
+  set('n', '<leader>fm', function() Snacks.picker.marks() end, { desc = 'Marks' })
   set('n', '<leader>fr', function() Snacks.picker.resume() end, { desc = 'Resume' })
   set('n', '<leader>fx', function() Snacks.picker.qflist() end, { desc = 'Quickfix List' })
   set('n', '<leader>fp', function() Snacks.picker.projects() end, { desc = 'Projects' })
@@ -522,6 +524,7 @@ later(function()
         schema = {
           model = {
             default = 'claude-3-5-haiku-20241022',
+            -- default = 'claude-3-5-sonnet-20241022',
           },
         },
       }),
