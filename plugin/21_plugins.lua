@@ -498,9 +498,9 @@ later(function()
     },
   })
 
-  vim.keymap.set({ 'n', 'v' }, '<Leader>ca', '<Cmd>CodeCompanionActions<CR>', { desc = 'Actions' })
-  vim.keymap.set({ 'n', 'v' }, '<Leader>ct', '<Cmd>CodeCompanionChat Toggle<CR>', { desc = 'Toggle chat' })
-  vim.keymap.set('v', 'ga', '<Cmd>CodeCompanionChat Add<CR>', { desc = 'Add to chat' })
+  vim.keymap.set({ 'n', 'v' }, '<Leader>ca', ':CodeCompanionActions<CR>', { desc = 'Actions' })
+  vim.keymap.set({ 'n', 'v' }, '<Leader>ct', ':CodeCompanionChat Toggle<CR>', { desc = 'Toggle chat' })
+  vim.keymap.set('v', '<Leader>ca', ':CodeCompanionChat Add<CR>', { desc = 'Add to chat' })
 end)
 
 later(function()
