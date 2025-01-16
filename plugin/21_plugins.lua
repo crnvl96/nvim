@@ -281,7 +281,7 @@ later(function()
     mappings = {
       show_help = '?',
       go_in_plus = '<cr>',
-      go_out_plus = '-',
+      go_out_plus = '<bs>',
       go_in = '',
       go_out = '',
     },
