@@ -89,7 +89,6 @@ later(function()
       { mode = 'n', keys = '<Leader>i', desc = '+Iron' },
       { mode = 'x', keys = '<Leader>i', desc = '+Iron' },
       { mode = 'n', keys = '<Leader>l', desc = '+LSP' },
-      { mode = 'n', keys = '<Leader>t', desc = '+Tabs' },
       { mode = 'n', keys = '<Leader>u', desc = '+Toggle' },
     },
     triggers = {
