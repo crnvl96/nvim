@@ -34,17 +34,11 @@ set('n', '<C-Right>', '<Cmd>vertical resize +20<CR>', { remap = true })
 
 set({ 'n', 'i', 'x' }, '<C-s>', '<Esc><Cmd>w<CR><Esc>')
 
-set('', 'J', '6j')
-set('', 'K', '6k')
-
 set('x', '>', '>gv')
 set('x', '<', '<gv')
 
 set('n', '<Leader>ba', '<Cmd>b#<CR>', { desc = 'Alternate buffer' })
 set('n', '<Leader>bd', '<Cmd>bd<CR>', { desc = 'Delete current buffer' })
-
-set('n', '<Leader>tc', '<Cmd>tabclose<CR>', { desc = 'Close tab' })
-set('n', '<Leader>to', '<Cmd>tabonly<CR>', { desc = 'Close other tabs' })
 
 set('n', '<Leader>la', '<Cmd>lua vim.lsp.buf.code_action()<CR>', { desc = 'Code action' })
 set('n', '<Leader>le', '<Cmd>lua vim.lsp.buf.hover({border="rounded"})<CR>', { desc = 'Eval' })

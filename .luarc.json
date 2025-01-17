@@ -7,6 +7,7 @@
         "MiniNotify",
         "MiniIcons",
         "MiniMisc",
-        "Snacks"
+        "Snacks",
+        "MiniDiff"
     ]
 }
