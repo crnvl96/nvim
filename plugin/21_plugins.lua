@@ -220,6 +220,42 @@ later(function()
 end)
 
 later(function()
+  add('max397574/better-escape.nvim')
+
+  require('better_escape').setup({
+    timeout = 160,
+    default_mappings = false,
+    mappings = {
+      i = {
+        k = { j = '<Esc>', l = '<Esc>' },
+        j = { k = '<Esc>' },
+        l = { k = '<Esc>' },
+      },
+      c = {
+        k = { j = '<Esc>', l = '<Esc>' },
+        j = { k = '<Esc>' },
+        l = { k = '<Esc>' },
+      },
+      t = {
+        k = { j = '<C-\\><C-n>', l = '<C-\\><C-n>' },
+        j = { k = '<C-\\><C-n>' },
+        l = { k = '<C-\\><C-n>' },
+      },
+      v = {
+        k = { j = '<Esc>', l = '<Esc>' },
+        j = { k = '<Esc>' },
+        l = { k = '<Esc>' },
+      },
+      s = {
+        k = { j = '<Esc>', l = '<Esc>' },
+        j = { k = '<Esc>' },
+        l = { k = '<Esc>' },
+      },
+    },
+  })
+end)
+
+later(function()
   add({ source = 'mfussenegger/nvim-lint' })
 
   local linters = {
