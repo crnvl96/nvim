@@ -32,8 +32,10 @@ set('n', '<C-Down>', '<Cmd>resize -5<CR>', { remap = true })
 set('n', '<C-Left>', '<Cmd>vertical resize -20<CR>', { remap = true })
 set('n', '<C-Right>', '<Cmd>vertical resize +20<CR>', { remap = true })
 
-set({ 'n', 'v', 'i' }, '<Esc>', '<Esc><Cmd>nohl<CR><Esc>')
 set({ 'n', 'i', 'x' }, '<C-s>', '<Esc><Cmd>w<CR><Esc>')
+
+set('', 'J', '6j')
+set('', 'K', '6k')
 
 set('x', '>', '>gv')
 set('x', '<', '<gv')
