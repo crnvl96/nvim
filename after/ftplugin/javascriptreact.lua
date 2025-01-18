@@ -1,6 +1,4 @@
-vim.cmd('setlocal wrap')
-
-Utils.Group('crnvl96-handle-markdown-autofmt', function(g)
+Utils.Group('crnvl96-handle-javascriptreact-autofmt', function(g)
   Utils.Req('prettierd')
 
   Utils.Autocmd('BufWritePre', {

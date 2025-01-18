@@ -52,6 +52,8 @@ vim.o.wildignorecase = true
 vim.o.wrap = false
 vim.o.writebackup = false
 
+vim.opt.fillchars:append('eob: ')
+
 vim.diagnostic.config({
   float = { border = 'rounded' },
   signs = { priority = 9999, severity = { min = 'WARN', max = 'ERROR' } },
@@ -60,6 +62,5 @@ vim.diagnostic.config({
 })
 
 if vim.fn.exists('syntax_on') ~= 1 then vim.cmd('syntax enable') end
-
 vim.cmd('filetype plugin indent on')
 vim.cmd('packadd cfilter')

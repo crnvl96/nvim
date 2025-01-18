@@ -1,1 +1,1 @@
-vim.cmd('setlocal spell wrap')
+vim.cmd('setlocal wrap')
