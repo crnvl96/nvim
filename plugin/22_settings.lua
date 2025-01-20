@@ -15,24 +15,6 @@ end
 
 vim.api.nvim_set_hl(0, 'DapStoppedLine', { default = true, link = 'Visual' })
 
-require('mini.colors').get_colorscheme():add_transparency({ float = true }):apply()
-require('mini.icons').setup()
-require('mini.doc').setup()
-require('mini.align').setup()
-require('mini.surround').setup()
-require('mini.splitjoin').setup()
-require('mini.operators').setup()
-require('mini.diff').setup({ view = { style = 'sign' } })
-require('csvview').setup()
-
-require('nvim-treesitter.configs').setup({
-  highlight = { enable = true },
-  indent = { enable = true, disable = { 'yaml' } },
-  sync_install = false,
-  auto_install = true,
-  ensure_installed = Utils.get_parsers(),
-})
-
 require('snacks').setup({
   bigfile = { size = 1 * 1024 * 1024 },
   quickfile = { exclude = { 'latex' } },
@@ -49,6 +31,25 @@ require('snacks').setup({
   scratch = { ft = function() return 'markdown' end },
   scope = { enabled = true },
   statuscolumn = { enabled = true },
+})
+
+require('mini.colors').get_colorscheme():add_transparency({ float = true }):apply()
+require('mini.icons').setup()
+require('mini.doc').setup()
+require('mini.align').setup()
+require('mini.surround').setup()
+require('mini.splitjoin').setup()
+require('mini.operators').setup()
+require('mini.diff').setup({ view = { style = 'sign' } })
+require('csvview').setup()
+require('contextindent').setup()
+
+require('nvim-treesitter.configs').setup({
+  highlight = { enable = true },
+  indent = { enable = true, disable = { 'yaml' } },
+  sync_install = false,
+  auto_install = true,
+  ensure_installed = Utils.get_parsers(),
 })
 
 require('mini.files').setup({

@@ -5,20 +5,9 @@ Add({
   },
 })
 
-Add({
-  source = 'Saghen/blink.cmp',
-  hooks = {
-    post_install = function(params)
-      Later(function() Utils.Build(params, { 'cargo', 'build', '--release' }) end)
-    end,
-    post_checkout = function(params)
-      Later(function() Utils.Build(params, { 'cargo', 'build', '--release' }) end)
-    end,
-  },
-})
+Add('folke/snacks.nvim')
 
 Add('nvim-treesitter/nvim-treesitter-textobjects')
-Add('folke/snacks.nvim')
 Add('nvim-lua/plenary.nvim')
 Add('lambdalisue/vim-suda')
 Add('tpope/vim-fugitive')
@@ -35,3 +24,16 @@ Add('mfussenegger/nvim-dap-python')
 Add('mfussenegger/nvim-dap')
 Add('igorlfs/nvim-dap-view')
 Add('neovim/nvim-lspconfig')
+Add('wurli/contextindent.nvim')
+
+Add({
+  source = 'Saghen/blink.cmp',
+  hooks = {
+    post_install = function(params)
+      Later(function() Utils.Build(params, { 'cargo', 'build', '--release' }) end)
+    end,
+    post_checkout = function(params)
+      Later(function() Utils.Build(params, { 'cargo', 'build', '--release' }) end)
+    end,
+  },
+})
