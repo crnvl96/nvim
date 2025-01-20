@@ -1,5 +1,8 @@
 Utils.Req('tree-sitter')
 Utils.Req('zoxide')
+Utils.Req('ruff')
+Utils.Req('prettierd')
+Utils.Req('stylua')
 
 local capabilities = Utils.lsp_capabilities()
 local servers = Utils.lsp_get_servers()
@@ -81,6 +84,23 @@ require('mini.ai').setup({
 require('conform').setup({
   notify_on_error = true,
   formatters = { injected = { ignore_errors = true } },
+  formatters_by_ft = {
+    lua = { 'stylua' },
+    javascript = { 'prettierd' },
+    javascriptreact = { 'prettierd' },
+    typescript = { 'prettierd' },
+    typescriptreact = { 'prettierd' },
+    json = { 'prettierd' },
+    jsonc = { 'prettierd' },
+    markdown = { 'prettierd', 'injected' },
+    python = { 'ruff_fix', 'ruff_organize_imports', 'ruff_format' },
+  },
+  format_on_save = {
+    timeout_ms = 3000,
+    async = false,
+    quiet = false,
+    lsp_format = 'fallback',
+  },
 })
 
 require('iron.core').setup({
