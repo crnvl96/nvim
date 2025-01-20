@@ -38,6 +38,7 @@ vim.o.sidescrolloff = 8
 vim.o.signcolumn = 'yes'
 vim.o.smartcase = true
 vim.o.smartindent = true
+vim.o.spell = false
 vim.o.splitbelow = true
 vim.o.splitkeep = 'screen'
 vim.o.splitright = true

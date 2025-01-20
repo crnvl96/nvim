@@ -1,29 +1,139 @@
 -- https://github.com/mhinz/vim-galore#saner-behavior-of-n-and-n
-Utils.Set('n', 'n', "'Nn'[v:searchforward].'zv'", { expr = true })
-Utils.Set('x', 'n', "'Nn'[v:searchforward]", { expr = true })
-Utils.Set('o', 'n', "'Nn'[v:searchforward]", { expr = true })
-Utils.Set('n', 'N', "'nN'[v:searchforward].'zv'", { expr = true })
-Utils.Set('x', 'N', "'nN'[v:searchforward]", { expr = true })
-Utils.Set('o', 'N', "'nN'[v:searchforward]", { expr = true })
-Utils.Set('i', ',', ',<C-g>u')
-Utils.Set('i', '.', '.<C-g>u')
-Utils.Set('i', ';', ';<C-g>u')
-Utils.Set('x', 'p', 'P')
-Utils.Set({ 'n', 'x' }, 'j', [[v:count == 0 ? 'gj' : 'j']], { expr = true })
-Utils.Set({ 'n', 'x' }, 'k', [[v:count == 0 ? 'gk' : 'k']], { expr = true })
-Utils.Set({ 'n', 'x', 'i' }, '<Esc>', '<Esc><Cmd>nohl<CR><Esc>')
-Utils.Set('n', '<C-h>', '<C-w>h')
-Utils.Set('n', '<C-j>', '<C-w>j')
-Utils.Set('n', '<C-k>', '<C-w>k')
-Utils.Set('n', '<C-l>', '<C-w>l')
-Utils.Set('n', '<C-w>+', '<Cmd>resize +5<CR>', { remap = true })
-Utils.Set('n', '<C-w>-', '<Cmd>resize -5<CR>', { remap = true })
-Utils.Set('n', '<C-w><', '<Cmd>vertical resize -20<CR>', { remap = true })
-Utils.Set('n', '<C-w>>', '<Cmd>vertical resize +20<CR>', { remap = true })
-Utils.Set('n', '<C-Up>', '<Cmd>resize +5<CR>', { remap = true })
-Utils.Set('n', '<C-Down>', '<Cmd>resize -5<CR>', { remap = true })
-Utils.Set('n', '<C-Left>', '<Cmd>vertical resize -20<CR>', { remap = true })
-Utils.Set('n', '<C-Right>', '<Cmd>vertical resize +20<CR>', { remap = true })
-Utils.Set({ 'n', 'i', 'x' }, '<C-s>', '<Esc><Cmd>w<CR><Esc>')
-Utils.Set('x', '>', '>gv')
-Utils.Set('x', '<', '<gv')
+
+Utils.Keymap2('Search forward', {
+  expr = true,
+  lhs = 'n',
+  rhs = "'Nn'[v:searchforward].'zv'",
+})
+
+Utils.Keymap2('Search forward', {
+  expr = true,
+  mode = { 'x', 'o' },
+  lhs = 'n',
+  rhs = "'Nn'[v:searchforward]",
+})
+
+Utils.Keymap2('Search backward', {
+  expr = true,
+  lhs = 'N',
+  rhs = "'nN'[v:searchforward].'zv'",
+})
+
+Utils.Keymap2('Search backward', {
+  expr = true,
+  mode = { 'x', 'o' },
+  lhs = 'N',
+  rhs = "'nN'[v:searchforward]",
+})
+
+Utils.Keymap2('Better paste', {
+  mode = 'x',
+  lhs = 'p',
+  rhs = 'P',
+})
+
+Utils.Keymap2('Move down', {
+  mode = { 'n', 'x' },
+  expr = true,
+  lhs = 'j',
+  rhs = [[v:count == 0 ? 'gj' : 'j']],
+})
+
+Utils.Keymap2('Move up', {
+  mode = { 'n', 'x' },
+  expr = true,
+  lhs = 'k',
+  rhs = [[v:count == 0 ? 'gk' : 'k']],
+})
+
+Utils.Keymap2('Clear highlight', {
+  mode = { 'n', 'x', 'i' },
+  lhs = '<Esc>',
+  rhs = '<Esc><Cmd>nohl<CR><Esc>',
+})
+
+Utils.Keymap2('Window left', {
+  lhs = '<C-h>',
+  rhs = '<C-w>h',
+})
+
+Utils.Keymap2('Window down', {
+  lhs = '<C-j>',
+  rhs = '<C-w>j',
+})
+
+Utils.Keymap2('Window up', {
+  lhs = '<C-k>',
+  rhs = '<C-w>k',
+})
+
+Utils.Keymap2('Window right', {
+  lhs = '<C-l>',
+  rhs = '<C-w>l',
+})
+
+Utils.Keymap2('Resize height +', {
+  remap = true,
+  lhs = '<C-w>+',
+  rhs = '<Cmd>resize +5<CR>',
+})
+
+Utils.Keymap2('Resize height -', {
+  remap = true,
+  lhs = '<C-w>-',
+  rhs = '<Cmd>resize -5<CR>',
+})
+
+Utils.Keymap2('Resize width -', {
+  remap = true,
+  lhs = '<C-w><',
+  rhs = '<Cmd>vertical resize -20<CR>',
+})
+
+Utils.Keymap2('Resize width +', {
+  remap = true,
+  lhs = '<C-w>>',
+  rhs = '<Cmd>vertical resize +20<CR>',
+})
+
+Utils.Keymap2('Resize height +', {
+  remap = true,
+  lhs = '<C-Up>',
+  rhs = '<Cmd>resize +5<CR>',
+})
+
+Utils.Keymap2('Resize height -', {
+  remap = true,
+  lhs = '<C-Down>',
+  rhs = '<Cmd>resize -5<CR>',
+})
+
+Utils.Keymap2('Resize width -', {
+  remap = true,
+  lhs = '<C-Left>',
+  rhs = '<Cmd>vertical resize -20<CR>',
+})
+
+Utils.Keymap2('Resize width +', {
+  remap = true,
+  lhs = '<C-Right>',
+  rhs = '<Cmd>vertical resize +20<CR>',
+})
+
+Utils.Keymap2('Save', {
+  mode = { 'n', 'i', 'x' },
+  lhs = '<C-s>',
+  rhs = '<Esc><Cmd>w<CR><Esc>',
+})
+
+Utils.Keymap2('Indent right', {
+  mode = 'x',
+  lhs = '>',
+  rhs = '>gv',
+})
+
+Utils.Keymap2('Indent left', {
+  mode = 'x',
+  lhs = '<',
+  rhs = '<gv',
+})

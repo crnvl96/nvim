@@ -43,11 +43,23 @@ Utils.Group('crnvl96-handle-term-maps', function(g)
       local code_term_esc = vim.api.nvim_replace_termcodes('<C-\\><C-n>', true, true, true)
 
       for _, key in ipairs({ 'h', 'j', 'k', 'l' }) do
-        Utils.Set('t', '<C-' .. key .. '>', function()
-          local code_dir = vim.api.nvim_replace_termcodes('<C-' .. key .. '>', true, true, true)
-          vim.api.nvim_feedkeys(code_term_esc .. code_dir, 't', true)
-        end, { noremap = true })
+        Utils.Keymap2('Navigate to/from terminals', {
+          noremap = true,
+          lhs = '<C-' .. key .. '>',
+          rhs = function()
+            local code_dir = vim.api.nvim_replace_termcodes('<C-' .. key .. '>', true, true, true)
+            vim.api.nvim_feedkeys(code_term_esc .. code_dir, 't', true)
+          end,
+          mode = 't',
+        })
       end
+
+      Utils.Keymap2('Enter normal mode in terminal', {
+        noremap = true,
+        lhs = '<C-r>',
+        rhs = function() vim.api.nvim_feedkeys(code_term_esc, 't', true) end,
+        mode = 't',
+      })
 
       if vim.bo.filetype == '' then
         vim.api.nvim_set_option_value('filetype', 'terminal', { buf = event.buf })
@@ -83,8 +95,18 @@ Utils.Group('crnvl96-handle-yank', function(g)
     end
   end
 
-  Utils.Set('n', 'Y', yank_cmd('yg_'), { expr = true })
-  Utils.Set({ 'n', 'x' }, 'y', yank_cmd('y'), { expr = true })
+  Utils.Keymap2('Yank (eol - preserve cursor)', {
+    expr = true,
+    lhs = 'Y',
+    rhs = yank_cmd('yg_'),
+  })
+
+  Utils.Keymap2('Yank (preserve cursor)', {
+    expr = true,
+    lhs = 'y',
+    rhs = yank_cmd('y'),
+    mode = { 'n', 'x' },
+  })
 
   Utils.Autocmd('TextYankPost', {
     group = g,
