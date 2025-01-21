@@ -7,7 +7,29 @@ require('mini.colors')
 
 Add('folke/snacks.nvim')
 
--- write a simple lua test function. AI!
+-- Simple test function for snacks.nvim
+local function test_snacks()
+  local ok, snacks = pcall(require, 'snacks')
+  if not ok then
+    print("Snacks plugin not loaded")
+    return false
+  end
+
+  -- Example test: Check if debug inspection works
+  local test_table = { a = 1, b = { c = 2 } }
+  local success, result = pcall(snacks.debug.inspect, test_table)
+  
+  if success then
+    print("Snacks debug.inspect test passed")
+    return true
+  else
+    print("Snacks debug.inspect test failed")
+    return false
+  end
+end
+
+-- Expose the test function globally
+_G.test_snacks = test_snacks
 
 Utils.Req('zoxide')
 Utils.Req('lazydocker')
