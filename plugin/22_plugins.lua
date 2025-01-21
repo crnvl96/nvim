@@ -132,13 +132,9 @@ require('yarepl').formatter.trim_empty_lines = require('yarepl').formatter.facto
 
 require('yarepl.extensions.aider').setup({
   aider_args = {
-    '--vim',
     '--dark-mode',
-    '--dry-run',
-    '--multiline',
     '--haiku',
     '--watch-files',
-    '--no-auto-commits',
     '--no-auto-lint',
     '--no-auto-test',
     '--env-file',
@@ -374,15 +370,18 @@ require('mini.clue').setup({
     require('mini.clue').gen_clues.windows(),
     require('mini.clue').gen_clues.z(),
 
+    { mode = 'n', keys = '<Leader>a', desc = '+Aider' },
+    { mode = 'n', keys = '<Leader>am', desc = '+Modes' },
+
     { mode = 'n', keys = '<Leader>b', desc = '+Buffers' },
-    { mode = 'n', keys = '<Leader>c', desc = '+Code' },
     { mode = 'n', keys = '<Leader>d', desc = '+DAP' },
     { mode = 'n', keys = '<Leader>f', desc = '+Files' },
     { mode = 'n', keys = '<Leader>g', desc = '+Git' },
     { mode = 'n', keys = '<Leader>l', desc = '+LSP' },
+    { mode = 'n', keys = '<Leader>l', desc = '+Notifications' },
     { mode = 'n', keys = '<Leader>u', desc = '+Toggle' },
 
-    { mode = 'x', keys = '<Leader>c', desc = '+Code' },
+    { mode = 'x', keys = '<Leader>a', desc = '+Aider' },
     { mode = 'x', keys = '<Leader>f', desc = '+Files' },
     { mode = 'x', keys = '<Leader>g', desc = '+Git' },
   },

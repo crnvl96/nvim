@@ -9,6 +9,15 @@ Utils.Group('crnvl96-auto-resize-window-splits', function(g)
   })
 end)
 
+Utils.Group('crnvl96-auto-sync', function(g)
+  Utils.Autocmd({ 'FocusGained', 'TermClose', 'TermLeave' }, {
+    group = g,
+    callback = function()
+      if vim.o.buftype ~= 'nofile' then vim.cmd('checktime') end
+    end,
+  })
+end)
+
 Utils.Group('crnvl96-auto-restore-last-position', function(g)
   Utils.Autocmd('BufReadPost', {
     group = g,

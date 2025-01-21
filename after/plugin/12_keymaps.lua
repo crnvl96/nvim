@@ -1,4 +1,4 @@
-Snacks.toggle.indent():map('<leader>ui', { desc = 'Toggle indentation' })
+Snacks.toggle.indent():map('<Leader>ui', { desc = 'Toggle indentation' })
 
 Snacks.toggle({
   name = 'Auto format',
@@ -10,7 +10,7 @@ Snacks.toggle({
       vim.g.autoformat = false
     end
   end,
-}):map('<leader>uf', { desc = 'Toggle autoformat' })
+}):map('<Leader>uf', { desc = 'Toggle autoformat' })
 
 Utils.Keymap2('Open file explorer', {
   lhs = '-',
@@ -36,7 +36,7 @@ Utils.Keymap2('Close terminal buffer', {
 })
 
 Utils.Keymap2('Find keymaps', {
-  lhs = '<leader>fk',
+  lhs = '<Leader>fk',
   mode = { 'n', 'v' },
   rhs = function()
     local keymaps = Snacks.picker
@@ -45,7 +45,7 @@ Utils.Keymap2('Find keymaps', {
 })
 
 Utils.Keymap2('Git Browse', {
-  lhs = '<leader>gB',
+  lhs = '<Leader>gB',
   mode = { 'n', 'v' },
   rhs = function()
     local git = Snacks.gitbrowse
@@ -132,7 +132,7 @@ Utils.Keymap2('Goto last edited buffer', {
 })
 
 Utils.Keymap2('Delete current buffer', {
-  lhs = '<leader>bd',
+  lhs = '<Leader>bd',
   mode = 'n',
   rhs = function()
     local bufdelete = Snacks.bufdelete
@@ -141,7 +141,7 @@ Utils.Keymap2('Delete current buffer', {
 })
 
 Utils.Keymap2('Delete other buffers', {
-  lhs = '<leader>bo',
+  lhs = '<Leader>bo',
   mode = 'n',
   rhs = function()
     local bufdelete = Snacks.bufdelete.other
@@ -150,7 +150,7 @@ Utils.Keymap2('Delete other buffers', {
 })
 
 Utils.Keymap2('Find in buffer list', {
-  lhs = '<leader>fb',
+  lhs = '<Leader>fb',
   mode = 'n',
   rhs = function()
     local picker = Snacks.picker
@@ -159,7 +159,7 @@ Utils.Keymap2('Find in buffer list', {
 })
 
 Utils.Keymap2('Find Files', {
-  lhs = '<leader>ff',
+  lhs = '<Leader>ff',
   mode = 'n',
   rhs = function()
     local picker = Snacks.picker
@@ -168,7 +168,7 @@ Utils.Keymap2('Find Files', {
 })
 
 Utils.Keymap2('Live grep', {
-  lhs = '<leader>fg',
+  lhs = '<Leader>fg',
   mode = 'n',
   rhs = function()
     local picker = Snacks.picker
@@ -177,7 +177,7 @@ Utils.Keymap2('Live grep', {
 })
 
 Utils.Keymap2('Find in help tags', {
-  lhs = '<leader>fh',
+  lhs = '<Leader>fh',
   mode = 'n',
   rhs = function()
     local picker = Snacks.picker
@@ -186,7 +186,7 @@ Utils.Keymap2('Find in help tags', {
 })
 
 Utils.Keymap2('Find in current buffer lines', {
-  lhs = '<leader>fl',
+  lhs = '<Leader>fl',
   mode = 'n',
   rhs = function()
     local picker = Snacks.picker
@@ -195,7 +195,7 @@ Utils.Keymap2('Find in current buffer lines', {
 })
 
 Utils.Keymap2('Find in recent edited files', {
-  lhs = '<leader>fo',
+  lhs = '<Leader>fo',
   mode = 'n',
   rhs = function()
     local picker = Snacks.picker
@@ -204,7 +204,7 @@ Utils.Keymap2('Find in recent edited files', {
 })
 
 Utils.Keymap2('Resume last picker', {
-  lhs = '<leader>fr',
+  lhs = '<Leader>fr',
   mode = 'n',
   rhs = function()
     local picker = Snacks.picker
@@ -213,7 +213,7 @@ Utils.Keymap2('Resume last picker', {
 })
 
 Utils.Keymap2('List all pickers', {
-  lhs = '<leader>fs',
+  lhs = '<Leader>fs',
   mode = 'n',
   rhs = function()
     local picker = Snacks.picker
@@ -222,7 +222,7 @@ Utils.Keymap2('List all pickers', {
 })
 
 Utils.Keymap2('Find in quickfix list', {
-  lhs = '<leader>fx',
+  lhs = '<Leader>fx',
   mode = 'n',
   rhs = function()
     local picker = Snacks.picker
@@ -231,7 +231,7 @@ Utils.Keymap2('Find in quickfix list', {
 })
 
 Utils.Keymap2('Git blame line', {
-  lhs = '<leader>gb',
+  lhs = '<Leader>gb',
   mode = 'n',
   rhs = function()
     local git = Snacks.git
@@ -240,7 +240,7 @@ Utils.Keymap2('Git blame line', {
 })
 
 Utils.Keymap2('Git log', {
-  lhs = '<leader>gl',
+  lhs = '<Leader>gl',
   mode = 'n',
   rhs = function()
     local picker = Snacks.picker
@@ -249,7 +249,7 @@ Utils.Keymap2('Git log', {
 })
 
 Utils.Keymap2('Git status', {
-  lhs = '<leader>gs',
+  lhs = '<Leader>gs',
   mode = 'n',
   rhs = function()
     local picker = Snacks.picker
@@ -321,7 +321,7 @@ Utils.Keymap2('Rename LSP symbol under cursor', {
 })
 
 Utils.Keymap2('Go to definition', {
-  lhs = '<leader>ld',
+  lhs = '<Leader>ld',
   mode = 'n',
   rhs = function()
     local picker = Snacks.picker
@@ -330,7 +330,7 @@ Utils.Keymap2('Go to definition', {
 })
 
 Utils.Keymap2('Go to implementation', {
-  lhs = '<leader>li',
+  lhs = '<Leader>li',
   mode = 'n',
   rhs = function()
     local picker = Snacks.picker
@@ -339,7 +339,7 @@ Utils.Keymap2('Go to implementation', {
 })
 
 Utils.Keymap2('Go to references', {
-  lhs = '<leader>lr',
+  lhs = '<Leader>lr',
   mode = 'n',
   nowait = true,
   rhs = function()
@@ -349,7 +349,7 @@ Utils.Keymap2('Go to references', {
 })
 
 Utils.Keymap2('List LSP symbols', {
-  lhs = '<leader>ls',
+  lhs = '<Leader>ls',
   mode = 'n',
   rhs = function()
     local picker = Snacks.picker
@@ -358,7 +358,7 @@ Utils.Keymap2('List LSP symbols', {
 })
 
 Utils.Keymap2('List LSP diagnostics', {
-  lhs = '<leader>lx',
+  lhs = '<Leader>lx',
   mode = 'n',
   rhs = function()
     local picker = Snacks.picker
@@ -367,7 +367,7 @@ Utils.Keymap2('List LSP diagnostics', {
 })
 
 Utils.Keymap2('Go to type definition', {
-  lhs = '<leader>ly',
+  lhs = '<Leader>ly',
   mode = 'n',
   rhs = function()
     local picker = Snacks.picker
@@ -376,7 +376,7 @@ Utils.Keymap2('Go to type definition', {
 })
 
 Utils.Keymap2('Inspect notification history', {
-  lhs = '<leader>nn',
+  lhs = '<Leader>nn',
   mode = 'n',
   rhs = function()
     local notifier = Snacks.notifier
@@ -385,7 +385,7 @@ Utils.Keymap2('Inspect notification history', {
 })
 
 Utils.Keymap2('Clear all notifications', {
-  lhs = '<leader>nc',
+  lhs = '<Leader>nc',
   mode = 'n',
   rhs = function()
     local notifier = Snacks.notifier
@@ -393,31 +393,92 @@ Utils.Keymap2('Clear all notifications', {
   end,
 })
 
-vim.keymap.set('n', '<Leader>fc', '', {
-  callback = function() print('hey') end,
-  desc = 'callback test',
+Utils.Keymap2('Start Aider', {
+  lhs = '<Leader>as',
+  mode = 'n',
+  rhs = '<Plug>(REPLStart-aider)',
 })
 
-Utils.Keymap2('Send Visual Selection to REPL', {
-  lhs = '<leader>ra',
+Utils.Keymap2('Toggle Aider', {
+  lhs = '<Leader>at',
+  mode = 'n',
+  rhs = '<Plug>(REPLHideOrFocus-aider)',
+})
+
+Utils.Keymap2('Send visual to Aider', {
+  lhs = '<Leader>av',
   mode = 'v',
-  rhs = '<Plug>(REPLSendVisual)',
+  rhs = '<Plug>(REPLSendVisual-aider)',
 })
 
-Utils.Keymap2('Clean up REPLs', {
-  lhs = '<leader>rc',
+Utils.Keymap2('Exec in Aider', {
+  lhs = '<Leader>ae',
   mode = 'n',
-  rhs = '<Cmd>REPLCleanup<CR>',
+  rhs = '<Plug>(AiderExec)',
 })
 
-Utils.Keymap2('Start REPL', {
-  lhs = '<leader>rs',
+Utils.Keymap2('Send yes to Aider', {
+  lhs = '<Leader>ay',
   mode = 'n',
-  rhs = '<Plug>(REPLStart)',
+  rhs = '<Plug>(AiderSendYes)',
 })
 
-Utils.Keymap2('Toggle REPL', {
-  lhs = '<leader>rt',
+Utils.Keymap2('Send no to Aider', {
+  lhs = '<Leader>an',
   mode = 'n',
-  rhs = '<Plug>(REPLHideOrFocus)',
+  rhs = '<Plug>(AiderSendNo)',
+})
+
+Utils.Keymap2('Send abort to Aider', {
+  lhs = '<Leader>aa',
+  mode = 'n',
+  rhs = '<Plug>(AiderSendAbort)',
+})
+
+Utils.Keymap2('Send exit to Aider', {
+  lhs = '<Leader>aq',
+  mode = 'n',
+  rhs = '<Plug>(AiderSendExit)',
+})
+
+Utils.Keymap2('Change Aider to ask mode', {
+  lhs = '<Leader>ama',
+  mode = 'n',
+  rhs = '<Plug>(AiderSendAskMode)',
+})
+
+Utils.Keymap2('Change Aider to arch mode', {
+  lhs = '<Leader>amA',
+  mode = 'n',
+  rhs = '<Plug>(AiderSendArchMode)',
+})
+
+Utils.Keymap2('Change Aider to code mode', {
+  lhs = '<Leader>amc',
+  mode = 'n',
+  rhs = '<Plug>(AiderSendCodeMode)',
+})
+
+Utils.Keymap2('Set Aider prefix', {
+  lhs = '<Leader>ap',
+  mode = 'n',
+  rhs = '<Cmd>AiderSetPrefix<CR>',
+})
+
+Utils.Keymap2('Remove Aider prefix', {
+  lhs = '<Leader>aP',
+  mode = 'n',
+  rhs = '<Cmd>AiderRemovePrefix<CR>',
+})
+
+Utils.Keymap2('Undo last Aider commit', {
+  lhs = '<Leader>au',
+  mode = 'n',
+  rhs = '<Cmd>AiderSendUndo<CR>',
+})
+
+Utils.Keymap2('Remove Aider prefix', {
+  lhs = '<Leader>a<Space>',
+  mode = 'n',
+  rhs = '<Cmd>checktime<CR>',
 })
