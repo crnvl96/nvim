@@ -22,7 +22,7 @@ Utils.Group('crnvl96-minifiles-keymaps', function(g)
           minifiles.go_in({ close_on_file = true })
         end
 
-        Utils.Keymap2('Split ' .. string.sub(direction, 12), { buffer = buf, lhs = lhs, rhs = rhs })
+        Utils.Keymap('Split ' .. string.sub(direction, 12), { buffer = buf, lhs = lhs, rhs = rhs })
       end
 
       map_split('<C-s>', 'belowright horizontal')
@@ -40,7 +40,6 @@ Utils.Group('crnvl96-minifiles-ui', function(g)
 end)
 
 Utils.Group('crnvl96-handle-linters', function(g)
-  Utils.Req('selene')
   local linters = {
     lua = {
       linters = { 'selene' },

@@ -52,7 +52,7 @@ Utils.Group('crnvl96-handle-term-maps', function(g)
       local code_term_esc = vim.api.nvim_replace_termcodes('<C-\\><C-n>', true, true, true)
 
       for _, key in ipairs({ 'h', 'j', 'k', 'l' }) do
-        Utils.Keymap2('Navigate to/from terminals', {
+        Utils.Keymap('Navigate to/from terminals', {
           noremap = true,
           lhs = '<C-' .. key .. '>',
           rhs = function()
@@ -63,7 +63,7 @@ Utils.Group('crnvl96-handle-term-maps', function(g)
         })
       end
 
-      Utils.Keymap2('Enter normal mode in terminal', {
+      Utils.Keymap('Enter normal mode in terminal', {
         noremap = true,
         lhs = '<C-r>',
         rhs = function() vim.api.nvim_feedkeys(code_term_esc, 't', true) end,
@@ -104,13 +104,13 @@ Utils.Group('crnvl96-handle-yank', function(g)
     end
   end
 
-  Utils.Keymap2('Yank (eol - preserve cursor)', {
+  Utils.Keymap('Yank (eol - preserve cursor)', {
     expr = true,
     lhs = 'Y',
     rhs = yank_cmd('yg_'),
   })
 
-  Utils.Keymap2('Yank (preserve cursor)', {
+  Utils.Keymap('Yank (preserve cursor)', {
     expr = true,
     lhs = 'y',
     rhs = yank_cmd('y'),

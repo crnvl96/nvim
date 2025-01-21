@@ -1,4 +1,5 @@
 local mini_path = vim.fn.stdpath('data') .. '/site/pack/deps/start/mini.nvim'
+
 if not vim.loop.fs_stat(mini_path) then
   vim.cmd('echo "Installing `mini.nvim`" | redraw')
   local clone_cmd = {
@@ -18,3 +19,5 @@ require('mini.deps').setup()
 Add, Now, Later = MiniDeps.add, MiniDeps.now, MiniDeps.later
 
 Add({ name = 'mini.nvim' })
+
+vim.cmd.colorscheme('minigrey')

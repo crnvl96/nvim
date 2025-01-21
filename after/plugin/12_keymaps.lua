@@ -1,5 +1,7 @@
 Snacks.toggle.indent():map('<Leader>ui', { desc = 'Toggle indentation' })
 
+vim.g.autoformat = true
+
 Snacks.toggle({
   name = 'Auto format',
   get = function() return vim.g.autoformat end,
@@ -12,7 +14,7 @@ Snacks.toggle({
   end,
 }):map('<Leader>uf', { desc = 'Toggle autoformat' })
 
-Utils.Keymap2('Open file explorer', {
+Utils.Keymap('Open file explorer', {
   lhs = '-',
   rhs = function()
     local bufname = vim.api.nvim_buf_get_name(0)
@@ -21,7 +23,7 @@ Utils.Keymap2('Open file explorer', {
   end,
 })
 
-Utils.Keymap2('Open terminal buffer', {
+Utils.Keymap('Open terminal buffer', {
   lhs = '<C-t>',
   rhs = function()
     local term = Snacks.terminal
@@ -29,13 +31,13 @@ Utils.Keymap2('Open terminal buffer', {
   end,
 })
 
-Utils.Keymap2('Close terminal buffer', {
+Utils.Keymap('Close terminal buffer', {
   lhs = '<C-t>',
   rhs = '<Cmd>close<cr>',
   mode = 't',
 })
 
-Utils.Keymap2('Find keymaps', {
+Utils.Keymap('Find keymaps', {
   lhs = '<Leader>fk',
   mode = { 'n', 'v' },
   rhs = function()
@@ -44,7 +46,7 @@ Utils.Keymap2('Find keymaps', {
   end,
 })
 
-Utils.Keymap2('Git Browse', {
+Utils.Keymap('Git Browse', {
   lhs = '<Leader>gB',
   mode = { 'n', 'v' },
   rhs = function()
@@ -53,7 +55,7 @@ Utils.Keymap2('Git Browse', {
   end,
 })
 
-Utils.Keymap2('Open DAP REPL', {
+Utils.Keymap('Open DAP REPL', {
   lhs = '<Leader>dR',
   mode = 'n',
   rhs = function()
@@ -62,7 +64,7 @@ Utils.Keymap2('Open DAP REPL', {
   end,
 })
 
-Utils.Keymap2('Set DAP breakpoint', {
+Utils.Keymap('Set DAP breakpoint', {
   lhs = '<Leader>db',
   mode = 'n',
   rhs = function()
@@ -71,7 +73,7 @@ Utils.Keymap2('Set DAP breakpoint', {
   end,
 })
 
-Utils.Keymap2('Clear all DAP breakpoints', {
+Utils.Keymap('Clear all DAP breakpoints', {
   lhs = '<Leader>dc',
   mode = 'n',
   rhs = function()
@@ -80,7 +82,7 @@ Utils.Keymap2('Clear all DAP breakpoints', {
   end,
 })
 
-Utils.Keymap2('DAP eval current expression', {
+Utils.Keymap('DAP eval current expression', {
   lhs = '<Leader>de',
   mode = { 'n', 'x' },
   rhs = function()
@@ -89,7 +91,7 @@ Utils.Keymap2('DAP eval current expression', {
   end,
 })
 
-Utils.Keymap2('DAP run (continue execution)', {
+Utils.Keymap('DAP run (continue execution)', {
   lhs = '<Leader>dr',
   mode = 'n',
   rhs = function()
@@ -98,7 +100,7 @@ Utils.Keymap2('DAP run (continue execution)', {
   end,
 })
 
-Utils.Keymap2('Inspect DAP scopes', {
+Utils.Keymap('Inspect DAP scopes', {
   lhs = '<Leader>ds',
   mode = 'n',
   rhs = function()
@@ -107,7 +109,7 @@ Utils.Keymap2('Inspect DAP scopes', {
   end,
 })
 
-Utils.Keymap2('Terminate current DAP session', {
+Utils.Keymap('Terminate current DAP session', {
   lhs = '<Leader>dt',
   mode = 'n',
   rhs = function()
@@ -116,7 +118,7 @@ Utils.Keymap2('Terminate current DAP session', {
   end,
 })
 
-Utils.Keymap2('Toggle git diff overlay (mini.diff)', {
+Utils.Keymap('Toggle git diff overlay (mini.diff)', {
   lhs = '<Leader>go',
   mode = 'n',
   rhs = function()
@@ -125,13 +127,13 @@ Utils.Keymap2('Toggle git diff overlay (mini.diff)', {
   end,
 })
 
-Utils.Keymap2('Goto last edited buffer', {
+Utils.Keymap('Goto last edited buffer', {
   lhs = '<Leader>bb',
   mode = 'n',
   rhs = '<Cmd>b#<CR>',
 })
 
-Utils.Keymap2('Delete current buffer', {
+Utils.Keymap('Delete current buffer', {
   lhs = '<Leader>bd',
   mode = 'n',
   rhs = function()
@@ -140,7 +142,7 @@ Utils.Keymap2('Delete current buffer', {
   end,
 })
 
-Utils.Keymap2('Delete other buffers', {
+Utils.Keymap('Delete other buffers', {
   lhs = '<Leader>bo',
   mode = 'n',
   rhs = function()
@@ -149,7 +151,7 @@ Utils.Keymap2('Delete other buffers', {
   end,
 })
 
-Utils.Keymap2('Find in buffer list', {
+Utils.Keymap('Find in buffer list', {
   lhs = '<Leader>fb',
   mode = 'n',
   rhs = function()
@@ -158,7 +160,7 @@ Utils.Keymap2('Find in buffer list', {
   end,
 })
 
-Utils.Keymap2('Find Files', {
+Utils.Keymap('Find Files', {
   lhs = '<Leader>ff',
   mode = 'n',
   rhs = function()
@@ -167,7 +169,7 @@ Utils.Keymap2('Find Files', {
   end,
 })
 
-Utils.Keymap2('Live grep', {
+Utils.Keymap('Live grep', {
   lhs = '<Leader>fg',
   mode = 'n',
   rhs = function()
@@ -176,7 +178,7 @@ Utils.Keymap2('Live grep', {
   end,
 })
 
-Utils.Keymap2('Find in help tags', {
+Utils.Keymap('Find in help tags', {
   lhs = '<Leader>fh',
   mode = 'n',
   rhs = function()
@@ -185,7 +187,7 @@ Utils.Keymap2('Find in help tags', {
   end,
 })
 
-Utils.Keymap2('Find in current buffer lines', {
+Utils.Keymap('Find in current buffer lines', {
   lhs = '<Leader>fl',
   mode = 'n',
   rhs = function()
@@ -194,7 +196,7 @@ Utils.Keymap2('Find in current buffer lines', {
   end,
 })
 
-Utils.Keymap2('Find in recent edited files', {
+Utils.Keymap('Find in recent edited files', {
   lhs = '<Leader>fo',
   mode = 'n',
   rhs = function()
@@ -203,7 +205,7 @@ Utils.Keymap2('Find in recent edited files', {
   end,
 })
 
-Utils.Keymap2('Resume last picker', {
+Utils.Keymap('Resume last picker', {
   lhs = '<Leader>fr',
   mode = 'n',
   rhs = function()
@@ -212,7 +214,7 @@ Utils.Keymap2('Resume last picker', {
   end,
 })
 
-Utils.Keymap2('List all pickers', {
+Utils.Keymap('List all pickers', {
   lhs = '<Leader>fs',
   mode = 'n',
   rhs = function()
@@ -221,7 +223,7 @@ Utils.Keymap2('List all pickers', {
   end,
 })
 
-Utils.Keymap2('Find in quickfix list', {
+Utils.Keymap('Find in quickfix list', {
   lhs = '<Leader>fx',
   mode = 'n',
   rhs = function()
@@ -230,7 +232,7 @@ Utils.Keymap2('Find in quickfix list', {
   end,
 })
 
-Utils.Keymap2('Git blame line', {
+Utils.Keymap('Git blame line', {
   lhs = '<Leader>gb',
   mode = 'n',
   rhs = function()
@@ -239,7 +241,7 @@ Utils.Keymap2('Git blame line', {
   end,
 })
 
-Utils.Keymap2('Git log', {
+Utils.Keymap('Git log', {
   lhs = '<Leader>gl',
   mode = 'n',
   rhs = function()
@@ -248,7 +250,7 @@ Utils.Keymap2('Git log', {
   end,
 })
 
-Utils.Keymap2('Git status', {
+Utils.Keymap('Git status', {
   lhs = '<Leader>gs',
   mode = 'n',
   rhs = function()
@@ -257,7 +259,7 @@ Utils.Keymap2('Git status', {
   end,
 })
 
-Utils.Keymap2('LSP code actions', {
+Utils.Keymap('LSP code actions', {
   lhs = '<Leader>la',
   mode = 'n',
   rhs = function()
@@ -266,7 +268,7 @@ Utils.Keymap2('LSP code actions', {
   end,
 })
 
-Utils.Keymap2('LSP hover (eval) expression', {
+Utils.Keymap('LSP hover (eval) expression', {
   lhs = '<Leader>le',
   mode = 'n',
   rhs = function()
@@ -275,7 +277,7 @@ Utils.Keymap2('LSP hover (eval) expression', {
   end,
 })
 
-Utils.Keymap2('LSP signature help', {
+Utils.Keymap('LSP signature help', {
   lhs = '<Leader>lh',
   mode = 'n',
   rhs = function()
@@ -284,7 +286,7 @@ Utils.Keymap2('LSP signature help', {
   end,
 })
 
-Utils.Keymap2('Next LSP diagnostic', {
+Utils.Keymap('Next LSP diagnostic', {
   lhs = '<Leader>lj',
   mode = 'n',
   rhs = function()
@@ -293,7 +295,7 @@ Utils.Keymap2('Next LSP diagnostic', {
   end,
 })
 
-Utils.Keymap2('Previous LSP diagnostic', {
+Utils.Keymap('Previous LSP diagnostic', {
   lhs = '<Leader>lk',
   mode = 'n',
   rhs = function()
@@ -302,7 +304,7 @@ Utils.Keymap2('Previous LSP diagnostic', {
   end,
 })
 
-Utils.Keymap2('Inspect LSP diagnostic', {
+Utils.Keymap('Inspect LSP diagnostic', {
   lhs = '<Leader>ll',
   mode = 'n',
   rhs = function()
@@ -311,7 +313,7 @@ Utils.Keymap2('Inspect LSP diagnostic', {
   end,
 })
 
-Utils.Keymap2('Rename LSP symbol under cursor', {
+Utils.Keymap('Rename LSP symbol under cursor', {
   lhs = '<Leader>ln',
   mode = 'n',
   rhs = function()
@@ -320,7 +322,7 @@ Utils.Keymap2('Rename LSP symbol under cursor', {
   end,
 })
 
-Utils.Keymap2('Go to definition', {
+Utils.Keymap('Go to definition', {
   lhs = '<Leader>ld',
   mode = 'n',
   rhs = function()
@@ -329,7 +331,7 @@ Utils.Keymap2('Go to definition', {
   end,
 })
 
-Utils.Keymap2('Go to implementation', {
+Utils.Keymap('Go to implementation', {
   lhs = '<Leader>li',
   mode = 'n',
   rhs = function()
@@ -338,7 +340,7 @@ Utils.Keymap2('Go to implementation', {
   end,
 })
 
-Utils.Keymap2('Go to references', {
+Utils.Keymap('Go to references', {
   lhs = '<Leader>lr',
   mode = 'n',
   nowait = true,
@@ -348,7 +350,7 @@ Utils.Keymap2('Go to references', {
   end,
 })
 
-Utils.Keymap2('List LSP symbols', {
+Utils.Keymap('List LSP symbols', {
   lhs = '<Leader>ls',
   mode = 'n',
   rhs = function()
@@ -357,7 +359,7 @@ Utils.Keymap2('List LSP symbols', {
   end,
 })
 
-Utils.Keymap2('List LSP diagnostics', {
+Utils.Keymap('List LSP diagnostics', {
   lhs = '<Leader>lx',
   mode = 'n',
   rhs = function()
@@ -366,7 +368,7 @@ Utils.Keymap2('List LSP diagnostics', {
   end,
 })
 
-Utils.Keymap2('Go to type definition', {
+Utils.Keymap('Go to type definition', {
   lhs = '<Leader>ly',
   mode = 'n',
   rhs = function()
@@ -375,7 +377,7 @@ Utils.Keymap2('Go to type definition', {
   end,
 })
 
-Utils.Keymap2('Inspect notification history', {
+Utils.Keymap('Inspect notification history', {
   lhs = '<Leader>nn',
   mode = 'n',
   rhs = function()
@@ -384,7 +386,7 @@ Utils.Keymap2('Inspect notification history', {
   end,
 })
 
-Utils.Keymap2('Clear all notifications', {
+Utils.Keymap('Clear all notifications', {
   lhs = '<Leader>nc',
   mode = 'n',
   rhs = function()
@@ -393,91 +395,79 @@ Utils.Keymap2('Clear all notifications', {
   end,
 })
 
-Utils.Keymap2('Start Aider', {
+Utils.Keymap('Start Aider', {
   lhs = '<Leader>as',
   mode = 'n',
   rhs = '<Plug>(REPLStart-aider)',
 })
 
-Utils.Keymap2('Toggle Aider', {
+Utils.Keymap('Toggle Aider', {
   lhs = '<Leader>at',
   mode = 'n',
   rhs = '<Plug>(REPLHideOrFocus-aider)',
 })
 
-Utils.Keymap2('Send visual to Aider', {
+Utils.Keymap('Send visual to Aider', {
   lhs = '<Leader>av',
   mode = 'v',
   rhs = '<Plug>(REPLSendVisual-aider)',
 })
 
-Utils.Keymap2('Exec in Aider', {
+Utils.Keymap('Exec in Aider', {
   lhs = '<Leader>ae',
   mode = 'n',
   rhs = '<Plug>(AiderExec)',
 })
 
-Utils.Keymap2('Send yes to Aider', {
+Utils.Keymap('Send yes to Aider', {
   lhs = '<Leader>ay',
   mode = 'n',
   rhs = '<Plug>(AiderSendYes)',
 })
 
-Utils.Keymap2('Send no to Aider', {
+Utils.Keymap('Send no to Aider', {
   lhs = '<Leader>an',
   mode = 'n',
   rhs = '<Plug>(AiderSendNo)',
 })
 
-Utils.Keymap2('Send abort to Aider', {
+Utils.Keymap('Send abort to Aider', {
   lhs = '<Leader>aa',
   mode = 'n',
   rhs = '<Plug>(AiderSendAbort)',
 })
 
-Utils.Keymap2('Send exit to Aider', {
+Utils.Keymap('Send exit to Aider', {
   lhs = '<Leader>aq',
   mode = 'n',
   rhs = '<Plug>(AiderSendExit)',
 })
 
-Utils.Keymap2('Change Aider to ask mode', {
+Utils.Keymap('Send clear to Aider', {
+  lhs = '<Leader>ac',
+  mode = 'n',
+  rhs = '<Plug>(AiderSendClear)',
+})
+
+Utils.Keymap('Change Aider to ask mode', {
   lhs = '<Leader>ama',
   mode = 'n',
   rhs = '<Plug>(AiderSendAskMode)',
 })
 
-Utils.Keymap2('Change Aider to arch mode', {
+Utils.Keymap('Change Aider to arch mode', {
   lhs = '<Leader>amA',
   mode = 'n',
   rhs = '<Plug>(AiderSendArchMode)',
 })
 
-Utils.Keymap2('Change Aider to code mode', {
+Utils.Keymap('Change Aider to code mode', {
   lhs = '<Leader>amc',
   mode = 'n',
   rhs = '<Plug>(AiderSendCodeMode)',
 })
 
-Utils.Keymap2('Set Aider prefix', {
-  lhs = '<Leader>ap',
-  mode = 'n',
-  rhs = '<Cmd>AiderSetPrefix<CR>',
-})
-
-Utils.Keymap2('Remove Aider prefix', {
-  lhs = '<Leader>aP',
-  mode = 'n',
-  rhs = '<Cmd>AiderRemovePrefix<CR>',
-})
-
-Utils.Keymap2('Undo last Aider commit', {
-  lhs = '<Leader>au',
-  mode = 'n',
-  rhs = '<Cmd>AiderSendUndo<CR>',
-})
-
-Utils.Keymap2('Remove Aider prefix', {
+Utils.Keymap('Sync buffer with Aider changes', {
   lhs = '<Leader>a<Space>',
   mode = 'n',
   rhs = '<Cmd>checktime<CR>',
