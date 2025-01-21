@@ -7,6 +7,8 @@ require('mini.colors')
 
 Add('folke/snacks.nvim')
 
+-- write a simple lua test function. AI!
+
 Utils.Req('zoxide')
 Utils.Req('lazydocker')
 Utils.Req('lazygit')
