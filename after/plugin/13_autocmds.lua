@@ -67,8 +67,6 @@ Utils.Group('crnvl96-lsp-on-attach', function(g)
       local client = vim.lsp.get_client_by_id(e.data.client_id)
       if not client then return end
 
-      vim.bo[e.buf].omnifunc = 'v:lua.MiniCompletion.completefunc_lsp'
-
       client.server_capabilities.documentFormattingProvider = false
       client.server_capabilities.documentRangeFormattingProvider = false
     end,

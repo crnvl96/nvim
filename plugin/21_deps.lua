@@ -27,6 +27,7 @@ Add('mfussenegger/nvim-lint')
 Add('stevearc/conform.nvim')
 
 Add('hat0uma/csvview.nvim')
+Add('olimorris/codecompanion.nvim')
 
 Add('theHamsta/nvim-dap-virtual-text')
 Add('mfussenegger/nvim-dap-python')

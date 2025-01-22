@@ -57,7 +57,7 @@ Utils.Group('crnvl96-handle-term-maps', function(g)
           lhs = '<C-' .. key .. '>',
           rhs = function()
             local code_dir = vim.api.nvim_replace_termcodes('<C-' .. key .. '>', true, true, true)
-            vim.api.nvim_feedkeys(code_term_esc .. code_dir, 't', true)
+            vim.api.nvim_feedkeys(code_term_esc .. code_dir, 't', false)
           end,
           mode = 't',
         })
@@ -66,7 +66,7 @@ Utils.Group('crnvl96-handle-term-maps', function(g)
       Utils.Keymap('Enter normal mode in terminal', {
         noremap = true,
         lhs = '<C-r>',
-        rhs = function() vim.api.nvim_feedkeys(code_term_esc, 't', true) end,
+        rhs = function() vim.api.nvim_feedkeys(code_term_esc, 't', false) end,
         mode = 't',
       })
 

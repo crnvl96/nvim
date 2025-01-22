@@ -1,4 +1,19 @@
-Snacks.toggle.indent():map('<Leader>ui', { desc = 'Toggle indentation' })
+Utils.Keymap('Explorer', {
+  lhs = '<Leader>e',
+  rhs = function()
+    local bufname = vim.api.nvim_buf_get_name(0)
+    local path = vim.fn.fnamemodify(bufname, ':p')
+    if path and vim.uv.fs_stat(path) then require('mini.files').open(bufname, false) end
+  end,
+})
+
+---
+--- Toggling features
+---
+
+Snacks.toggle.indent():map('<Leader>ui', { desc = 'Indentation' })
+Snacks.toggle.option('wrap'):map('<leader>uw', { desc = 'Wrap' })
+Snacks.toggle.option('relativenumber'):map('<leader>ur', { desc = 'Relnum' })
 
 vim.g.autoformat = true
 
@@ -12,119 +27,19 @@ Snacks.toggle({
       vim.g.autoformat = false
     end
   end,
-}):map('<Leader>uf', { desc = 'Toggle autoformat' })
+}):map('<Leader>ua', { desc = 'Autoformat' })
 
-Utils.Keymap('Open file explorer', {
-  lhs = '-',
-  rhs = function()
-    local bufname = vim.api.nvim_buf_get_name(0)
-    local path = vim.fn.fnamemodify(bufname, ':p')
-    if path and vim.uv.fs_stat(path) then require('mini.files').open(bufname, false) end
-  end,
-})
+---
+--- [B]uffers keymaps
+---
 
-Utils.Keymap('Open terminal buffer', {
-  lhs = '<C-t>',
-  rhs = function()
-    local term = Snacks.terminal
-    term()
-  end,
-})
-
-Utils.Keymap('Close terminal buffer', {
-  lhs = '<C-t>',
-  rhs = '<Cmd>close<cr>',
-  mode = 't',
-})
-
-Utils.Keymap('Find keymaps', {
-  lhs = '<Leader>fk',
-  mode = { 'n', 'v' },
-  rhs = function()
-    local keymaps = Snacks.picker
-    keymaps()
-  end,
-})
-
-Utils.Keymap('Git Browse', {
-  lhs = '<Leader>gB',
-  mode = { 'n', 'v' },
-  rhs = function()
-    local git = Snacks.gitbrowse
-    git()
-  end,
-})
-
-Utils.Keymap('Open DAP REPL', {
-  lhs = '<Leader>dR',
-  mode = 'n',
-  rhs = function()
-    local dap = require('dap.repl')
-    dap.toggle({}, 'belowright split')
-  end,
-})
-
-Utils.Keymap('Set DAP breakpoint', {
-  lhs = '<Leader>db',
-  mode = 'n',
-  rhs = function()
-    local dap = require('dap')
-    dap.toggle_breakpoint()
-  end,
-})
-
-Utils.Keymap('Clear all DAP breakpoints', {
-  lhs = '<Leader>dc',
-  mode = 'n',
-  rhs = function()
-    local dap = require('dap')
-    dap.clear_breakpoints()
-  end,
-})
-
-Utils.Keymap('DAP eval current expression', {
-  lhs = '<Leader>de',
-  mode = { 'n', 'x' },
-  rhs = function()
-    local dap_widgets = require('dap.ui.widgets')
-    dap_widgets.hover()
-  end,
-})
-
-Utils.Keymap('DAP run (continue execution)', {
-  lhs = '<Leader>dr',
-  mode = 'n',
-  rhs = function()
-    local dap = require('dap')
-    dap.continue()
-  end,
-})
-
-Utils.Keymap('Inspect DAP scopes', {
-  lhs = '<Leader>ds',
-  mode = 'n',
-  rhs = function()
-    local dap_widgets = require('dap.ui.widgets')
-    dap_widgets.sidebar(dap_widgets.scopes, {}, 'vsplit').toggle()
-  end,
-})
-
-Utils.Keymap('Terminate current DAP session', {
-  lhs = '<Leader>dt',
-  mode = 'n',
-  rhs = function()
-    local dap = require('dap')
-    dap.terminate()
-  end,
-})
-
-Utils.Keymap('Goto last edited buffer', {
-  lhs = '<Leader>bb',
+Utils.Keymap('Last', {
+  lhs = '<Leader>bl',
   mode = 'n',
   rhs = '<Cmd>b#<CR>',
 })
 
-Utils.Keymap('Delete current buffer', {
+Utils.Keymap('Delete', {
   lhs = '<Leader>bd',
   mode = 'n',
   rhs = function()
@@ -133,7 +48,7 @@ Utils.Keymap('Delete current buffer', {
   end,
 })
 
-Utils.Keymap('Delete other buffers', {
+Utils.Keymap('Others', {
   lhs = '<Leader>bo',
   mode = 'n',
   rhs = function()
@@ -142,7 +57,109 @@ Utils.Keymap('Delete other buffers', {
   end,
 })
 
-Utils.Keymap('Find in buffer list', {
+---
+--- AI [C]oding keymaps
+---
+
+Utils.Keymap('Actions', {
+  lhs = '<Leader>ca',
+  mode = { 'n', 'v' },
+  rhs = '<Cmd>CodeCompanionActions<CR>',
+})
+
+Utils.Keymap('Toggle', {
+  lhs = '<Leader>ct',
+  mode = { 'n', 'v' },
+  rhs = '<Cmd>CodeCompanionChat Toggle<CR>',
+})
+
+Utils.Keymap('Chat', {
+  lhs = '<Leader>cc',
+  mode = 'v',
+  rhs = ':CodeCompanionChat Add<CR>',
+})
+
+---
+--- [D]AP Keymaps
+---
+
+Utils.Keymap('REPL', {
+  lhs = '<Leader>dR',
+  mode = 'n',
+  rhs = function()
+    local dap = require('dap.repl')
+    dap.toggle({}, 'belowright split')
+  end,
+})
+
+Utils.Keymap('Breakpoint', {
+  lhs = '<Leader>db',
+  mode = 'n',
+  rhs = function()
+    local dap = require('dap')
+    dap.toggle_breakpoint()
+  end,
+})
+
+Utils.Keymap('Clear breakpoints', {
+  lhs = '<Leader>dc',
+  mode = 'n',
+  rhs = function()
+    local dap = require('dap')
+    dap.clear_breakpoints()
+  end,
+})
+
+Utils.Keymap('Eval', {
+  lhs = '<Leader>de',
+  mode = { 'n', 'x' },
+  rhs = function()
+    local dap_widgets = require('dap.ui.widgets')
+    dap_widgets.hover()
+  end,
+})
+
+Utils.Keymap('Run', {
+  lhs = '<Leader>dr',
+  mode = 'n',
+  rhs = function()
+    local dap = require('dap')
+    dap.continue()
+  end,
+})
+
+Utils.Keymap('Scopes', {
+  lhs = '<Leader>ds',
+  mode = 'n',
+  rhs = function()
+    local dap_widgets = require('dap.ui.widgets')
+    dap_widgets.sidebar(dap_widgets.scopes, {}, 'vsplit').toggle()
+  end,
+})
+
+Utils.Keymap('Quit', {
+  lhs = '<Leader>dq',
+  mode = 'n',
+  rhs = function()
+    local dap = require('dap')
+    dap.terminate()
+  end,
+})
+
+---
+--- [F]ind keymaps
+---
+
+Utils.Keymap('Keymaps', {
+  lhs = '<Leader>fk',
+  mode = { 'n', 'v' },
+  rhs = function()
+    local keymaps = Snacks.picker
+    keymaps()
+  end,
+})
+
+Utils.Keymap('Buffers', {
   lhs = '<Leader>fb',
   mode = 'n',
   rhs = function()
@@ -151,7 +168,7 @@ Utils.Keymap('Find in buffer list', {
   end,
 })
 
-Utils.Keymap('Find Files', {
+Utils.Keymap('Files', {
   lhs = '<Leader>ff',
   mode = 'n',
   rhs = function()
@@ -160,7 +177,7 @@ Utils.Keymap('Find Files', {
   end,
 })
 
-Utils.Keymap('Live grep', {
+Utils.Keymap('Grep', {
   lhs = '<Leader>fg',
   mode = 'n',
   rhs = function()
@@ -169,7 +186,7 @@ Utils.Keymap('Live grep', {
   end,
 })
 
-Utils.Keymap('Find in help tags', {
+Utils.Keymap('Help', {
   lhs = '<Leader>fh',
   mode = 'n',
   rhs = function()
@@ -178,7 +195,7 @@ Utils.Keymap('Find in help tags', {
   end,
 })
 
-Utils.Keymap('Find in current buffer lines', {
+Utils.Keymap('Lines', {
   lhs = '<Leader>fl',
   mode = 'n',
   rhs = function()
@@ -187,7 +204,7 @@ Utils.Keymap('Find in current buffer lines', {
   end,
 })
 
-Utils.Keymap('Find in recent edited files', {
+Utils.Keymap('Oldfiles', {
   lhs = '<Leader>fo',
   mode = 'n',
   rhs = function()
@@ -196,7 +213,7 @@ Utils.Keymap('Find in recent edited files', {
   end,
 })
 
-Utils.Keymap('Resume last picker', {
+Utils.Keymap('Resume', {
   lhs = '<Leader>fr',
   mode = 'n',
   rhs = function()
@@ -205,8 +222,8 @@ Utils.Keymap('Resume last picker', {
   end,
 })
 
-Utils.Keymap('List all pickers', {
-  lhs = '<Leader>fs',
+Utils.Keymap('Pickers', {
+  lhs = '<Leader>fp',
   mode = 'n',
   rhs = function()
     local picker = Snacks.picker
@@ -214,7 +231,11 @@ Utils.Keymap('List all pickers', {
   end,
 })
 
-Utils.Keymap('Git blame line', {
+---
+--- [G]it keymaps
+---
+
+Utils.Keymap('Blame', {
   lhs = '<Leader>gb',
   mode = 'n',
   rhs = function()
@@ -223,8 +244,44 @@ Utils.Keymap('Git blame line', {
   end,
 })
 
-Utils.Keymap('Git log', {
-  lhs = '<Leader>gl',
+Utils.Keymap('Browse', {
+  lhs = '<Leader>gB',
+  mode = { 'n', 'v' },
+  rhs = function()
+    local git = Snacks.gitbrowse
+    git()
+  end,
+})
+
+Utils.Keymap('Diff', {
+  lhs = '<Leader>gd',
+  mode = 'n',
+  rhs = function()
+    local picker = Snacks.picker
+    picker.git_diff()
+  end,
+})
+
+Utils.Keymap('File', {
+  lhs = '<Leader>glf',
+  mode = 'n',
+  rhs = function()
+    local picker = Snacks.picker
+    picker.git_log_file()
+  end,
+})
+
+Utils.Keymap('Line', {
+  lhs = '<Leader>gll',
+  mode = 'n',
+  rhs = function()
+    local picker = Snacks.picker
+    picker.git_log_line()
+  end,
+})
+
+Utils.Keymap('Repo', {
+  lhs = '<Leader>glr',
   mode = 'n',
   rhs = function()
     local picker = Snacks.picker
@@ -232,7 +289,7 @@ Utils.Keymap('Git log', {
   end,
 })
 
-Utils.Keymap('Git status', {
+Utils.Keymap('Status', {
   lhs = '<Leader>gs',
   mode = 'n',
   rhs = function()
@@ -241,7 +298,11 @@ Utils.Keymap('Git status', {
   end,
 })
 
-Utils.Keymap('LSP code actions', {
+---
+--- [L]sp keymaps
+---
+
+Utils.Keymap('Actions', {
   lhs = '<Leader>la',
   mode = 'n',
   rhs = function()
@@ -250,7 +311,7 @@ Utils.Keymap('LSP code actions', {
   end,
 })
 
-Utils.Keymap('LSP hover (eval) expression', {
+Utils.Keymap('Eval', {
   lhs = '<Leader>le',
   mode = 'n',
   rhs = function()
@@ -259,7 +320,7 @@ Utils.Keymap('LSP hover (eval) expression', {
   end,
 })
 
-Utils.Keymap('LSP signature help', {
+Utils.Keymap('Help', {
   lhs = '<Leader>lh',
   mode = 'n',
   rhs = function()
@@ -268,26 +329,8 @@ Utils.Keymap('LSP signature help', {
   end,
 })
 
-Utils.Keymap('Next LSP diagnostic', {
-  lhs = '<Leader>lj',
-  mode = 'n',
-  rhs = function()
-    local diagnostic = vim.diagnostic
-    diagnostic.goto_next()
-  end,
-})
-
-Utils.Keymap('Previous LSP diagnostic', {
-  lhs = '<Leader>lk',
-  mode = 'n',
-  rhs = function()
-    local diagnostic = vim.diagnostic
-    diagnostic.goto_prev()
-  end,
-})
-
-Utils.Keymap('Inspect LSP diagnostic', {
-  lhs = '<Leader>ll',
+Utils.Keymap('Eval Error', {
+  lhs = '<Leader>lE',
   mode = 'n',
   rhs = function()
     local diagnostic = vim.diagnostic
@@ -295,8 +338,8 @@ Utils.Keymap('Inspect LSP diagnostic', {
   end,
 })
 
-Utils.Keymap('Rename LSP symbol under cursor', {
-  lhs = '<Leader>ln',
+Utils.Keymap('Rename', {
+  lhs = '<Leader>lR',
   mode = 'n',
   rhs = function()
     local lsp = vim.lsp.buf
@@ -304,7 +347,7 @@ Utils.Keymap('Rename LSP symbol under cursor', {
   end,
 })
 
-Utils.Keymap('Go to definition', {
+Utils.Keymap('Definition', {
   lhs = '<Leader>ld',
   mode = 'n',
   rhs = function()
@@ -317,7 +360,7 @@ Utils.Keymap('Go to definition', {
   end,
 })
 
-Utils.Keymap('Go to implementation', {
+Utils.Keymap('Implementation', {
   lhs = '<Leader>li',
   mode = 'n',
   rhs = function()
@@ -330,7 +373,7 @@ Utils.Keymap('Go to implementation', {
   end,
 })
 
-Utils.Keymap('Go to references', {
+Utils.Keymap('References', {
   lhs = '<Leader>lr',
   mode = 'n',
   nowait = true,
@@ -345,7 +388,7 @@ Utils.Keymap('Go to references', {
   end,
 })
 
-Utils.Keymap('List LSP symbols', {
+Utils.Keymap('Symbols', {
   lhs = '<Leader>ls',
   mode = 'n',
   rhs = function()
@@ -354,7 +397,7 @@ Utils.Keymap('List LSP symbols', {
   end,
 })
 
-Utils.Keymap('List LSP workspace symbols', {
+Utils.Keymap('Symbols (Project)', {
   lhs = '<Leader>lS',
   mode = 'n',
   rhs = function()
@@ -363,8 +406,8 @@ Utils.Keymap('List LSP workspace symbols', {
   end,
 })
 
-Utils.Keymap('List LSP diagnostics', {
-  lhs = '<Leader>lx',
+Utils.Keymap('Diagnostics', {
+  lhs = '<Leader>lD',
   mode = 'n',
   rhs = function()
     local picker = Snacks.picker
@@ -372,8 +415,8 @@ Utils.Keymap('List LSP diagnostics', {
   end,
 })
 
-Utils.Keymap('Go to type definition', {
-  lhs = '<Leader>ly',
+Utils.Keymap('Type definition', {
+  lhs = '<Leader>lt',
   mode = 'n',
   rhs = function()
     local picker = Snacks.picker
@@ -385,8 +428,12 @@ Utils.Keymap('Go to type definition', {
   end,
 })
 
-Utils.Keymap('Inspect notification history', {
-  lhs = '<Leader>nn',
+---
+--- [N]otifications keymaps
+---
+
+Utils.Keymap('History', {
+  lhs = '<Leader>nh',
   mode = 'n',
   rhs = function()
     local notifier = Snacks.notifier
@@ -394,7 +441,7 @@ Utils.Keymap('Inspect notification history', {
   end,
 })
 
-Utils.Keymap('Clear all notifications', {
+Utils.Keymap('Clear', {
   lhs = '<Leader>nc',
   mode = 'n',
   rhs = function()

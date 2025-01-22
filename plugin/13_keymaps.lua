@@ -52,6 +52,15 @@ Utils.Keymap('Clear highlight', {
   rhs = '<Esc><Cmd>nohl<CR><Esc>',
 })
 
+Utils.Keymap('Better Esc', {
+  mode = { 'n', 'i', 'x', 'o', 't', 'c' },
+  lhs = '<C-e>',
+  rhs = function()
+    local code_esc = vim.api.nvim_replace_termcodes('<Esc>', true, true, true)
+    vim.api.nvim_feedkeys(code_esc, 'm', false)
+  end,
+})
+
 Utils.Keymap('Window left', {
   lhs = '<C-h>',
   rhs = '<C-w>h',

@@ -1,5 +1,7 @@
 vim.cmd('setlocal colorcolumn=89')
 
+Snacks.indent.enable()
+
 Utils.Keymap('Debug python class', {
   desc = 'Debug python class',
   lhs = '<Leader>dpc',
