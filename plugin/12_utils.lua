@@ -101,7 +101,7 @@ Utils.servers = {
   basedpyright = {
     settings = {
       basedpyright = {
-        typeCheckingMode = 'basic', -- Options: "off", "basic", "strict"
+        typeCheckingMode = 'strict', -- Options: "off", "basic", "strict"
       },
     },
   },
@@ -347,6 +347,15 @@ Utils.qol = {
       file = {
         filename_first = true,
       },
+    },
+    win = {
+      input = {
+        keys = {
+          ['yy'] = 'copy',
+          ['<c-y>'] = { 'copy', mode = { 'n', 'i' } },
+        },
+      },
+      list = { keys = { ['yy'] = 'copy' } },
     },
   },
 }

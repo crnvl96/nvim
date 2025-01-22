@@ -118,15 +118,6 @@ Utils.Keymap('Terminate current DAP session', {
   end,
 })
 
-Utils.Keymap('Toggle git diff overlay (mini.diff)', {
-  lhs = '<Leader>go',
-  mode = 'n',
-  rhs = function()
-    local minidiff = MiniDiff
-    minidiff.toggle_overlay()
-  end,
-})
-
 Utils.Keymap('Goto last edited buffer', {
   lhs = '<Leader>bb',
   mode = 'n',
@@ -220,15 +211,6 @@ Utils.Keymap('List all pickers', {
   rhs = function()
     local picker = Snacks.picker
     picker.pickers()
-  end,
-})
-
-Utils.Keymap('Find in quickfix list', {
-  lhs = '<Leader>fx',
-  mode = 'n',
-  rhs = function()
-    local picker = Snacks.picker
-    picker.qflist()
   end,
 })
 
@@ -327,7 +309,11 @@ Utils.Keymap('Go to definition', {
   mode = 'n',
   rhs = function()
     local picker = Snacks.picker
-    picker.lsp_definitions()
+    picker.lsp_definitions({
+      include_current = true,
+      auto_confirm = false,
+      jump = { reuse_win = false },
+    })
   end,
 })
 
@@ -336,7 +322,11 @@ Utils.Keymap('Go to implementation', {
   mode = 'n',
   rhs = function()
     local picker = Snacks.picker
-    picker.lsp_implementations()
+    picker.lsp_implementations({
+      include_current = true,
+      auto_confirm = false,
+      jump = { reuse_win = false },
+    })
   end,
 })
 
@@ -346,7 +336,12 @@ Utils.Keymap('Go to references', {
   nowait = true,
   rhs = function()
     local picker = Snacks.picker
-    picker.lsp_references()
+    picker.lsp_references({
+      include_declaration = true,
+      include_current = true,
+      auto_confirm = false,
+      jump = { reuse_win = false },
+    })
   end,
 })
 
@@ -356,6 +351,15 @@ Utils.Keymap('List LSP symbols', {
   rhs = function()
     local picker = Snacks.picker
     picker.lsp_symbols()
+  end,
+})
+
+Utils.Keymap('List LSP workspace symbols', {
+  lhs = '<Leader>lS',
+  mode = 'n',
+  rhs = function()
+    local picker = Snacks.picker
+    picker.lsp_workspace_symbols()
   end,
 })
 
@@ -373,7 +377,11 @@ Utils.Keymap('Go to type definition', {
   mode = 'n',
   rhs = function()
     local picker = Snacks.picker
-    picker.lsp_type_definitions()
+    picker.lsp_type_definitions({
+      include_current = true,
+      auto_confirm = false,
+      jump = { reuse_win = false },
+    })
   end,
 })
 
@@ -393,82 +401,4 @@ Utils.Keymap('Clear all notifications', {
     local notifier = Snacks.notifier
     notifier.hide()
   end,
-})
-
-Utils.Keymap('Start Aider', {
-  lhs = '<Leader>as',
-  mode = 'n',
-  rhs = '<Plug>(REPLStart-aider)',
-})
-
-Utils.Keymap('Toggle Aider', {
-  lhs = '<Leader>at',
-  mode = 'n',
-  rhs = '<Plug>(REPLHideOrFocus-aider)',
-})
-
-Utils.Keymap('Send visual to Aider', {
-  lhs = '<Leader>av',
-  mode = 'v',
-  rhs = '<Plug>(REPLSendVisual-aider)',
-})
-
-Utils.Keymap('Exec in Aider', {
-  lhs = '<Leader>ae',
-  mode = 'n',
-  rhs = '<Plug>(AiderExec)',
-})
-
-Utils.Keymap('Send yes to Aider', {
-  lhs = '<Leader>ay',
-  mode = 'n',
-  rhs = '<Plug>(AiderSendYes)',
-})
-
-Utils.Keymap('Send no to Aider', {
-  lhs = '<Leader>an',
-  mode = 'n',
-  rhs = '<Plug>(AiderSendNo)',
-})
-
-Utils.Keymap('Send abort to Aider', {
-  lhs = '<Leader>aa',
-  mode = 'n',
-  rhs = '<Plug>(AiderSendAbort)',
-})
-
-Utils.Keymap('Send exit to Aider', {
-  lhs = '<Leader>aq',
-  mode = 'n',
-  rhs = '<Plug>(AiderSendExit)',
-})
-
-Utils.Keymap('Send clear to Aider', {
-  lhs = '<Leader>ac',
-  mode = 'n',
-  rhs = '<Plug>(AiderSendClear)',
-})
-
-Utils.Keymap('Change Aider to ask mode', {
-  lhs = '<Leader>ama',
-  mode = 'n',
-  rhs = '<Plug>(AiderSendAskMode)',
-})
-
-Utils.Keymap('Change Aider to arch mode', {
-  lhs = '<Leader>amA',
-  mode = 'n',
-  rhs = '<Plug>(AiderSendArchMode)',
-})
-
-Utils.Keymap('Change Aider to code mode', {
-  lhs = '<Leader>amc',
-  mode = 'n',
-  rhs = '<Plug>(AiderSendCodeMode)',
-})
-
-Utils.Keymap('Sync buffer with Aider changes', {
-  lhs = '<Leader>a<Space>',
-  mode = 'n',
-  rhs = '<Cmd>checktime<CR>',
 })
