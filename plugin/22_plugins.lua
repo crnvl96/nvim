@@ -111,6 +111,9 @@ require('conform').setup({
     typescriptreact = { 'prettierd' },
     json = { 'prettierd' },
     jsonc = { 'prettierd' },
+    yaml = { 'yamlfmt' },
+    yml = { 'yamlfmt' },
+    toml = { 'taplo' },
     markdown = { 'prettierd', 'injected' },
     python = { 'ruff_fix', 'ruff_organize_imports', 'ruff_format' },
   },
@@ -265,7 +268,7 @@ for server, config in pairs({
     cmd_env = { RUFF_TRACE = 'messages' },
     init_options = {
       settings = {
-        logLevel = 'error',
+        logLevel = 'debug',
       },
     },
   },
@@ -274,7 +277,9 @@ for server, config in pairs({
       basedpyright = {
         disableOrganizeImports = true,
         analysis = {
-          typeCheckingMode = 'strict', -- Options: "off", "basic", "strict"
+          autoSearchPaths = true,
+          diagnosticMode = 'openFilesOnly',
+          useLibraryCodeForTypes = true,
         },
       },
     },

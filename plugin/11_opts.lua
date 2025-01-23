@@ -56,10 +56,7 @@ vim.o.writebackup = false
 vim.opt.fillchars:append('eob: ')
 
 vim.diagnostic.config({
-  float = { border = 'rounded' },
-  signs = { priority = 9999, severity = { min = 'WARN', max = 'ERROR' } },
-  virtual_text = { severity = { min = 'ERROR', max = 'ERROR' } },
-  update_in_insert = false,
+  float = { border = 'rounded', source = true },
 })
 
 if vim.fn.exists('syntax_on') ~= 1 then vim.cmd('syntax enable') end
