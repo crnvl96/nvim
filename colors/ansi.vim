@@ -48,9 +48,9 @@ hi helpLeadBlank ctermbg=NONE ctermfg=NONE
 hi helpNormal ctermbg=NONE ctermfg=NONE
 hi Visual ctermbg=8 ctermfg=15 cterm=bold
 hi VisualNOS ctermbg=8 ctermfg=15 cterm=bold
-hi Pmenu ctermbg=0 ctermfg=15
+hi Pmenu ctermbg=15 ctermfg=0
 hi PmenuSbar ctermbg=8 ctermfg=7
-hi PmenuSel ctermbg=8 ctermfg=15 cterm=bold
+hi PmenuSel ctermbg=15 ctermfg=8 cterm=bold
 hi PmenuThumb ctermbg=7 ctermfg=NONE
 hi FoldColumn ctermfg=7
 hi Folded ctermfg=12
