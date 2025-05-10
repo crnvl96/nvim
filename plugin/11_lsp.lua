@@ -78,58 +78,6 @@ local function on_attach(client, bufnr)
   set('gS', vim.lsp.buf.workspace_symbol)
   set('<C-k>', vim.lsp.buf.signature_help, {}, 'i')
 
-  if client:supports_method(methods.textDocument_completion) then
-    local trigger = client.server_capabilities.completionProvider
-    trigger.triggerCharacters = vim.split('abcdefghijklmnopqrstuvwxyz:.', '')
-
-    vim.lsp.completion.enable(true, client.id, bufnr, { autotrigger = true })
-
-    set(
-      '<CR>',
-      function() return pumvisible() and '<C-y>' or '<cr>' end,
-      { expr = true },
-      'i'
-    )
-    set('<C-n>', function() feedkeys('<Tab>', 't') end, {}, 'c')
-    set('<C-p>', function() feedkeys('<S-Tab>', 't') end, {}, 'c')
-    set('<C-u>', '<C-x><C-n>', {}, 'i')
-    set(
-      '<C-Space>',
-      function() return pumvisible() and '<C-e>' or vim.lsp.completion.get() end,
-      { expr = true },
-      'i'
-    )
-    set(
-      '<C-n>',
-      function() return pumvisible() and feedkeys '<C-n>' or vim.lsp.completion.get() end,
-      { expr = true },
-      'i'
-    )
-    set(
-      '<C-p>',
-      function() return pumvisible() and feedkeys '<C-p>' or vim.lsp.completion.get() end,
-      { expr = true },
-      'i'
-    )
-    set('<Tab>', function()
-      if pumvisible() then
-        feedkeys '<C-n>'
-      else
-        feedkeys '<Tab>'
-      end
-    end, {}, { 'i', 's' })
-    set('<S-Tab>', function()
-      if pumvisible() then
-        feedkeys '<C-p>'
-      else
-        feedkeys '<S-Tab>'
-      end
-    end, {}, { 'i', 's' })
-
-    vim.opt.completeopt:append 'fuzzy,noselect,menu,menuone,noinsert'
-    vim.opt.wildoptions:append 'fuzzy'
-  end
-
   if client:supports_method(methods.textDocument_formatting) then
     client.server_capabilities.documentFormattingProvider = true
   end
@@ -145,6 +93,58 @@ local function on_attach(client, bufnr)
     vim.wo[vim.api.nvim_get_current_win()][0].foldexpr =
       'v:lua.vim.treesitter.foldexpr()'
   end
+
+  -- if client:supports_method(methods.textDocument_completion) then
+  --   local trigger = client.server_capabilities.completionProvider
+  --   trigger.triggerCharacters = vim.split('abcdefghijklmnopqrstuvwxyz:.', '')
+  --
+  --   vim.lsp.completion.enable(true, client.id, bufnr, { autotrigger = true })
+  --
+  --   set(
+  --     '<CR>',
+  --     function() return pumvisible() and '<C-y>' or '<cr>' end,
+  --     { expr = true },
+  --     'i'
+  --   )
+  --   set('<C-n>', function() feedkeys('<Tab>', 't') end, {}, 'c')
+  --   set('<C-p>', function() feedkeys('<S-Tab>', 't') end, {}, 'c')
+  --   set('<C-u>', '<C-x><C-n>', {}, 'i')
+  --   set(
+  --     '<C-Space>',
+  --     function() return pumvisible() and '<C-e>' or vim.lsp.completion.get() end,
+  --     { expr = true },
+  --     'i'
+  --   )
+  --   set(
+  --     '<C-n>',
+  --     function() return pumvisible() and feedkeys '<C-n>' or vim.lsp.completion.get() end,
+  --     { expr = true },
+  --     'i'
+  --   )
+  --   set(
+  --     '<C-p>',
+  --     function() return pumvisible() and feedkeys '<C-p>' or vim.lsp.completion.get() end,
+  --     { expr = true },
+  --     'i'
+  --   )
+  --   set('<Tab>', function()
+  --     if pumvisible() then
+  --       feedkeys '<C-n>'
+  --     else
+  --       feedkeys '<Tab>'
+  --     end
+  --   end, {}, { 'i', 's' })
+  --   set('<S-Tab>', function()
+  --     if pumvisible() then
+  --       feedkeys '<C-p>'
+  --     else
+  --       feedkeys '<S-Tab>'
+  --     end
+  --   end, {}, { 'i', 's' })
+  --
+  --   vim.opt.completeopt:append 'fuzzy,noselect,menu,menuone,noinsert'
+  --   vim.opt.wildoptions:append 'fuzzy'
+  -- end
 end
 
 local signature = vim.lsp.protocol.Methods.client_registerCapability

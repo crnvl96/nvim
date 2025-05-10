@@ -8,6 +8,7 @@ end)
 require 'plugins.treesitter'
 require 'plugins.mason'
 require 'plugins.nosetup'
+require 'plugins.blink'
 require 'plugins.dap'
 require 'plugins.fzf-lua'
 require 'plugins.mini-files'

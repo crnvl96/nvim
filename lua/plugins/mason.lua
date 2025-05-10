@@ -1,5 +1,8 @@
 MiniDeps.now(function()
-  MiniDeps.add 'mason-org/mason.nvim'
+  MiniDeps.add {
+    source = 'mason-org/mason.nvim',
+    hooks = { post_checkout = function() vim.cmd 'MasonUpdate' end },
+  }
 
   local ensure_installed = {
     'stylua',
