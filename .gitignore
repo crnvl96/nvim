@@ -1,0 +1,5 @@
+# Env vars
+.env
+
+# Aider AI metadata
+.aider*

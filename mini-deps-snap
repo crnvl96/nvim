@@ -1,0 +1,17 @@
+return {
+  ["black-metal-theme-neovim"] = "f35db8273b0a417452be9ba00687bb4a71109831",
+  ["conform.nvim"] = "372fc521f8421b7830ea6db4d6ea3bae1c77548c",
+  ["fzf-lua"] = "b11467c3fbfe48e4a815e4909f5c4e5b413ce6d0",
+  ["mini.nvim"] = "90ab64f944a5a63a9efebe6735e1f2c6d4db3613",
+  ["nvim-dap"] = "8df427aeba0a06c6577dc3ab82de3076964e3b8d",
+  ["nvim-dap-ruby"] = "93cae460d1a9bced94cf7b45748351b6cddd4ab4",
+  ["nvim-dap-ui"] = "73a26abf4941aa27da59820fd6b028ebcdbcf932",
+  ["nvim-lspconfig"] = "94d0fec9135719e046903bbbbf8f39e3d3436d4e",
+  ["nvim-nio"] = "21f5324bfac14e22ba26553caf69ec76ae8a7662",
+  ["nvim-treesitter"] = "94ea4f436d2b59c80f02e293466c374584f03b8c",
+  ["plenary.nvim"] = "857c5ac632080dba10aae49dba902ce3abf91b35",
+  undotree = "b951b87b46c34356d44aa71886aecf9dd7f5788a",
+  ["vim-fugitive"] = "4a745ea72fa93bb15dd077109afbb3d1809383f2",
+  ["vim-rhubarb"] = "386daa2e9d98e23e27ad089afcbe5c5a903e488d",
+  ["vim-sleuth"] = "be69bff86754b1aa5adcbb527d7fcd1635a84080"
+}
