@@ -1,7 +1,8 @@
 local default_nodejs = vim.env.HOME .. '/.local/share/mise/installs/node/22.14.0/bin/'
+local mason_bin = vim.env.HOME .. '/.local/share/nvim/mason/bin'
 
 vim.g.node_host_prog = default_nodejs .. 'node'
-vim.env.PATH = default_nodejs .. ':' .. vim.env.PATH
+vim.env.PATH = default_nodejs .. ':' .. mason_bin .. ':' .. vim.env.PATH
 
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ','
@@ -59,42 +60,6 @@ vim.keymap.set('n', '<C-Right>', '<Cmd>vertical resize +20<CR>')
 vim.keymap.set('x', '<', '<gv')
 vim.keymap.set('x', '>', '>gv')
 vim.keymap.set('n', 'gQ', 'mzgggqG`z<cmd>delmarks z<cr>zz')
-
-vim.keymap.set(
-  { 'n', 't' },
-  '<C-t>',
-  (function()
-    local buf, win = nil, nil
-    local was_insert = true
-    local cfg = function()
-      return {
-        relative = 'editor',
-        width = math.floor(vim.o.columns * 0.8),
-        height = math.floor(vim.o.lines * 0.8),
-        row = math.floor(vim.o.lines * 0.1),
-        col = math.floor(vim.o.columns * 0.1),
-        style = 'minimal',
-        border = 'rounded',
-      }
-    end
-    return function()
-      buf = (buf and vim.api.nvim_buf_is_valid(buf)) and buf or nil
-      win = (win and vim.api.nvim_win_is_valid(win)) and win or nil
-      if not buf and not win then
-        vim.cmd 'split | terminal'
-        buf = vim.api.nvim_get_current_buf()
-        vim.api.nvim_win_close(vim.api.nvim_get_current_win(), true)
-        win = vim.api.nvim_open_win(buf, true, cfg())
-      elseif not win and buf then
-        win = vim.api.nvim_open_win(buf, true, cfg())
-      elseif win then
-        was_insert = vim.api.nvim_get_mode().mode == 't'
-        return vim.api.nvim_win_close(win, true)
-      end
-      if was_insert then vim.cmd 'startinsert' end
-    end
-  end)()
-)
 
 vim.api.nvim_create_autocmd('BufReadPost', {
   group = vim.api.nvim_create_augroup('crnvl96-restore-cursor', {}),

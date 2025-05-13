@@ -18,11 +18,16 @@ require('mini.deps').setup()
 vim.cmd 'colorscheme ansi'
 
 vim.lsp.enable {
-  'eslint',
-  'cssls',
-  'vtsls',
-  'ruff',
   'basedpyright',
+  'biome',
+  'cssls',
+  'eslint',
   'lua_ls',
-  'ruby_lsp',
+  'ruff',
+  'ts_ls',
 }
+
+require 'settings'
+require 'lsp'
+require 'plugins'
+require 'quickfix'

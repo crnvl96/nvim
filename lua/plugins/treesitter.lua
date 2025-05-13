@@ -8,6 +8,7 @@ MiniDeps.now(function()
     ensure_installed = {
       'c',
       'lua',
+      'prisma',
       'vim',
       'vimdoc',
       'query',

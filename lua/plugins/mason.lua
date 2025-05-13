@@ -8,13 +8,13 @@ MiniDeps.now(function()
     'stylua',
     'prettier',
     'ruff',
-    'rubocop',
     'css-lsp',
     'eslint-lsp',
     'basedpyright',
     'lua-language-server',
     'vtsls',
-    'ruby-lsp',
+    'biome',
+    'typescript-language-server',
   }
 
   require('mason').setup()

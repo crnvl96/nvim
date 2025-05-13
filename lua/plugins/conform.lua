@@ -17,14 +17,10 @@ MiniDeps.later(function()
       json = { 'prettier' },
       markdown = { 'prettier', 'injected' },
       python = { 'ruff_fix', 'ruff_organize_imports', 'ruff_format' },
-
       typescript = { 'prettier' },
       typescriptreact = { 'prettier' },
       css = { 'prettier' },
       javascript = { 'prettier' },
-
-      ruby = { 'rubocop' },
-      eruby = { 'rubocop' },
     },
     format_on_save = function()
       return vim.g.conform and { timeout_ms = 3000, lsp_format = 'fallback' }
