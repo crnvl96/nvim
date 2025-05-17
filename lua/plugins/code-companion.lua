@@ -86,7 +86,7 @@ MiniDeps.later(function()
   require('codecompanion').setup {
     strategies = {
       chat = {
-        adapter = 'anthropic',
+        adapter = 'xai',
         keymaps = {
           completion = {
             modes = {
