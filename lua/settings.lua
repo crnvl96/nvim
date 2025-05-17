@@ -14,8 +14,8 @@ vim.g.loaded_node_provider = 0
 vim.g.loaded_netrwPlugin = 1
 vim.g.loaded_netrw = 1
 
-vim.o.guicursor = ''
 vim.o.scrolloff = 8
+vim.o.laststatus = 0
 vim.o.wrap = false
 vim.o.ignorecase = true
 vim.o.wildignorecase = true
