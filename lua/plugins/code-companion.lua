@@ -38,7 +38,7 @@ MiniDeps.later(function()
         console = 'https://platform.openai.com/settings/organization/api-keys',
         model_list = 'https://platform.openai.com/docs/models',
       },
-      active_model = 'gpt-4.1',
+      active_model = 'o3-2025-04-16',
       api_key = retrieve_llm_key 'OPENAI_API_KEY',
     },
     anthropic = {

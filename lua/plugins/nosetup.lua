@@ -3,6 +3,7 @@ MiniDeps.later(function()
   MiniDeps.add 'tpope/vim-dadbod'
   MiniDeps.add 'kristijanhusak/vim-dadbod-ui'
   MiniDeps.add 'tpope/vim-fugitive'
+  MiniDeps.add 'tpope/vim-sleuth'
   MiniDeps.add 'tpope/vim-rhubarb'
   MiniDeps.add 'tpope/vim-sleuth'
   MiniDeps.add 'mbbill/undotree'

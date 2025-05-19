@@ -15,15 +15,15 @@ end
 
 require('mini.deps').setup()
 
-vim.lsp.enable {
-  'basedpyright',
-  'biome',
-  'cssls',
-  'eslint',
-  'lua_ls',
-  'ruff',
-  'ts_ls',
-}
+local lsp_dir = vim.fn.stdpath 'config' .. '/lsp'
+local lsp_servers = {}
+
+for _, file in ipairs(vim.fn.glob(lsp_dir .. '/*.lua', true, true)) do
+  local server_name = vim.fn.fnamemodify(file, ':t:r')
+  table.insert(lsp_servers, server_name)
+end
+
+vim.lsp.enable(lsp_servers)
 
 require 'settings'
 require 'lsp'
