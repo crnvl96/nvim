@@ -46,7 +46,7 @@ MiniDeps.later(function()
         console = 'https://console.anthropic.com/dashboard',
         model_list = 'https://docs.anthropic.com/en/docs/about-claude/models/all-models',
       },
-      active_model = 'claude-3-7-sonnet-20250219',
+      active_model = 'claude-opus-4-20250514',
       api_key = retrieve_llm_key 'ANTHROPIC_API_KEY',
     },
     gemini = {
@@ -70,7 +70,7 @@ MiniDeps.later(function()
         console = 'https://console.x.ai/team/bfc3c115-d34f-4d5c-b52e-9d10a63ecfa8',
         model_list = 'https://console.x.ai/team/bfc3c115-d34f-4d5c-b52e-9d10a63ecfa8/models',
       },
-      active_model = 'grok-3-beta',
+      active_model = 'grok-3',
       api_key = retrieve_llm_key 'XAI_API_KEY',
     },
     venice = {

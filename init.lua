@@ -17,10 +17,13 @@ require('mini.deps').setup()
 
 local lsp_dir = vim.fn.stdpath 'config' .. '/lsp'
 local lsp_servers = {}
+local excluded_servers = { 'ruff', 'basedpyright' }
 
 for _, file in ipairs(vim.fn.glob(lsp_dir .. '/*.lua', true, true)) do
   local server_name = vim.fn.fnamemodify(file, ':t:r')
-  table.insert(lsp_servers, server_name)
+  if not vim.tbl_contains(excluded_servers, server_name) then
+    table.insert(lsp_servers, server_name)
+  end
 end
 
 vim.lsp.enable(lsp_servers)
