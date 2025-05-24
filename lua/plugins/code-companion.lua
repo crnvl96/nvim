@@ -34,6 +34,7 @@ MiniDeps.later(function()
 
   local llms = {
     openai = {
+      name = 'openai',
       metadata = {
         console = 'https://platform.openai.com/settings/organization/api-keys',
         model_list = 'https://platform.openai.com/docs/models',
@@ -42,6 +43,7 @@ MiniDeps.later(function()
       api_key = retrieve_llm_key 'OPENAI_API_KEY',
     },
     anthropic = {
+      name = 'anthropic',
       metadata = {
         console = 'https://console.anthropic.com/dashboard',
         model_list = 'https://docs.anthropic.com/en/docs/about-claude/models/all-models',
@@ -50,6 +52,7 @@ MiniDeps.later(function()
       api_key = retrieve_llm_key 'ANTHROPIC_API_KEY',
     },
     gemini = {
+      name = 'gemini',
       metadata = {
         console = 'https://aistudio.google.com/apikey',
         model_list = 'https://ai.google.dev/gemini-api/docs/models',
@@ -58,6 +61,7 @@ MiniDeps.later(function()
       api_key = retrieve_llm_key 'GEMINI_API_KEY',
     },
     deepseek = {
+      name = 'deepseek',
       metadata = {
         console = 'https://platform.deepseek.com/usage',
         model_list = 'https://api-docs.deepseek.com/quick_start/pricing',
@@ -66,6 +70,7 @@ MiniDeps.later(function()
       api_key = retrieve_llm_key 'DEEPSEEK_API_KEY',
     },
     xai = {
+      name = 'xai',
       metadata = {
         console = 'https://console.x.ai/team/bfc3c115-d34f-4d5c-b52e-9d10a63ecfa8',
         model_list = 'https://console.x.ai/team/bfc3c115-d34f-4d5c-b52e-9d10a63ecfa8/models',
@@ -74,6 +79,7 @@ MiniDeps.later(function()
       api_key = retrieve_llm_key 'XAI_API_KEY',
     },
     venice = {
+      name = 'venice',
       metadata = {
         console = 'https://venice.ai/settings/api',
         model_list = 'https://docs.venice.ai/api-reference/endpoint/models/list?playground=open',
@@ -86,7 +92,7 @@ MiniDeps.later(function()
   require('codecompanion').setup {
     strategies = {
       chat = {
-        adapter = 'xai',
+        adapter = llms.xai.name,
         keymaps = {
           completion = {
             modes = {

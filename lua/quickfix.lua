@@ -70,8 +70,6 @@ end
 
 vim.o.quickfixtextfunc = 'v:lua.require\'quickfix\'.quickfix_text'
 
----------------------------------------------------------------------------------------------
-
 local function add_virt_lines()
   if vim.bo[0].buftype ~= 'quickfix' then return end
   local list = vim.fn.getqflist { id = 0, winid = 1, qfbufnr = 1, items = 1 }
@@ -96,11 +94,9 @@ vim.api.nvim_create_autocmd('BufReadPost', {
   callback = add_virt_lines,
 })
 
----------------------------------------------------------------------------------------------
-
 -- workaround for:
---      cannot scroll to see virtual line before first line
---      see https://github.com/neovim/neovim/issues/16166
+-- cannot scroll to see virtual line before first line
+-- see https://github.com/neovim/neovim/issues/16166
 local function scrollup()
   local row = unpack(vim.api.nvim_win_get_cursor(0))
   if row == 1 then

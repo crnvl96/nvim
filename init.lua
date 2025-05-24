@@ -16,9 +16,9 @@ end
 require('mini.deps').setup()
 
 local lsp_dir = vim.fn.stdpath 'config' .. '/lsp'
-local lsp_servers = {}
-local excluded_servers = { 'ruff', 'basedpyright' }
+local excluded_servers = { 'basedpyright', 'pyrefly' }
 
+local lsp_servers = {}
 for _, file in ipairs(vim.fn.glob(lsp_dir .. '/*.lua', true, true)) do
   local server_name = vim.fn.fnamemodify(file, ':t:r')
   if not vim.tbl_contains(excluded_servers, server_name) then
@@ -32,3 +32,4 @@ require 'settings'
 require 'lsp'
 require 'plugins'
 require 'quickfix'
+require 'marks'

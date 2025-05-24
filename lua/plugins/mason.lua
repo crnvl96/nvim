@@ -15,6 +15,8 @@ MiniDeps.now(function()
     'vtsls',
     'biome',
     'typescript-language-server',
+    'pyrefly',
+    'pyright',
   }
 
   require('mason').setup()

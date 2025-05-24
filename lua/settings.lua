@@ -1,8 +1,7 @@
 local default_nodejs = vim.env.HOME .. '/.local/share/mise/installs/node/22.14.0/bin/'
-local mason_bin = vim.env.HOME .. '/.local/share/nvim/mason/bin'
 
 vim.g.node_host_prog = default_nodejs .. 'node'
-vim.env.PATH = default_nodejs .. ':' .. mason_bin .. ':' .. vim.env.PATH
+vim.env.PATH = default_nodejs .. ':' .. vim.env.PATH
 
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ','
@@ -15,7 +14,9 @@ vim.g.loaded_netrwPlugin = 1
 vim.g.loaded_netrw = 1
 
 vim.o.scrolloff = 8
-vim.o.laststatus = 0
+vim.o.shiftwidth = 4
+vim.o.tabstop = 4
+vim.o.laststatus = 2
 vim.o.wrap = false
 vim.o.ignorecase = true
 vim.o.wildignorecase = true
@@ -59,7 +60,6 @@ vim.keymap.set('n', '<C-Left>', '<Cmd>vertical resize -20<CR>')
 vim.keymap.set('n', '<C-Right>', '<Cmd>vertical resize +20<CR>')
 vim.keymap.set('x', '<', '<gv')
 vim.keymap.set('x', '>', '>gv')
-vim.keymap.set('n', 'gQ', 'mzgggqG`z<cmd>delmarks z<cr>zz')
 
 vim.api.nvim_create_autocmd('BufReadPost', {
   group = vim.api.nvim_create_augroup('crnvl96-restore-cursor', {}),

@@ -1,47 +1,9 @@
 local methods = vim.lsp.protocol.Methods
 
-local diagnostic_icons = {
-  ERROR = 'E',
-  WARN = 'W',
-  HINT = 'H',
-  INFO = 'I',
-}
-
 vim.diagnostic.config {
-  virtual_text = {
-    prefix = '',
-    spacing = 2,
-    format = function(diagnostic)
-      local special_sources = {
-        ['Lua Diagnostics.'] = 'lua',
-        ['Lua Syntax Check.'] = 'lua',
-      }
-
-      local message = diagnostic_icons[vim.diagnostic.severity[diagnostic.severity]]
-
-      if diagnostic.source then
-        message = string.format(
-          '%s %s',
-          message,
-          special_sources[diagnostic.source] or diagnostic.source
-        )
-      end
-
-      if diagnostic.code then
-        message = string.format('%s[%s]', message, diagnostic.code)
-      end
-
-      return message .. ' '
-    end,
-  },
-  float = {
-    source = 'if_many',
-    prefix = function(diag)
-      local level = vim.diagnostic.severity[diag.severity]
-      local prefix = string.format(' %s ', diagnostic_icons[level])
-      return prefix, 'Diagnostic' .. level:gsub('^%l', string.upper)
-    end,
-  },
+  virtual_text = false,
+  virtual_lines = true,
+  float = true,
   signs = false,
 }
 
@@ -68,30 +30,39 @@ local function on_attach(client, bufnr)
   set('gS', vim.lsp.buf.workspace_symbol)
   set('<C-k>', vim.lsp.buf.signature_help, {}, 'i')
 
+  if client:supports_method(methods.textDocument_inlayHint) then
+    local toggle = function()
+      local enabled = vim.lsp.inlay_hint.is_enabled()
+      vim.lsp.inlay_hint.enable(not enabled)
+      vim.notify(
+        enabled and 'Enabled' or 'Disabled' .. ' inlay hints.',
+        vim.log.levels.INFO
+      )
+    end
+
+    set('g=', toggle)
+  end
+
   if client:supports_method(methods.textDocument_formatting) then
     client.server_capabilities.documentFormattingProvider = true
   end
 
   if client:supports_method(methods.textDocument_documentColor) then
-    local enable = true
-    vim.lsp.document_color.enable(enable, bufnr)
+    vim.lsp.document_color.enable(true, bufnr)
   end
 
+  local win = vim.api.nvim_get_current_win()
+
   if client:supports_method(methods.textDocument_foldingRange) then
-    vim.wo[vim.api.nvim_get_current_win()][0].foldexpr = 'v:lua.vim.lsp.foldexpr()'
+    vim.wo[win][0].foldexpr = 'v:lua.vim.lsp.foldexpr()'
   else
-    vim.wo[vim.api.nvim_get_current_win()][0].foldexpr =
-      'v:lua.vim.treesitter.foldexpr()'
+    vim.wo[win][0].foldexpr = 'v:lua.vim.treesitter.foldexpr()'
   end
 end
 
 local signature = vim.lsp.protocol.Methods.client_registerCapability
 local register_capability = vim.lsp.handlers[signature]
-vim.lsp.handlers[vim.lsp.protocol.Methods.client_registerCapability] = function(
-  err,
-  res,
-  ctx
-)
+vim.lsp.handlers[methods.client_registerCapability] = function(err, res, ctx)
   local client = vim.lsp.get_client_by_id(ctx.client_id)
   if not client then return end
   on_attach(client, vim.api.nvim_get_current_buf())

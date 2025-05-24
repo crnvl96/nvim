@@ -16,7 +16,7 @@ MiniDeps.later(function()
       lua = { 'stylua' },
       json = { 'prettier' },
       markdown = { 'prettier', 'injected' },
-      -- python = { 'ruff_fix', 'ruff_organize_imports', 'ruff_format' },
+      python = { 'ruff_fix', 'ruff_organize_imports', 'ruff_format' },
       typescript = { 'prettier' },
       typescriptreact = { 'prettier' },
       css = { 'prettier' },

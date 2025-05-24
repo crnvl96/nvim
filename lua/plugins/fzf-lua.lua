@@ -33,13 +33,7 @@ MiniDeps.later(function()
     },
   }
 
-  vim.ui.select = function(items, opts, on_choice)
-    if not require('fzf-lua.providers.ui_select').is_registered() then
-      require('fzf-lua.providers.ui_select').register()
-    end
-
-    if #items > 0 then return vim.ui.select(items, opts, on_choice) end
-  end
+  require('fzf-lua').register_ui_select()
 
   vim.keymap.set('n', '<Leader>f', function() require('fzf-lua').files() end)
   vim.keymap.set('n', '<Leader>l', function() require('fzf-lua').blines() end)
