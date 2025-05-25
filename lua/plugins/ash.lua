@@ -1,17 +1,7 @@
 MiniDeps.now(function()
-  MiniDeps.add 'drewxs/ash.nvim'
+  MiniDeps.add 'vague2k/vague.nvim'
 
-  require('ash').setup {
-    transparent = true,
-    highlights = function(colors)
-      return {
-        LineNr = { fg = colors.text },
-        CursorLineNr = { fg = colors.text },
-        LineNrAbove = { fg = colors.text },
-        LineNrBelow = { fg = colors.text },
-      }
-    end,
-  }
+  require('vague').setup { transparent = true }
 
-  vim.cmd [[colorscheme ash]]
+  vim.cmd.colorscheme 'vague'
 end)
