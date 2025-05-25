@@ -1,4 +1,4 @@
-local default_nodejs = vim.env.HOME .. '/.local/share/mise/installs/node/22.14.0/bin/'
+local default_nodejs = vim.env.HOME .. '/.local/share/mise/installs/node/23.11.1/bin/'
 
 vim.g.node_host_prog = default_nodejs .. 'node'
 vim.env.PATH = default_nodejs .. ':' .. vim.env.PATH
@@ -13,6 +13,7 @@ vim.g.loaded_node_provider = 0
 vim.g.loaded_netrwPlugin = 1
 vim.g.loaded_netrw = 1
 
+vim.o.background = 'dark'
 vim.o.scrolloff = 8
 vim.o.shiftwidth = 4
 vim.o.tabstop = 4
