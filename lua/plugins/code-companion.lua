@@ -41,6 +41,10 @@ MiniDeps.later(function()
       },
       active_model = 'o3-2025-04-16',
       api_key = retrieve_llm_key 'OPENAI_API_KEY',
+      choices = {
+        ['o3-2025-04-16'] = { opts = { has_vision = true, can_reason = false } },
+        ['gpt-4.1'] = { opts = { has_vision = true } },
+      },
     },
     anthropic = {
       name = 'anthropic',
@@ -50,6 +54,14 @@ MiniDeps.later(function()
       },
       active_model = 'claude-opus-4-20250514',
       api_key = retrieve_llm_key 'ANTHROPIC_API_KEY',
+      choices = {
+        ['claude-opus-4-20250514'] = {
+          opts = { can_reason = false, has_vision = true },
+        },
+        ['claude-sonnet-4-20250514'] = {
+          opts = { can_reason = false, has_vision = true },
+        },
+      },
     },
     gemini = {
       name = 'gemini',
@@ -59,6 +71,11 @@ MiniDeps.later(function()
       },
       active_model = 'gemini-2.5-pro-preview-05-06',
       api_key = retrieve_llm_key 'GEMINI_API_KEY',
+      choices = {
+        ['gemini-2.5-pro-preview-05-06'] = {
+          opts = { can_reason = false, has_vision = true },
+        },
+      },
     },
     deepseek = {
       name = 'deepseek',

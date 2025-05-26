@@ -13,7 +13,6 @@ vim.g.loaded_node_provider = 0
 vim.g.loaded_netrwPlugin = 1
 vim.g.loaded_netrw = 1
 
-vim.o.background = 'dark'
 vim.o.scrolloff = 8
 vim.o.shiftwidth = 4
 vim.o.tabstop = 4

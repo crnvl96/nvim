@@ -15,6 +15,8 @@ end
 
 require('mini.deps').setup()
 
+vim.cmd.colorscheme 'ansi'
+
 local lsp_dir = vim.fn.stdpath 'config' .. '/lsp'
 local excluded_servers = { 'basedpyright', 'pyrefly' }
 
