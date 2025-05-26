@@ -92,7 +92,7 @@ MiniDeps.later(function()
   require('codecompanion').setup {
     strategies = {
       chat = {
-        adapter = llms.xai.name,
+        adapter = llms.anthropic.name,
         keymaps = {
           completion = {
             modes = {

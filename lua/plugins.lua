@@ -18,6 +18,7 @@ MiniDeps.now(function()
   MiniDeps.add 'christoomey/vim-tmux-navigator'
 end)
 
+require 'plugins.colorscheme'
 require 'plugins.treesitter'
 require 'plugins.mason'
 require 'plugins.blink'
