@@ -24,7 +24,7 @@ MiniDeps.later(function()
   MiniDeps.add 'olimorris/codecompanion.nvim'
 
   require('mcphub').setup {
-    config = vim.fn.expand '~/.config/nvim/mcphub/servers.json',
+    config = vim.fn.expand '~/.config/nvim/mcp-servers.json',
   }
 
   local function retrieve_llm_key(key_name)
