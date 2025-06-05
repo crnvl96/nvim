@@ -1,11 +1,7 @@
 {
   "mcpServers": {
-    "fetch": {
-      "command": "uvx",
-      "args": ["mcp-server-fetch"]
-    },
-    "remote-server": {
-      "url": "https://api.example.com/mcp"
+    "context7": {
+      "url": "https://mcp.context7.com/mcp"
     }
   }
 }
