@@ -13,7 +13,10 @@ vim.g.loaded_node_provider = 0
 vim.g.loaded_netrwPlugin = 1
 vim.g.loaded_netrw = 1
 
+vim.o.guicursor = ''
 vim.o.scrolloff = 8
+vim.o.sidescrolloff = 24
+vim.o.wrap = false
 vim.o.shiftwidth = 4
 vim.o.tabstop = 4
 vim.o.laststatus = 2
