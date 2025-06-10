@@ -36,5 +36,3 @@ vim.lsp.enable(lsp_servers)
 require 'settings'
 require 'lsp'
 require 'plugins'
-require 'quickfix'
-require 'marks'
