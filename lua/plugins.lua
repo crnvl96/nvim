@@ -2,11 +2,6 @@ MiniDeps.now(function()
   MiniDeps.add { name = 'mini.nvim' }
   MiniDeps.add 'nvim-lua/plenary.nvim'
 
-  vim.keymap.set('n', '<C-h>', '<Cmd>TmuxNavigateLeft<CR>')
-  vim.keymap.set('n', '<C-j>', '<Cmd>TmuxNavigateDown<CR>')
-  vim.keymap.set('n', '<C-k>', '<Cmd>TmuxNavigateUp<CR>')
-  vim.keymap.set('n', '<C-l>', '<Cmd>TmuxNavigateRight<CR>')
-
   require('mini.icons').setup()
   require('mini.icons').mock_nvim_web_devicons()
 
@@ -16,6 +11,11 @@ MiniDeps.now(function()
   MiniDeps.add 'tpope/vim-sleuth'
   MiniDeps.add 'mbbill/undotree'
   MiniDeps.add 'christoomey/vim-tmux-navigator'
+
+  vim.keymap.set('n', '<C-h>', '<Cmd>TmuxNavigateLeft<CR>')
+  vim.keymap.set('n', '<C-j>', '<Cmd>TmuxNavigateDown<CR>')
+  vim.keymap.set('n', '<C-k>', '<Cmd>TmuxNavigateUp<CR>')
+  vim.keymap.set('n', '<C-l>', '<Cmd>TmuxNavigateRight<CR>')
 end)
 
 MiniDeps.now(function()
