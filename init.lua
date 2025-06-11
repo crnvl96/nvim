@@ -15,10 +15,7 @@ end
 
 require('mini.deps').setup()
 
-MiniDeps.add 'sainnhe/gruvbox-material'
-
-vim.cmd [[let g:gruvbox_material_better_performance = 1]]
-vim.cmd [[colorscheme gruvbox-material]]
+vim.cmd [[colorscheme ansi]]
 
 local lsp_dir = vim.fn.stdpath 'config' .. '/lsp'
 local excluded_servers = { 'basedpyright', 'pyrefly' }
