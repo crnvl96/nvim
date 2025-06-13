@@ -25,18 +25,25 @@ MiniDeps.now(function()
   }
 
   local ensure_installed = {
+    -- Formatters
     'stylua',
     'prettier',
-    'ruff',
-    'css-lsp',
-    'eslint-lsp',
-    'basedpyright',
-    'lua-language-server',
-    'vtsls',
+
+    -- Language servers
     'biome',
-    'typescript-language-server',
-    'pyrefly',
+    'css-lsp', -- cssls
+    'eslint-lsp', -- eslint
+    'lua-language-server', -- lua_ls
     'pyright',
+    'rubocop',
+    'ruby-lsp', -- ruby_lsp
+    'ruff',
+    'stimulus-language-server', -- stimulus_ls
+    'typescript-language-server', -- ts_ls
+
+    -- Awaiting for a stable release
+    'pyrefly', -- https://github.com/facebook/pyrefly
+    'ty', -- https://github.com/astral-sh/ty
   }
 
   require('mason').setup()
