@@ -102,7 +102,7 @@ hi PmenuThumb ctermbg=7 ctermfg=NONE
 " Syntax
 hi Comment ctermfg=8 cterm=italic
 hi Constant ctermfg=3
-hi Error ctermfg=1
+hi Error ctermfg=1 ctermbg=NONE cterm=undercurl
 hi Identifier ctermfg=9
 hi Function ctermfg=4
 hi Special ctermfg=13
