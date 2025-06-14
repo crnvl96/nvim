@@ -1,5 +1,3 @@
 {
-    "diagnostics.globals": [
-        "MiniDeps"
-    ]
+  "diagnostics.globals": ["MiniDeps"]
 }

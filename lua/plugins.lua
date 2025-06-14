@@ -264,11 +264,20 @@ MiniDeps.later(function()
 end)
 
 MiniDeps.later(function()
+  -- more information about the Ruby on Rails integration with mcp servers can be found at:
+  --  - https://mariochavez.io/desarrollo/rails/ai-tools/development-workflow/2025/06/03/rails-mcp-server-enhanced-documentation-access/
+  --  - https://github.com/maquina-app/nvim-mcp-server
+
   local function build_mcp(params)
     vim.notify('Building mcphub.nvim', vim.log.levels.INFO)
+
     local obj = vim
-      .system({ 'npm', 'install', '-g', 'mcp-hub@latest' }, { cwd = params.path })
+      .system(
+        { 'npm', 'install', '-g', 'mcp-hub@latest', 'mcp-remote' },
+        { cwd = params.path }
+      )
       :wait()
+
     if obj.code == 0 then
       vim.notify('Building mcphub.nvim done', vim.log.levels.INFO)
     else

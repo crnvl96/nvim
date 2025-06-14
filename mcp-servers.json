@@ -4,6 +4,10 @@
     "context7": {
       "url": "https://mcp.context7.com/mcp",
       "disabled": false
+    },
+    "rails-resources": {
+      "command": "npx",
+      "args": ["mcp-remote", "http://localhost:6029/mcp/sse"]
     }
   }
 }
