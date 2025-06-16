@@ -1,4 +1,4 @@
-vim.lsp.config('ruff', {
+return {
   on_init = function(client) client.server_capabilities.hoverProvider = false end,
   root_dir = function(bufnr, on_dir)
     if not bufnr then return end
@@ -11,4 +11,4 @@ vim.lsp.config('ruff', {
       logLevel = 'debug',
     },
   },
-})
+}

@@ -1,4 +1,4 @@
-vim.lsp.config('lua_ls', {
+return {
   on_init = function(client)
     client.server_capabilities.semanticTokensProvider = nil
 
@@ -34,4 +34,4 @@ vim.lsp.config('lua_ls', {
       format = { enable = false },
     },
   },
-})
+}

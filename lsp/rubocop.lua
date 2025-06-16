@@ -1,1 +1,1 @@
-vim.lsp.config('rubocop', {})
+return {}
