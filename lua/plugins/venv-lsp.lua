@@ -1,0 +1,1 @@
+require('venv-lsp').setup()
