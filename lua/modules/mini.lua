@@ -199,6 +199,7 @@ require('mini.git').setup()
 require('mini.extra').setup()
 require('mini.pick').setup()
 require('mini.keymap').setup()
+require('mini.align').setup()
 
 require('mini.files').setup({
   mappings = {
