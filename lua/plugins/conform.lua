@@ -1,4 +1,4 @@
-local n = require('utils.notification')
+local U = require('utils')
 
 local function evaluate_fmt(root_marker, target, fallback)
   local util = require('conform.util')
@@ -43,5 +43,5 @@ require('conform').setup({
 
 vim.api.nvim_create_user_command('ToggleFormat', function()
   vim.g.autoformat = not vim.g.autoformat
-  n.publish(string.format('%s formatting...', vim.g.autoformat and 'Enabling' or 'Disabling'))
+  U.publish(string.format('%s formatting...', vim.g.autoformat and 'Enabling' or 'Disabling'))
 end, { desc = 'Toggle conform.nvim auto-formatting', nargs = 0 })

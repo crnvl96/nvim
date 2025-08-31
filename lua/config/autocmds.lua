@@ -1,4 +1,4 @@
-local au = require('utils.aucmd')
+local U = require('utils')
 
 --- Check if a window is a float window
 ---@param winnr integer Window ID to be checked
@@ -9,8 +9,8 @@ local function win_is_float(winnr)
   return false
 end
 
-au.augroup('crnvl96-yank-hl', function(g)
-  au.aucmd('TextYankPost', {
+U.augroup('crnvl96-yank-hl', function(g)
+  U.aucmd('TextYankPost', {
     group = g,
     callback = function()
       vim.hl.on_yank({
@@ -22,8 +22,8 @@ au.augroup('crnvl96-yank-hl', function(g)
   })
 end)
 
-au.augroup('crnvl96-last-location', function(g)
-  au.aucmd('BufReadPost', {
+U.augroup('crnvl96-last-location', function(g)
+  U.aucmd('BufReadPost', {
     group = g,
     callback = function(e)
       local mark = vim.api.nvim_buf_get_mark(e.buf, '"')
@@ -33,20 +33,20 @@ au.augroup('crnvl96-last-location', function(g)
   })
 end)
 
-au.augroup(
+U.augroup(
   'crnvl96-termoptions',
   function(g)
-    au.aucmd('TermOpen', {
+    U.aucmd('TermOpen', {
       group = g,
       command = 'setlocal listchars= nonumber norelativenumber',
     })
   end
 )
 
-au.augroup(
+U.augroup(
   'crnvl96-resize-windows',
   function(g)
-    au.aucmd('VimResized', {
+    U.aucmd('VimResized', {
       group = g,
       command = 'tabdo wincmd =',
     })
@@ -54,8 +54,8 @@ au.augroup(
 )
 
 -- https://vim.fandom.com/wiki/Avoid_scrolling_when_switch_buffers
-au.augroup('crnvl96-do-not-autoscroll', function(g)
-  au.aucmd('BufLeave', {
+U.augroup('crnvl96-do-not-autoscroll', function(g)
+  U.aucmd('BufLeave', {
     group = g,
     desc = 'Avoid autoscroll when switching buffers',
     callback = function()
@@ -68,7 +68,7 @@ au.augroup('crnvl96-do-not-autoscroll', function(g)
       if not win_is_float(to_win) and not win_is_float(from_win) then vim.b.__VIEWSTATE = vim.fn.winsaveview() end
     end,
   })
-  au.aucmd('BufEnter', {
+  U.aucmd('BufEnter', {
     group = g,
     desc = 'Avoid autoscroll when switching buffers',
     callback = function()

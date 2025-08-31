@@ -1,12 +1,9 @@
+local U = require('utils')
+
 vim.g.rustaceanvim = {
   server = {
-    on_attach = function(_, bufnr)
-      vim.keymap.set(
-        'n',
-        '<leader>cR',
-        function() vim.cmd.RustLsp('codeAction') end,
-        { desc = 'Code Action', buffer = bufnr }
-      )
+    on_attach = function(_, buf)
+      U.lspmap(buf, 'ga', function() vim.cmd.RustLsp('codeAction') end, 'Code Action')
     end,
     default_settings = {
       ['rust-analyzer'] = {

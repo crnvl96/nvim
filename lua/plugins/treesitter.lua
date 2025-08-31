@@ -1,4 +1,4 @@
-local au = require('utils.aucmd')
+local U = require('utils')
 
 require('nvim-treesitter').install({
   'c',
@@ -29,8 +29,8 @@ require('nvim-treesitter').install({
   'yaml',
 })
 
-au.augroup('crnvl96-treesitter-start', function(g)
-  au.aucmd('FileType', {
+U.augroup('crnvl96-treesitter-start', function(g)
+  U.aucmd('FileType', {
     group = g,
     callback = function(e)
       local filetype = e.match

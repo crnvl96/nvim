@@ -1,5 +1,5 @@
-local bind = require('utils.bind')
-local builtin = require('utils.builtin')
+local U = require('utils')
+
 local minipath = vim.fn.stdpath('data') .. '/site/pack/deps/start/mini.nvim'
 local __MiniPick_State = {}
 local __MiniPickNS = vim.api.nvim_create_namespace('MiniPick FFFiles Picker')
@@ -176,7 +176,7 @@ for _, hl in ipairs({
   'MiniPickPromptCaret',
   'MiniPickPromptPrefix',
 }) do
-  builtin.override_highlight(hl, { bg = 'none' })
+  U.override_highlight(hl, { bg = 'none' })
 end
 
 require('mini.notify').setup()
@@ -265,7 +265,7 @@ require('mini.keymap').map_combo({ 'i', 'c', 'x', 's' }, 'kj', '<BS><BS><Esc>')
 
 MiniPick.registry.fffiles = run
 
-bind.nmap('-', open_file_explorer, 'Open file explorer')
-bind.nmap('<Leader>f', MiniPick.registry.fffiles, 'Pick files')
-bind.nmap('<Leader>g', MiniPick.builtin.grep_live, 'Live grep')
-bind.nmap('<Leader>l', '<Cmd>Pick buf_lines scope="current"<CR>', 'Buf lines')
+U.nmap('-', open_file_explorer, 'Open file explorer')
+U.nmap('<Leader>f', MiniPick.registry.fffiles, 'Pick files')
+U.nmap('<Leader>g', MiniPick.builtin.grep_live, 'Live grep')
+U.nmap('<Leader>l', '<Cmd>Pick buf_lines scope="current"<CR>', 'Buf lines')

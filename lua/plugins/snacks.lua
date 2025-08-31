@@ -1,4 +1,4 @@
-local binds = require('utils.bind')
+local U = require('utils')
 
 local function terminal() Snacks.terminal() end
 local function lazygit() Snacks.lazygit() end
@@ -22,6 +22,6 @@ require('snacks').setup({
   },
 })
 
-binds.nmap('<Leader>z', terminal, 'Terminal')
-binds.nmap('<Leader>x', opencode, 'Opencode')
-binds.nmap('<Leader>v', lazygit, 'Lazygit')
+U.nmap('<Leader>z', terminal, 'Terminal')
+U.nmap('<Leader>x', opencode, 'Opencode')
+U.nmap('<Leader>v', lazygit, 'Lazygit')
