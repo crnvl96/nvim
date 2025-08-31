@@ -179,7 +179,18 @@ for _, hl in ipairs({
   U.override_highlight(hl, { bg = 'none' })
 end
 
-require('mini.notify').setup()
+require('mini.notify').setup({
+  content = {
+    sort = function(notif_arr)
+      return MiniNotify.default_sort(vim.tbl_filter(function(notif)
+        if not (notif.data.source == 'lsp_progress' and notif.data.client_name == 'lua_ls') then return true end
+        -- Filter out some LSP progress notifications from 'lua_ls'
+        return notif.msg:find('Diagnosing') == nil and notif.msg:find('semantic tokens') == nil
+      end, notif_arr))
+    end,
+  },
+})
+
 require('mini.doc').setup()
 require('mini.icons').setup()
 require('mini.misc').setup()
