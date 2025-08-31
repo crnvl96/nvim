@@ -10,23 +10,19 @@ vim.lsp.config('*', {
   }),
 })
 
-local servers = {
-  all = vim.fn.glob(os.getenv('HOME') .. '/.config/nvim/lsp/*.lua', true, true),
-  prohibited = { 'rust_analyzer' },
-}
-
-local allowed = {}
-for _, file in ipairs(servers.all) do
-  local server_name = vim.fn.fnamemodify(file, ':t:r')
-  local is_server_allowed = not vim.tbl_contains(servers.prohibited, server_name)
-  if is_server_allowed then
-    table.insert(allowed, server_name)
-    local content = assert(loadfile(file))
-    vim.lsp.config(server_name, content())
-  end
-end
-
-vim.lsp.enable(allowed)
+U.augroup('cnnvl96-lsp-enable-lsp-servers', function(g)
+  U.aucmd({ 'BufReadPre', 'BufNewFile' }, {
+    once = true,
+    group = g,
+    callback = function()
+      local server_configs = vim
+        .iter(vim.api.nvim_get_runtime_file('lsp/*.lua', true))
+        :map(function(file) return vim.fn.fnamemodify(file, ':t:r') end)
+        :totable()
+      vim.lsp.enable(server_configs)
+    end,
+  })
+end)
 
 U.augroup('crnvl-lspattach', function(g)
   U.aucmd('LspAttach', {

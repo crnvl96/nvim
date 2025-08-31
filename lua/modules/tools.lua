@@ -6,7 +6,7 @@ local U = require('utils')
 ---@return nil
 local function install(tool)
   if vim.fn.executable(tool.name) == 1 then return end
-  local msg = string.format('Installing %s', tool.name)
+  local msg = ('Installing %s'):format(tool.name)
   U.publish(msg .. '...')
   local out = vim.system(vim.split(tool.cmd, ' '), { cwd = os.getenv('HOME') }):wait()
 
@@ -32,15 +32,14 @@ local tools = {
   { name = 'taplo', cmd = 'mise use -g taplo' },
   { name = 'gofumpt', cmd = 'mise use -g gofumpt' },
   { name = 'prettier', cmd = 'mise use -g prettier' },
-  { name = 'biome', cmd = 'mise use -g biome' },
   { name = 'jq', cmd = 'mise use -g jq' },
+  { name = 'dprint', cmd = 'mise use -g dprint' },
   { name = 'lua-language-server', cmd = 'mise use -g lua-language-server' },
   --- npm managed tools
   { name = 'vscode-json-language-server', cmd = 'npm i -g vscode-langservers-extracted' },
   { name = 'vscode-css-language-server', cmd = 'npm i -g vscode-langservers-extracted' },
   { name = 'vscode-eslint-language-server', cmd = 'npm i -g vscode-langservers-extracted' },
   { name = 'typescript-language-server', cmd = 'npm i -g typescript-language-server' },
-  { name = 'tailwindcss-language-server', cmd = 'npm i -g @tailwindcss/language-server' },
   { name = 'yaml-language-server', cmd = 'npm i -g yaml-language-server' },
   --- go managed tools
   { name = 'gopls', cmd = 'go install golang.org/x/tools/gopls@latest' },

@@ -6,7 +6,7 @@ local U = require('utils')
 ---@return nil
 local function build(params, cmd)
   local name, path = params.name, params.path
-  local msg = string.format('Building %s', name)
+  local msg = ('Building %s'):format(name)
   U.publish(msg .. '...')
   local out = vim.system(vim.split(cmd, ' '), { cwd = path }):wait()
 
@@ -52,12 +52,4 @@ MiniDeps.add({ source = 'stevearc/conform.nvim' })
 MiniDeps.add({ source = 'Saecki/crates.nvim' })
 MiniDeps.add({ source = 'MagicDuck/grug-far.nvim' })
 MiniDeps.add({ source = 'tpope/vim-sleuth' })
-MiniDeps.add({ source = 'folke/snacks.nvim' })
 MiniDeps.add({ source = 'brianhuster/unnest.nvim' })
-MiniDeps.add({ source = 'jglasovic/venv-lsp.nvim' })
-
-vim.schedule(
-  --- This need to be scheduled so that we ensure the builtin lsp/ is sourced first
-  ---@return nil
-  function() MiniDeps.add({ source = 'neovim/nvim-lspconfig' }) end
-)

@@ -59,7 +59,6 @@ vim.cmd([[
   filetype plugin indent on
 
   set wildmode=noselect:lastused,full
-  set wc=^N
 
   set diffopt=internal,filler,closeoff,context:4,algorithm:histogram,linematch:60,indent-heuristic,vertical,context:99
   set listchars=tab:\ \ ,trail:.

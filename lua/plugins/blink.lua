@@ -1,6 +1,18 @@
 local U = require('utils')
 
 require('blink.cmp').setup({
+  cmdline = {
+    completion = {
+      list = {
+        selection = {
+          preselect = false,
+          auto_insert = true,
+        },
+      },
+      menu = { auto_show = true },
+      ghost_text = { enabled = true },
+    },
+  },
   completion = {
     list = {
       selection = {
@@ -8,8 +20,9 @@ require('blink.cmp').setup({
         auto_insert = true,
       },
     },
-    documentation = { auto_show = true },
-    cmdline = { enabled = false },
+    documentation = {
+      auto_show = true,
+    },
     menu = {
       scrollbar = false,
       draw = {

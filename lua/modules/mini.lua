@@ -48,7 +48,7 @@ local function show(buf_id, items)
   for i, item in ipairs(items) do
     local icon, hl, _ = MiniIcons.get('file', item.text)
     icon_data[i] = { icon = icon, hl = hl }
-    items_to_show[i] = string.format('%s %s [%d]', icon, item.text, item.score)
+    items_to_show[i] = ('%s %s [%d]'):format(icon, item.text, item.score)
   end
 
   vim.api.nvim_buf_set_lines(buf_id, 0, -1, false, items_to_show)
@@ -264,15 +264,13 @@ vim.schedule(
   end
 )
 
-require('mini.keymap').map_multistep('i', '<C-n>', { 'blink_next', 'pmenu_next' })
-require('mini.keymap').map_multistep('i', '<C-p>', { 'blink_prev', 'pmenu_prev' })
-require('mini.keymap').map_multistep('i', '<Tab>', { 'blink_next', 'pmenu_next' })
-require('mini.keymap').map_multistep('i', '<S-Tab>', { 'blink_prev', 'pmenu_prev' })
-require('mini.keymap').map_multistep('i', '<CR>', { 'blink_accept', 'pmenu_accept' })
+require('mini.keymap').map_multistep({ 'i', 'c' }, '<C-n>', { 'blink_next', 'pmenu_next' })
+require('mini.keymap').map_multistep({ 'i', 'c' }, '<C-p>', { 'blink_prev', 'pmenu_prev' })
+require('mini.keymap').map_multistep({ 'i', 'c' }, '<Tab>', { 'blink_next', 'pmenu_next' })
+require('mini.keymap').map_multistep({ 'i', 'c' }, '<S-Tab>', { 'blink_prev', 'pmenu_prev' })
+require('mini.keymap').map_multistep({ 'i', 'c' }, '<CR>', { 'blink_accept', 'pmenu_accept' })
 require('mini.keymap').map_combo({ 'i', 'c', 'x', 's' }, 'jk', '<BS><BS><Esc>')
 require('mini.keymap').map_combo({ 'i', 'c', 'x', 's' }, 'kj', '<BS><BS><Esc>')
--- require('mini.keymap').map_combo('t', 'jk', '<BS><BS><C-\\><C-n>')
--- require('mini.keymap').map_combo('t', 'kj', '<BS><BS><C-\\><C-n>')
 
 MiniPick.registry.fffiles = run
 
