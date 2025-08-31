@@ -13,14 +13,6 @@ local function build(params, cmd)
 end
 
 MiniDeps.add({
-  source = 'mason-org/mason.nvim',
-  monitor = 'main',
-  hooks = {
-    post_checkout = function() vim.cmd('MasonUpdate') end,
-  },
-})
-
-MiniDeps.add({
   source = 'nvim-treesitter/nvim-treesitter',
   checkout = 'main',
   hooks = {

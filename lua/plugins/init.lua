@@ -1,6 +1,5 @@
 require('plugins.grug-far')
 require('plugins.venv-lsp')
-require('plugins.mason')
 require('plugins.treesitter')
 require('plugins.snacks')
 require('plugins.blink')
