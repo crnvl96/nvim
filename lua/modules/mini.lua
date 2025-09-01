@@ -73,6 +73,9 @@ for _, hl in ipairs({
   'MiniPickPrompt',
   'MiniPickPromptCaret',
   'MiniPickPromptPrefix',
+  'MiniStatuslineFilename',
+  'MiniStatuslineFileinfo',
+  'MiniStatuslineInactive',
 }) do
   U.override_highlight(hl, { bg = 'none' })
 end
@@ -95,6 +98,7 @@ require('mini.misc').setup()
 require('mini.diff').setup()
 require('mini.git').setup()
 require('mini.extra').setup()
+require('mini.statusline').setup()
 require('mini.pick').setup({
   options = {
     use_cache = true,
