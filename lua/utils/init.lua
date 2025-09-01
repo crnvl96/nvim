@@ -50,6 +50,13 @@ function M.nmap(lhs, rhs, desc) M.map(lhs, rhs, desc, 'n') end
 ---@return nil
 function M.xmap(lhs, rhs, desc) M.map(lhs, rhs, desc, 'x') end
 
+--- Sets a map in terminal mode
+---@param lhs string Left-hand side |{lhs}| of the mapping.
+---@param rhs string|function Right-hand side |{rhs}| of the mapping, can be a Lua function.
+---@param desc string Mapping description
+---@return nil
+function M.tmap(lhs, rhs, desc) M.map(lhs, rhs, desc, 't') end
+
 --- Override a highlight group with custom opts
 ---@param hl_name string Name of the highlight to be overriden
 ---@param opts vim.api.keyset.highlight Opts to override the original highlight

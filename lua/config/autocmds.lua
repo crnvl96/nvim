@@ -22,6 +22,16 @@ U.augroup('crnvl96-yank-hl', function(g)
   })
 end)
 
+U.augroup(
+  'crnvl96-termoptions',
+  function(g)
+    U.aucmd('TermOpen', {
+      group = g,
+      command = 'setlocal listchars= nonumber norelativenumber',
+    })
+  end
+)
+
 U.augroup('crnvl96-last-location', function(g)
   U.aucmd('BufReadPost', {
     group = g,
