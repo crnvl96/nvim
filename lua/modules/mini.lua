@@ -95,7 +95,15 @@ require('mini.misc').setup()
 require('mini.diff').setup()
 require('mini.git').setup()
 require('mini.extra').setup()
-require('mini.pick').setup()
+require('mini.pick').setup({
+  options = {
+    use_cache = true,
+  },
+  window = {
+    prompt_caret = '▏',
+    prompt_prefix = '  ',
+  },
+})
 require('mini.keymap').setup()
 require('mini.align').setup()
 
