@@ -96,7 +96,6 @@ require('mini.doc').setup()
 require('mini.icons').setup()
 require('mini.misc').setup()
 require('mini.diff').setup()
-require('mini.git').setup()
 require('mini.extra').setup()
 require('mini.statusline').setup()
 require('mini.pick').setup({
