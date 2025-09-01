@@ -1,6 +1,8 @@
 vim.diagnostic.config({
   update_in_insert = true,
-  virtual_text = true,
+  virtual_text = {
+    current_line = true,
+  },
   virtual_lines = false,
   float = { source = true },
   signs = true,
@@ -50,7 +52,7 @@ vim.o.updatetime = 300
 vim.o.virtualedit = 'block'
 vim.o.wildignorecase = true
 vim.o.wildmode = 'longest:full'
-vim.o.winborder = 'single'
+vim.o.winborder = 'rounded'
 vim.o.wrap = false
 vim.o.writebackup = false
 
