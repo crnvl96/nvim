@@ -1,6 +1,9 @@
 local U = require('utils')
 
 require('blink.cmp').setup({
+  appearance = {
+    nerd_font_variant = 'mono',
+  },
   cmdline = {
     completion = {
       list = {
@@ -26,13 +29,26 @@ require('blink.cmp').setup({
     menu = {
       scrollbar = false,
       draw = {
+        columns = {
+          { 'kind_icon' },
+          { 'label', 'label_description', 'source_name', gap = 1 },
+        },
         components = {
+          kind_icon = {
+            text = function(ctx)
+              if ctx.source_id == 'cmdline' then return end
+              return ctx.kind_icon .. ctx.icon_gap
+            end,
+          },
           source_name = {
             text = function(ctx)
               if ctx.source_id == 'cmdline' then return end
               return ctx.source_name:sub(1, 4)
             end,
           },
+        },
+        treesitter = {
+          'lsp',
         },
       },
     },
