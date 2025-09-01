@@ -1,10 +1,19 @@
 local U = require('utils')
 
 vim.lsp.config('*', {
-  capabilities = vim.tbl_deep_extend('force', vim.lsp.protocol.make_client_capabilities(), {
+  capabilities = require('blink.cmp').get_lsp_capabilities({
     general = {
       positionEncodings = {
         'utf-16',
+      },
+    },
+    textDocument = {
+      foldingRange = {
+        dynamicRegistration = false,
+        lineFoldingOnly = true,
+      },
+      onTypeFormatting = {
+        dynamicRegistration = false,
       },
     },
   }),
@@ -30,6 +39,14 @@ U.augroup('crnvl-lspattach', function(g)
     callback = function(e)
       local client = vim.lsp.get_client_by_id(e.data.client_id)
       if not client then return end
+
+      -- if client:supports_method('textDocument/completion') then
+      --   client.server_capabilities.completionProvider.triggerCharacters =
+      --     vim.iter(string.gmatch('abcdefghijklmnopqrstuvwxyz.,:', '.')):totable()
+      --   vim.lsp.completion.enable(true, client.id, e.buf, {
+      --     autotrigger = true,
+      --   })
+      -- end
 
       U.lspmap(e.buf, 'E', vim.diagnostic.open_float, 'Show Error')
       U.lspmap(e.buf, 'K', vim.lsp.buf.hover, 'Hover')
