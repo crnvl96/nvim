@@ -1,8 +1,6 @@
 local U = require('utils')
 
 local minipath = vim.fn.stdpath('data') .. '/site/pack/deps/start/mini.nvim'
-local __MiniPick_State = {}
-local __MiniPickNS = vim.api.nvim_create_namespace('MiniPick FFFiles Picker')
 
 --- Open MiniFiles at the current directory
 ---@return nil
@@ -10,106 +8,6 @@ local function open_file_explorer()
   local bufname = vim.api.nvim_buf_get_name(0)
   local path = vim.fn.fnamemodify(bufname, ':p')
   if path and vim.uv.fs_stat(path) then require('mini.files').open(bufname, false) end
-end
-
-vim.api.nvim_set_hl(0, 'FFFileScore', { link = 'Identifier' })
-
---- Find items using FFF source
----@param query string Query used in search
----@return nil
-local function find(query)
-  local file_picker = require('fff.file_picker')
-
-  query = query or ''
-  local fff_result = file_picker.search_files(query, 100, 4, __MiniPick_State.current_file_cache, false)
-
-  local items = {}
-  for _, fff_item in ipairs(fff_result) do
-    local item = {
-      text = fff_item.relative_path,
-      path = fff_item.path,
-      score = fff_item.total_frecency_score,
-    }
-    table.insert(items, item)
-  end
-
-  return items
-end
-
---- Render the file search results
----@param buf_id integer Buffer id
----@param items table Found items on search
----@return nil
-local function show(buf_id, items)
-  local icon_data = {}
-
-  -- Show items
-  local items_to_show = {}
-  for i, item in ipairs(items) do
-    local icon, hl, _ = MiniIcons.get('file', item.text)
-    icon_data[i] = { icon = icon, hl = hl }
-    items_to_show[i] = ('%s %s [%d]'):format(icon, item.text, item.score)
-  end
-
-  vim.api.nvim_buf_set_lines(buf_id, 0, -1, false, items_to_show)
-  vim.api.nvim_buf_clear_namespace(buf_id, __MiniPickNS, 0, -1)
-
-  local icon_extmark_opts = { hl_mode = 'combine', priority = 200 }
-  for i, item in ipairs(items) do
-    -- Highlight Icons
-    icon_extmark_opts.hl_group = icon_data[i].hl
-    icon_extmark_opts.end_row, icon_extmark_opts.end_col = i - 1, 1
-    vim.api.nvim_buf_set_extmark(buf_id, __MiniPickNS, i - 1, 0, icon_extmark_opts)
-
-    -- Highlight score
-    local col = #items_to_show[i] - #tostring(item.score) - 3
-    icon_extmark_opts.hl_group = 'FFFileScore'
-    icon_extmark_opts.end_row, icon_extmark_opts.end_col = i - 1, #items_to_show[i]
-    vim.api.nvim_buf_set_extmark(buf_id, __MiniPickNS, i - 1, col, icon_extmark_opts)
-  end
-end
-
---- Execute the picker
----@return nil
-local function run()
-  -- Setup fff.nvim
-  local file_picker = require('fff.file_picker')
-  if not file_picker.is_initialized() then
-    local setup_success = file_picker.setup()
-    if not setup_success then
-      vim.notify('Could not setup fff.nvim', vim.log.levels.ERROR)
-      return
-    end
-  end
-
-  -- Cache current file to deprioritize in fff.nvim
-  if not __MiniPick_State.current_file_cache then
-    local current_buf = vim.api.nvim_get_current_buf()
-    if current_buf and vim.api.nvim_buf_is_valid(current_buf) then
-      local current_file = vim.api.nvim_buf_get_name(current_buf)
-      if current_file ~= '' and vim.fn.filereadable(current_file) == 1 then
-        local relative_path = vim.fs.relpath(vim.uv.cwd() --[[@as string]], current_file)
-        __MiniPick_State.current_file_cache = relative_path --[[@as string]]
-      else
-        __MiniPick_State.current_file_cache = nil
-      end
-    end
-  end
-
-  -- Start picker
-  MiniPick.start({
-    source = {
-      name = 'FFFiles',
-      items = find,
-      match = function(_, _, query)
-        local items = find(table.concat(query))
-        MiniPick.set_picker_items(items, { do_match = false })
-      end,
-      show = show,
-    },
-  })
-
-  __MiniPick_State.current_file_cache = nil -- Reset cache
 end
 
 if not vim.loop.fs_stat(minipath) then
@@ -273,9 +171,7 @@ require('mini.keymap').map_multistep({ 'i', 'c' }, '<CR>', { 'blink_accept', 'pm
 require('mini.keymap').map_combo({ 'i', 'c', 'x', 's' }, 'jk', '<BS><BS><Esc>')
 require('mini.keymap').map_combo({ 'i', 'c', 'x', 's' }, 'kj', '<BS><BS><Esc>')
 
-MiniPick.registry.fffiles = run
-
 U.nmap('-', open_file_explorer, 'Open file explorer')
-U.nmap('<Leader>f', MiniPick.registry.fffiles, 'Pick files')
+U.nmap('<Leader>f', MiniPick.builtin.files, 'Pick files')
 U.nmap('<Leader>g', MiniPick.builtin.grep_live, 'Live grep')
 U.nmap('<Leader>l', '<Cmd>Pick buf_lines scope="current"<CR>', 'Buf lines')
