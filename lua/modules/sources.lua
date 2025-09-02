@@ -1,4 +1,4 @@
-local U = require('utils')
+-- local U = require('utils')
 
 --  --- Helper for mini.deps helper that wraps common operations on plugins that require a build step.
 --  ---@param params table Params for building the plugin
@@ -23,6 +23,11 @@ MiniDeps.add({
   hooks = {
     post_checkout = function() vim.cmd('TSUpdate') end,
   },
+})
+
+MiniDeps.add({
+  source = 'nvim-treesitter/nvim-treesitter-textobjects',
+  checkout = 'main',
 })
 
 MiniDeps.add({

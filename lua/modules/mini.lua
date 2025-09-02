@@ -36,10 +36,12 @@ hues.apply_palette(hues.make_palette({
 
 colors
   .get_colorscheme()
+  :add_terminal_colors()
+  :add_cterm_attributes()
   :add_transparency({
     float = true,
     statuscolumn = true,
-    statusline = true,
+    statusline = false,
     tabline = true,
     winbar = true,
   })
@@ -98,6 +100,22 @@ require('mini.misc').setup()
 require('mini.diff').setup()
 require('mini.extra').setup()
 require('mini.statusline').setup()
+
+require('mini.ai').setup({
+  custom_textobjects = {
+    B = MiniExtra.gen_ai_spec.buffer(),
+    F = require('mini.ai').gen_spec.treesitter({ a = '@function.outer', i = '@function.inner' }),
+  },
+  silent = true,
+  search_method = 'cover',
+  mappings = {
+    around_next = '',
+    inside_next = '',
+    around_last = '',
+    inside_last = '',
+  },
+})
+
 require('mini.pick').setup({
   options = {
     use_cache = true,

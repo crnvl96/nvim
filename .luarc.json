@@ -6,6 +6,7 @@
     "MiniNotify",
     "MiniIcons",
     "MiniPick",
-    "MiniMisc"
+    "MiniMisc",
+        "MiniExtra"
   ]
 }
