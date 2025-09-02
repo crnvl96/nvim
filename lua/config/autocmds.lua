@@ -23,6 +23,17 @@ U.augroup('crnvl96-yank-hl', function(g)
 end)
 
 U.augroup(
+  'crnvl96-post-grep',
+  function(g)
+    U.aucmd('QuickFixCmdPost', {
+      group = g,
+      pattern = '*grep*',
+      command = 'cwindow',
+    })
+  end
+)
+
+U.augroup(
   'crnvl96-termoptions',
   function(g)
     U.aucmd('TermOpen', {

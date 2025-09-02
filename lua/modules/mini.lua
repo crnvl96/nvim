@@ -100,6 +100,7 @@ require('mini.misc').setup()
 require('mini.diff').setup()
 require('mini.extra').setup()
 require('mini.statusline').setup()
+require('mini.indentscope').setup()
 
 require('mini.ai').setup({
   custom_textobjects = {

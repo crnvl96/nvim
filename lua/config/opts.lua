@@ -51,26 +51,62 @@ vim.o.undofile = true
 vim.o.updatetime = 300
 vim.o.virtualedit = 'block'
 vim.o.wildignorecase = true
-vim.o.wildmode = 'longest:full'
+vim.o.wildmode = 'noselect:longest:lastused,full'
+vim.o.wildmenu = true
 vim.o.winborder = 'rounded'
 vim.o.wrap = false
 vim.o.writebackup = false
 
-vim.cmd([[
-  packadd cfilter
-  filetype plugin indent on
+vim.cmd('packadd cfilter')
+vim.cmd('filetype plugin indent on')
 
-  set wildmode=noselect:lastused,full
+vim.o.wildmode = 'noselect:lastused,full'
 
-  set diffopt=internal,filler,closeoff,context:4,algorithm:histogram,linematch:60,indent-heuristic,vertical,context:99
-  set listchars=tab:\ \ ,trail:.
-  set fillchars=eob:\ ,fold:\ ,foldclose:,foldopen:,foldsep:\ ,msgsep:─
-  set wildignore+=.DS_Store
-  set wildoptions+=fuzzy
-  set shortmess+=Wsa
+vim.o.diffopt =
+  'internal,filler,closeoff,context:4,algorithm:histogram,linematch:60,indent-heuristic,vertical,context:99'
+vim.o.listchars = 'tab:  ,trail:.'
+vim.o.fillchars = 'eob: ,fold: ,foldclose:,foldopen:,foldsep: ,msgsep:─'
+vim.o.wildignore = vim.o.wildignore .. ',.DS_Store'
+vim.o.wildoptions = vim.o.wildoptions .. ',fuzzy'
+vim.o.shortmess = vim.o.shortmess .. 'Wsa'
 
-  if executable('rg')
-    set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case\ --hidden
-    set grepformat=%f:%l:%c:%m,%f:%l:%m
-  endif
-]])
+if vim.fn.executable('rg') == 1 then
+  vim.o.grepprg = 'rg --vimgrep --no-heading --smart-case --hidden'
+  vim.o.grepformat = '%f:%l:%c:%m,%f:%l:%m'
+end
+
+if vim.fn.executable('fd') == 1 and vim.fn.executable('fzf') == 1 then
+  function FuzzyFindFunc(cmdarg) return vim.fn.systemlist("fd --hidden . | fzf --filter='" .. cmdarg .. "'") end
+
+  vim.o.findfunc = 'v:lua.FuzzyFindFunc'
+end
+
+local function fd_set_quickfix(...)
+  local args = { ... }
+  local fdresults = vim.fn.systemlist('fd -t f --hidden ' .. table.concat(args, ' '))
+
+  if vim.v.shell_error ~= 0 then
+    vim.api.nvim_echo({ { 'Fd error: ' .. fdresults[1] } }, true, { err = true })
+    return
+  end
+
+  local qf_items = {}
+
+  for _, val in ipairs(fdresults) do
+    table.insert(qf_items, { filename = val, lnum = 1, text = val })
+  end
+
+  vim.fn.setqflist(qf_items)
+  vim.cmd('copen')
+end
+
+vim.api.nvim_create_user_command(
+  'Findqf',
+  function(opts) fd_set_quickfix(unpack(vim.split(opts.args, ' '))) end,
+  { nargs = '+', complete = 'file_in_path' }
+)
+
+vim.keymap.set('n', '<leader>z', ':find<space>', { silent = false })
+vim.keymap.set('n', '<leader>Z', ':vert sf<space>', { silent = false })
+vim.keymap.set('n', '<leader>d', ':Findqf<space>', { silent = false })
+vim.keymap.set('n', '<leader>e', ':b<space>', { silent = false })
