@@ -242,5 +242,5 @@ vim.api.nvim_create_user_command(
 U.nmap('<leader>f', ':find<space>', 'Find files', { silent = false })
 U.nmap('<leader>F', ':vert sf<space>', 'Find files (vert)', { silent = false })
 U.nmap('<leader>x', ':Findqf<space>', 'Find and send to qf', { silent = false })
-U.nmap('<leader>u', ':b<space>', 'Buffers', { silent = false })
+U.nmap('<leader>b', ':b<space>', 'Buffers', { silent = false })
 U.nmap('<leader>g', ':grep<space>', 'Grep', { silent = false })
