@@ -18,16 +18,21 @@ local function create_scratch_buf()
 end
 
 --- When sending a key command to a terminal (e.g: <C-h>) to a terminal buffer, automatically precedes it with <Esc>
----@param key string Key command to be executed on the terminal
+---@param key? string Key command to be executed on the terminal
 ---@return function
 local function term_send_esc(key)
   return function()
-    vim.api.nvim_feedkeys(
-      vim.api.nvim_replace_termcodes('<C-\\><C-n>', true, true, true)
-        .. vim.api.nvim_replace_termcodes(key, true, true, true),
-      't',
-      true
-    )
+    local feed = vim.api.nvim_feedkeys
+    local rep = vim.api.nvim_replace_termcodes
+
+    local esc_termcode = rep('<C-\\><C-n>', true, true, true)
+
+    if key then
+      local key_termcode = rep(key, true, true, true)
+      feed(esc_termcode .. key_termcode, 't', true)
+    else
+      feed(esc_termcode, 't', true)
+    end
   end
 end
 
@@ -51,9 +56,9 @@ U.nmap('<C-Down>', '<Cmd>resize -5<CR>', 'Decrease window height')
 U.nmap('<C-Up>', '<Cmd>resize +5<CR>', 'Increase window height')
 U.nmap('<C-Left>', '<Cmd>vertical resize -20<CR>', 'Decrease window width')
 U.nmap('<C-Right>', '<Cmd>vertical resize +20<CR>', 'Increase window width')
-U.nmap('<Leader>b', create_scratch_buf, 'Open a scratch buffer')
+U.nmap('<Leader>s', create_scratch_buf, 'Open a scratch buffer')
 U.tmap('<C-h>', term_send_esc('<C-h>'), 'Goto left window')
 U.tmap('<C-j>', term_send_esc('<C-j>'), 'Goto window below')
 U.tmap('<C-k>', term_send_esc('<C-k>'), 'Goto window above')
 U.tmap('<C-l>', term_send_esc('<C-l>'), 'Goto right window')
-U.tmap('<C-/>', '<cmd>close<cr>', 'Hide Terminal')
+U.tmap('<C-e>', term_send_esc(), '<Esc>')
