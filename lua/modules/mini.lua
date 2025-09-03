@@ -207,6 +207,7 @@ U.nmap('-', open_file_explorer, 'Open file explorer')
 U.nmap('<Leader>f', MiniPick.builtin.files, 'Pick files')
 U.nmap('<Leader>g', MiniPick.builtin.grep_live, 'Live grep')
 U.nmap('<Leader>l', '<Cmd>Pick buf_lines scope="current"<CR>', 'Buf lines')
+U.nmap('<Leader>b', '<Cmd>Pick buffers include_current=false<CR>', 'Buf lines')
 
 if vim.fn.executable('rg') == 1 then
   vim.o.grepprg = 'rg --vimgrep --no-heading --smart-case --hidden'
@@ -218,29 +219,29 @@ if vim.fn.executable('fd') == 1 and vim.fn.executable('fzf') == 1 then
   vim.o.findfunc = 'v:lua.FuzzyFindFunc'
 end
 
-local function fd_set_quickfix(...)
-  local args = { ... }
-  local fdresults = vim.fn.systemlist('fd -t f --hidden ' .. table.concat(args, ' '))
-  if vim.v.shell_error ~= 0 then
-    vim.api.nvim_echo({ { 'Fd error: ' .. fdresults[1] } }, true, { err = true })
-    return
-  end
-  local qf_items = {}
-  for _, val in ipairs(fdresults) do
-    table.insert(qf_items, { filename = val, lnum = 1, text = val })
-  end
-  vim.fn.setqflist(qf_items)
-  vim.cmd('copen')
-end
+-- local function fd_set_quickfix(...)
+--   local args = { ... }
+--   local fdresults = vim.fn.systemlist('fd -t f --hidden ' .. table.concat(args, ' '))
+--   if vim.v.shell_error ~= 0 then
+--     vim.api.nvim_echo({ { 'Fd error: ' .. fdresults[1] } }, true, { err = true })
+--     return
+--   end
+--   local qf_items = {}
+--   for _, val in ipairs(fdresults) do
+--     table.insert(qf_items, { filename = val, lnum = 1, text = val })
+--   end
+--   vim.fn.setqflist(qf_items)
+--   vim.cmd('copen')
+-- end
+--
+-- vim.api.nvim_create_user_command(
+--   'Findqf',
+--   function(opts) fd_set_quickfix(unpack(vim.split(opts.args, ' '))) end,
+--   { nargs = '+', complete = 'file_in_path' }
+-- )
 
-vim.api.nvim_create_user_command(
-  'Findqf',
-  function(opts) fd_set_quickfix(unpack(vim.split(opts.args, ' '))) end,
-  { nargs = '+', complete = 'file_in_path' }
-)
-
-U.nmap('<leader>f', ':find<space>', 'Find files', { silent = false })
-U.nmap('<leader>F', ':vert sf<space>', 'Find files (vert)', { silent = false })
-U.nmap('<leader>x', ':Findqf<space>', 'Find and send to qf', { silent = false })
-U.nmap('<leader>b', ':b<space>', 'Buffers', { silent = false })
-U.nmap('<leader>g', ':grep<space>', 'Grep', { silent = false })
+-- U.nmap('<leader>f', ':find<space>', 'Find files', { silent = false })
+-- U.nmap('<leader>F', ':vert sf<space>', 'Find files (vert)', { silent = false })
+-- U.nmap('<leader>x', ':Findqf<space>', 'Find and send to qf', { silent = false })
+-- U.nmap('<leader>b', ':b<space>', 'Buffers', { silent = false })
+-- U.nmap('<leader>g', ':grep<space>', 'Grep', { silent = false })
