@@ -4,7 +4,14 @@ require('blink.cmp').setup({
   appearance = {
     nerd_font_variant = 'mono',
   },
+  keymap = {
+    preset = 'default',
+    ['<C-n>'] = { 'show', 'select_next', 'fallback_to_mappings' },
+  },
   cmdline = {
+    keymap = {
+      preset = 'inherit',
+    },
     completion = {
       list = {
         selection = {
