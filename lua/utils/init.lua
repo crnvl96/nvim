@@ -40,8 +40,9 @@ end
 ---@param lhs string Left-hand side |{lhs}| of the mapping.
 ---@param rhs string|function Right-hand side |{rhs}| of the mapping, can be a Lua function.
 ---@param desc string Mapping description
+---@param opts? vim.keymap.set.Opts Keymap options
 ---@return nil
-function M.nmap(lhs, rhs, desc) M.map(lhs, rhs, desc, 'n') end
+function M.nmap(lhs, rhs, desc, opts) M.map(lhs, rhs, desc, 'n', opts) end
 
 --- Sets a map in visual mode
 ---@param lhs string Left-hand side |{lhs}| of the mapping.
