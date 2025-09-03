@@ -200,8 +200,8 @@ require('mini.keymap').map_multistep({ 'i', 'c' }, '<S-Tab>', { 'blink_prev', 'p
 require('mini.keymap').map_multistep({ 'i', 'c' }, '<CR>', { 'blink_accept', 'pmenu_accept' })
 require('mini.keymap').map_combo({ 'i', 'c', 'x', 's' }, 'jk', '<BS><BS><Esc>')
 require('mini.keymap').map_combo({ 'i', 'c', 'x', 's' }, 'kj', '<BS><BS><Esc>')
-require('mini.keymap').map_combo('t', 'jk', '<BS><BS><C-\\><C-n>')
-require('mini.keymap').map_combo('t', 'kj', '<BS><BS><C-\\><C-n>')
+-- require('mini.keymap').map_combo('t', 'jk', '<BS><BS><C-\\><C-n>')
+-- require('mini.keymap').map_combo('t', 'kj', '<BS><BS><C-\\><C-n>')
 
 U.nmap('-', open_file_explorer, 'Open file explorer')
 U.nmap('<Leader>f', MiniPick.builtin.files, 'Pick files')
