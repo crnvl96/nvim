@@ -64,3 +64,40 @@ U.augroup('crnvl-lspattach', function(g)
     end,
   })
 end)
+
+if vim.fn.has('nvim-0.11.2') == 1 then
+  local complete_client = function(arg)
+    return vim
+      .iter(vim.lsp.get_clients())
+      :map(function(client) return client.name end)
+      :filter(function(name) return name:sub(1, #arg) == arg end)
+      :totable()
+  end
+
+  vim.api.nvim_create_user_command('LspRestart', function(info)
+    local clients = info.fargs
+
+    if #clients == 0 then
+      clients = vim.iter(vim.lsp.get_clients()):map(function(client) return client.name end):totable()
+    end
+
+    for _, name in ipairs(clients) do
+      if vim.lsp.config[name] == nil then
+        vim.notify(("Invalid server name '%s'"):format(name))
+      else
+        vim.lsp.enable(name, false)
+      end
+    end
+
+    local timer = assert(vim.uv.new_timer())
+    timer:start(500, 0, function()
+      for _, name in ipairs(clients) do
+        vim.schedule_wrap(function(x) vim.lsp.enable(x) end)(name)
+      end
+    end)
+  end, {
+    desc = 'Restart the given client',
+    nargs = '?',
+    complete = complete_client,
+  })
+end
