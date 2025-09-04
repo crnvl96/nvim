@@ -97,7 +97,6 @@ require('mini.notify').setup({
 require('mini.doc').setup()
 require('mini.icons').setup()
 require('mini.misc').setup()
-require('mini.diff').setup()
 require('mini.extra').setup()
 require('mini.statusline').setup()
 require('mini.indentscope').setup()
@@ -141,6 +140,22 @@ require('mini.files').setup({
 
 vim.notify = require('mini.notify').make_notify()
 vim.ui.select = require('mini.pick').ui_select
+
+require('mini.keymap').map_multistep({ 'i', 'c' }, '<C-n>', { 'blink_next', 'pmenu_next' })
+require('mini.keymap').map_multistep({ 'i', 'c' }, '<C-p>', { 'blink_prev', 'pmenu_prev' })
+require('mini.keymap').map_multistep({ 'i', 'c' }, '<Tab>', { 'blink_next', 'pmenu_next' })
+require('mini.keymap').map_multistep({ 'i', 'c' }, '<S-Tab>', { 'blink_prev', 'pmenu_prev' })
+require('mini.keymap').map_multistep({ 'i', 'c' }, '<CR>', { 'blink_accept', 'pmenu_accept' })
+require('mini.keymap').map_combo({ 'i', 'c', 'x', 's' }, 'jk', '<BS><BS><Esc>')
+require('mini.keymap').map_combo({ 'i', 'c', 'x', 's' }, 'kj', '<BS><BS><Esc>')
+-- require('mini.keymap').map_combo('t', 'jk', '<BS><BS><C-\\><C-n>')
+-- require('mini.keymap').map_combo('t', 'kj', '<BS><BS><C-\\><C-n>')
+
+U.nmap('-', open_file_explorer, 'Open file explorer')
+U.nmap('<Leader>f', MiniPick.builtin.files, 'Pick files')
+U.nmap('<Leader>g', MiniPick.builtin.grep_live, 'Live grep')
+U.nmap('<Leader>l', '<Cmd>Pick buf_lines scope="current"<CR>', 'Buf lines')
+U.nmap('<Leader>b', '<Cmd>Pick buffers include_current=false<CR>', 'Buf lines')
 
 vim.schedule(
   --- Ensure that the keymap clues are constructed lastly (So that all keymaps have already been set.
@@ -192,19 +207,3 @@ vim.schedule(
     })
   end
 )
-
-require('mini.keymap').map_multistep({ 'i', 'c' }, '<C-n>', { 'blink_next', 'pmenu_next' })
-require('mini.keymap').map_multistep({ 'i', 'c' }, '<C-p>', { 'blink_prev', 'pmenu_prev' })
-require('mini.keymap').map_multistep({ 'i', 'c' }, '<Tab>', { 'blink_next', 'pmenu_next' })
-require('mini.keymap').map_multistep({ 'i', 'c' }, '<S-Tab>', { 'blink_prev', 'pmenu_prev' })
-require('mini.keymap').map_multistep({ 'i', 'c' }, '<CR>', { 'blink_accept', 'pmenu_accept' })
-require('mini.keymap').map_combo({ 'i', 'c', 'x', 's' }, 'jk', '<BS><BS><Esc>')
-require('mini.keymap').map_combo({ 'i', 'c', 'x', 's' }, 'kj', '<BS><BS><Esc>')
--- require('mini.keymap').map_combo('t', 'jk', '<BS><BS><C-\\><C-n>')
--- require('mini.keymap').map_combo('t', 'kj', '<BS><BS><C-\\><C-n>')
-
-U.nmap('-', open_file_explorer, 'Open file explorer')
-U.nmap('<Leader>f', MiniPick.builtin.files, 'Pick files')
-U.nmap('<Leader>g', MiniPick.builtin.grep_live, 'Live grep')
-U.nmap('<Leader>l', '<Cmd>Pick buf_lines scope="current"<CR>', 'Buf lines')
-U.nmap('<Leader>b', '<Cmd>Pick buffers include_current=false<CR>', 'Buf lines')
