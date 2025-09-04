@@ -27,6 +27,7 @@ local tools = {
   { name = 'pyright', cmd = 'uv tool install pyright' },
   { name = 'ruff', cmd = 'uv tool install ruff' },
   { name = 'pyproject-fmt', cmd = 'uv tool install pyproject-fmt' },
+  { name = 'zuban', cmd = 'uv tool install zuban' },
   --- mise managed tools
   { name = 'stylua', cmd = 'mise use -g stylua' },
   { name = 'taplo', cmd = 'mise use -g taplo' },
