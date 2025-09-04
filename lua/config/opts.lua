@@ -57,6 +57,16 @@ vim.o.winborder = 'rounded'
 vim.o.wrap = false
 vim.o.writebackup = false
 
+if vim.fn.executable('rg') == 1 then
+  vim.o.grepprg = "rg --vimgrep --hidden -g '!.git/*'"
+  vim.o.grepformat = '%f:%l:%c:%m,%f:%l:%m'
+end
+
+if vim.fn.executable('fd') == 1 and vim.fn.executable('fzf') == 1 then
+  function FuzzyFindFunc(cmdarg) return vim.fn.systemlist("fd --hidden . | fzf --filter='" .. cmdarg .. "'") end
+  vim.o.findfunc = 'v:lua.FuzzyFindFunc'
+end
+
 vim.cmd('packadd cfilter')
 vim.cmd('filetype plugin indent on')
 

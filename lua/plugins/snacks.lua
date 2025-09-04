@@ -4,4 +4,4 @@ require('snacks').setup({
   input = { enabled = true },
 })
 
-U.nmap('<Leader>gg', function() Snacks.lazygit() end, 'LazyGit')
+U.nmap('<Leader>s', function() Snacks.lazygit() end, 'LazyGit')
