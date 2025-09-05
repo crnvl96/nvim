@@ -1,5 +1,3 @@
-local U = require('utils')
-
 require('blink.cmp').setup({
   appearance = { nerd_font_variant = 'mono' },
   keymap = {
@@ -48,12 +46,14 @@ require('blink.cmp').setup({
             end,
           },
         },
-        treesitter = { 'lsp' },
       },
     },
   },
 })
 
 for _, hl in ipairs({ 'Pmenu' }) do
-  U.override_highlight(hl, { bg = 'none' })
+  local is_ok, hl_def = pcall(vim.api.nvim_get_hl, 0, { name = hl, link = false })
+  if is_ok then
+    vim.api.nvim_set_hl(0, hl, vim.tbl_deep_extend('force', hl_def --[[@as vim.api.keyset.highlight]], { bg = 'none' }))
+  end
 end

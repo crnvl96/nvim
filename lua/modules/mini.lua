@@ -1,5 +1,3 @@
-local U = require('utils')
-
 local minipath = vim.fn.stdpath('data') .. '/site/pack/deps/start/mini.nvim'
 
 --- Open MiniFiles at the current directory
@@ -69,14 +67,16 @@ for _, hl in ipairs({
   'MiniPickPromptCaret',
   'MiniPickPromptPrefix',
 }) do
-  U.override_highlight(hl, { bg = 'none' })
+  local is_ok, hl_def = pcall(vim.api.nvim_get_hl, 0, { name = hl, link = false })
+  if is_ok then
+    vim.api.nvim_set_hl(0, hl, vim.tbl_deep_extend('force', hl_def --[[@as vim.api.keyset.highlight]], { bg = 'none' }))
+  end
 end
 
 require('mini.doc').setup()
 require('mini.icons').setup()
 require('mini.misc').setup()
 require('mini.extra').setup()
-require('mini.indentscope').setup()
 require('mini.keymap').setup()
 require('mini.align').setup()
 
@@ -95,11 +95,6 @@ require('mini.ai').setup({
   },
 })
 
-require('mini.pick').setup({
-  options = { use_cache = true },
-  window = { prompt_prefix = '  ' },
-})
-
 require('mini.files').setup({
   mappings = {
     show_help = '?',
@@ -110,7 +105,7 @@ require('mini.files').setup({
   },
 })
 
-vim.ui.select = require('mini.pick').ui_select
+vim.keymap.set('n', '-', open_file_explorer)
 
 require('mini.keymap').map_multistep({ 'i', 'c' }, '<C-n>', { 'blink_next', 'pmenu_next' })
 require('mini.keymap').map_multistep({ 'i', 'c' }, '<C-p>', { 'blink_prev', 'pmenu_prev' })
@@ -121,9 +116,3 @@ require('mini.keymap').map_combo({ 'i', 'c', 'x', 's' }, 'jk', '<BS><BS><Esc>')
 require('mini.keymap').map_combo({ 'i', 'c', 'x', 's' }, 'kj', '<BS><BS><Esc>')
 require('mini.keymap').map_combo('t', 'jk', '<BS><BS><C-\\><C-n>')
 require('mini.keymap').map_combo('t', 'kj', '<BS><BS><C-\\><C-n>')
-
-U.nmap('-', open_file_explorer, 'Open file explorer')
-U.nmap('<Leader>f', MiniPick.builtin.files, 'Pick files')
-U.nmap('<Leader>g', MiniPick.builtin.grep_live, 'Live grep')
-U.nmap('<Leader>l', '<Cmd>Pick buf_lines scope="current"<CR>', 'Buf lines')
-U.nmap('<Leader>b', '<Cmd>Pick buffers include_current=false<CR>', 'Buf lines')

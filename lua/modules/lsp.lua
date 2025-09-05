@@ -1,5 +1,3 @@
-local U = require('utils')
-
 ---@brief
 ---
 --- ```lua
@@ -32,107 +30,34 @@ vim.lsp.config('*', {
   }),
 })
 
-vim.lsp.config('lua_ls', {
-  root_markers = { '.luarc.json', '.luarc.jsonc' },
-  settings = {
-    Lua = {
-      completion = { callSnippet = 'Disable' },
-      format = { enable = false },
-      hint = { enable = false },
-      runtime = { version = 'LuaJIT' },
-      workspace = {
-        checkThirdParty = false,
-        library = {
-          vim.env.VIMRUNTIME,
-          '${3rd}/luv/library',
-        },
-      },
-    },
-  },
+local files = os.getenv('HOME') .. '/.config/nvim/lsp/*.lua'
+local server_configs = vim
+  .iter(vim.fn.glob(files, true, true))
+  :map(function(file)
+    assert(loadfile(file))()
+    return vim.fn.fnamemodify(file, ':t:r')
+  end)
+  :totable()
+
+vim.lsp.enable(server_configs)
+
+vim.api.nvim_create_autocmd('LspAttach', {
+  group = vim.api.nvim_create_augroup('crnvl-lsp', { clear = true }),
+  callback = function(e)
+    local client = vim.lsp.get_client_by_id(e.data.client_id)
+    if not client then return end
+    vim.keymap.set('n', 'E', vim.diagnostic.open_float, { buffer = e.buf })
+    vim.keymap.set('n', 'K', vim.lsp.buf.hover, { buffer = e.buf })
+    vim.keymap.set('n', 'ga', vim.lsp.buf.code_action, { buffer = e.buf })
+    vim.keymap.set('n', 'gn', vim.lsp.buf.rename, { buffer = e.buf })
+    vim.keymap.set('n', 'gd', vim.lsp.buf.definition, { buffer = e.buf })
+    vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, { buffer = e.buf })
+    vim.keymap.set('n', 'gr', vim.lsp.buf.references, { buffer = e.buf, nowait = true })
+    vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, { buffer = e.buf })
+    vim.keymap.set('n', 'gy', vim.lsp.buf.type_definition, { buffer = e.buf })
+    vim.keymap.set('n', 'ge', vim.diagnostic.setqflist, { buffer = e.buf })
+    vim.keymap.set('n', 'gs', vim.lsp.buf.document_symbol, { buffer = e.buf })
+    vim.keymap.set('n', 'gS', vim.lsp.buf.workspace_symbol, { buffer = e.buf })
+    vim.keymap.set('i', '<C-k>', vim.lsp.buf.signature_help, { buffer = e.buf })
+  end,
 })
-
-vim.lsp.config('eslint', {
-  settings = {
-    format = false,
-  },
-})
-
-vim.lsp.config('dprint', {})
-
-vim.lsp.config('taplo', {})
-
-vim.lsp.config('ts_ls', {})
-
-vim.lsp.config('jsonls', {
-  settings = {
-    json = {
-      validate = { enable = true },
-      schemas = require('schemastore').json.schemas(),
-    },
-  },
-})
-
-vim.lsp.config('pyright', {
-  settings = {
-    pyright = {
-      disableOrganizeImports = true, -- Using Ruff's import organizer
-    },
-    python = {
-      analysis = {
-        ignore = { '*' }, -- Ignore all files for analysis to exclusively use Ruff for linting
-      },
-    },
-  },
-})
-
-vim.lsp.config('ruff', {
-  init_options = {
-    settings = { logLevel = 'debug' },
-  },
-})
-
-vim.lsp.config('yamlls', {
-  on_init = function(client) client.server_capabilities.documentFormattingProvider = true end,
-  settings = {
-    yaml = {
-      format = { enable = true },
-      schemastore = { enable = false, url = '' },
-      schemas = require('schemastore').yaml.schemas(),
-    },
-  },
-})
-
-vim.lsp.enable({
-  'eslint',
-  'lua_ls',
-  'jsonls',
-  'pyright',
-  'ruff',
-  'yamlls',
-  'dprint',
-  'taplo',
-  'ts_ls',
-})
-
-U.augroup('crnvl-lspattach', function(g)
-  U.aucmd('LspAttach', {
-    group = g,
-    callback = function(e)
-      local client = vim.lsp.get_client_by_id(e.data.client_id)
-      if not client then return end
-      U.lspmap(e.buf, 'E', vim.diagnostic.open_float, 'Show Error')
-      U.lspmap(e.buf, 'K', vim.lsp.buf.hover, 'Hover')
-      U.lspmap(e.buf, 'ga', vim.lsp.buf.code_action, 'Code Actions')
-      U.lspmap(e.buf, 'gn', vim.lsp.buf.rename, 'Rename Symbol')
-      U.lspmap(e.buf, 'gd', vim.lsp.buf.definition, 'Goto Definition')
-      U.lspmap(e.buf, 'gD', vim.lsp.buf.declaration, 'Goto Declaration')
-      U.lspmap(e.buf, 'gr', vim.lsp.buf.references, 'Goto References')
-      U.lspmap(e.buf, 'gi', vim.lsp.buf.implementation, 'Goto Implementations')
-      U.lspmap(e.buf, 'gy', vim.lsp.buf.type_definition, 'Goto T[y]pe Definitions')
-      U.lspmap(e.buf, 'ge', vim.diagnostic.setqflist, 'Send Diagnostics to Qf list')
-      U.lspmap(e.buf, 'gs', vim.lsp.buf.document_symbol, 'Show Document Symbols')
-      U.lspmap(e.buf, 'gS', vim.lsp.buf.workspace_symbol, 'Show Workspace Symbols')
-      U.lspmap(e.buf, '<C-k>', vim.lsp.buf.signature_help, 'Signature Help', 'i')
-    end,
-  })
-end)

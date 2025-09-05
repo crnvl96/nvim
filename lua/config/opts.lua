@@ -48,7 +48,7 @@ if vim.fn.executable('rg') == 1 then
 end
 
 if vim.fn.executable('fd') == 1 and vim.fn.executable('fzf') == 1 then
-  function _G.fuzzyfindfunc(cmdarg) return vim.fn.systemlist("fd --hidden . | fzf --filter='" .. cmdarg .. "'") end
+  function _G.fuzzyfindfunc(cmdarg) return vim.fn.systemlist("fd -t f -H . | fzf --filter='" .. cmdarg .. "'") end
   vim.opt.findfunc = 'v:lua._G.fuzzyfindfunc'
 end
 
@@ -71,6 +71,7 @@ vim.g.maplocalleader = ','
 
 vim.opt.background = 'dark'
 vim.opt.clipboard = 'unnamed'
+vim.opt.cmdheight = 1
 vim.opt.completeopt = 'menuone,noselect,noinsert'
 vim.opt.cursorline = false
 vim.opt.diffopt = 'internal,filler,closeoff,algorithm:histogram,linematch:60,indent-heuristic,vertical,context:99'
@@ -93,7 +94,7 @@ vim.opt.relativenumber = true
 vim.opt.ruler = false
 vim.opt.scrolloff = 8
 vim.opt.shiftwidth = 4
-vim.opt.shortmess:append('Wsa')
+vim.opt.shortmess = 'Wsa'
 vim.opt.showcmd = false
 vim.opt.sidescrolloff = 24
 vim.opt.signcolumn = 'yes'
@@ -112,9 +113,9 @@ vim.opt.wildignorecase = true
 vim.opt.wildmenu = true
 vim.opt.wildmode = 'noselect:longest:lastused,full'
 vim.opt.wildoptions:append('fuzzy')
-vim.opt.winborder = 'none'
+vim.opt.winborder = 'single'
 vim.opt.wrap = false
 vim.opt.writebackup = false
 
-vim.cmd('packadd cfilter')
 vim.cmd('filetype plugin indent on')
+vim.cmd('packadd cfilter')

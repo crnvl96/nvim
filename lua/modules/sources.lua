@@ -1,21 +1,14 @@
--- local U = require('utils')
-
---  --- Helper for mini.deps helper that wraps common operations on plugins that require a build step.
---  ---@param params table Params for building the plugin
---  ---@param cmd string Cmd to run then building the plugin
---  ---@return nil
--- local function build(params, cmd)
---   local name, path = params.name, params.path
---   local msg = ('Building %s'):format(name)
---   U.publish(msg .. '...')
---   local out = vim.system(vim.split(cmd, ' '), { cwd = path }):wait()
---
---   if out.code == 0 then
---     return U.publish(msg .. ' done!')
---   else
---     return U.publish(msg .. ' failed', vim.log.levels.ERROR)
---   end
--- end
+local function build_cargo(p)
+  vim.notify('Building ' .. p.name, vim.log.levels.INFO)
+  local cmd = { 'cargo', '+nightly', 'build', '--release' }
+  local opts = { cwd = p.path }
+  local obj = vim.system(cmd, opts):wait()
+  if obj.code == 0 then
+    vim.notify('Done!', vim.log.levels.INFO)
+  else
+    vim.notify('A Fail occurred!', vim.log.levels.ERROR)
+  end
+end
 
 MiniDeps.add({
   source = 'nvim-treesitter/nvim-treesitter',
@@ -32,16 +25,24 @@ MiniDeps.add({
 
 MiniDeps.add({
   source = 'Saghen/blink.cmp',
-  checkout = 'v1.6.0',
-  monitor = 'main',
+  hooks = {
+    post_install = build_cargo,
+    post_checkout = build_cargo,
+  },
+})
+
+MiniDeps.add({
+  source = 'dmtrKovalenko/fff.nvim',
+  hooks = {
+    post_install = build_cargo,
+    post_checkout = build_cargo,
+  },
 })
 
 MiniDeps.add({ source = 'neovim/nvim-lspconfig' })
 MiniDeps.add({ source = 'b0o/SchemaStore.nvim' })
-MiniDeps.add({ source = 'nvim-lua/plenary.nvim' })
-MiniDeps.add({ source = 'olimorris/codecompanion.nvim' })
 MiniDeps.add({ source = 'stevearc/conform.nvim' })
 MiniDeps.add({ source = 'MagicDuck/grug-far.nvim' })
 MiniDeps.add({ source = 'tpope/vim-sleuth' })
 MiniDeps.add({ source = 'tpope/vim-fugitive' })
-MiniDeps.add({ source = 'kassio/neoterm' })
+MiniDeps.add({ source = 'folke/snacks.nvim' })

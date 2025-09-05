@@ -1,6 +1,0 @@
-require('plugins.grug-far')
-require('plugins.treesitter')
-require('plugins.blink')
-require('plugins.codecompanion')
-require('plugins.conform')
-require('plugins.neoterm')

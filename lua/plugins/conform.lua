@@ -1,5 +1,3 @@
-local U = require('utils')
-
 vim.g.autoformat = true
 vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
 
@@ -9,9 +7,7 @@ require('conform').setup({
     if not vim.g.autoformat then return nil end
     return { timeout_ms = 500, lsp_format = 'fallback' }
   end,
-  formatters = {
-    prettier = { require_cwd = true },
-  },
+  formatters = { prettier = { require_cwd = true } },
   formatters_by_ft = {
     ['_'] = { 'trim_whitespace', 'trim_newlines' },
     markdown = { 'prettier', name = 'dprint' },
@@ -28,7 +24,7 @@ require('conform').setup({
   },
 })
 
-U.usercmd('ToggleFormat', 'Toggle conform.nvim auto formatting', function()
+vim.api.nvim_create_user_command('PluginToggleFormat', function()
   vim.g.autoformat = not vim.g.autoformat
-  U.publish(('%s formatting...'):format(vim.g.autoformat and 'Enabling' or 'Disabling'))
+  vim.notify(('%s formatting...'):format(vim.g.autoformat and 'Enabling' or 'Disabling'), vim.log.levels.INFO)
 end, { nargs = 0 })
