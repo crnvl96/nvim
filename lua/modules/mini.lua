@@ -55,13 +55,6 @@ for _, hl in ipairs({
   'MiniFilesNormal',
   'MiniFilesTitle',
   'MiniFilesTitleFocused',
-  'MiniClueBorder',
-  'MiniClueDescGroup',
-  'MiniClueDescSingle',
-  'MiniClueNextKey',
-  'MiniClueNextKeyWithPostkeys',
-  'MiniClueSeparator',
-  'MiniClueTitle',
   'MiniPickBorder',
   'MiniPickBorderBusy',
   'MiniPickBorderText',
@@ -75,31 +68,17 @@ for _, hl in ipairs({
   'MiniPickPrompt',
   'MiniPickPromptCaret',
   'MiniPickPromptPrefix',
-  'MiniStatuslineFilename',
-  'MiniStatuslineFileinfo',
-  'MiniStatuslineInactive',
 }) do
   U.override_highlight(hl, { bg = 'none' })
 end
-
-require('mini.notify').setup({
-  content = {
-    sort = function(notif_arr)
-      return MiniNotify.default_sort(vim.tbl_filter(function(notif)
-        if not (notif.data.source == 'lsp_progress' and notif.data.client_name == 'lua_ls') then return true end
-        -- Filter out some LSP progress notifications from 'lua_ls'
-        return notif.msg:find('Diagnosing') == nil and notif.msg:find('semantic tokens') == nil
-      end, notif_arr))
-    end,
-  },
-})
 
 require('mini.doc').setup()
 require('mini.icons').setup()
 require('mini.misc').setup()
 require('mini.extra').setup()
-require('mini.statusline').setup()
 require('mini.indentscope').setup()
+require('mini.keymap').setup()
+require('mini.align').setup()
 
 require('mini.ai').setup({
   custom_textobjects = {
@@ -117,16 +96,9 @@ require('mini.ai').setup({
 })
 
 require('mini.pick').setup({
-  options = {
-    use_cache = true,
-  },
-  window = {
-    prompt_caret = '▏',
-    prompt_prefix = '  ',
-  },
+  options = { use_cache = true },
+  window = { prompt_prefix = '  ' },
 })
-require('mini.keymap').setup()
-require('mini.align').setup()
 
 require('mini.files').setup({
   mappings = {
@@ -138,7 +110,6 @@ require('mini.files').setup({
   },
 })
 
-vim.notify = require('mini.notify').make_notify()
 vim.ui.select = require('mini.pick').ui_select
 
 require('mini.keymap').map_multistep({ 'i', 'c' }, '<C-n>', { 'blink_next', 'pmenu_next' })
@@ -156,54 +127,3 @@ U.nmap('<Leader>f', MiniPick.builtin.files, 'Pick files')
 U.nmap('<Leader>g', MiniPick.builtin.grep_live, 'Live grep')
 U.nmap('<Leader>l', '<Cmd>Pick buf_lines scope="current"<CR>', 'Buf lines')
 U.nmap('<Leader>b', '<Cmd>Pick buffers include_current=false<CR>', 'Buf lines')
-
-vim.schedule(
-  --- Ensure that the keymap clues are constructed lastly (So that all keymaps have already been set.
-  ---@return nil
-  function()
-    require('mini.clue').setup({
-      triggers = {
-        -- Builtins.
-        { mode = 'n', keys = 'g' },
-        { mode = 'x', keys = 'g' },
-        { mode = 'n', keys = '`' },
-        { mode = 'x', keys = '`' },
-        { mode = 'n', keys = '"' },
-        { mode = 'x', keys = '"' },
-        { mode = 'i', keys = '<C-r>' },
-        { mode = 'c', keys = '<C-r>' },
-        { mode = 'n', keys = '<C-w>' },
-        { mode = 'i', keys = '<C-x>' },
-        { mode = 'n', keys = 'z' },
-        -- Leader triggers.
-        { mode = 'n', keys = '<leader>' },
-        { mode = 'x', keys = '<leader>' },
-        -- Moving between stuff.
-        { mode = 'n', keys = '[' },
-        { mode = 'n', keys = ']' },
-      },
-      clues = {
-        -- Leader/movement groups.
-        { mode = 'n', keys = '<leader>c', desc = '+Codecompanion' },
-        { mode = 'x', keys = '<leader>c', desc = '+Codecompanion' },
-        { mode = 'n', keys = '[', desc = '+prev' },
-        { mode = 'n', keys = ']', desc = '+next' },
-        -- Builtins.
-        require('mini.clue').gen_clues.builtin_completion(),
-        require('mini.clue').gen_clues.g(),
-        require('mini.clue').gen_clues.marks(),
-        require('mini.clue').gen_clues.registers(),
-        require('mini.clue').gen_clues.windows(),
-        require('mini.clue').gen_clues.z(),
-      },
-      window = {
-        delay = 500,
-        scroll_down = '<C-f>',
-        scroll_up = '<C-b>',
-        config = {
-          width = 'auto',
-        },
-      },
-    })
-  end
-)

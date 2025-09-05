@@ -12,6 +12,15 @@ function M.augroup(name, fn, opts)
   fn(vim.api.nvim_create_augroup(name, opts))
 end
 
+---@param name string Name of the command
+---@param desc string Description of the usercmd
+---@param fn fun(): nil Function to be executed
+---@param opts? vim.api.keyset.user_command usercmd opts
+function M.usercmd(name, desc, fn, opts)
+  opts = vim.tbl_deep_extend('force', { desc = desc }, opts or {})
+  vim.api.nvim_create_user_command(name, fn, opts)
+end
+
 --- A wrapper over vim.keymap.set with some presets
 ---@param lhs string Left-hand side |{lhs}| of the mapping.
 ---@param rhs string|function Right-hand side |{rhs}| of the mapping, can be a Lua function.
@@ -71,22 +80,11 @@ end
 
 --- A small wrapper that auto handles the cleaning of published notifications
 ---@param msg string Msg to be published
----@param lvl? string Lvl of the publication. Defaults to INFO
+---@param lvl? vim.log.levels Lvl of the publication. Defaults to INFO
 ---@return nil
 function M.publish(msg, lvl)
-  local durations = {
-    ERROR = 3000,
-    WARN = 2000,
-    INFO = 2000,
-    DEBUG = 0,
-    TRACE = 0,
-    OFF = 0,
-  }
-
-  lvl = lvl or 'INFO'
-  local id = MiniNotify.add(msg, lvl)
-  local function clear() MiniNotify.remove(id) end
-  vim.defer_fn(clear, durations[lvl])
+  lvl = lvl or vim.log.levels.INFO
+  vim.notify(msg, lvl)
 end
 
 return M

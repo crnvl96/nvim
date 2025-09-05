@@ -5,7 +5,7 @@ local function node_bin(v) return os.getenv('HOME') .. '/.local/share/mise/insta
 
 local version = vim.fn.system(node_version_cmd):gsub('\n', '')
 if version == '' then
-  U.publish('Could not determine Node.js version', 'WARN')
+  U.publish('Could not determine Node.js version', vim.log.levels.WARN)
 else
   local bin = node_bin(version)
   vim.g.node_host_prog = bin .. 'node'

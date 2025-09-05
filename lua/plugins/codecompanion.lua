@@ -31,35 +31,23 @@ end
 
 require('codecompanion').setup({
   strategies = {
-    chat = {
-      adapter = 'gemini_cli',
-    },
-    inline = {
-      adapter = 'gemini_cli',
-    },
-    cmd = {
-      adapter = 'gemini_cli',
-    },
+    chat = { adapter = 'gemini_cli' },
+    inline = { adapter = 'gemini_cli' },
+    cmd = { adapter = 'gemini_cli' },
   },
   adapters = {
     acp = {
       gemini_cli = function()
         return require('codecompanion.adapters').extend('gemini_cli', {
-          defaults = {
-            mcpServers = {},
-          },
-          env = {
-            GEMINI_API_KEY = retrieve_from_env('GEMINI_API_KEY'),
-          },
+          defaults = { mcpServers = {} },
+          env = { GEMINI_API_KEY = retrieve_from_env('GEMINI_API_KEY') },
         })
       end,
     },
     http = {
       tavily = function()
         return require('codecompanion.adapters').extend('tavily', {
-          env = {
-            TAVILY_API_KEY = retrieve_from_env('TAVILY_API_KEY'),
-          },
+          env = { TAVILY_API_KEY = retrieve_from_env('TAVILY_API_KEY') },
         })
       end,
     },

@@ -1,17 +1,13 @@
 local U = require('utils')
 
 require('blink.cmp').setup({
-  appearance = {
-    nerd_font_variant = 'mono',
-  },
+  appearance = { nerd_font_variant = 'mono' },
   keymap = {
     preset = 'default',
     ['<C-n>'] = { 'show', 'select_next', 'fallback_to_mappings' },
   },
   cmdline = {
-    keymap = {
-      preset = 'inherit',
-    },
+    keymap = { preset = 'inherit' },
     completion = {
       list = {
         selection = {
@@ -30,9 +26,7 @@ require('blink.cmp').setup({
         auto_insert = true,
       },
     },
-    documentation = {
-      auto_show = true,
-    },
+    documentation = { auto_show = true },
     menu = {
       scrollbar = false,
       draw = {
@@ -54,9 +48,7 @@ require('blink.cmp').setup({
             end,
           },
         },
-        treesitter = {
-          'lsp',
-        },
+        treesitter = { 'lsp' },
       },
     },
   },

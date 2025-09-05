@@ -3,10 +3,9 @@
     "vim",
     "MiniDeps",
     "Snacks",
-    "MiniNotify",
     "MiniIcons",
     "MiniPick",
     "MiniMisc",
-        "MiniExtra"
+    "MiniExtra"
   ]
 }

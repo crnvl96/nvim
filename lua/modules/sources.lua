@@ -13,7 +13,7 @@
 --   if out.code == 0 then
 --     return U.publish(msg .. ' done!')
 --   else
---     return U.publish(msg .. ' failed', 'ERROR')
+--     return U.publish(msg .. ' failed', vim.log.levels.ERROR)
 --   end
 -- end
 
@@ -36,21 +36,12 @@ MiniDeps.add({
   monitor = 'main',
 })
 
-MiniDeps.add({
-  source = 'mrcjkb/rustaceanvim',
-  version = 'v6.9.1',
-  monitor = 'master',
-})
-
+MiniDeps.add({ source = 'neovim/nvim-lspconfig' })
 MiniDeps.add({ source = 'b0o/SchemaStore.nvim' })
 MiniDeps.add({ source = 'nvim-lua/plenary.nvim' })
 MiniDeps.add({ source = 'olimorris/codecompanion.nvim' })
 MiniDeps.add({ source = 'stevearc/conform.nvim' })
-MiniDeps.add({ source = 'Saecki/crates.nvim' })
 MiniDeps.add({ source = 'MagicDuck/grug-far.nvim' })
 MiniDeps.add({ source = 'tpope/vim-sleuth' })
-MiniDeps.add({ source = 'brianhuster/unnest.nvim' })
 MiniDeps.add({ source = 'tpope/vim-fugitive' })
 MiniDeps.add({ source = 'kassio/neoterm' })
-MiniDeps.add({ source = 'folke/snacks.nvim' })
-MiniDeps.add({ source = 'NickvanDyke/opencode.nvim' })
