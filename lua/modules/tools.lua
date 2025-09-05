@@ -79,6 +79,21 @@ local tools = {
     install = 'uv tool install pyrefly',
     update = 'uv tool upgrade pyrefly',
   },
+  {
+    name = 'zuban',
+    install = 'uv tool install zuban',
+    update = 'uv tool upgrade zuban',
+  },
+  {
+    name = 'ty',
+    install = 'uv tool install ty',
+    update = 'uv tool upgrade ty',
+  },
+  {
+    name = 'pyright',
+    install = 'uv tool install pyright',
+    update = 'uv tool upgrade pyright',
+  },
   --- mise managed tools
   {
     name = 'stylua',
