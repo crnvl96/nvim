@@ -10,7 +10,7 @@ require('modules.picker')
 
 require('plugins.fff')
 require('plugins.grug-far')
+require('plugins.quicker')
 require('plugins.treesitter')
 require('plugins.blink')
 require('plugins.conform')
-require('plugins.snacks')

@@ -6,9 +6,9 @@ return {
   ["grug-far.nvim"] = "c5b629399c0f2e436c00df381e44852a13b7313a",
   ["mini.nvim"] = "7bbafa4691147bc8b74a51986b957daca14c1876",
   ["nvim-lspconfig"] = "3e89e4973d784e1c966517e528b3a30395403fa7",
-  ["nvim-treesitter"] = "802195d8f1980db25a7a39a55f9a25df21756c73",
+  ["nvim-treesitter"] = "9addcdd01568a7c80333d5169dea0164ede5dd3d",
   ["nvim-treesitter-textobjects"] = "1b2d85d3de6114c4bcea89ffb2cd1ce9e3a19931",
-  ["snacks.nvim"] = "bc0630e43be5699bb94dadc302c0d21615421d93",
+  ["quicker.nvim"] = "6b88ca4d70e35df877d9564beba83f00ba0c3133",
   ["vim-fugitive"] = "61b51c09b7c9ce04e821f6cf76ea4f6f903e3cf4",
   ["vim-sleuth"] = "be69bff86754b1aa5adcbb527d7fcd1635a84080"
 }

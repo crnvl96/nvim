@@ -94,7 +94,7 @@ vim.opt.relativenumber = true
 vim.opt.ruler = false
 vim.opt.scrolloff = 8
 vim.opt.shiftwidth = 4
-vim.opt.shortmess = 'Wsa'
+vim.opt.shortmess:append('Wsa')
 vim.opt.showcmd = false
 vim.opt.sidescrolloff = 24
 vim.opt.signcolumn = 'yes'
