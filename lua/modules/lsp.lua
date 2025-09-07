@@ -1,25 +1,3 @@
----@brief
----
---- ```lua
---- Tools = {
----   {
----     name = 'uv managed tools',
----     install = 'uv tool install pyright ruff',
----     update = 'uv tool upgrade pyright ruff',
----   },
----   {
----     name = 'mise managed tools',
----     install = 'mise use -g stylua taplo prettier jq dprint lua-language-server',
----     update = 'mise upgrade --bump',
----   },
----   {
----     name = 'npm managed tools',
----     install = 'npm i -g vscode-langservers-extracted typescript-language-server yaml-language-server',
----     update = 'npm i -g vscode-langservers-extracted@latest typescript-language-server@latest yaml-language-server@latest',
----   },
---- }
---- ```
-
 vim.lsp.config('*', {
   capabilities = require('blink.cmp').get_lsp_capabilities({
     general = {
