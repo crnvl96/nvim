@@ -1,4 +1,4 @@
-return vim.lsp.config('yamlls', {
+return {
   on_init = function(client) client.server_capabilities.documentFormattingProvider = true end,
   settings = {
     yaml = {
@@ -7,4 +7,4 @@ return vim.lsp.config('yamlls', {
       schemas = require('schemastore').yaml.schemas(),
     },
   },
-})
+}

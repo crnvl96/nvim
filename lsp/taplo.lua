@@ -1,1 +1,1 @@
-return vim.lsp.config('taplo', {})
+return {}

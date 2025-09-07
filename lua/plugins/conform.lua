@@ -13,6 +13,7 @@ require('conform').setup({
     markdown = { 'prettier', name = 'dprint' },
     json = { 'prettier', name = 'dprint' },
     jsonc = { 'prettier', name = 'dprint' },
+    rust = { 'rustfmt' },
     toml = { name = 'dprint' },
     python = { 'ruff_fix', 'ruff_organize_imports', 'ruff_format', name = 'dprint' },
     javascript = { 'prettier', name = 'dprint' },

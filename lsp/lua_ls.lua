@@ -1,4 +1,4 @@
-return vim.lsp.config('lua_ls', {
+return {
   root_markers = { '.luarc.json', '.luarc.jsonc' },
   settings = {
     Lua = {
@@ -15,4 +15,4 @@ return vim.lsp.config('lua_ls', {
       },
     },
   },
-})
+}

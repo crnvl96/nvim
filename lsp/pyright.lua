@@ -1,4 +1,4 @@
-return vim.lsp.config('pyright', {
+return {
   settings = {
     pyright = {
       disableOrganizeImports = true, -- Using Ruff's import organizer
@@ -9,4 +9,4 @@ return vim.lsp.config('pyright', {
       },
     },
   },
-})
+}
