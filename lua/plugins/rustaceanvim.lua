@@ -3,6 +3,11 @@ vim.g.rustaceanvim = {
     on_attach = function(_, buf)
       vim.keymap.set('n', 'ga', function() vim.cmd.RustLsp('codeAction') end, { buffer = buf })
     end,
+    capabilities = {
+      general = {
+        positionEncodings = { 'utf-16' },
+      },
+    },
     default_settings = {
       ['rust-analyzer'] = {
         cargo = {
