@@ -39,6 +39,11 @@ MiniDeps.add({
   },
 })
 
+MiniDeps.add({
+  source = 'mrcjkb/rustaceanvim',
+  version = 'v6.9.1',
+})
+
 MiniDeps.add({ source = 'neovim/nvim-lspconfig' })
 MiniDeps.add({ source = 'b0o/SchemaStore.nvim' })
 MiniDeps.add({ source = 'stevearc/conform.nvim' })
