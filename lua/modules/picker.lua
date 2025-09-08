@@ -26,4 +26,3 @@ vim.api.nvim_create_autocmd('FileType', {
 })
 
 vim.keymap.set('n', '<leader>b', ':b<space>')
-vim.keymap.set('n', '<leader>g', ':Zgrep<space>')

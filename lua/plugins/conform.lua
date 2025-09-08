@@ -11,8 +11,8 @@ require('conform').setup({
   formatters_by_ft = {
     ['_'] = { 'trim_whitespace', 'trim_newlines' },
     markdown = { 'prettier', name = 'dprint' },
-    json = { 'prettier', name = 'dprint' },
-    jsonc = { 'prettier', name = 'dprint' },
+    json = { 'jq', name = 'dprint' },
+    jsonc = { 'jq', name = 'dprint' },
     rust = { 'rustfmt' },
     toml = { name = 'dprint' },
     python = { 'ruff_fix', 'ruff_organize_imports', 'ruff_format', name = 'dprint' },
