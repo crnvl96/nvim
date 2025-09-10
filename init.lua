@@ -1,70 +1,47 @@
 ------------------------------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------------------------
----------------------------------------- Diagnostic
-------------------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------------------
-
---- Confirure the behavior of diagnostics in neovim
---- We want to not trigger this immediately on startup, that's why we wrap it under `vim.schedule`
-vim.schedule(
-  function()
-    vim.diagnostic.config({
-      update_in_insert = false,
-      float = { source = true },
-      signs = {
-        priority = 9999,
-        severity = {
-          min = vim.diagnostic.severity.WARN,
-          max = vim.diagnostic.severity.ERROR,
-        },
-      },
-      underline = {
-        severity = {
-          min = vim.diagnostic.severity.HINT,
-          max = vim.diagnostic.severity.ERROR,
-        },
-      },
-      virtual_lines = false,
-      virtual_text = {
-        current_line = true,
-        severity = {
-          min = vim.diagnostic.severity.ERROR,
-          max = vim.diagnostic.severity.ERROR,
-        },
-      },
-    })
-  end
-)
-
-------------------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------------------
 ---------------------------------------- Opts
 ------------------------------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------------------------
 
-vim.g.loaded_netrw = 1 -- Disable netrw
-vim.g.loaded_netrwPlugin = 1 -- Disable netrw
-vim.g.loaded_node_provider = 0
-vim.g.loaded_perl_provider = 0
-vim.g.loaded_python3_provider = 0
-vim.g.loaded_ruby_provider = 0
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
+vim.g.loaded_node_provider = 0 -- Disable NodeJS support
+vim.g.loaded_perl_provider = 0 -- Disable Perl support
+vim.g.loaded_python3_provider = 0 -- Disable Python support
+vim.g.loaded_ruby_provider = 0 -- Disable Ruby support
+
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ','
-vim.g.markdown_folding = 1 -- Use folding by heading in markdown files
-vim.opt.autoindent = true -- Use auto indent
+vim.g.markdown_folding = 1
+
+vim.opt.autoindent = true
 vim.opt.background = 'dark'
 vim.opt.backup = false
-vim.opt.breakindent = true -- Indent wrapped lines to match line start
-vim.opt.breakindentopt = 'list:-1' -- Add padding for lists when 'wrap' is on
+vim.opt.breakindent = true
+vim.opt.breakindentopt = 'list:-1'
 vim.opt.clipboard = 'unnamed'
 vim.opt.cmdheight = 1
-vim.opt.colorcolumn = '+1' -- Draw colored column one step to the right of desired maximum width
-vim.opt.complete = '.,w,b,kspell' -- Use spell check and don't use tags for completion
-vim.opt.completeopt = 'menuone,noselect' -- Show popup even with one item and don't autoselect first
-vim.opt.cursorline = true -- Enable highlighting of the current line
-vim.opt.cursorlineopt = 'screenline,number' -- Show cursor line only screen line when wrapped
-vim.opt.diffopt = 'internal,filler,closeoff,algorithm:histogram,linematch:60,indent-heuristic,vertical,context:99'
-vim.opt.expandtab = true -- Convert tabs to spaces
+vim.opt.colorcolumn = '+1'
+vim.opt.complete = '.,w,b,kspell'
+vim.opt.completeopt = table.concat({
+  'menuone',
+  'noselect',
+}, ',')
+vim.opt.cursorline = true
+vim.opt.cursorlineopt = 'screenline,number'
+vim.opt.diffopt = table.concat({
+  'internal',
+  'filler',
+  'closeoff',
+  'algorithm:histogram',
+  'linematch:60',
+  'indent-heuristic',
+  'vertical',
+  'context:99',
+}, ',')
+vim.opt.expandtab = true
 vim.opt.fillchars = table.concat({
   'eob: ',
   'fold:╌',
@@ -77,31 +54,36 @@ vim.opt.fillchars = table.concat({
   'vertright:╠',
 }, ',')
 vim.opt.foldcolumn = '0'
-vim.opt.foldlevel = 1 -- Display all folds except top ones
+vim.opt.foldlevel = 1
 vim.opt.foldlevelstart = 99
-vim.opt.foldmethod = 'indent' -- Set 'indent' folding method
-vim.opt.foldnestmax = 10 -- Create folds only for some number of nested levels
+vim.opt.foldmethod = 'indent'
+vim.opt.foldnestmax = 10
 vim.opt.foldtext = ''
--- Define pattern for a start of 'numbered' list. This is responsible for
--- correct formatting of lists when using `gw`. This basically reads as 'at
--- least one special character (digit, -, +, *) possibly followed some
--- punctuation (. or `)`) followed by at least one space is a start of list
--- item'
 vim.opt.formatlistpat = [[^\s*[0-9\-\+\*]\+[\.\)]*\s\+]]
-vim.opt.formatoptions = 'rqnl1j' -- Improve comment editing
-vim.opt.guicursor = 'n-v-c-sm:block,i-ci-ve:ver25,r-cr-o:hor20,t:block-TermCursor'
-vim.opt.ignorecase = true -- Ignore case when searching (use `\C` to force not doing that)
-vim.opt.incsearch = true -- Show search results while typing
-vim.opt.infercase = true -- Infer letter cases for a richer built-in keyword completion
-vim.opt.iskeyword = '@,48-57,_,192-255,-' -- Treat dash separated words as a word text object
+vim.opt.formatoptions = 'rqnl1j'
+vim.opt.guicursor = table.concat({
+  'n-v-c-sm:block',
+  'i-ci-ve:ver25',
+  'r-cr-o:hor20',
+  't:block-TermCursor',
+}, ',')
+vim.opt.ignorecase = true
+vim.opt.incsearch = true
+vim.opt.infercase = true
+vim.opt.iskeyword = '@,48-57,_,192-255,-'
 vim.opt.laststatus = 0
-vim.opt.linebreak = true -- Wrap long lines at 'breakat' (if 'wrap' is set)
-vim.opt.list = true -- Show helpful character indicators
-vim.opt.listchars = table.concat({ 'extends:…', 'nbsp:␣', 'precedes:…', 'tab:> ' }, ',') -- Special text symbols
+vim.opt.linebreak = true
+vim.opt.list = true
+vim.opt.listchars = table.concat({
+  'extends:…',
+  'nbsp:␣',
+  'precedes:…',
+  'tab:> ',
+}, ',')
 vim.opt.mouse = 'a'
 vim.opt.mousescroll = 'ver:3,hor:0'
-vim.opt.number = true -- Show line numbers
-vim.opt.pumheight = 10 -- Make popup menu smaller
+vim.opt.number = true
+vim.opt.pumheight = 10
 
 local function get_quickfix_items(info)
   if info.quickfix == 1 then
@@ -147,56 +129,56 @@ end
 
 vim.opt.qftf = '{info -> v:lua._G.qftf(info)}'
 vim.opt.relativenumber = true
-vim.opt.ruler = false -- Don't show cursor position
+vim.opt.ruler = false
 vim.opt.scrolloff = 8
-vim.opt.shada = "'100,<50,s10,:1000,/100,@100,h" -- Limit what is stored in ShaDa file
-vim.opt.shiftwidth = 4 -- Use this number of spaces for indentation
-vim.opt.shortmess = 'FOSWaco' -- Disable certain messages from |ins-completion-menu|
+vim.opt.shada = "'100,<50,s10,:1000,/100,@100,h"
+vim.opt.shiftwidth = 4
+vim.opt.shortmess = 'FOSWaco'
 vim.opt.showcmd = false
-vim.opt.showmode = false -- Don't show mode in command line
+vim.opt.showmode = false
 vim.opt.sidescrolloff = 24
-vim.opt.signcolumn = 'yes' -- Always show signcolumn or it would frequently shift
-vim.opt.smartcase = true -- Don't ignore case when searching if pattern has upper case
-vim.opt.smartindent = true -- Make indenting smart
-vim.opt.spelloptions = 'camel' -- Treat parts of camelCase words as seprate words
-vim.opt.splitbelow = true -- Horizontal splits will be below
-vim.opt.splitright = true -- Vertical splits will be to the right
+vim.opt.signcolumn = 'yes'
+vim.opt.smartcase = true
+vim.opt.smartindent = true
+vim.opt.spelloptions = 'camel'
+vim.opt.splitbelow = true
+vim.opt.splitright = true
 vim.opt.swapfile = false
-vim.opt.switchbuf = 'usetab' -- Use already opened buffers when switching
-vim.opt.tabstop = 4 -- Insert 2 spaces for a tab
+vim.opt.switchbuf = 'usetab'
+vim.opt.tabstop = 4
 vim.opt.timeoutlen = 1000
 vim.opt.ttimeoutlen = 10
 vim.opt.undofile = true
 vim.opt.updatetime = 300
-vim.opt.virtualedit = 'block' -- Allow going past the end of line in visual block mode
+vim.opt.virtualedit = 'block'
 vim.opt.wildignore:append('.DS_Store')
 vim.opt.wildignorecase = true
 vim.opt.wildmenu = true
 vim.opt.wildmode = 'noselect:longest:lastused,full'
 vim.opt.wrap = false
-vim.opt.wrap = false -- Display long lines as just one line
+vim.opt.wrap = false
 vim.opt.writebackup = false
 
 if vim.fn.has('nvim-0.9') == 1 then
-  vim.opt.shortmess = 'CFOSWaco' -- Don't show "Scanning..." messages
-  vim.opt.splitkeep = 'screen' -- Reduce scroll during window split
+  vim.opt.shortmess = 'CFOSWaco'
+  vim.opt.splitkeep = 'screen'
 end
 
 if vim.fn.has('nvim-0.10') == 1 then
-  vim.opt.foldtext = '' -- Use underlying text with its highlighting
-  vim.opt.termguicolors = true -- Enable gui colors (Neovim>=0.10 does this automatically)
+  vim.opt.foldtext = ''
+  vim.opt.termguicolors = true
 end
 
 if vim.fn.has('nvim-0.11') == 1 then
-  vim.opt.winborder = 'double' -- Use double-line as default border
-  vim.opt.completeopt = 'menuone,noselect,fuzzy,nosort' -- Use fuzzy matching for built-in completion
+  vim.opt.winborder = 'double'
+  vim.opt.completeopt = 'menuone,noselect,fuzzy,nosort'
 end
 
 if vim.fn.has('nvim-0.12') == 1 then
-  vim.opt.pummaxwidth = 100 -- Limit maximum width of popup menu
-  vim.opt.completefuzzycollect = 'keyword,files,whole_line' -- Use fuzzy matching when collecting candidates
+  vim.opt.pummaxwidth = 100
+  vim.opt.completefuzzycollect = 'keyword,files,whole_line'
   require('vim._extui').enable({ enable = true })
-  vim.cmd([[autocmd CmdlineChanged [:/\?@] call wildtrigger()]]) -- Command line autocompletion
+  vim.cmd([[autocmd CmdlineChanged [:/\?@] call wildtrigger()]])
   vim.opt.wildmode = 'noselect:lastused'
   vim.opt.wildoptions = 'pum,fuzzy'
   vim.keymap.set('c', '<Up>', '<C-u><Up>')
@@ -218,8 +200,6 @@ end
 vim.cmd('filetype plugin indent on')
 vim.cmd('packadd cfilter')
 
--- Enable syntax highlighing if it wasn't already (as it is time consuming)
--- Don't use defer it because it affects start screen appearance
 if vim.fn.exists('syntax_on') ~= 1 then vim.cmd('syntax enable') end
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -230,26 +210,19 @@ if vim.fn.exists('syntax_on') ~= 1 then vim.cmd('syntax enable') end
 
 vim.api.nvim_create_autocmd('FileType', {
   group = vim.api.nvim_create_augroup('crnvl96-custom-settings', {}),
-  callback = function()
-    -- Don't auto-wrap comments and don't insert comment leader after hitting 'o'
-    -- If don't do this on `FileType`, this keeps reappearing due to being set in
-    -- filetype plugins.
-    vim.cmd('setlocal formatoptions-=c formatoptions-=o')
-  end,
+  callback = function() vim.cmd('setlocal formatoptions-=c formatoptions-=o') end,
   desc = [[Ensure proper 'formatoptions']],
 })
 
 vim.api.nvim_create_autocmd('QuickFixCmdPost', {
   group = vim.api.nvim_create_augroup('crnvl-post-grep-events', { clear = true }),
   pattern = '*grep*',
-  -- Auto open quickfix window after grep command
   command = 'cwindow',
 })
 
 vim.api.nvim_create_autocmd({ 'FocusGained', 'TermClose', 'TermLeave' }, {
   group = vim.api.nvim_create_augroup('crnvl-checktime', { clear = true }),
   callback = function()
-    -- Auto update neovim after some content has been changed due to an external process
     if vim.o.buftype ~= 'nofile' then vim.cmd('checktime') end
   end,
 })
@@ -320,7 +293,6 @@ local function term_send_esc(key)
   end
 end
 
--- Paste before/after linewise
 local paste_cmd = vim.fn.has('nvim-0.12') == 1 and 'iput' or 'put'
 vim.keymap.set({ 'n', 'x' }, '[p', '<Cmd>exe "' .. paste_cmd .. '! " . v:register<CR>', { desc = 'Paste Above' })
 vim.keymap.set({ 'n', 'x' }, ']p', '<Cmd>exe "' .. paste_cmd .. ' "  . v:register<CR>', { desc = 'Paste Below' })
@@ -376,6 +348,40 @@ end
 
 ------------------------------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------------------------
+---------------------------------------- Diagnostic
+------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+
+vim.diagnostic.config({
+  update_in_insert = false, -- Update diagnostics only on `InserLeave`
+  float = {
+    source = true, -- Show the diagnostic source on the float window
+  },
+  signs = {
+    priority = 9999, -- Ensure these are visible on the signcolumn
+    severity = { -- Only show signs for diagnostics matching this severity range
+      min = vim.diagnostic.severity.WARN,
+      max = vim.diagnostic.severity.ERROR,
+    },
+  },
+  underline = { -- Only show underline for diagnostics matching this severity range
+    severity = {
+      min = vim.diagnostic.severity.HINT,
+      max = vim.diagnostic.severity.ERROR,
+    },
+  },
+  virtual_lines = false,
+  virtual_text = {
+    current_line = true, -- Show virtual text only for the diagnostic(s) of the cursor line
+    severity = { -- Only show virtual text for diagnostics matching this severity range
+      min = vim.diagnostic.severity.ERROR,
+      max = vim.diagnostic.severity.ERROR,
+    },
+  },
+})
+
+------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
 ---------------------------------------- Package manager
 ------------------------------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------------------------
@@ -403,60 +409,7 @@ MiniDeps.add({ name = 'mini.nvim' })
 ------------------------------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------------------------
 
-local hues, colors = require('mini.hues'), require('mini.colors')
-hues.apply_palette(hues.make_palette({
-  background = vim.o.background == 'dark' and '#16161D' or '#e1e2e3',
-  foreground = vim.o.background == 'dark' and '#DCD7BA' or '#2f2e2d',
-  saturation = vim.o.background == 'dark' and 'lowmedium' or 'mediumhigh',
-  accent = 'bg',
-}))
-
-colors
-  .get_colorscheme()
-  :add_terminal_colors()
-  :add_cterm_attributes()
-  :add_transparency({
-    float = true,
-    statuscolumn = true,
-    statusline = false,
-    tabline = true,
-    winbar = true,
-  })
-  :apply()
-
-for _, hl in ipairs({
-  'Pmenu',
-  'StatusLine',
-  'StatusLineNC',
-  'StatusLineTerm',
-  'StatusLineTermNC',
-  --
-  'MiniFilesBorder',
-  'MiniFilesBorderModified',
-  'MiniFilesDirectory',
-  'MiniFilesFile',
-  'MiniFilesNormal',
-  'MiniFilesTitle',
-  'MiniFilesTitleFocused',
-  'MiniPickBorder',
-  'MiniPickBorderBusy',
-  'MiniPickBorderText',
-  'MiniPickCursor',
-  'MiniPickIconDirectory',
-  'MiniPickIconFile',
-  'MiniPickHeader',
-  'MiniPickNormal',
-  'MiniPickPreviewLine',
-  'MiniPickPreviewRegion',
-  'MiniPickPrompt',
-  'MiniPickPromptCaret',
-  'MiniPickPromptPrefix',
-}) do
-  local is_ok, hl_def = pcall(vim.api.nvim_get_hl, 0, { name = hl, link = false })
-  if is_ok then
-    vim.api.nvim_set_hl(0, hl, vim.tbl_deep_extend('force', hl_def --[[@as vim.api.keyset.highlight]], { bg = 'none' }))
-  end
-end
+vim.cmd.colorscheme('ham')
 
 require('mini.doc').setup()
 require('mini.icons').setup()
@@ -629,15 +582,15 @@ local function on_attach(client, buf)
 end
 
 -- Override the virtual text diagnostic handler so that the most severe diagnostic is shown first.
-local show_handler = vim.diagnostic.handlers.virtual_text.show
-assert(show_handler)
-local hide_handler = vim.diagnostic.handlers.virtual_text.hide
-vim.diagnostic.handlers.virtual_text = {
+local show_handler = vim.diagnostic.handlers.virtual_text.show -- Get the original show handler
+assert(show_handler) -- Validate that handler exists
+local hide_handler = vim.diagnostic.handlers.virtual_text.hide -- Get the original hide handler
+vim.diagnostic.handlers.virtual_text = { -- Set the virtual text of diagnostics
   show = function(ns, bufnr, diagnostics, opts)
-    table.sort(diagnostics, function(diag1, diag2) return diag1.severity > diag2.severity end)
-    return show_handler(ns, bufnr, diagnostics, opts)
+    table.sort(diagnostics, function(diag1, diag2) return diag1.severity > diag2.severity end) -- Sort the diagnostics by severity
+    return show_handler(ns, bufnr, diagnostics, opts) -- Overwrite the original handler
   end,
-  hide = hide_handler,
+  hide = hide_handler, -- Use the original handler
 }
 
 local hover = vim.lsp.buf.hover
@@ -694,19 +647,19 @@ require('conform').setup({
   end,
   formatters = { prettier = { require_cwd = true } },
   formatters_by_ft = {
-    ['_'] = { 'trim_whitespace', 'trim_newlines' },
-    markdown = { 'prettier', name = 'dprint' },
+    lua = { 'stylua' },
+    yaml = { 'prettier' },
     json = { 'jq', name = 'dprint' },
     jsonc = { 'jq', name = 'dprint' },
     rust = { 'rustfmt' },
     toml = { name = 'dprint' },
     python = { 'ruff_fix', 'ruff_organize_imports', 'ruff_format', name = 'dprint' },
+    markdown = { 'prettier', name = 'dprint' },
     javascript = { 'prettier', name = 'dprint' },
     typescript = { 'prettier', name = 'dprint' },
     javascriptreact = { 'prettier', name = 'dprint' },
     typescriptreact = { 'prettier', name = 'dprint' },
-    yaml = { 'prettier' },
-    lua = { 'stylua' },
+    ['_'] = { 'trim_whitespace', 'trim_newlines' },
   },
 })
 
@@ -714,3 +667,12 @@ vim.api.nvim_create_user_command('PluginToggleFormat', function()
   vim.g.autoformat = not vim.g.autoformat
   vim.notify(('%s formatting...'):format(vim.g.autoformat and 'Enabling' or 'Disabling'), vim.log.levels.INFO)
 end, { nargs = 0 })
+
+------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+---------------------------------------- Grug-far.nvim
+------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+
+MiniDeps.add('MagicDuck/grug-far.nvim')
+require('grug-far').setup()
