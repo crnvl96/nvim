@@ -4,6 +4,7 @@
 ------------------------------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------------------------
 
+-- Don't use the native netrw plugin
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
@@ -14,16 +15,16 @@ vim.g.loaded_ruby_provider = 0 -- Disable Ruby support
 
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ','
-vim.g.markdown_folding = 1
+vim.g.markdown_folding = 1 -- Enable folding for markdown files
 
-vim.opt.autoindent = true
+vim.opt.autoindent = true -- Copy the indentation of current line when starting a new line
 vim.opt.background = 'dark'
 vim.opt.backup = false
 vim.opt.breakindent = true
 vim.opt.breakindentopt = 'list:-1'
 vim.opt.clipboard = 'unnamed'
 vim.opt.cmdheight = 1
-vim.opt.colorcolumn = '+1'
+vim.opt.colorcolumn = '' -- Don't highlight any specific column
 vim.opt.complete = '.,w,b,kspell'
 vim.opt.completeopt = table.concat({
   'menuone',
@@ -478,6 +479,8 @@ vim.ui.select = require('mini.pick').ui_select
 MiniDeps.add({ source = 'tpope/vim-sleuth' })
 MiniDeps.add({ source = 'tpope/vim-fugitive' })
 MiniDeps.add({ source = 'wincent/ferret' })
+MiniDeps.add('MagicDuck/grug-far.nvim')
+require('grug-far').setup()
 
 ------------------------------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------------------------
@@ -667,12 +670,3 @@ vim.api.nvim_create_user_command('PluginToggleFormat', function()
   vim.g.autoformat = not vim.g.autoformat
   vim.notify(('%s formatting...'):format(vim.g.autoformat and 'Enabling' or 'Disabling'), vim.log.levels.INFO)
 end, { nargs = 0 })
-
-------------------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------------------
----------------------------------------- Grug-far.nvim
-------------------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------------------
-
-MiniDeps.add('MagicDuck/grug-far.nvim')
-require('grug-far').setup()
