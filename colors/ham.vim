@@ -58,7 +58,7 @@ hi WildMenu ctermbg=0 ctermfg=15 cterm=NONE
 hi SpecialKey ctermfg=0
 hi IncSearch ctermbg=1 ctermfg=0
 hi CurSearch ctermbg=3 ctermfg=0
-hi Search ctermbg=11 ctermfg=0
+hi Search ctermfg=0 ctermbg=14
 hi Directory ctermfg=4
 hi MatchParen ctermbg=0 ctermfg=3 cterm=underline
 hi SpellBad cterm=undercurl

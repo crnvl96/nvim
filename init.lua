@@ -1,91 +1,56 @@
-------------------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------------------
----------------------------------------- Opts
-------------------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------------------
-
--- Don't use the native netrw plugin
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
-vim.g.loaded_node_provider = 0 -- Disable NodeJS support
-vim.g.loaded_perl_provider = 0 -- Disable Perl support
-vim.g.loaded_python3_provider = 0 -- Disable Python support
-vim.g.loaded_ruby_provider = 0 -- Disable Ruby support
+vim.g.loaded_node_provider = 0
+vim.g.loaded_perl_provider = 0
+vim.g.loaded_python3_provider = 0
+vim.g.loaded_ruby_provider = 0
 
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ','
-vim.g.markdown_folding = 1 -- Enable folding for markdown files
+vim.g.markdown_folding = 1
 
-vim.opt.autoindent = true -- Copy the indentation of current line when starting a new line
+vim.opt.autoindent = true
 vim.opt.background = 'dark'
 vim.opt.backup = false
 vim.opt.breakindent = true
-vim.opt.breakindentopt = 'list:-1'
 vim.opt.clipboard = 'unnamed'
 vim.opt.cmdheight = 1
-vim.opt.colorcolumn = '' -- Don't highlight any specific column
-vim.opt.complete = '.,w,b,kspell'
-vim.opt.completeopt = table.concat({
-  'menuone',
-  'noselect',
-}, ',')
 vim.opt.cursorline = true
-vim.opt.cursorlineopt = 'screenline,number'
-vim.opt.diffopt = table.concat({
-  'internal',
-  'filler',
-  'closeoff',
-  'algorithm:histogram',
-  'linematch:60',
-  'indent-heuristic',
-  'vertical',
-  'context:99',
-}, ',')
+vim.opt.cursorlineopt = 'number'
 vim.opt.expandtab = true
-vim.opt.fillchars = table.concat({
-  'eob: ',
-  'fold:╌',
-  'horiz:═',
-  'horizdown:╦',
-  'horizup:╩',
-  'vert:║',
-  'verthoriz:╬',
-  'vertleft:╣',
-  'vertright:╠',
-}, ',')
 vim.opt.foldcolumn = '0'
 vim.opt.foldlevel = 1
 vim.opt.foldlevelstart = 99
 vim.opt.foldmethod = 'indent'
 vim.opt.foldnestmax = 10
 vim.opt.foldtext = ''
-vim.opt.formatlistpat = [[^\s*[0-9\-\+\*]\+[\.\)]*\s\+]]
-vim.opt.formatoptions = 'rqnl1j'
-vim.opt.guicursor = table.concat({
-  'n-v-c-sm:block',
-  'i-ci-ve:ver25',
-  'r-cr-o:hor20',
-  't:block-TermCursor',
-}, ',')
+-- r: Automatically insert the current comment leader after hitting <Enter> in Insert mode.
+-- q: Allow formatting of comments with "gq".
+-- l: Long lines are not broken in insert mode: When a line was longer than 'textwidth' when the insert command started, Vim does not automatically format it.
+-- 1: Don't break a line after a one-letter word.  It's broken before it instead (if possible).
+-- j: Where it makes sense, remove a comment leader when joining lines.
+vim.opt.formatoptions = 'rql1j'
+
+-- This autocommand is needed because these format options are added in every filetype trigger
+vim.api.nvim_create_autocmd(
+  'FileType',
+  { callback = function() vim.cmd('setlocal formatoptions-=c formatoptions-=o') end }
+)
+
 vim.opt.ignorecase = true
 vim.opt.incsearch = true
 vim.opt.infercase = true
-vim.opt.iskeyword = '@,48-57,_,192-255,-'
 vim.opt.laststatus = 0
 vim.opt.linebreak = true
 vim.opt.list = true
-vim.opt.listchars = table.concat({
-  'extends:…',
-  'nbsp:␣',
-  'precedes:…',
-  'tab:> ',
-}, ',')
 vim.opt.mouse = 'a'
-vim.opt.mousescroll = 'ver:3,hor:0'
 vim.opt.number = true
 vim.opt.pumheight = 10
 
+--- Dynamically decide if we're into a quickfix or a location list, and return the respective items
+---@param info {quickfix:integer,id:integer,winid:integer} Information about the current active list
+---@return any[]
 local function get_quickfix_items(info)
   if info.quickfix == 1 then
     return vim.fn.getqflist({ id = info.id, items = 0 }).items
@@ -94,6 +59,10 @@ local function get_quickfix_items(info)
   end
 end
 
+--- Format the filename that will be shown on our custom qf list
+---@param fname string file name
+---@param limit integer max length allowed for a filename
+---@return string
 local function format_filename(fname, limit)
   if fname == '' then return '[No Name]' end
   fname = fname:gsub('^' .. vim.env.HOME, '~')
@@ -104,7 +73,15 @@ local function format_filename(fname, limit)
   end
 end
 
+--- Set the line number and column that will be exhibited together with the list item
+---@param lnum integer line number
+---@param col integer column
+---@return integer, integer
 local function format_location(lnum, col) return (lnum > 99999 and -1 or lnum), (col > 999 and -1 or col) end
+
+--- Set the kind of the item to render on the list
+---@param qtype string item type
+---@return string
 local function format_type(qtype) return qtype == '' and '' or ' ' .. qtype:sub(1, 1):upper() end
 
 function _G.qftf(info)
@@ -132,7 +109,6 @@ vim.opt.qftf = '{info -> v:lua._G.qftf(info)}'
 vim.opt.relativenumber = true
 vim.opt.ruler = false
 vim.opt.scrolloff = 8
-vim.opt.shada = "'100,<50,s10,:1000,/100,@100,h"
 vim.opt.shiftwidth = 4
 vim.opt.shortmess = 'FOSWaco'
 vim.opt.showcmd = false
@@ -155,10 +131,20 @@ vim.opt.virtualedit = 'block'
 vim.opt.wildignore:append('.DS_Store')
 vim.opt.wildignorecase = true
 vim.opt.wildmenu = true
-vim.opt.wildmode = 'noselect:longest:lastused,full'
 vim.opt.wrap = false
 vim.opt.wrap = false
 vim.opt.writebackup = false
+vim.opt.completeopt = table.concat({ 'menuone', 'noselect' }, ',')
+-- stylua: ignore
+vim.opt.diffopt = table.concat({'internal', 'filler', 'closeoff', 'algorithm:histogram', 'linematch:60', 'indent-heuristic', 'vertical', 'context:99',}, ',')
+-- stylua: ignore
+vim.opt.fillchars = table.concat({'eob: ', 'fold:╌', 'horiz:═', 'horizdown:╦', 'horizup:╩', 'vert:║', 'verthoriz:╬', 'vertleft:╣', 'vertright:╠',}, ',')
+vim.opt.guicursor = table.concat({ 'n-v-c-sm:block', 'i-ci-ve:ver25', 'r-cr-o:hor20', 't:block-TermCursor' }, ',')
+vim.opt.iskeyword = table.concat({ '@', '48-57', '_', '192-255', '-' }, ',')
+vim.opt.listchars = table.concat({ 'extends:…', 'nbsp:␣', 'precedes:…', 'tab:> ' }, ',')
+vim.opt.mousescroll = table.concat({ 'ver:3', 'hor:0' }, ',')
+vim.opt.shada = table.concat({ "'100", '<50', 's10', ':1000', '/100', '@100', 'h' }, ',')
+vim.opt.wildmode = table.concat({ 'noselect:longest:lastused', 'full' }, ',')
 
 if vim.fn.has('nvim-0.9') == 1 then
   vim.opt.shortmess = 'CFOSWaco'
@@ -172,16 +158,16 @@ end
 
 if vim.fn.has('nvim-0.11') == 1 then
   vim.opt.winborder = 'double'
-  vim.opt.completeopt = 'menuone,noselect,fuzzy,nosort'
+  vim.opt.completeopt = table.concat({ 'menuone', 'noselect', 'fuzzy', 'nosort' }, ',')
 end
 
 if vim.fn.has('nvim-0.12') == 1 then
   vim.opt.pummaxwidth = 100
-  vim.opt.completefuzzycollect = 'keyword,files,whole_line'
+  vim.opt.completefuzzycollect = table.concat({ 'keyword', 'files', 'whole_line' }, ',')
+  vim.opt.wildmode = 'noselect:lastused'
+  vim.opt.wildoptions = table.concat({ 'pum', 'fuzzy' }, ',')
   require('vim._extui').enable({ enable = true })
   vim.cmd([[autocmd CmdlineChanged [:/\?@] call wildtrigger()]])
-  vim.opt.wildmode = 'noselect:lastused'
-  vim.opt.wildoptions = 'pum,fuzzy'
   vim.keymap.set('c', '<Up>', '<C-u><Up>')
   vim.keymap.set('c', '<Down>', '<C-u><Down>')
   vim.keymap.set('c', '<C-n>', [[cmdcomplete_info().pum_visible ? "\<C-n>" : "\<Tab>"]], { expr = true })
@@ -190,7 +176,7 @@ end
 
 if vim.fn.executable('rg') == 1 then
   vim.opt.grepprg = "rg --vimgrep --hidden -g '!.git/*'"
-  vim.opt.grepformat = '%f:%l:%c:%m,%f:%l:%m'
+  vim.opt.grepformat = '%f:%l:%c:%m'
 end
 
 if vim.fn.executable('fd') == 1 and vim.fn.executable('fzf') == 1 then
@@ -200,46 +186,20 @@ end
 
 vim.cmd('filetype plugin indent on')
 vim.cmd('packadd cfilter')
-
 if vim.fn.exists('syntax_on') ~= 1 then vim.cmd('syntax enable') end
 
-------------------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------------------
----------------------------------------- Autocommands
-------------------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------------------
-
-vim.api.nvim_create_autocmd('FileType', {
-  group = vim.api.nvim_create_augroup('crnvl96-custom-settings', {}),
-  callback = function() vim.cmd('setlocal formatoptions-=c formatoptions-=o') end,
-  desc = [[Ensure proper 'formatoptions']],
-})
-
-vim.api.nvim_create_autocmd('QuickFixCmdPost', {
-  group = vim.api.nvim_create_augroup('crnvl-post-grep-events', { clear = true }),
-  pattern = '*grep*',
-  command = 'cwindow',
-})
+vim.api.nvim_create_autocmd('QuickFixCmdPost', { pattern = '*grep*', command = 'cwindow' })
+vim.api.nvim_create_autocmd('TextYankPost', { callback = function() (vim.hl or vim.highlight).on_yank() end })
+vim.api.nvim_create_autocmd('TermOpen', { command = 'setlocal listchars= nonumber norelativenumber' })
+vim.api.nvim_create_autocmd('VimResized', { command = 'tabdo wincmd =' })
 
 vim.api.nvim_create_autocmd({ 'FocusGained', 'TermClose', 'TermLeave' }, {
-  group = vim.api.nvim_create_augroup('crnvl-checktime', { clear = true }),
   callback = function()
     if vim.o.buftype ~= 'nofile' then vim.cmd('checktime') end
   end,
 })
 
-vim.api.nvim_create_autocmd('TextYankPost', {
-  group = vim.api.nvim_create_augroup('crnvl-highlight-on-yank', { clear = true }),
-  callback = function() (vim.hl or vim.highlight).on_yank() end,
-})
-
-vim.api.nvim_create_autocmd('TermOpen', {
-  group = vim.api.nvim_create_augroup('crnvl-termoptions', { clear = true }),
-  command = 'setlocal listchars= nonumber norelativenumber',
-})
-
 vim.api.nvim_create_autocmd('BufReadPost', {
-  group = vim.api.nvim_create_augroup('crnvl-last-location', { clear = true }),
   callback = function(e)
     local mark = vim.api.nvim_buf_get_mark(e.buf, '"')
     local line_count = vim.api.nvim_buf_line_count(e.buf)
@@ -247,57 +207,9 @@ vim.api.nvim_create_autocmd('BufReadPost', {
   end,
 })
 
-vim.api.nvim_create_autocmd('VimResized', {
-  group = vim.api.nvim_create_augroup('crnvl-resize', { clear = true }),
-  command = 'tabdo wincmd =',
-})
-
-------------------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------------------
----------------------------------------- Keymaps
-------------------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------------------
-
---- Creates a scratch, transient buffer. Ideal for quick annotations
----@return nil
-local function create_scratch_buf()
-  local buf_opts = {
-    filetype = 'scratch',
-    buftype = 'nofile',
-    bufhidden = 'wipe',
-    swapfile = false,
-    modifiable = true,
-  }
-  vim.cmd('bel 10new')
-  local buf = vim.api.nvim_get_current_buf()
-  for name, value in pairs(buf_opts) do
-    vim.api.nvim_set_option_value(name, value, { buf = buf })
-  end
-end
-
---- When sending a key command to a terminal (e.g: <C-h>) to a terminal buffer, automatically precedes it with <Esc>
----@param key? string Key command to be executed on the terminal
----@return function
-local function term_send_esc(key)
-  return function()
-    local feed = vim.api.nvim_feedkeys
-    local rep = vim.api.nvim_replace_termcodes
-
-    local esc_termcode = rep('<C-\\><C-n>', true, true, true)
-
-    if key then
-      local key_termcode = rep(key, true, true, true)
-      feed(esc_termcode .. key_termcode, 't', true)
-    else
-      feed(esc_termcode, 't', true)
-    end
-  end
-end
-
 local paste_cmd = vim.fn.has('nvim-0.12') == 1 and 'iput' or 'put'
 vim.keymap.set({ 'n', 'x' }, '[p', '<Cmd>exe "' .. paste_cmd .. '! " . v:register<CR>', { desc = 'Paste Above' })
 vim.keymap.set({ 'n', 'x' }, ']p', '<Cmd>exe "' .. paste_cmd .. ' "  . v:register<CR>', { desc = 'Paste Below' })
-
 vim.keymap.set({ 'n', 'x' }, 'Y', 'yg_')
 vim.keymap.set({ 'n', 'x', 'o' }, '<Leader>p', '"+p')
 vim.keymap.set({ 'n', 'x', 'o' }, '<Leader>P', '"+P')
@@ -307,37 +219,22 @@ vim.keymap.set({ 'n', 'x', 'i', 's' }, '<Esc>', '<Cmd>noh<CR><Esc>')
 vim.keymap.set({ 'n', 'i', 'x' }, '<C-S>', '<Esc><Cmd>silent! update | redraw<CR>')
 vim.keymap.set({ 'n', 'x' }, 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true })
 vim.keymap.set({ 'n', 'x' }, 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true })
-
+vim.keymap.set('n', '<C-d>', '<C-d>zz')
+vim.keymap.set('n', '<C-u>', '<C-u>zz')
 vim.keymap.set('n', '<C-h>', '<C-w>h')
 vim.keymap.set('n', '<C-j>', '<C-w>j')
 vim.keymap.set('n', '<C-k>', '<C-w>k')
 vim.keymap.set('n', '<C-l>', '<C-w>l')
 vim.keymap.set('n', '<C-Down>', '<Cmd>resize -5<CR>')
 vim.keymap.set('n', '<C-Up>', '<Cmd>resize +5<CR>')
-vim.keymap.set('n', '<Leader>s', create_scratch_buf)
-
 vim.keymap.set('x', 'p', 'P')
 vim.keymap.set('x', '<', '<gv')
 vim.keymap.set('x', '>', '>gv')
-
 vim.keymap.set({ 'n', 't' }, '<C-Left>', '<Cmd>vertical resize -20<CR>')
 vim.keymap.set({ 'n', 't' }, '<C-Right>', '<Cmd>vertical resize +20<CR>')
 
-vim.keymap.set('t', '<C-h>', term_send_esc('<C-h>'))
-vim.keymap.set('t', '<C-j>', term_send_esc('<C-j>'))
-vim.keymap.set('t', '<C-k>', term_send_esc('<C-k>'))
-vim.keymap.set('t', '<C-l>', term_send_esc('<C-l>'))
-vim.keymap.set('t', '<C-e>', term_send_esc())
-
-------------------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------------------
----------------------------------------- Path
-------------------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------------------
-
 local node_version_cmd = "mise ls --cd ~ | grep '^node' | grep '22\\.' | head -n 1 | awk '{print $2}'"
 local function node_bin(v) return os.getenv('HOME') .. '/.local/share/mise/installs/node/' .. v .. '/bin/' end
-
 local version = vim.fn.system(node_version_cmd):gsub('\n', '')
 if version == '' then
   vim.notify('Could not determine Node.js version', vim.log.levels.WARN)
@@ -346,12 +243,6 @@ else
   vim.g.node_host_prog = bin .. 'node'
   vim.env.PATH = bin .. ':' .. vim.env.PATH
 end
-
-------------------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------------------
----------------------------------------- Diagnostic
-------------------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------------------
 
 vim.diagnostic.config({
   update_in_insert = false, -- Update diagnostics only on `InserLeave`
@@ -381,13 +272,7 @@ vim.diagnostic.config({
   },
 })
 
-------------------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------------------
----------------------------------------- Package manager
-------------------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------------------
 local minipath = vim.fn.stdpath('data') .. '/site/pack/deps/start/mini.nvim'
-
 if not vim.loop.fs_stat(minipath) then
   vim.fn.system({
     'git',
@@ -404,13 +289,68 @@ require('mini.deps').setup()
 
 MiniDeps.add({ name = 'mini.nvim' })
 
-------------------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------------------
----------------------------------------- Mini
-------------------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------------------
+local hues, colors = require('mini.hues'), require('mini.colors')
+hues.apply_palette(hues.make_palette({
+  background = vim.o.background == 'dark' and '#212223' or '#e1e2e3',
+  foreground = vim.o.background == 'dark' and '#d5d4d3' or '#2f2e2d',
+  saturation = vim.o.background == 'dark' and 'lowmedium' or 'mediumhigh',
+  accent = 'bg',
+}))
 
-vim.cmd.colorscheme('ham')
+colors
+  .get_colorscheme()
+  :add_terminal_colors()
+  :add_cterm_attributes()
+  :add_transparency({
+    float = true,
+    statuscolumn = true,
+    statusline = false,
+    tabline = true,
+    winbar = true,
+  })
+  :apply()
+
+for _, hl in ipairs({
+  'Pmenu',
+  'MiniFilesBorder',
+  'MiniFilesBorderModified',
+  'MiniFilesDirectory',
+  'MiniFilesFile',
+  'MiniFilesNormal',
+  'MiniFilesTitle',
+  'MiniFilesTitleFocused',
+  'MiniPickBorder',
+  'MiniPickBorderBusy',
+  'MiniPickBorderText',
+  'MiniPickCursor',
+  'MiniPickIconDirectory',
+  'MiniPickIconFile',
+  'MiniPickHeader',
+  'MiniPickNormal',
+  'MiniPickPreviewLine',
+  'MiniPickPreviewRegion',
+  'MiniPickPrompt',
+  'MiniPickPromptCaret',
+  'MiniPickPromptPrefix',
+}) do
+  local is_ok, hl_def = pcall(vim.api.nvim_get_hl, 0, { name = hl, link = false })
+
+  if is_ok then
+    if hl == 'Pmenu' then
+      vim.api.nvim_set_hl(
+        0,
+        hl,
+        vim.tbl_deep_extend('force', hl_def --[[@as vim.api.keyset.highlight]], { bg = 'none' })
+      )
+    else
+      vim.api.nvim_set_hl(
+        0,
+        hl,
+        vim.tbl_deep_extend('force', hl_def --[[@as vim.api.keyset.highlight]], { bg = 'none' })
+      )
+    end
+  end
+end
 
 require('mini.doc').setup()
 require('mini.icons').setup()
@@ -418,6 +358,7 @@ require('mini.misc').setup()
 require('mini.extra').setup()
 require('mini.keymap').setup()
 require('mini.align').setup()
+require('mini.splitjoin').setup()
 
 require('mini.ai').setup({
   custom_textobjects = {
@@ -470,23 +411,11 @@ vim.keymap.set('n', '<Leader>b', '<Cmd>Pick buffers include_current=false<CR>')
 
 vim.ui.select = require('mini.pick').ui_select
 
-------------------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------------------
----------------------------------------- Plugins
-------------------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------------------
-
 MiniDeps.add({ source = 'tpope/vim-sleuth' })
 MiniDeps.add({ source = 'tpope/vim-fugitive' })
 MiniDeps.add({ source = 'wincent/ferret' })
 MiniDeps.add('MagicDuck/grug-far.nvim')
 require('grug-far').setup()
-
-------------------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------------------
----------------------------------------- Treesitter
-------------------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------------------
 
 MiniDeps.add({
   source = 'nvim-treesitter/nvim-treesitter',
@@ -501,26 +430,43 @@ MiniDeps.add({
   checkout = 'main',
 })
 
--- stylua: ignore
-local ensure_installed = { 'c', 'lua', 'vimdoc', 'query', 'markdown', 'markdown_inline', 'javascript', 'typescript', 'tsx', 'jsx',
-  'python', 'rust', 'ron', 'bash', 'gitcommit', 'html', 'hyprlang', 'json', 'json5', 'jsonc',
-  'rasi', 'regex', 'scss', 'toml', 'vim', 'yaml', }
+local ensure_installed = {
+  'c',
+  'lua',
+  'vimdoc',
+  'query',
+  'markdown',
+  'markdown_inline',
+  'javascript',
+  'typescript',
+  'tsx',
+  'jsx',
+  'python',
+  'rust',
+  'ron',
+  'bash',
+  'gitcommit',
+  'html',
+  'hyprlang',
+  'json',
+  'json5',
+  'jsonc',
+  'rasi',
+  'regex',
+  'scss',
+  'toml',
+  'vim',
+  'yaml',
+}
 
 local isnt_installed = function(lang) return #vim.api.nvim_get_runtime_file('parser/' .. lang .. '.*', false) == 0 end
 local to_install = vim.tbl_filter(isnt_installed, ensure_installed)
 if #to_install > 0 then require('nvim-treesitter').install(to_install) end
 
 vim.api.nvim_create_autocmd('FileType', {
-  group = vim.api.nvim_create_augroup('crnvl-treesitter', { clear = true }),
   pattern = vim.iter(ensure_installed):map(vim.treesitter.language.get_filetypes):flatten():totable(),
   callback = function(e) vim.treesitter.start(e.buf) end,
 })
-
-------------------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------------------
----------------------------------------- Lsp config
-------------------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------------------
 
 MiniDeps.add({ source = 'b0o/SchemaStore.nvim' })
 MiniDeps.add({ source = 'neovim/nvim-lspconfig' })
@@ -542,9 +488,10 @@ vim.lsp.enable(server_configs)
 
 local function on_attach(client, buf)
   if client:supports_method('textDocument/completion') then
-    local str = 'AEIOUaeiou\'".:'
-    local chars = { str:match((str:gsub('.', '(.)'))) }
-    client.server_capabilities.completionProvider.triggerCharacters = chars
+    --- Understand if I really want this...
+    -- local str = 'AEIOUaeiou\'".:'
+    -- local chars = { str:match((str:gsub('.', '(.)'))) }
+    -- client.server_capabilities.completionProvider.triggerCharacters = chars
     vim.lsp.completion.enable(true, client.id, buf, {
       autotrigger = true,
       convert = function(item)
@@ -580,21 +527,30 @@ local function on_attach(client, buf)
   vim.keymap.set('n', 'gy', vim.lsp.buf.type_definition, { buffer = buf })
   vim.keymap.set('n', 'ge', vim.diagnostic.setqflist, { buffer = buf })
   vim.keymap.set('n', 'gs', vim.lsp.buf.document_symbol, { buffer = buf })
-  vim.keymap.set('n', 'gS', vim.lsp.buf.workspace_symbol, { buffer = buf })
   vim.keymap.set('i', '<C-k>', vim.lsp.buf.signature_help, { buffer = buf })
 end
 
--- Override the virtual text diagnostic handler so that the most severe diagnostic is shown first.
-local show_handler = vim.diagnostic.handlers.virtual_text.show -- Get the original show handler
-assert(show_handler) -- Validate that handler exists
-local hide_handler = vim.diagnostic.handlers.virtual_text.hide -- Get the original hide handler
-vim.diagnostic.handlers.virtual_text = { -- Set the virtual text of diagnostics
-  show = function(ns, bufnr, diagnostics, opts)
-    table.sort(diagnostics, function(diag1, diag2) return diag1.severity > diag2.severity end) -- Sort the diagnostics by severity
-    return show_handler(ns, bufnr, diagnostics, opts) -- Overwrite the original handler
-  end,
-  hide = hide_handler, -- Use the original handler
-}
+local show_handler = vim.diagnostic.handlers.virtual_text.show
+assert(show_handler)
+local hide_handler = vim.diagnostic.handlers.virtual_text.hide
+
+--- Sort vim diagnostics by severity
+---@param a vim.Diagnostic vim diagnostic element
+---@param b vim.Diagnostic vim diagnostic element
+---@return boolean
+local function sort_by_severity(a, b) return a.severity > b.severity end
+
+--- Display disgnostics for the given namespace and buffer
+---@param ns integer Diagnostic namespae
+---@param bufnr integer Buffer number
+---@param diagnostics vim.Diagnostic[] The diagnostics to display
+---@param opts vim.diagnostic.OptsResolved Display options
+local function show(ns, bufnr, diagnostics, opts)
+  table.sort(diagnostics, sort_by_severity)
+  return show_handler(ns, bufnr, diagnostics, opts)
+end
+
+vim.diagnostic.handlers.virtual_text = { show = show, hide = hide_handler }
 
 local hover = vim.lsp.buf.hover
 ---@diagnostic disable-next-line: duplicate-set-field
@@ -623,19 +579,12 @@ vim.lsp.handlers[methods.client_registerCapability] = function(err, res, ctx)
 end
 
 vim.api.nvim_create_autocmd('LspAttach', {
-  group = vim.api.nvim_create_augroup('crnvl-lsp', { clear = true }),
   callback = function(e)
     local client = vim.lsp.get_client_by_id(e.data.client_id)
     if not client then return end
     on_attach(client, e.buf)
   end,
 })
-
-------------------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------------------
----------------------------------------- Conform.nvim
-------------------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------------------
 
 MiniDeps.add({ source = 'stevearc/conform.nvim' })
 
