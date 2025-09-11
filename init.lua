@@ -1,15 +1,13 @@
+-- Options ================================================================================
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
-
 vim.g.loaded_node_provider = 0
 vim.g.loaded_perl_provider = 0
 vim.g.loaded_python3_provider = 0
 vim.g.loaded_ruby_provider = 0
-
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ','
 vim.g.markdown_folding = 1
-
 vim.opt.autoindent = true
 vim.opt.background = 'dark'
 vim.opt.backup = false
@@ -27,17 +25,13 @@ vim.opt.foldnestmax = 10
 vim.opt.foldtext = ''
 -- r: Automatically insert the current comment leader after hitting <Enter> in Insert mode.
 -- q: Allow formatting of comments with "gq".
--- l: Long lines are not broken in insert mode: When a line was longer than 'textwidth' when the insert command started, Vim does not automatically format it.
+-- l: Long lines are not broken in insert mode: When a line was longer than 'textwidth' when
+--    the insert command started, Vim does not automatically format it.
 -- 1: Don't break a line after a one-letter word.  It's broken before it instead (if possible).
 -- j: Where it makes sense, remove a comment leader when joining lines.
 vim.opt.formatoptions = 'rql1j'
-
 -- This autocommand is needed because these format options are added in every filetype trigger
-vim.api.nvim_create_autocmd(
-  'FileType',
-  { callback = function() vim.cmd('setlocal formatoptions-=c formatoptions-=o') end }
-)
-
+vim.api.nvim_create_autocmd('FileType', { command = 'setlocal formatoptions-=c formatoptions-=o' })
 vim.opt.ignorecase = true
 vim.opt.incsearch = true
 vim.opt.infercase = true
@@ -47,7 +41,6 @@ vim.opt.list = true
 vim.opt.mouse = 'a'
 vim.opt.number = true
 vim.opt.pumheight = 10
-
 --- Dynamically decide if we're into a quickfix or a location list, and return the respective items
 ---@param info {quickfix:integer,id:integer,winid:integer} Information about the current active list
 ---@return any[]
@@ -58,7 +51,6 @@ local function get_quickfix_items(info)
     return vim.fn.getloclist(info.winid, { id = info.id, items = 0 }).items
   end
 end
-
 --- Format the filename that will be shown on our custom qf list
 ---@param fname string file name
 ---@param limit integer max length allowed for a filename
@@ -72,18 +64,15 @@ local function format_filename(fname, limit)
     return ('…%.' .. (limit - 1) .. 's'):format(fname:sub(1 - limit))
   end
 end
-
 --- Set the line number and column that will be exhibited together with the list item
 ---@param lnum integer line number
 ---@param col integer column
 ---@return integer, integer
 local function format_location(lnum, col) return (lnum > 99999 and -1 or lnum), (col > 999 and -1 or col) end
-
 --- Set the kind of the item to render on the list
 ---@param qtype string item type
 ---@return string
 local function format_type(qtype) return qtype == '' and '' or ' ' .. qtype:sub(1, 1):upper() end
-
 function _G.qftf(info)
   local items = get_quickfix_items(info)
   local ret = {}
@@ -104,7 +93,6 @@ function _G.qftf(info)
   end
   return ret
 end
-
 vim.opt.qftf = '{info -> v:lua._G.qftf(info)}'
 vim.opt.relativenumber = true
 vim.opt.ruler = false
@@ -145,22 +133,18 @@ vim.opt.listchars = table.concat({ 'extends:…', 'nbsp:␣', 'precedes:…', 't
 vim.opt.mousescroll = table.concat({ 'ver:3', 'hor:0' }, ',')
 vim.opt.shada = table.concat({ "'100", '<50', 's10', ':1000', '/100', '@100', 'h' }, ',')
 vim.opt.wildmode = table.concat({ 'noselect:longest:lastused', 'full' }, ',')
-
 if vim.fn.has('nvim-0.9') == 1 then
   vim.opt.shortmess = 'CFOSWaco'
   vim.opt.splitkeep = 'screen'
 end
-
 if vim.fn.has('nvim-0.10') == 1 then
   vim.opt.foldtext = ''
   vim.opt.termguicolors = true
 end
-
 if vim.fn.has('nvim-0.11') == 1 then
   vim.opt.winborder = 'double'
   vim.opt.completeopt = table.concat({ 'menuone', 'noselect', 'fuzzy', 'nosort' }, ',')
 end
-
 if vim.fn.has('nvim-0.12') == 1 then
   vim.opt.pummaxwidth = 100
   vim.opt.completefuzzycollect = table.concat({ 'keyword', 'files', 'whole_line' }, ',')
@@ -173,32 +157,28 @@ if vim.fn.has('nvim-0.12') == 1 then
   vim.keymap.set('c', '<C-n>', [[cmdcomplete_info().pum_visible ? "\<C-n>" : "\<Tab>"]], { expr = true })
   vim.keymap.set('c', '<C-p>', [[cmdcomplete_info().pum_visible ? "\<C-p>" : "\<S-Tab>"]], { expr = true })
 end
-
 if vim.fn.executable('rg') == 1 then
   vim.opt.grepprg = "rg --vimgrep --hidden -g '!.git/*'"
   vim.opt.grepformat = '%f:%l:%c:%m'
 end
-
 if vim.fn.executable('fd') == 1 and vim.fn.executable('fzf') == 1 then
   function _G.fuzzyfindfunc(cmdarg) return vim.fn.systemlist("fd -t f -H . | fzf --filter='" .. cmdarg .. "'") end
   vim.opt.findfunc = 'v:lua._G.fuzzyfindfunc'
 end
-
 vim.cmd('filetype plugin indent on')
 vim.cmd('packadd cfilter')
 if vim.fn.exists('syntax_on') ~= 1 then vim.cmd('syntax enable') end
 
+-- Autocommands ================================================================================
 vim.api.nvim_create_autocmd('QuickFixCmdPost', { pattern = '*grep*', command = 'cwindow' })
 vim.api.nvim_create_autocmd('TextYankPost', { callback = function() (vim.hl or vim.highlight).on_yank() end })
 vim.api.nvim_create_autocmd('TermOpen', { command = 'setlocal listchars= nonumber norelativenumber' })
 vim.api.nvim_create_autocmd('VimResized', { command = 'tabdo wincmd =' })
-
 vim.api.nvim_create_autocmd({ 'FocusGained', 'TermClose', 'TermLeave' }, {
   callback = function()
     if vim.o.buftype ~= 'nofile' then vim.cmd('checktime') end
   end,
 })
-
 vim.api.nvim_create_autocmd('BufReadPost', {
   callback = function(e)
     local mark = vim.api.nvim_buf_get_mark(e.buf, '"')
@@ -207,6 +187,7 @@ vim.api.nvim_create_autocmd('BufReadPost', {
   end,
 })
 
+-- Keymaps ================================================================================
 local paste_cmd = vim.fn.has('nvim-0.12') == 1 and 'iput' or 'put'
 vim.keymap.set({ 'n', 'x' }, '[p', '<Cmd>exe "' .. paste_cmd .. '! " . v:register<CR>', { desc = 'Paste Above' })
 vim.keymap.set({ 'n', 'x' }, ']p', '<Cmd>exe "' .. paste_cmd .. ' "  . v:register<CR>', { desc = 'Paste Below' })
@@ -233,6 +214,7 @@ vim.keymap.set('x', '>', '>gv')
 vim.keymap.set({ 'n', 't' }, '<C-Left>', '<Cmd>vertical resize -20<CR>')
 vim.keymap.set({ 'n', 't' }, '<C-Right>', '<Cmd>vertical resize +20<CR>')
 
+-- Path ================================================================================
 local node_version_cmd = "mise ls --cd ~ | grep '^node' | grep '22\\.' | head -n 1 | awk '{print $2}'"
 local function node_bin(v) return os.getenv('HOME') .. '/.local/share/mise/installs/node/' .. v .. '/bin/' end
 local version = vim.fn.system(node_version_cmd):gsub('\n', '')
@@ -244,6 +226,7 @@ else
   vim.env.PATH = bin .. ':' .. vim.env.PATH
 end
 
+-- Diagnostics config ================================================================================
 vim.diagnostic.config({
   update_in_insert = false, -- Update diagnostics only on `InserLeave`
   float = {
@@ -272,6 +255,7 @@ vim.diagnostic.config({
   },
 })
 
+-- Package manager ================================================================================
 local minipath = vim.fn.stdpath('data') .. '/site/pack/deps/start/mini.nvim'
 if not vim.loop.fs_stat(minipath) then
   vim.fn.system({
@@ -284,11 +268,10 @@ if not vim.loop.fs_stat(minipath) then
   vim.cmd('packadd mini.nvim | helptags ALL')
   vim.cmd('echo "Installed `mini.nvim`" | redraw')
 end
-
 require('mini.deps').setup()
-
 MiniDeps.add({ name = 'mini.nvim' })
 
+-- Mini ================================================================================
 local hues, colors = require('mini.hues'), require('mini.colors')
 hues.apply_palette(hues.make_palette({
   background = vim.o.background == 'dark' and '#212223' or '#e1e2e3',
@@ -296,7 +279,6 @@ hues.apply_palette(hues.make_palette({
   saturation = vim.o.background == 'dark' and 'lowmedium' or 'mediumhigh',
   accent = 'bg',
 }))
-
 colors
   .get_colorscheme()
   :add_terminal_colors()
@@ -309,7 +291,6 @@ colors
     winbar = true,
   })
   :apply()
-
 for _, hl in ipairs({
   'Pmenu',
   'MiniFilesBorder',
@@ -334,7 +315,6 @@ for _, hl in ipairs({
   'MiniPickPromptPrefix',
 }) do
   local is_ok, hl_def = pcall(vim.api.nvim_get_hl, 0, { name = hl, link = false })
-
   if is_ok then
     if hl == 'Pmenu' then
       vim.api.nvim_set_hl(
@@ -351,7 +331,6 @@ for _, hl in ipairs({
     end
   end
 end
-
 require('mini.doc').setup()
 require('mini.icons').setup()
 require('mini.misc').setup()
@@ -359,7 +338,6 @@ require('mini.extra').setup()
 require('mini.keymap').setup()
 require('mini.align').setup()
 require('mini.splitjoin').setup()
-
 require('mini.ai').setup({
   custom_textobjects = {
     g = MiniExtra.gen_ai_spec.buffer(),
@@ -374,7 +352,6 @@ require('mini.ai').setup({
     inside_last = '',
   },
 })
-
 require('mini.files').setup({
   mappings = {
     show_help = '?',
@@ -384,7 +361,6 @@ require('mini.files').setup({
     go_out_plus = '-',
   },
 })
-
 --- Open MiniFiles at the current directory
 ---@return nil
 local function open_file_explorer()
@@ -392,88 +368,54 @@ local function open_file_explorer()
   local path = vim.fn.fnamemodify(bufname, ':p')
   if path and vim.uv.fs_stat(path) then require('mini.files').open(bufname, false) end
 end
-
-vim.keymap.set('n', '-', open_file_explorer)
-
 require('mini.keymap').map_combo({ 'i', 'c', 'x', 's' }, 'jk', '<BS><BS><Esc>')
 require('mini.keymap').map_combo({ 'i', 'c', 'x', 's' }, 'kj', '<BS><BS><Esc>')
-
 require('mini.extra').setup()
 require('mini.pick').setup({
   options = { use_cache = true },
   window = { prompt_prefix = '  ' },
 })
-
 vim.keymap.set('n', '<Leader>f', '<Cmd>Pick files<CR>')
 vim.keymap.set('n', '<Leader>g', '<Cmd>Pick grep_live<CR>')
 vim.keymap.set('n', '<Leader>l', '<Cmd>Pick buf_lines scope="current"<CR>')
 vim.keymap.set('n', '<Leader>b', '<Cmd>Pick buffers include_current=false<CR>')
-
+vim.keymap.set('n', '-', open_file_explorer)
 vim.ui.select = require('mini.pick').ui_select
 
+-- Plugins ================================================================================
 MiniDeps.add({ source = 'tpope/vim-sleuth' })
 MiniDeps.add({ source = 'tpope/vim-fugitive' })
 MiniDeps.add({ source = 'wincent/ferret' })
 MiniDeps.add('MagicDuck/grug-far.nvim')
 require('grug-far').setup()
 
+-- Treesitter ================================================================================
 MiniDeps.add({
   source = 'nvim-treesitter/nvim-treesitter',
   checkout = 'main',
-  hooks = {
-    post_checkout = function() vim.cmd('TSUpdate') end,
-  },
+  hooks = { post_checkout = function() vim.cmd('TSUpdate') end },
 })
-
 MiniDeps.add({
   source = 'nvim-treesitter/nvim-treesitter-textobjects',
   checkout = 'main',
 })
-
-local ensure_installed = {
-  'c',
-  'lua',
-  'vimdoc',
-  'query',
-  'markdown',
-  'markdown_inline',
-  'javascript',
-  'typescript',
-  'tsx',
-  'jsx',
-  'python',
-  'rust',
-  'ron',
-  'bash',
-  'gitcommit',
-  'html',
-  'hyprlang',
-  'json',
-  'json5',
-  'jsonc',
-  'rasi',
-  'regex',
-  'scss',
-  'toml',
-  'vim',
-  'yaml',
-}
-
+-- stylua: ignore
+local ensure_installed = { 'c', 'lua', 'vimdoc', 'query', 'markdown', 'markdown_inline',
+  'javascript', 'typescript', 'tsx', 'jsx', 'python', 'rust', 'ron', 'bash', 'gitcommit',
+  'html', 'hyprlang', 'json', 'json5', 'jsonc', 'rasi', 'regex', 'scss', 'toml', 'vim', 'yaml', }
 local isnt_installed = function(lang) return #vim.api.nvim_get_runtime_file('parser/' .. lang .. '.*', false) == 0 end
 local to_install = vim.tbl_filter(isnt_installed, ensure_installed)
 if #to_install > 0 then require('nvim-treesitter').install(to_install) end
-
 vim.api.nvim_create_autocmd('FileType', {
   pattern = vim.iter(ensure_installed):map(vim.treesitter.language.get_filetypes):flatten():totable(),
   callback = function(e) vim.treesitter.start(e.buf) end,
 })
 
+-- Lsp ================================================================================
 MiniDeps.add({ source = 'b0o/SchemaStore.nvim' })
 MiniDeps.add({ source = 'neovim/nvim-lspconfig' })
-
 local files = os.getenv('HOME') .. '/.config/nvim/lsp/*.lua'
 local methods = vim.lsp.protocol.Methods
-
 local server_configs = vim
   .iter(vim.fn.glob(files, true, true))
   :map(function(file)
@@ -483,9 +425,7 @@ local server_configs = vim
     return server
   end)
   :totable()
-
 vim.lsp.enable(server_configs)
-
 local function on_attach(client, buf)
   if client:supports_method('textDocument/completion') then
     --- Understand if I really want this...
@@ -505,17 +445,12 @@ local function on_attach(client, buf)
     })
     vim.keymap.set('i', '<C-n>', vim.lsp.completion.get, { buffer = buf })
   end
-
-  if client:supports_method(methods.textDocument_documentColor) then
-    vim.keymap.set({ 'n', 'x' }, 'gC', function() vim.lsp.document_color.color_presentation() end)
-  end
-
-  vim.keymap.set(
-    'n',
-    '[e',
-    function() vim.diagnostic.jump({ count = -1, severity = vim.diagnostic.severity.ERROR }) end
-  )
-  vim.keymap.set('n', ']e', function() vim.diagnostic.jump({ count = 1, severity = vim.diagnostic.severity.ERROR }) end)
+  --- Get the options for navigating error diagnostics
+  ---@param count 1|-1 direction of the navigation (fw/bw)
+  ---@return {count: 1|-1, severity: vim.Diagnostic}
+  local function err_diag_opts(count) return { count = count, severity = vim.diagnostic.severity.ERROR } end
+  vim.keymap.set('n', '[e', function() vim.diagnostic.jump(err_diag_opts(-1)) end)
+  vim.keymap.set('n', ']e', function() vim.diagnostic.jump(err_diag_opts(1)) end)
   vim.keymap.set('n', 'E', vim.diagnostic.open_float, { buffer = buf })
   vim.keymap.set('n', 'K', vim.lsp.buf.hover, { buffer = buf })
   vim.keymap.set('n', 'ga', vim.lsp.buf.code_action, { buffer = buf })
@@ -529,17 +464,14 @@ local function on_attach(client, buf)
   vim.keymap.set('n', 'gs', vim.lsp.buf.document_symbol, { buffer = buf })
   vim.keymap.set('i', '<C-k>', vim.lsp.buf.signature_help, { buffer = buf })
 end
-
 local show_handler = vim.diagnostic.handlers.virtual_text.show
 assert(show_handler)
 local hide_handler = vim.diagnostic.handlers.virtual_text.hide
-
 --- Sort vim diagnostics by severity
 ---@param a vim.Diagnostic vim diagnostic element
 ---@param b vim.Diagnostic vim diagnostic element
 ---@return boolean
 local function sort_by_severity(a, b) return a.severity > b.severity end
-
 --- Display disgnostics for the given namespace and buffer
 ---@param ns integer Diagnostic namespae
 ---@param bufnr integer Buffer number
@@ -549,9 +481,7 @@ local function show(ns, bufnr, diagnostics, opts)
   table.sort(diagnostics, sort_by_severity)
   return show_handler(ns, bufnr, diagnostics, opts)
 end
-
 vim.diagnostic.handlers.virtual_text = { show = show, hide = hide_handler }
-
 local hover = vim.lsp.buf.hover
 ---@diagnostic disable-next-line: duplicate-set-field
 vim.lsp.buf.hover = function()
@@ -560,7 +490,6 @@ vim.lsp.buf.hover = function()
     max_width = math.floor(vim.o.columns * 0.4),
   })
 end
-
 local signature_help = vim.lsp.buf.signature_help
 ---@diagnostic disable-next-line: duplicate-set-field
 vim.lsp.buf.signature_help = function()
@@ -569,7 +498,6 @@ vim.lsp.buf.signature_help = function()
     max_width = math.floor(vim.o.columns * 0.4),
   })
 end
-
 local register_capability = vim.lsp.handlers[methods.client_registerCapability]
 vim.lsp.handlers[methods.client_registerCapability] = function(err, res, ctx)
   local client = vim.lsp.get_client_by_id(ctx.client_id)
@@ -577,7 +505,6 @@ vim.lsp.handlers[methods.client_registerCapability] = function(err, res, ctx)
   on_attach(client, vim.api.nvim_get_current_buf())
   return register_capability(err, res, ctx)
 end
-
 vim.api.nvim_create_autocmd('LspAttach', {
   callback = function(e)
     local client = vim.lsp.get_client_by_id(e.data.client_id)
@@ -586,11 +513,10 @@ vim.api.nvim_create_autocmd('LspAttach', {
   end,
 })
 
+-- Conform ================================================================================
 MiniDeps.add({ source = 'stevearc/conform.nvim' })
-
 vim.g.autoformat = true
 vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
-
 require('conform').setup({
   notify_on_error = true,
   format_on_save = function()
@@ -614,7 +540,6 @@ require('conform').setup({
     ['_'] = { 'trim_whitespace', 'trim_newlines' },
   },
 })
-
 vim.api.nvim_create_user_command('PluginToggleFormat', function()
   vim.g.autoformat = not vim.g.autoformat
   vim.notify(('%s formatting...'):format(vim.g.autoformat and 'Enabling' or 'Disabling'), vim.log.levels.INFO)
