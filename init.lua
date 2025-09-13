@@ -1,4 +1,49 @@
 -- Options ================================================================================
+-- Borrowed from https://github.com/lewis6991/dotfiles/blob/0071d6f1a97f8f6080eb592c4838d92f77901e84/config/nvim/lua/gizmos/marksigns.lua
+
+local ns = vim.api.nvim_create_namespace('marks')
+
+---@param bufnr integer
+---@param mark vim.fn.getmarklist.ret.item
+local function decor_mark(bufnr, mark)
+  pcall(vim.api.nvim_buf_set_extmark, bufnr, ns, mark.pos[2] - 1, 0, {
+    sign_text = mark.mark:sub(2),
+    sign_hl_group = 'DiagnosticSignOk',
+  })
+end
+
+vim.api.nvim_set_decoration_provider(ns, {
+  on_win = function(_, _, bufnr, top_row, bot_row)
+    if vim.api.nvim_buf_get_name(bufnr) == '' then return end
+    vim.api.nvim_buf_clear_namespace(bufnr, ns, top_row, bot_row)
+    local current_file = vim.api.nvim_buf_get_name(bufnr)
+    for _, mark in ipairs(vim.fn.getmarklist()) do
+      if mark.mark:match('^.[a-zA-Z]$') then
+        local mark_file = vim.fn.fnamemodify(mark.file, ':p:a')
+        if current_file == mark_file then decor_mark(bufnr, mark) end
+      end
+    end
+    for _, mark in ipairs(vim.fn.getmarklist(bufnr)) do
+      if mark.mark:match('^.[a-zA-Z]$') then decor_mark(bufnr, mark) end
+    end
+  end,
+})
+
+vim.on_key(function(_, typed)
+  if typed:sub(1, 1) ~= 'm' then return end
+  local mark = typed:sub(2)
+  vim.schedule(function()
+    if mark:match('[A-Z]') then
+      for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+        vim.api.nvim__redraw({ win = win, range = { 0, -1 } })
+      end
+    else
+      vim.api.nvim__redraw({ range = { 0, -1 } })
+    end
+  end)
+end, ns)
+
+-- Options ================================================================================
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 vim.g.loaded_node_provider = 0
@@ -338,20 +383,6 @@ require('mini.extra').setup()
 require('mini.keymap').setup()
 require('mini.align').setup()
 require('mini.splitjoin').setup()
-require('mini.ai').setup({
-  custom_textobjects = {
-    g = MiniExtra.gen_ai_spec.buffer(),
-    f = require('mini.ai').gen_spec.treesitter({ a = '@function.outer', i = '@function.inner' }),
-  },
-  silent = true,
-  search_method = 'cover',
-  mappings = {
-    around_next = '',
-    inside_next = '',
-    around_last = '',
-    inside_last = '',
-  },
-})
 require('mini.files').setup({
   mappings = {
     show_help = '?',
@@ -371,10 +402,7 @@ end
 require('mini.keymap').map_combo({ 'i', 'c', 'x', 's' }, 'jk', '<BS><BS><Esc>')
 require('mini.keymap').map_combo({ 'i', 'c', 'x', 's' }, 'kj', '<BS><BS><Esc>')
 require('mini.extra').setup()
-require('mini.pick').setup({
-  options = { use_cache = true },
-  window = { prompt_prefix = '  ' },
-})
+require('mini.pick').setup({ window = { prompt_prefix = '  ' } })
 vim.keymap.set('n', '<Leader>f', '<Cmd>Pick files<CR>')
 vim.keymap.set('n', '<Leader>g', '<Cmd>Pick grep_live<CR>')
 vim.keymap.set('n', '<Leader>l', '<Cmd>Pick buf_lines scope="current"<CR>')
@@ -383,10 +411,8 @@ vim.keymap.set('n', '-', open_file_explorer)
 vim.ui.select = require('mini.pick').ui_select
 
 -- Plugins ================================================================================
-MiniDeps.add({ source = 'tpope/vim-sleuth' })
 MiniDeps.add({ source = 'tpope/vim-fugitive' })
-MiniDeps.add({ source = 'wincent/ferret' })
-MiniDeps.add('MagicDuck/grug-far.nvim')
+MiniDeps.add({ source = 'MagicDuck/grug-far.nvim' })
 require('grug-far').setup()
 
 -- Treesitter ================================================================================
@@ -394,10 +420,6 @@ MiniDeps.add({
   source = 'nvim-treesitter/nvim-treesitter',
   checkout = 'main',
   hooks = { post_checkout = function() vim.cmd('TSUpdate') end },
-})
-MiniDeps.add({
-  source = 'nvim-treesitter/nvim-treesitter-textobjects',
-  checkout = 'main',
 })
 -- stylua: ignore
 local ensure_installed = { 'c', 'lua', 'vimdoc', 'query', 'markdown', 'markdown_inline',
@@ -428,10 +450,9 @@ local server_configs = vim
 vim.lsp.enable(server_configs)
 local function on_attach(client, buf)
   if client:supports_method('textDocument/completion') then
-    --- Understand if I really want this...
-    -- local str = 'AEIOUaeiou\'".:'
-    -- local chars = { str:match((str:gsub('.', '(.)'))) }
-    -- client.server_capabilities.completionProvider.triggerCharacters = chars
+    local str = 'AEIOUaeiou\'".:-_'
+    local chars = { str:match((str:gsub('.', '(.)'))) }
+    client.server_capabilities.completionProvider.triggerCharacters = chars
     vim.lsp.completion.enable(true, client.id, buf, {
       autotrigger = true,
       convert = function(item)
@@ -445,6 +466,7 @@ local function on_attach(client, buf)
     })
     vim.keymap.set('i', '<C-n>', vim.lsp.completion.get, { buffer = buf })
   end
+
   --- Get the options for navigating error diagnostics
   ---@param count 1|-1 direction of the navigation (fw/bw)
   ---@return {count: 1|-1, severity: vim.Diagnostic}
