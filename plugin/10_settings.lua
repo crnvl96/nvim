@@ -1,0 +1,253 @@
+local node_version_cmd = "mise ls --cd ~ | grep '^node' | grep '22\\.' | head -n 1 | awk '{print $2}'"
+local version = vim.fn.system(node_version_cmd):gsub('\n', '')
+local home = os.getenv('HOME')
+
+--- Get a specific nodejs binary path
+---@param v string the nodejs version
+---@return string
+local function node_bin(v) return home .. '/.local/share/mise/installs/node/' .. v .. '/bin/' end
+
+if version == '' then
+  vim.notify('Could not determine Node.js version', vim.log.levels.WARN)
+else
+  local bin = node_bin(version)
+  vim.g.node_host_prog = bin .. 'node'
+  vim.env.PATH = bin .. ':' .. vim.env.PATH
+end
+
+--- Dynamically decide if we're into a quickfix or a location list, and return the respective items
+---@param info {quickfix:integer,winid:integer,id:integer,start_idx:integer,end_idx:integer} Information about the current active list
+---@return any[]
+local function get_quickfix_items(info)
+  if info.quickfix == 1 then
+    return vim.fn.getqflist({ id = info.id, items = 0 }).items
+  else
+    return vim.fn.getloclist(info.winid, { id = info.id, items = 0 }).items
+  end
+end
+
+--- Format the filename that will be shown on our custom qf list
+---@param fname string file name
+---@param limit integer max length allowed for a filename
+---@return string
+local function format_filename(fname, limit)
+  if fname == '' then return '[No Name]' end
+  fname = fname:gsub('^' .. vim.env.HOME, '~')
+  if #fname <= limit then
+    return ('%-' .. limit .. 's'):format(fname)
+  else
+    return ('…%.' .. (limit - 1) .. 's'):format(fname:sub(1 - limit))
+  end
+end
+
+--- Set the line number and column that will be exhibited together with the list item
+---@param lnum integer line number
+---@param col integer column
+---@return integer, integer
+local function format_location(lnum, col) return (lnum > 99999 and -1 or lnum), (col > 999 and -1 or col) end
+
+--- Set the kind of the item to render on the list
+---@param qtype string item type
+---@return string
+local function format_type(qtype) return qtype == '' and '' or ' ' .. qtype:sub(1, 1):upper() end
+
+--- Specifies a function to be used to get the text to display in the quickfix and location list windows
+---@param info {quickfix:integer,winid:integer,id:integer,start_idx:integer,end_idx:integer} Information about the current active list
+---@return table
+function _G.qftf(info)
+  local items = get_quickfix_items(info)
+  local ret = {}
+  local limit = 31
+  for i = info.start_idx, info.end_idx do
+    local entry = items[i]
+    local formatted_text
+    if entry.valid == 1 then
+      local fname = ''
+      if entry.bufnr > 0 then fname = format_filename(vim.fn.bufname(entry.bufnr), limit) end
+      local lnum, col = format_location(entry.lnum, entry.col)
+      local qtype = format_type(entry.type)
+      formatted_text = ('%s │%5d:%-3d│%s %s'):format(fname, lnum, col, qtype, entry.text)
+    else
+      formatted_text = entry.text
+    end
+    table.insert(ret, formatted_text)
+  end
+  return ret
+end
+
+vim.diagnostic.config({
+  update_in_insert = false, -- Update diagnostics only on `InserLeave`
+  float = {
+    source = true, -- Show the diagnostic source on the float window
+  },
+  signs = {
+    priority = 9999, -- Ensure these are visible on the signcolumn
+    severity = { -- Only show signs for diagnostics matching this severity range
+      min = vim.diagnostic.severity.WARN,
+      max = vim.diagnostic.severity.ERROR,
+    },
+  },
+  underline = { -- Only show underline for diagnostics matching this severity range
+    severity = {
+      min = vim.diagnostic.severity.HINT,
+      max = vim.diagnostic.severity.ERROR,
+    },
+  },
+  virtual_lines = false,
+  virtual_text = {
+    current_line = true, -- Show virtual text only for the diagnostic(s) of the cursor line
+    severity = { -- Only show virtual text for diagnostics matching this severity range
+      min = vim.diagnostic.severity.ERROR,
+      max = vim.diagnostic.severity.ERROR,
+    },
+  },
+})
+
+---@brief
+--- About `:h 'formatoptions'`
+--- r: Automatically insert the current comment leader after hitting <Enter> in Insert mode.
+--- q: Allow formatting of comments with "gq".
+--- l: Long lines are not broken in insert mode: When a line was longer than 'textwidth' when
+---    the insert command started, Vim does not automatically format it.
+--- 1: Don't break a line after a one-letter word.  It's broken before it instead (if possible).
+--- j: Where it makes sense, remove a comment leader when joining lines.
+
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+vim.g.loaded_node_provider = 0
+vim.g.loaded_perl_provider = 0
+vim.g.loaded_python3_provider = 0
+vim.g.loaded_ruby_provider = 0
+vim.g.mapleader = ' '
+vim.g.maplocalleader = ','
+vim.g.markdown_folding = 1
+vim.opt.autoindent = true
+vim.opt.background = 'dark'
+vim.opt.backup = false
+vim.opt.breakindent = true
+vim.opt.clipboard = 'unnamed'
+vim.opt.cmdheight = 1
+vim.opt.completeopt = table.concat({ 'menuone', 'noselect' }, ',')
+vim.opt.cursorline = true
+vim.opt.cursorlineopt = 'number'
+vim.opt.diffopt = table.concat({
+  'internal',
+  'filler',
+  'closeoff',
+  'algorithm:histogram',
+  'linematch:60',
+  'indent-heuristic',
+  'vertical',
+  'context:99',
+}, ',')
+vim.opt.expandtab = true
+vim.opt.fillchars = table.concat({
+  'eob: ',
+  'fold:╌',
+  'horiz:═',
+  'horizdown:╦',
+  'horizup:╩',
+  'vert:║',
+  'verthoriz:╬',
+  'vertleft:╣',
+  'vertright:╠',
+}, ',')
+vim.opt.foldcolumn = '0'
+vim.opt.foldlevel = 1
+vim.opt.foldlevelstart = 99
+vim.opt.foldmethod = 'indent'
+vim.opt.foldnestmax = 10
+vim.opt.foldtext = ''
+vim.opt.formatoptions = 'rql1j'
+vim.opt.guicursor = table.concat({ 'n-v-c-sm:block', 'i-ci-ve:ver25', 'r-cr-o:hor20', 't:block-TermCursor' }, ',')
+vim.opt.ignorecase = true
+vim.opt.incsearch = true
+vim.opt.infercase = true
+vim.opt.iskeyword = table.concat({ '@', '48-57', '_', '192-255', '-' }, ',')
+vim.opt.laststatus = 0
+vim.opt.linebreak = true
+vim.opt.list = true
+vim.opt.listchars = table.concat({ 'extends:…', 'nbsp:␣', 'precedes:…', 'tab:> ' }, ',')
+vim.opt.mouse = 'a'
+vim.opt.mousescroll = table.concat({ 'ver:3', 'hor:0' }, ',')
+vim.opt.number = true
+vim.opt.pumheight = 10
+vim.opt.qftf = '{info -> v:lua._G.qftf(info)}'
+vim.opt.relativenumber = true
+vim.opt.ruler = false
+vim.opt.scrolloff = 8
+vim.opt.shada = table.concat({ "'100", '<50', 's10', ':1000', '/100', '@100', 'h' }, ',')
+vim.opt.shiftwidth = 4
+vim.opt.shortmess = 'FOSWaco'
+vim.opt.showcmd = false
+vim.opt.showmode = false
+vim.opt.sidescrolloff = 24
+vim.opt.signcolumn = 'yes'
+vim.opt.smartcase = true
+vim.opt.smartindent = true
+vim.opt.spelloptions = 'camel'
+vim.opt.splitbelow = true
+vim.opt.splitright = true
+vim.opt.swapfile = false
+vim.opt.switchbuf = 'usetab'
+vim.opt.tabstop = 4
+vim.opt.timeoutlen = 1000
+vim.opt.ttimeoutlen = 10
+vim.opt.undofile = true
+vim.opt.updatetime = 300
+vim.opt.virtualedit = 'block'
+vim.opt.wildignore:append('.DS_Store')
+vim.opt.wildignorecase = true
+vim.opt.wildmenu = true
+vim.opt.wildmode = table.concat({ 'noselect:longest:lastused', 'full' }, ',')
+vim.opt.wrap = false
+vim.opt.wrap = false
+vim.opt.writebackup = false
+
+-- This autocommand is needed because these format options are added in every filetype trigger
+vim.api.nvim_create_autocmd('FileType', { command = 'setlocal formatoptions-=c formatoptions-=o' })
+
+vim.cmd('filetype plugin indent on')
+vim.cmd('packadd cfilter')
+
+if vim.fn.exists('syntax_on') ~= 1 then vim.cmd('syntax enable') end
+
+if vim.fn.executable('rg') == 1 then
+  vim.opt.grepprg = "rg --vimgrep --hidden -g '!.git/*'"
+  vim.opt.grepformat = '%f:%l:%c:%m'
+end
+
+if vim.fn.executable('fd') == 1 and vim.fn.executable('fzf') == 1 then
+  function _G.fuzzyfindfunc(cmdarg) return vim.fn.systemlist("fd -t f -H . | fzf --filter='" .. cmdarg .. "'") end
+  vim.opt.findfunc = 'v:lua._G.fuzzyfindfunc'
+end
+
+if vim.fn.has('nvim-0.9') == 1 then
+  vim.opt.shortmess = 'CFOSWaco'
+  vim.opt.splitkeep = 'screen'
+end
+
+if vim.fn.has('nvim-0.10') == 1 then
+  vim.opt.foldtext = ''
+  vim.opt.termguicolors = true
+end
+
+if vim.fn.has('nvim-0.11') == 1 then
+  vim.opt.completeopt = table.concat({ 'menuone', 'noselect', 'fuzzy', 'nosort' }, ',')
+  vim.opt.winborder = 'double'
+end
+
+if vim.fn.has('nvim-0.12') == 1 then
+  require('vim._extui').enable({ enable = true })
+  vim.cmd([[autocmd CmdlineChanged [:/\?@] call wildtrigger()]])
+
+  vim.keymap.set('c', '<C-n>', [[cmdcomplete_info().pum_visible ? "\<C-n>" : "\<Tab>"]], { expr = true })
+  vim.keymap.set('c', '<C-p>', [[cmdcomplete_info().pum_visible ? "\<C-p>" : "\<S-Tab>"]], { expr = true })
+  vim.keymap.set('c', '<Down>', '<C-u><Down>')
+  vim.keymap.set('c', '<Up>', '<C-u><Up>')
+
+  vim.opt.completefuzzycollect = table.concat({ 'keyword', 'files', 'whole_line' }, ',')
+  vim.opt.pummaxwidth = 100
+  vim.opt.wildmode = 'noselect:lastused'
+  vim.opt.wildoptions = table.concat({ 'pum', 'fuzzy' }, ',')
+end
