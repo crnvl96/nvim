@@ -35,25 +35,6 @@ end
 ---@param client vim.lsp.Client lsp Client
 ---@param buf integer target buffer
 local function on_attach(client, buf)
-  if client:supports_method('textDocument/completion') then
-    local str = 'AEIOUaeiou\'".:-_'
-    client.server_capabilities.completionProvider.triggerCharacters = { str:match((str:gsub('.', '(.)'))) }
-    vim.lsp.completion.enable(true, client.id, buf, {
-      autotrigger = true,
-      -- Automatically gets merged with the default options
-      convert = function(item)
-        if item.labelDetails and item.labelDetails.description then
-          return {
-            menu = item.labelDetails.description,
-          }
-        end
-
-        return {}
-      end,
-    })
-    vim.keymap.set('i', '<C-n>', vim.lsp.completion.get, { buffer = buf })
-  end
-
   --- Get the options for navigating error diagnostics
   ---@param count 1|-1 direction of the navigation (fw/bw)
   local function err_diag_opts(count) return { count = count, severity = vim.diagnostic.severity.ERROR } end

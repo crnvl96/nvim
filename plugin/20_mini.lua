@@ -115,8 +115,8 @@ MiniKeymap.map_combo('c', 'fk', "<BS><BS>sil grep! ''<left>")
 
 -- vim.ui.select = require('mini.pick').ui_select
 
--- vim.keymap.set('n', '<Leader>f', '<Cmd>Pick files<CR>')
--- vim.keymap.set('n', '<Leader>g', '<Cmd>Pick grep_live<CR>')
--- vim.keymap.set('n', '<Leader>l', '<Cmd>Pick buf_lines scope="current"<CR>')
--- vim.keymap.set('n', '<Leader>b', '<Cmd>Pick buffers include_current=false<CR>')
-vim.keymap.set('n', '-', function() return open_file_explorer end)
+vim.keymap.set('n', '<Leader>f', '<Cmd>Pick files<CR>')
+vim.keymap.set('n', '<Leader>g', '<Cmd>Pick grep_live<CR>')
+vim.keymap.set('n', '<Leader>l', '<Cmd>Pick buf_lines scope="current"<CR>')
+vim.keymap.set('n', '<Leader>b', '<Cmd>Pick buffers include_current=false<CR>')
+vim.keymap.set('n', '-', function() return open_file_explorer() end)

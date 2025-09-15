@@ -245,3 +245,25 @@ if vim.fn.has('nvim-0.12') == 1 then
   vim.opt.wildmode = 'noselect:lastused'
   vim.opt.wildoptions = table.concat({ 'pum', 'fuzzy' }, ',')
 end
+
+-- vim.cmd([[
+-- def Find(cmd_arg: string, cmd_complete: bool): list<string>
+--     if empty(files_cache)
+--         var cmd = FindCmd()
+--         if empty(cmd)
+--             files_cache = globpath('.', '**', 1, 1)
+--                 ->filter((_, v) => !isdirectory(v))
+--                 ->mapnew((_, v) => v->substitute('^\.[\/]', "", ""))
+--         else
+--             files_cache = systemlist(cmd)
+--         endif
+--     endif
+--     if empty(cmd_arg)
+--         return files_cache
+--     else
+--         return files_cache->matchfuzzy(cmd_arg)
+--     endif
+-- enddef
+--
+-- set findfunc=Find
+-- ]])
