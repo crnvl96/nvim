@@ -1,5 +1,4 @@
 --- Open MiniFiles at the current directory
----@return nil
 local function open_file_explorer()
   local bufname = vim.api.nvim_buf_get_name(0)
   local path = vim.fn.fnamemodify(bufname, ':p')
@@ -108,10 +107,16 @@ require('mini.files').setup({
 MiniKeymap.map_combo({ 'i', 'c', 'x', 's' }, 'jk', '<BS><BS><Esc>')
 MiniKeymap.map_combo({ 'i', 'c', 'x', 's' }, 'kj', '<BS><BS><Esc>')
 
-vim.ui.select = require('mini.pick').ui_select
+MiniKeymap.map_combo('n', 'fj', ':find **/*/*')
+MiniKeymap.map_combo('n', 'fk', ":sil grep! ''<left>")
 
-vim.keymap.set('n', '<Leader>f', '<Cmd>Pick files<CR>')
-vim.keymap.set('n', '<Leader>g', '<Cmd>Pick grep_live<CR>')
-vim.keymap.set('n', '<Leader>l', '<Cmd>Pick buf_lines scope="current"<CR>')
-vim.keymap.set('n', '<Leader>b', '<Cmd>Pick buffers include_current=false<CR>')
-vim.keymap.set('n', '-', open_file_explorer)
+MiniKeymap.map_combo('c', 'fj', '<BS><BS>find **/*/*')
+MiniKeymap.map_combo('c', 'fk', "<BS><BS>sil grep! ''<left>")
+
+-- vim.ui.select = require('mini.pick').ui_select
+
+-- vim.keymap.set('n', '<Leader>f', '<Cmd>Pick files<CR>')
+-- vim.keymap.set('n', '<Leader>g', '<Cmd>Pick grep_live<CR>')
+-- vim.keymap.set('n', '<Leader>l', '<Cmd>Pick buf_lines scope="current"<CR>')
+-- vim.keymap.set('n', '<Leader>b', '<Cmd>Pick buffers include_current=false<CR>')
+vim.keymap.set('n', '-', function() return open_file_explorer end)

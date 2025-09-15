@@ -4,7 +4,6 @@ local home = os.getenv('HOME')
 
 --- Get a specific nodejs binary path
 ---@param v string the nodejs version
----@return string
 local function node_bin(v) return home .. '/.local/share/mise/installs/node/' .. v .. '/bin/' end
 
 if version == '' then
@@ -17,7 +16,6 @@ end
 
 --- Dynamically decide if we're into a quickfix or a location list, and return the respective items
 ---@param info {quickfix:integer,winid:integer,id:integer,start_idx:integer,end_idx:integer} Information about the current active list
----@return any[]
 local function get_quickfix_items(info)
   if info.quickfix == 1 then
     return vim.fn.getqflist({ id = info.id, items = 0 }).items
@@ -29,7 +27,6 @@ end
 --- Format the filename that will be shown on our custom qf list
 ---@param fname string file name
 ---@param limit integer max length allowed for a filename
----@return string
 local function format_filename(fname, limit)
   if fname == '' then return '[No Name]' end
   fname = fname:gsub('^' .. vim.env.HOME, '~')
@@ -43,17 +40,14 @@ end
 --- Set the line number and column that will be exhibited together with the list item
 ---@param lnum integer line number
 ---@param col integer column
----@return integer, integer
 local function format_location(lnum, col) return (lnum > 99999 and -1 or lnum), (col > 999 and -1 or col) end
 
 --- Set the kind of the item to render on the list
 ---@param qtype string item type
----@return string
 local function format_type(qtype) return qtype == '' and '' or ' ' .. qtype:sub(1, 1):upper() end
 
 --- Specifies a function to be used to get the text to display in the quickfix and location list windows
 ---@param info {quickfix:integer,winid:integer,id:integer,start_idx:integer,end_idx:integer} Information about the current active list
----@return table
 function _G.qftf(info)
   local items = get_quickfix_items(info)
   local ret = {}
@@ -217,11 +211,6 @@ if vim.fn.executable('rg') == 1 then
   vim.opt.grepformat = '%f:%l:%c:%m'
 end
 
-if vim.fn.executable('fd') == 1 and vim.fn.executable('fzf') == 1 then
-  function _G.fuzzyfindfunc(cmdarg) return vim.fn.systemlist("fd -t f -H . | fzf --filter='" .. cmdarg .. "'") end
-  vim.opt.findfunc = 'v:lua._G.fuzzyfindfunc'
-end
-
 if vim.fn.has('nvim-0.9') == 1 then
   vim.opt.shortmess = 'CFOSWaco'
   vim.opt.splitkeep = 'screen'
@@ -235,6 +224,11 @@ end
 if vim.fn.has('nvim-0.11') == 1 then
   vim.opt.completeopt = table.concat({ 'menuone', 'noselect', 'fuzzy', 'nosort' }, ',')
   vim.opt.winborder = 'double'
+end
+
+if vim.fn.executable('fd') == 1 and vim.fn.executable('fzf') == 1 and vim.fn.has('nvim-0.12') ~= 1 then
+  function _G.fuzzyfindfunc(cmdarg) return vim.fn.systemlist("fd -t f -H . | fzf --filter='" .. cmdarg .. "'") end
+  vim.opt.findfunc = 'v:lua._G.fuzzyfindfunc'
 end
 
 if vim.fn.has('nvim-0.12') == 1 then

@@ -42,7 +42,7 @@ return {
     local function luals_unique_definition() return vim.lsp.buf.definition({ on_list = on_list }) end
 
     -- Override global "Go to source" mapping with dedicated buffer-local
-    vim.keymap.set('n', 'gd', luals_unique_definition, { buffer = buf_id, desc = 'Lua source definition' })
+    vim.keymap.set('n', 'gd', function() return luals_unique_definition() end, { buffer = buf_id })
   end,
   root_markers = { '.luarc.json', '.luarc.jsonc' },
   settings = {

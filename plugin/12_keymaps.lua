@@ -1,5 +1,22 @@
 local paste_cmd = vim.fn.has('nvim-0.12') == 1 and 'iput' or 'put'
 
+--- Dynamically expand a cmdline trigger to a mapped command
+---@param trigger string the command trigger
+---@param cmd string the command to be executed
+local function expand_trigger(trigger, cmd)
+  local cmdtype = vim.fn.getcmdtype()
+  local is_cmd = cmdtype == ':'
+
+  local cmdline = vim.fn.getcmdline()
+  local is_trigger = cmdline == trigger
+
+  if is_cmd and is_trigger then
+    return cmd
+  else
+    return trigger
+  end
+end
+
 vim.keymap.set({ 'n', 'x' }, '[p', '<Cmd>exe "' .. paste_cmd .. '! " . v:register<CR>', { desc = 'Paste Above' })
 vim.keymap.set({ 'n', 'x' }, ']p', '<Cmd>exe "' .. paste_cmd .. ' "  . v:register<CR>', { desc = 'Paste Below' })
 vim.keymap.set({ 'n', 'x' }, 'Y', 'yg_')
@@ -24,3 +41,6 @@ vim.keymap.set('x', '<', '<gv')
 vim.keymap.set('x', '>', '>gv')
 vim.keymap.set({ 'n', 't' }, '<C-Left>', '<Cmd>vertical resize -20<CR>')
 vim.keymap.set({ 'n', 't' }, '<C-Right>', '<Cmd>vertical resize +20<CR>')
+
+vim.keymap.set('ca', 'f', function() return expand_trigger('f', 'find **/*/*') end, { expr = true })
+vim.keymap.set('ca', 'g', function() return expand_trigger('g', 'sil grep!') end, { expr = true })
