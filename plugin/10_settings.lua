@@ -69,33 +69,22 @@ function _G.qftf(info)
   return ret
 end
 
-vim.diagnostic.config({
-  update_in_insert = false, -- Update diagnostics only on `InserLeave`
-  float = {
-    source = true, -- Show the diagnostic source on the float window
-  },
-  signs = {
-    priority = 9999, -- Ensure these are visible on the signcolumn
-    severity = { -- Only show signs for diagnostics matching this severity range
-      min = vim.diagnostic.severity.WARN,
-      max = vim.diagnostic.severity.ERROR,
-    },
-  },
-  underline = { -- Only show underline for diagnostics matching this severity range
-    severity = {
-      min = vim.diagnostic.severity.HINT,
-      max = vim.diagnostic.severity.ERROR,
-    },
-  },
-  virtual_lines = false,
-  virtual_text = {
-    current_line = true, -- Show virtual text only for the diagnostic(s) of the cursor line
-    severity = { -- Only show virtual text for diagnostics matching this severity range
-      min = vim.diagnostic.severity.ERROR,
-      max = vim.diagnostic.severity.ERROR,
-    },
-  },
-})
+--- Dynamically expand a cmdline trigger to a mapped command
+---@param trigger string the command trigger
+---@param cmd string the command to be executed
+local function expand_trigger(trigger, cmd)
+  local cmdtype = vim.fn.getcmdtype()
+  local is_cmd = cmdtype == ':'
+
+  local cmdline = vim.fn.getcmdline()
+  local is_trigger = cmdline == trigger
+
+  if is_cmd and is_trigger then
+    return cmd
+  else
+    return trigger
+  end
+end
 
 ---@brief
 --- About `:h 'formatoptions'`
@@ -121,31 +110,13 @@ vim.opt.backup = false
 vim.opt.breakindent = true
 vim.opt.clipboard = 'unnamed'
 vim.opt.cmdheight = 1
-vim.opt.completeopt = table.concat({ 'menuone', 'noselect' }, ',')
+vim.opt.completeopt = 'menuone,noselect'
 vim.opt.cursorline = true
 vim.opt.cursorlineopt = 'number'
-vim.opt.diffopt = table.concat({
-  'internal',
-  'filler',
-  'closeoff',
-  'algorithm:histogram',
-  'linematch:60',
-  'indent-heuristic',
-  'vertical',
-  'context:99',
-}, ',')
+vim.opt.diffopt = 'internal,filler,closeoff,algorithm:histogram,linematch:60,indent-heuristic,vertical,context:99'
 vim.opt.expandtab = true
-vim.opt.fillchars = table.concat({
-  'eob: ',
-  'fold:╌',
-  'horiz:═',
-  'horizdown:╦',
-  'horizup:╩',
-  'vert:║',
-  'verthoriz:╬',
-  'vertleft:╣',
-  'vertright:╠',
-}, ',')
+vim.opt.fillchars =
+  'eob: ,fold:╌,horiz:═,horizdown:╦,horizup:╩,vert:║,verthoriz:╬,vertleft:╣,vertright:╠'
 vim.opt.foldcolumn = '0'
 vim.opt.foldlevel = 1
 vim.opt.foldlevelstart = 99
@@ -153,24 +124,21 @@ vim.opt.foldmethod = 'indent'
 vim.opt.foldnestmax = 10
 vim.opt.foldtext = ''
 vim.opt.formatoptions = 'rql1j'
-vim.opt.guicursor = table.concat({ 'n-v-c-sm:block', 'i-ci-ve:ver25', 'r-cr-o:hor20', 't:block-TermCursor' }, ',')
 vim.opt.ignorecase = true
 vim.opt.incsearch = true
 vim.opt.infercase = true
-vim.opt.iskeyword = table.concat({ '@', '48-57', '_', '192-255', '-' }, ',')
 vim.opt.laststatus = 0
 vim.opt.linebreak = true
 vim.opt.list = true
-vim.opt.listchars = table.concat({ 'extends:…', 'nbsp:␣', 'precedes:…', 'tab:  ' }, ',')
+vim.opt.listchars = 'extends:…,nbsp:␣,precedes:…,tab:  '
 vim.opt.mouse = 'a'
-vim.opt.mousescroll = table.concat({ 'ver:3', 'hor:0' }, ',')
+vim.opt.mousescroll = 'ver:3,hor:0'
 vim.opt.number = true
 vim.opt.pumheight = 10
 vim.opt.qftf = '{info -> v:lua._G.qftf(info)}'
 vim.opt.relativenumber = true
 vim.opt.ruler = false
 vim.opt.scrolloff = 8
-vim.opt.shada = table.concat({ "'100", '<50', 's10', ':1000', '/100', '@100', 'h' }, ',')
 vim.opt.shiftwidth = 4
 vim.opt.shortmess = 'FOSWaco'
 vim.opt.showcmd = false
@@ -193,13 +161,9 @@ vim.opt.virtualedit = 'block'
 vim.opt.wildignore:append('.DS_Store')
 vim.opt.wildignorecase = true
 vim.opt.wildmenu = true
-vim.opt.wildmode = table.concat({ 'noselect:longest:lastused', 'full' }, ',')
 vim.opt.wrap = false
 vim.opt.wrap = false
 vim.opt.writebackup = false
-
--- This autocommand is needed because these format options are added in every filetype trigger
-vim.api.nvim_create_autocmd('FileType', { command = 'setlocal formatoptions-=c formatoptions-=o' })
 
 vim.cmd('filetype plugin indent on')
 vim.cmd('packadd cfilter')
@@ -222,48 +186,164 @@ if vim.fn.has('nvim-0.10') == 1 then
 end
 
 if vim.fn.has('nvim-0.11') == 1 then
-  vim.opt.completeopt = table.concat({ 'menuone', 'noselect', 'fuzzy', 'nosort' }, ',')
+  vim.opt.completeopt = 'menuone,noselect,fuzzy,nosort'
   vim.opt.winborder = 'double'
 end
 
-if vim.fn.executable('fd') == 1 and vim.fn.executable('fzf') == 1 and vim.fn.has('nvim-0.12') ~= 1 then
-  function _G.fuzzyfindfunc(cmdarg) return vim.fn.systemlist("fd -t f -H . | fzf --filter='" .. cmdarg .. "'") end
-  vim.opt.findfunc = 'v:lua._G.fuzzyfindfunc'
-end
-
 if vim.fn.has('nvim-0.12') == 1 then
-  require('vim._extui').enable({ enable = true })
-  vim.cmd([[autocmd CmdlineChanged [:/\?@] call wildtrigger()]])
-
   vim.keymap.set('c', '<C-n>', [[cmdcomplete_info().pum_visible ? "\<C-n>" : "\<Tab>"]], { expr = true })
   vim.keymap.set('c', '<C-p>', [[cmdcomplete_info().pum_visible ? "\<C-p>" : "\<S-Tab>"]], { expr = true })
   vim.keymap.set('c', '<Down>', '<C-u><Down>')
   vim.keymap.set('c', '<Up>', '<C-u><Up>')
-
-  vim.opt.completefuzzycollect = table.concat({ 'keyword', 'files', 'whole_line' }, ',')
+  vim.opt.completefuzzycollect = 'keyword,files,whole_line'
   vim.opt.pummaxwidth = 100
-  vim.opt.wildmode = 'noselect:lastused'
-  vim.opt.wildoptions = table.concat({ 'pum', 'fuzzy' }, ',')
+  vim.opt.wildoptions = 'pum,fuzzy'
+
+  local function findcmd()
+    local cmd = {}
+
+    if vim.fn.executable('fd') == 1 then
+      cmd = {
+        'fd',
+        '.',
+        '--path-separator',
+        '/',
+        '--type',
+        'f',
+        '--hidden',
+        '--follow',
+        '--exclude',
+        '.git',
+      }
+    elseif vim.fn.executable('fdfind') == 1 then
+      cmd = {
+        'fdfind',
+        '.',
+        '--path-separator',
+        '/',
+        '--type',
+        'f',
+        '--hidden',
+        '--follow',
+        '--exclude',
+        '.git',
+      }
+    elseif vim.fn.executable('rg') == 1 then
+      cmd = {
+        'rg',
+        '--path-separator',
+        '/',
+        '--files',
+        '--hidden',
+        '--glob',
+        '!.git',
+      }
+    end
+
+    return cmd
+  end
+
+  local fnames = {} ---@type string[]
+  local handle ---@type vim.SystemObj?
+  local needs_refresh = true
+
+  local function refresh()
+    if handle ~= nil or not needs_refresh then return end
+    needs_refresh = false
+    fnames = {}
+    local prev
+
+    handle = vim.system(findcmd(), {
+      stdout = function(err, data)
+        assert(not err, err)
+        if not data then return end
+        if prev then data = prev .. data end
+        if data[#data] == '\n' then
+          vim.list_extend(fnames, vim.split(data, '\n', { trimempty = true }))
+        else
+          local parts = vim.split(data, '\n', { trimempty = true })
+          prev = parts[#parts]
+          parts[#parts] = nil
+          vim.list_extend(fnames, parts)
+        end
+      end,
+    }, function(obj)
+      if obj.code ~= 0 then print('Command failed') end
+      handle = nil
+    end)
+
+    vim.api.nvim_create_autocmd({ 'CmdlineChanged', 'CmdlineLeave' }, {
+      pattern = { '*' },
+      callback = function(ev)
+        if ev.event == 'CmdlineChanged' then
+          vim.opt.wildmode = 'noselect:lastused,full'
+          vim.fn.wildtrigger()
+        end
+
+        if ev.event == 'CmdlineLeave' then vim.opt.wildmode = 'full' end
+      end,
+    })
+
+    vim.api.nvim_create_autocmd('CmdlineLeave', {
+      once = true,
+      callback = function()
+        needs_refresh = true
+        if handle then
+          handle:wait(0)
+          handle = nil
+        end
+      end,
+    })
+  end
+
+  local function fd_findfunc(cmdarg, _)
+    if #cmdarg == 0 then
+      refresh()
+      vim.wait(200, function() return #fnames > 0 end)
+      return fnames
+    else
+      return vim.fn.matchfuzzy(fnames, cmdarg, { matchseq = 1, limit = 100 })
+    end
+  end
+
+  if vim.fn.executable('fd') == 1 then
+    function _G.Fd_findfunc(cmdarg, _cmdcomplete) return fd_findfunc(cmdarg, _cmdcomplete) end
+    vim.o.findfunc = 'v:lua.Fd_findfunc'
+  end
+
+  vim.keymap.set('n', '<leader>f', ':find<space>')
+  vim.keymap.set('n', '<leader>g', ":sil grep! ''<left>")
+  vim.keymap.set('c', '<c-v>', '<home><s-right><c-w>vs<end>')
+  vim.keymap.set('c', '<c-s>', '<home><s-right><c-w>sp<end>')
 end
 
--- vim.cmd([[
--- def Find(cmd_arg: string, cmd_complete: bool): list<string>
---     if empty(files_cache)
---         var cmd = FindCmd()
---         if empty(cmd)
---             files_cache = globpath('.', '**', 1, 1)
---                 ->filter((_, v) => !isdirectory(v))
---                 ->mapnew((_, v) => v->substitute('^\.[\/]', "", ""))
---         else
---             files_cache = systemlist(cmd)
---         endif
---     endif
---     if empty(cmd_arg)
---         return files_cache
---     else
---         return files_cache->matchfuzzy(cmd_arg)
---     endif
--- enddef
---
--- set findfunc=Find
--- ]])
+vim.api.nvim_create_autocmd('FileType', { command = 'setlocal formatoptions-=c formatoptions-=o' })
+vim.api.nvim_create_autocmd('QuickFixCmdPost', { pattern = '*grep*', command = 'cwindow' })
+vim.api.nvim_create_autocmd('TextYankPost', { callback = function() (vim.hl or vim.highlight).on_yank() end })
+vim.api.nvim_create_autocmd('TermOpen', { command = 'setlocal listchars= nonumber norelativenumber' })
+vim.api.nvim_create_autocmd('VimResized', { command = 'tabdo wincmd =' })
+
+vim.keymap.set({ 'n', 'x' }, 'Y', 'yg_')
+vim.keymap.set({ 'n', 'x', 'o' }, '<Leader>p', '"+p')
+vim.keymap.set({ 'n', 'x', 'o' }, '<Leader>P', '"+P')
+vim.keymap.set({ 'n', 'x', 'o' }, '<Leader>y', '"+y')
+vim.keymap.set({ 'n', 'x', 'o' }, '<Leader>Y', '"+yg_')
+vim.keymap.set({ 'n', 'x', 'i', 's' }, '<Esc>', '<Cmd>noh<CR><Esc>')
+vim.keymap.set({ 'n', 'i', 'x' }, '<C-S>', '<Esc><Cmd>silent! update | redraw<CR>')
+vim.keymap.set({ 'n', 'x' }, 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true })
+vim.keymap.set({ 'n', 'x' }, 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true })
+vim.keymap.set('n', '<C-d>', '<C-d>zz')
+vim.keymap.set('n', '<C-u>', '<C-u>zz')
+vim.keymap.set('n', '<C-h>', '<C-w>h')
+vim.keymap.set('n', '<C-j>', '<C-w>j')
+vim.keymap.set('n', '<C-k>', '<C-w>k')
+vim.keymap.set('n', '<C-l>', '<C-w>l')
+vim.keymap.set('n', '<C-Down>', '<Cmd>resize -5<CR>')
+vim.keymap.set('n', '<C-Up>', '<Cmd>resize +5<CR>')
+vim.keymap.set('x', 'p', 'P')
+vim.keymap.set('x', '<', '<gv')
+vim.keymap.set('x', '>', '>gv')
+vim.keymap.set({ 'n', 't' }, '<C-Left>', '<Cmd>vertical resize -20<CR>')
+vim.keymap.set({ 'n', 't' }, '<C-Right>', '<Cmd>vertical resize +20<CR>')
+vim.keymap.set('ca', 'f', function() return expand_trigger('f', 'find **/*/*') end, { expr = true })
+vim.keymap.set('ca', 'g', function() return expand_trigger('g', 'sil grep!') end, { expr = true })

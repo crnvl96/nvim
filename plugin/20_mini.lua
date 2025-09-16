@@ -21,28 +21,6 @@ end
 require('mini.deps').setup()
 MiniDeps.add({ name = 'mini.nvim' })
 
-local palette = require('mini.hues').make_palette({
-  background = vim.o.background == 'dark' and '#212223' or '#e1e2e3',
-  foreground = vim.o.background == 'dark' and '#d5d4d3' or '#2f2e2d',
-  saturation = vim.o.background == 'dark' and 'lowmedium' or 'mediumhigh',
-  accent = 'bg',
-})
-
-require('mini.hues').apply_palette(palette)
-
-require('mini.colors')
-  .get_colorscheme()
-  :add_terminal_colors()
-  :add_cterm_attributes()
-  :add_transparency({
-    float = true,
-    statuscolumn = true,
-    statusline = false,
-    tabline = true,
-    winbar = true,
-  })
-  :apply()
-
 for _, hl in ipairs({
   'Pmenu',
   'MiniFilesBorder',
@@ -52,35 +30,14 @@ for _, hl in ipairs({
   'MiniFilesNormal',
   'MiniFilesTitle',
   'MiniFilesTitleFocused',
-  'MiniPickBorder',
-  'MiniPickBorderBusy',
-  'MiniPickBorderText',
-  'MiniPickCursor',
-  'MiniPickIconDirectory',
-  'MiniPickIconFile',
-  'MiniPickHeader',
-  'MiniPickNormal',
-  'MiniPickPreviewLine',
-  'MiniPickPreviewRegion',
-  'MiniPickPrompt',
-  'MiniPickPromptCaret',
-  'MiniPickPromptPrefix',
+  'StatusLine',
+  'StatusLineNC',
+  'StatusLineTerm',
+  'StatusLineTermNC',
 }) do
   local is_ok, hl_def = pcall(vim.api.nvim_get_hl, 0, { name = hl, link = false })
   if is_ok then
-    if hl == 'Pmenu' then
-      vim.api.nvim_set_hl(
-        0,
-        hl,
-        vim.tbl_deep_extend('force', hl_def --[[@as vim.api.keyset.highlight]], { bg = 'none' })
-      )
-    else
-      vim.api.nvim_set_hl(
-        0,
-        hl,
-        vim.tbl_deep_extend('force', hl_def --[[@as vim.api.keyset.highlight]], { bg = 'none' })
-      )
-    end
+    vim.api.nvim_set_hl(0, hl, vim.tbl_deep_extend('force', hl_def --[[@as vim.api.keyset.highlight]], { bg = 'none' }))
   end
 end
 
@@ -92,7 +49,8 @@ require('mini.keymap').setup()
 require('mini.align').setup()
 require('mini.splitjoin').setup()
 require('mini.extra').setup()
-require('mini.pick').setup()
+
+MiniMisc.setup_restore_cursor()
 
 require('mini.files').setup({
   mappings = {
@@ -104,19 +62,4 @@ require('mini.files').setup({
   },
 })
 
-MiniKeymap.map_combo({ 'i', 'c', 'x', 's' }, 'jk', '<BS><BS><Esc>')
-MiniKeymap.map_combo({ 'i', 'c', 'x', 's' }, 'kj', '<BS><BS><Esc>')
-
-MiniKeymap.map_combo('n', 'fj', ':find **/*/*')
-MiniKeymap.map_combo('n', 'fk', ":sil grep! ''<left>")
-
-MiniKeymap.map_combo('c', 'fj', '<BS><BS>find **/*/*')
-MiniKeymap.map_combo('c', 'fk', "<BS><BS>sil grep! ''<left>")
-
--- vim.ui.select = require('mini.pick').ui_select
-
-vim.keymap.set('n', '<Leader>f', '<Cmd>Pick files<CR>')
-vim.keymap.set('n', '<Leader>g', '<Cmd>Pick grep_live<CR>')
-vim.keymap.set('n', '<Leader>l', '<Cmd>Pick buf_lines scope="current"<CR>')
-vim.keymap.set('n', '<Leader>b', '<Cmd>Pick buffers include_current=false<CR>')
 vim.keymap.set('n', '-', function() return open_file_explorer() end)

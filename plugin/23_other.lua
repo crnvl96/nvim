@@ -10,48 +10,26 @@ local function build_cargo(p)
   end
 end
 
-MiniDeps.add({
-  source = 'Saghen/blink.cmp',
-  hooks = {
-    post_install = build_cargo,
-    post_checkout = build_cargo,
-  },
-})
+vim.cmd('colorscheme ham')
+
+local cargo_hooks = { post_install = build_cargo, post_checkout = build_cargo }
+MiniDeps.add({ source = 'tpope/vim-fugitive' })
+MiniDeps.add({ source = 'Saghen/blink.cmp', hooks = cargo_hooks })
+MiniDeps.add({ source = 'stevearc/conform.nvim' })
+
+vim.g.autoformat = true
+vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
 
 require('blink.cmp').setup({
   appearance = { nerd_font_variant = 'mono' },
-  keymap = {
-    preset = 'default',
-    ['<C-n>'] = { 'show', 'select_next', 'fallback_to_mappings' },
-  },
-  -- cmdline = {
-  --   keymap = { preset = 'inherit' },
-  --   completion = {
-  --     list = {
-  --       selection = {
-  --         preselect = false,
-  --         auto_insert = true,
-  --       },
-  --     },
-  --     menu = { auto_show = true },
-  --     ghost_text = { enabled = true },
-  --   },
-  -- },
+  keymap = { preset = 'default', ['<C-n>'] = { 'show', 'select_next', 'fallback_to_mappings' } },
   completion = {
-    list = {
-      selection = {
-        preselect = false,
-        auto_insert = true,
-      },
-    },
+    list = { selection = { preselect = false, auto_insert = true } },
     documentation = { auto_show = true },
     menu = {
       scrollbar = false,
       draw = {
-        columns = {
-          { 'kind_icon' },
-          { 'label', 'label_description', 'source_name', gap = 1 },
-        },
+        columns = { { 'kind_icon' }, { 'label', 'label_description', 'source_name', gap = 1 } },
         components = {
           kind_icon = {
             text = function(ctx)
@@ -70,20 +48,6 @@ require('blink.cmp').setup({
     },
   },
 })
-
-vim.lsp.config('*', { capabilities = require('blink.cmp').get_lsp_capabilities(nil, true) })
-
-for _, hl in ipairs({ 'Pmenu', 'StatusLine', 'StatusLineNC', 'StatusLineTerm', 'StatusLineTermNC' }) do
-  local is_ok, hl_def = pcall(vim.api.nvim_get_hl, 0, { name = hl, link = false })
-  if is_ok then
-    vim.api.nvim_set_hl(0, hl, vim.tbl_deep_extend('force', hl_def --[[@as vim.api.keyset.highlight]], { bg = 'none' }))
-  end
-end
-
-MiniDeps.add({ source = 'stevearc/conform.nvim' })
-
-vim.g.autoformat = true
-vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
 
 require('conform').setup({
   notify_on_error = true,
@@ -114,3 +78,5 @@ vim.api.nvim_create_user_command('PluginToggleFormat', function()
   vim.g.autoformat = not vim.g.autoformat
   vim.notify(('%s formatting...'):format(vim.g.autoformat and 'Enabling' or 'Disabling'), vim.log.levels.INFO)
 end, { nargs = 0 })
+
+vim.lsp.config('*', { capabilities = require('blink.cmp').get_lsp_capabilities(nil, true) })
