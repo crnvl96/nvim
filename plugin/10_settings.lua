@@ -312,7 +312,7 @@ if vim.fn.has('nvim-0.12') == 1 then
   end
 
   vim.keymap.set('n', '<leader>f', ':find<space>')
-  vim.keymap.set('n', '<leader>g', ":sil grep! ''<left>")
+  vim.keymap.set('n', '<leader>g', ':sil grep!<space>')
   vim.keymap.set('c', '<c-v>', '<home><s-right><c-w>vs<end>')
   vim.keymap.set('c', '<c-s>', '<home><s-right><c-w>sp<end>')
 end
