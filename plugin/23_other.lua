@@ -10,22 +10,58 @@ local function build_cargo(p)
   end
 end
 
-local function build_fff()
-  MiniDeps.later(function() require('fff.download').download_or_build_binary() end)
-end
-
 vim.cmd('colorscheme ham')
 
 local cargo_hooks = { post_install = build_cargo, post_checkout = build_cargo }
-local fff_hooks = { post_install = build_fff, post_checkout = build_fff }
 
 MiniDeps.add({ source = 'tpope/vim-fugitive' })
 MiniDeps.add({ source = 'Saghen/blink.cmp', hooks = cargo_hooks })
 MiniDeps.add({ source = 'stevearc/conform.nvim' })
-MiniDeps.add({ source = 'dmtrKovalenko/fff.nvim', hooks = fff_hooks })
+MiniDeps.add({ source = 'junegunn/fzf.vim' })
 
 vim.g.autoformat = true
 vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
+
+vim.keymap.set('n', '<Leader>f', '<Cmd>Files<CR>')
+vim.keymap.set('n', '<Leader>g', '<Cmd>Rg<CR>')
+vim.keymap.set('n', '<Leader>l', '<Cmd>BLines<CR>')
+
+vim.cmd([[
+let g:fzf_vim = {}
+let g:fzf_vim.preview_window = []
+
+function! s:build_quickfix_list(lines)
+    call setqflist(map(copy(a:lines), '{ "filename": v:val, "lnum": 1 }'))
+    copen
+    cc
+endfunction
+
+let g:fzf_action = {
+    \ 'ctrl-q': function('s:build_quickfix_list'),
+    \ 'ctrl-t': 'tab split',
+    \ 'ctrl-s': 'split',
+    \ 'ctrl-v': 'vsplit'
+    \ }
+
+let g:fzf_layout = { 'window': { 'width': 0.45, 'height': 0.45 } }
+
+let g:fzf_colors = { 
+    \ 'fg':      ['fg', 'Normal'],
+    \ 'bg':      ['bg', 'Normal'],
+    \ 'query':   ['fg', 'Normal'],
+    \ 'hl':      ['fg', 'Comment'],
+    \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+    \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+    \ 'hl+':     ['fg', 'Statement'],
+    \ 'info':    ['fg', 'PreProc'],
+    \ 'border':  ['fg', 'Ignore'],
+    \ 'prompt':  ['fg', 'Conditional'],
+    \ 'pointer': ['fg', 'Exception'],
+    \ 'marker':  ['fg', 'Keyword'],
+    \ 'spinner': ['fg', 'Label'],
+    \ 'header':  ['fg', 'Comment']
+    \ }
+]])
 
 require('blink.cmp').setup({
   appearance = { nerd_font_variant = 'mono' },
@@ -87,24 +123,3 @@ vim.api.nvim_create_user_command('PluginToggleFormat', function()
 end, { nargs = 0 })
 
 vim.lsp.config('*', { capabilities = require('blink.cmp').get_lsp_capabilities(nil, true) })
-
-vim.g.fff = {
-  prompt = '🪿 ',
-  title = 'Qck',
-  layout = { height = 0.45, width = 0.45 },
-  preview = { enabled = false },
-  hl = {
-    border = 'FloatBorder',
-    normal = 'Normal',
-    cursor = 'CursorLine',
-    matched = 'IncSearch',
-    title = 'Title',
-    prompt = 'Question',
-    active_file = 'Visual',
-    frecency = 'Number',
-    debug = 'Comment',
-  },
-  debug = { enabled = true },
-}
-
-vim.keymap.set('n', '<Leader>f', function() require('fff').find_files() end)
