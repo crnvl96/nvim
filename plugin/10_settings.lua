@@ -51,7 +51,7 @@ local function format_type(qtype) return qtype == '' and '' or ' ' .. qtype:sub(
 function _G.qftf(info)
   local items = get_quickfix_items(info)
   local ret = {}
-  local limit = 31
+  local limit = 62
   for i = info.start_idx, info.end_idx do
     local entry = items[i]
     local formatted_text
