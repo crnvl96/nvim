@@ -41,14 +41,10 @@ for _, hl in ipairs({
   end
 end
 
-require('mini.doc').setup()
 require('mini.icons').setup()
 require('mini.misc').setup()
-require('mini.extra').setup()
-require('mini.keymap').setup()
 require('mini.align').setup()
 require('mini.splitjoin').setup()
-require('mini.extra').setup()
 
 MiniMisc.setup_restore_cursor()
 

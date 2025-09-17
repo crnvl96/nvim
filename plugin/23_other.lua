@@ -10,12 +10,19 @@ local function build_cargo(p)
   end
 end
 
+local function build_fff()
+  MiniDeps.later(function() require('fff.download').download_or_build_binary() end)
+end
+
 vim.cmd('colorscheme ham')
 
 local cargo_hooks = { post_install = build_cargo, post_checkout = build_cargo }
+local fff_hooks = { post_install = build_fff, post_checkout = build_fff }
+
 MiniDeps.add({ source = 'tpope/vim-fugitive' })
 MiniDeps.add({ source = 'Saghen/blink.cmp', hooks = cargo_hooks })
 MiniDeps.add({ source = 'stevearc/conform.nvim' })
+MiniDeps.add({ source = 'dmtrKovalenko/fff.nvim', hooks = fff_hooks })
 
 vim.g.autoformat = true
 vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
@@ -80,3 +87,24 @@ vim.api.nvim_create_user_command('PluginToggleFormat', function()
 end, { nargs = 0 })
 
 vim.lsp.config('*', { capabilities = require('blink.cmp').get_lsp_capabilities(nil, true) })
+
+vim.g.fff = {
+  prompt = '🪿 ',
+  title = 'Qck',
+  layout = { height = 0.45, width = 0.45 },
+  preview = { enabled = false },
+  hl = {
+    border = 'FloatBorder',
+    normal = 'Normal',
+    cursor = 'CursorLine',
+    matched = 'IncSearch',
+    title = 'Title',
+    prompt = 'Question',
+    active_file = 'Visual',
+    frecency = 'Number',
+    debug = 'Comment',
+  },
+  debug = { enabled = true },
+}
+
+vim.keymap.set('n', '<Leader>f', function() require('fff').find_files() end)

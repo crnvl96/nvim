@@ -191,6 +191,16 @@ if vim.fn.has('nvim-0.11') == 1 then
 end
 
 if vim.fn.has('nvim-0.12') == 1 then
+  require('vim._extui').enable({
+    enable = true,
+    msg = {
+      ---@type 'cmd'|'msg' Where to place regular messages, either in the
+      ---cmdline or in a separate ephemeral message window.
+      target = 'msg',
+      timeout = 4000,
+    },
+  })
+
   vim.keymap.set('c', '<C-n>', [[cmdcomplete_info().pum_visible ? "\<C-n>" : "\<Tab>"]], { expr = true })
   vim.keymap.set('c', '<C-p>', [[cmdcomplete_info().pum_visible ? "\<C-p>" : "\<S-Tab>"]], { expr = true })
   vim.keymap.set('c', '<Down>', '<C-u><Down>')
@@ -198,6 +208,18 @@ if vim.fn.has('nvim-0.12') == 1 then
   vim.opt.completefuzzycollect = 'keyword,files,whole_line'
   vim.opt.pummaxwidth = 100
   vim.opt.wildoptions = 'pum,fuzzy'
+
+  vim.api.nvim_create_autocmd({ 'CmdlineChanged', 'CmdlineLeave' }, {
+    pattern = { '*' },
+    callback = function(ev)
+      if ev.event == 'CmdlineChanged' then
+        vim.opt.wildmode = 'noselect:lastused,full'
+        vim.fn.wildtrigger()
+      end
+
+      if ev.event == 'CmdlineLeave' then vim.opt.wildmode = 'full' end
+    end,
+  })
 
   local function findcmd()
     local cmd = {}
@@ -272,18 +294,6 @@ if vim.fn.has('nvim-0.12') == 1 then
       handle = nil
     end)
 
-    vim.api.nvim_create_autocmd({ 'CmdlineChanged', 'CmdlineLeave' }, {
-      pattern = { '*' },
-      callback = function(ev)
-        if ev.event == 'CmdlineChanged' then
-          vim.opt.wildmode = 'noselect:lastused,full'
-          vim.fn.wildtrigger()
-        end
-
-        if ev.event == 'CmdlineLeave' then vim.opt.wildmode = 'full' end
-      end,
-    })
-
     vim.api.nvim_create_autocmd('CmdlineLeave', {
       once = true,
       callback = function()
@@ -312,7 +322,7 @@ if vim.fn.has('nvim-0.12') == 1 then
   end
 
   vim.keymap.set('n', '<leader>f', ':find<space>')
-  vim.keymap.set('n', '<leader>g', ':sil grep!<space>')
+  vim.keymap.set('n', '<leader>g', ':sil<space>grep!<space>')
   vim.keymap.set('c', '<c-v>', '<home><s-right><c-w>vs<end>')
   vim.keymap.set('c', '<c-s>', '<home><s-right><c-w>sp<end>')
 end
@@ -345,5 +355,5 @@ vim.keymap.set('x', '<', '<gv')
 vim.keymap.set('x', '>', '>gv')
 vim.keymap.set({ 'n', 't' }, '<C-Left>', '<Cmd>vertical resize -20<CR>')
 vim.keymap.set({ 'n', 't' }, '<C-Right>', '<Cmd>vertical resize +20<CR>')
-vim.keymap.set('ca', 'f', function() return expand_trigger('f', 'find **/*/*') end, { expr = true })
-vim.keymap.set('ca', 'g', function() return expand_trigger('g', 'sil grep!') end, { expr = true })
+vim.keymap.set('ca', 'f', function() return expand_trigger('f', 'find<space>') end, { expr = true })
+vim.keymap.set('ca', 'g', function() return expand_trigger('g', 'sil<space>grep!') end, { expr = true })
