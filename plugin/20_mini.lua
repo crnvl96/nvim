@@ -21,26 +21,6 @@ end
 require('mini.deps').setup()
 MiniDeps.add({ name = 'mini.nvim' })
 
-for _, hl in ipairs({
-  'Pmenu',
-  'MiniFilesBorder',
-  'MiniFilesBorderModified',
-  'MiniFilesDirectory',
-  'MiniFilesFile',
-  'MiniFilesNormal',
-  'MiniFilesTitle',
-  'MiniFilesTitleFocused',
-  'StatusLine',
-  'StatusLineNC',
-  'StatusLineTerm',
-  'StatusLineTermNC',
-}) do
-  local is_ok, hl_def = pcall(vim.api.nvim_get_hl, 0, { name = hl, link = false })
-  if is_ok then
-    vim.api.nvim_set_hl(0, hl, vim.tbl_deep_extend('force', hl_def --[[@as vim.api.keyset.highlight]], { bg = 'none' }))
-  end
-end
-
 require('mini.icons').setup()
 require('mini.misc').setup()
 require('mini.align').setup()

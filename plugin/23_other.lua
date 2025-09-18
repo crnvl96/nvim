@@ -50,20 +50,23 @@ let g:fzf_action = {
 let g:fzf_layout = { 'window': { 'width': 0.80, 'height': 0.80 } }
 
 let g:fzf_colors = { 
-    \ 'fg':      ['fg', 'Normal'],
-    \ 'bg':      ['bg', 'Normal'],
-    \ 'query':   ['fg', 'Normal'],
-    \ 'hl':      ['fg', 'Comment'],
-    \ 'fg+':     ['fg', 'Normal'],
-    \ 'bg+':     ['bg', 'Normal'],
-    \ 'hl+':     ['fg', 'Statement'],
-    \ 'info':    ['fg', 'PreProc'],
-    \ 'border':  ['fg', 'Ignore'],
-    \ 'prompt':  ['fg', 'Conditional'],
-    \ 'pointer': ['fg', 'Exception'],
-    \ 'marker':  ['fg', 'Keyword'],
-    \ 'spinner': ['fg', 'Label'],
-    \ 'header':  ['fg', 'Comment']
+    \ 'fg':        ['fg', 'Normal'],
+    \ 'bg':        ['bg', 'Normal'],
+    \ 'gutter':    ['bg', 'Normal'],
+    \ 'scrollbar': ['bg', 'Normal'],
+    \ 'separator': ['fg', 'Comment'],
+    \ 'query':     ['fg', 'Normal'],
+    \ 'hl':        ['fg', 'Comment'],
+    \ 'fg+':       ['fg', 'Normal'],
+    \ 'bg+':       ['bg', 'Normal'],
+    \ 'hl+':       ['fg', 'Statement'],
+    \ 'info':      ['fg', 'Conditional'],
+    \ 'border':    ['fg', 'Ignore'],
+    \ 'prompt':    ['fg', 'Conditional'],
+    \ 'pointer':   ['fg', 'Exception'],
+    \ 'marker':    ['fg', 'Keyword'],
+    \ 'spinner':   ['fg', 'Label'],
+    \ 'header':    ['fg', 'Comment']
     \ }
 ]])
 

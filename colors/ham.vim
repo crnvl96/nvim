@@ -48,10 +48,6 @@ hi helpLeadBlank ctermbg=NONE ctermfg=NONE
 hi helpNormal ctermbg=NONE ctermfg=NONE
 hi Visual ctermbg=8 ctermfg=15 cterm=bold
 hi VisualNOS ctermbg=8 ctermfg=15 cterm=bold
-hi Pmenu ctermbg=none ctermfg=none
-hi PmenuSbar ctermbg=none ctermfg=none
-hi PmenuSel ctermbg=8 ctermfg=15 cterm=bold
-hi PmenuThumb ctermbg=none ctermfg=NONE
 hi FoldColumn ctermfg=7
 hi Folded ctermfg=12
 hi WildMenu ctermbg=0 ctermfg=15 cterm=NONE
@@ -117,7 +113,33 @@ hi Structure ctermfg=11
 hi Todo ctermfg=0 ctermbg=9 cterm=bold
 hi Type ctermfg=11
 
-" neovim-specific (remove if you're using vim)
 hi NormalFloat ctermbg=none ctermfg=15
 hi FloatBorder ctermbg=none ctermfg=7
 hi FloatShadow ctermbg=none ctermfg=15
+
+hi Pmenu ctermbg=none ctermfg=none
+hi PmenuSbar ctermbg=none ctermfg=none
+hi PmenuSel ctermbg=8 ctermfg=15 cterm=bold
+hi PmenuThumb ctermbg=none ctermfg=NONE
+
+"lua << EOF
+"    for _, hl in ipairs({
+"      'Pmenu',
+"      'MiniFilesBorder',
+"      'MiniFilesBorderModified',
+"      'MiniFilesDirectory',
+"      'MiniFilesFile',
+"      'MiniFilesNormal',
+"      'MiniFilesTitle',
+"      'MiniFilesTitleFocused',
+"      'StatusLine',
+"      'StatusLineNC',
+"      'StatusLineTerm',
+"      'StatusLineTermNC',
+"    }) do
+"      local is_ok, hl_def = pcall(vim.api.nvim_get_hl, 0, { name = hl, link = false })
+"      if is_ok then
+"        vim.api.nvim_set_hl(0, hl, vim.tbl_deep_extend('force', hl_def --[[@as vim.api.keyset.highlight]], { bg = 'none' }))
+"      end
+"    end
+"EOF
