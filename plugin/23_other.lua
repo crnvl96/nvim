@@ -28,7 +28,11 @@ vim.keymap.set('n', '<Leader>l', '<Cmd>BLines<CR>')
 
 vim.cmd([[
 let g:fzf_vim = {}
-let g:fzf_vim.preview_window = []
+
+" Preview window is hidden by default. You can toggle it with ctrl-/.
+" It will show on the right with 50% width, but if the width is smaller
+" than 70 columns, it will show above the candidate list
+let g:fzf_vim.preview_window = ['up,60%', 'ctrl-/']
 
 function! s:build_quickfix_list(lines)
     call setqflist(map(copy(a:lines), '{ "filename": v:val, "lnum": 1 }'))
@@ -43,15 +47,15 @@ let g:fzf_action = {
     \ 'ctrl-v': 'vsplit'
     \ }
 
-let g:fzf_layout = { 'window': { 'width': 0.45, 'height': 0.45 } }
+let g:fzf_layout = { 'window': { 'width': 0.80, 'height': 0.80 } }
 
 let g:fzf_colors = { 
     \ 'fg':      ['fg', 'Normal'],
     \ 'bg':      ['bg', 'Normal'],
     \ 'query':   ['fg', 'Normal'],
     \ 'hl':      ['fg', 'Comment'],
-    \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
-    \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+    \ 'fg+':     ['fg', 'Normal'],
+    \ 'bg+':     ['bg', 'Normal'],
     \ 'hl+':     ['fg', 'Statement'],
     \ 'info':    ['fg', 'PreProc'],
     \ 'border':  ['fg', 'Ignore'],
