@@ -214,7 +214,7 @@ if vim.fn.has('nvim-0.12') == 1 then
     callback = function(ev)
       if ev.event == 'CmdlineChanged' then
         vim.opt.wildmode = 'noselect:lastused,full'
-        vim.fn.wildtrigger()
+        -- vim.fn.wildtrigger()
       end
 
       if ev.event == 'CmdlineLeave' then vim.opt.wildmode = 'full' end

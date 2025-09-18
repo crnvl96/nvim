@@ -66,6 +66,15 @@ let g:fzf_colors = {
 require('blink.cmp').setup({
   appearance = { nerd_font_variant = 'mono' },
   keymap = { preset = 'default', ['<C-n>'] = { 'show', 'select_next', 'fallback_to_mappings' } },
+  cmdline = {
+    enabled = true,
+    keymap = { preset = 'cmdline' },
+    completion = {
+      list = { selection = { preselect = false } },
+      menu = { auto_show = function() return vim.fn.getcmdtype() == ':' end },
+      ghost_text = { enabled = true },
+    },
+  },
   completion = {
     list = { selection = { preselect = false, auto_insert = true } },
     documentation = { auto_show = true },
