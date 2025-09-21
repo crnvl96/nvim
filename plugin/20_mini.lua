@@ -6,7 +6,7 @@ local function open_file_explorer()
 end
 
 local minipath = vim.fn.stdpath('data') .. '/site/pack/deps/start/mini.nvim'
-if not vim.loop.fs_stat(minipath) then
+if not vim.uv.fs_stat(minipath) then
   vim.fn.system({
     'git',
     'clone',

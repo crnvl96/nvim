@@ -23,7 +23,7 @@ vim.g.autoformat = true
 vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
 
 vim.keymap.set('n', '<Leader>f', '<Cmd>Files<CR>')
-vim.keymap.set('n', '<Leader>g', '<Cmd>Rg<CR>')
+vim.keymap.set('n', '<Leader>g', '<Cmd>RG<CR>')
 vim.keymap.set('n', '<Leader>l', '<Cmd>BLines<CR>')
 
 vim.cmd([[

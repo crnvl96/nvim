@@ -32,9 +32,9 @@ local function show(ns, bufnr, diagnostics, opts)
 end
 
 --- Function that is called when an lsp client is attached to a buffer
----@param client vim.lsp.Client lsp Client
+---@param _ vim.lsp.Client lsp Client
 ---@param buf integer target buffer
-local function on_attach(client, buf)
+local function on_attach(_, buf)
   --- Get the options for navigating error diagnostics
   ---@param count 1|-1 direction of the navigation (fw/bw)
   local function err_diag_opts(count) return { count = count, severity = vim.diagnostic.severity.ERROR } end
