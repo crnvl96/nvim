@@ -1,14 +1,8 @@
 return {
-  ["SchemaStore.nvim"] = "fb58187b76d8e086f08686b872b50f52eac57818",
-  ["blink.cmp"] = "fa9e5fa324f8a721a562a7baeba35a0da44ec651",
+  ["SchemaStore.nvim"] = "68938d9751f0a0c2d1059d8fc077f50c5bbf3f91",
+  ["blink.cmp"] = "0590187042b60456edef3808cfa3a4f34b2e4027",
   ["conform.nvim"] = "b4aab989db276993ea5dcb78872be494ce546521",
-  ["fff.nvim"] = "56ea1404f177c4c4e531b879d8e35463cec192ec",
-  ["grug-far.nvim"] = "d0fe24a6dfb0171750b9be6661f08dfec0397a66",
-  ["mini.nvim"] = "68955a915c45ae7c988c539abe6e89f0971a9a2d",
-  ["nvim-lspconfig"] = "c8b90ae5cbe21d547b342b05c9266dcb8ca0de8f",
-  ["nvim-treesitter"] = "fee71c102c54146f90b14c89711ddbb8f95a1484",
-  ["nvim-treesitter-textobjects"] = "1b2d85d3de6114c4bcea89ffb2cd1ce9e3a19931",
-  rustaceanvim = "d63a53a085ae288f1567c7e502d7b5b957fd45ab",
-  ["vim-fugitive"] = "61b51c09b7c9ce04e821f6cf76ea4f6f903e3cf4",
-  ["vim-sleuth"] = "be69bff86754b1aa5adcbb527d7fcd1635a84080"
+  ["mini.nvim"] = "256d35c9e24c9cf5f5da568e121e988c6ceb1e3f",
+  ["nvim-lspconfig"] = "e074ff04d7ff72cd441f00ed7c1ed59052e29081",
+  ["vim-fugitive"] = "61b51c09b7c9ce04e821f6cf76ea4f6f903e3cf4"
 }

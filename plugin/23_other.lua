@@ -17,58 +17,9 @@ local cargo_hooks = { post_install = build_cargo, post_checkout = build_cargo }
 MiniDeps.add({ source = 'tpope/vim-fugitive' })
 MiniDeps.add({ source = 'Saghen/blink.cmp', hooks = cargo_hooks })
 MiniDeps.add({ source = 'stevearc/conform.nvim' })
-MiniDeps.add({ source = 'junegunn/fzf.vim' })
 
 vim.g.autoformat = true
 vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
-
-vim.keymap.set('n', '<Leader>f', '<Cmd>Files<CR>')
-vim.keymap.set('n', '<Leader>g', '<Cmd>RG<CR>')
-vim.keymap.set('n', '<Leader>l', '<Cmd>BLines<CR>')
-
-vim.cmd([[
-let g:fzf_vim = {}
-
-" Preview window is hidden by default. You can toggle it with ctrl-/.
-" It will show on the right with 50% width, but if the width is smaller
-" than 70 columns, it will show above the candidate list
-let g:fzf_vim.preview_window = ['up,60%', 'ctrl-/']
-
-function! s:build_quickfix_list(lines)
-    call setqflist(map(copy(a:lines), '{ "filename": v:val, "lnum": 1 }'))
-    copen
-    cc
-endfunction
-
-let g:fzf_action = {
-    \ 'ctrl-q': function('s:build_quickfix_list'),
-    \ 'ctrl-t': 'tab split',
-    \ 'ctrl-s': 'split',
-    \ 'ctrl-v': 'vsplit'
-    \ }
-
-let g:fzf_layout = { 'window': { 'width': 0.80, 'height': 0.80 } }
-
-let g:fzf_colors = { 
-    \ 'fg':        ['fg', 'Normal'],
-    \ 'bg':        ['bg', 'Normal'],
-    \ 'gutter':    ['bg', 'Normal'],
-    \ 'scrollbar': ['bg', 'Normal'],
-    \ 'separator': ['fg', 'Comment'],
-    \ 'query':     ['fg', 'Normal'],
-    \ 'hl':        ['fg', 'Comment'],
-    \ 'fg+':       ['fg', 'Normal'],
-    \ 'bg+':       ['bg', 'Normal'],
-    \ 'hl+':       ['fg', 'Statement'],
-    \ 'info':      ['fg', 'Conditional'],
-    \ 'border':    ['fg', 'Ignore'],
-    \ 'prompt':    ['fg', 'Conditional'],
-    \ 'pointer':   ['fg', 'Exception'],
-    \ 'marker':    ['fg', 'Keyword'],
-    \ 'spinner':   ['fg', 'Label'],
-    \ 'header':    ['fg', 'Comment']
-    \ }
-]])
 
 require('blink.cmp').setup({
   appearance = { nerd_font_variant = 'mono' },

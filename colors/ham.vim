@@ -39,7 +39,7 @@ hi TabLine ctermfg=7 ctermbg=0
 hi TabLineFill ctermfg=0 ctermbg=NONE
 hi TabLineSel ctermfg=0 ctermbg=11
 hi Title ctermfg=4 cterm=bold
-hi CursorLine ctermbg=0 ctermfg=NONE
+hi CursorLine ctermbg=8 ctermfg=NONE
 hi Cursor ctermbg=15 ctermfg=0
 hi CursorColumn ctermbg=0
 hi LineNr ctermfg=8
