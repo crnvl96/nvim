@@ -62,6 +62,8 @@ require('blink.cmp').setup({
   },
 })
 
+vim.lsp.config('*', { capabilities = require('blink.cmp').get_lsp_capabilities(nil, true) })
+
 require('conform').setup({
   notify_on_error = true,
   format_on_save = function()
@@ -91,5 +93,3 @@ vim.api.nvim_create_user_command('PluginToggleFormat', function()
   vim.g.autoformat = not vim.g.autoformat
   vim.notify(('%s formatting...'):format(vim.g.autoformat and 'Enabling' or 'Disabling'), vim.log.levels.INFO)
 end, { nargs = 0 })
-
-vim.lsp.config('*', { capabilities = require('blink.cmp').get_lsp_capabilities(nil, true) })

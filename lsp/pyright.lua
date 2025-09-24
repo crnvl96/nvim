@@ -1,4 +1,16 @@
+---@type vim.lsp.Config
 return {
+  cmd = { 'pyright-langserver', '--stdio' },
+  filetypes = { 'python' },
+  root_markers = {
+    'pyproject.toml',
+    'setup.py',
+    'setup.cfg',
+    'requirements.txt',
+    'Pipfile',
+    'pyrightconfig.json',
+    '.git',
+  },
   settings = {
     pyright = {
       disableOrganizeImports = true, -- Using Ruff's import organizer
@@ -6,6 +18,9 @@ return {
     python = {
       analysis = {
         ignore = { '*' }, -- Ignore all files for analysis to exclusively use Ruff for linting
+        autoSearchPaths = true,
+        useLibraryCodeForTypes = true,
+        diagnosticMode = 'openFilesOnly',
       },
     },
   },

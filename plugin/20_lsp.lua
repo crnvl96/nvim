@@ -1,17 +1,4 @@
-MiniDeps.add({ source = 'b0o/SchemaStore.nvim' })
-MiniDeps.add({ source = 'neovim/nvim-lspconfig' })
-
-local files = os.getenv('HOME') .. '/.config/nvim/lsp/*.lua'
 local methods = vim.lsp.protocol.Methods
-
---- Correctly retrieve the lsp server config
----@param file string name of the lsp server
-local function get_server_config(file)
-  local server = vim.fn.fnamemodify(file, ':t:r')
-  local content = assert(loadfile(file))
-  vim.lsp.config(server, vim.tbl_deep_extend('force', {}, content() or {}))
-  return server
-end
 
 --- Sort vim diagnostics by severity
 ---@param a vim.Diagnostic vim diagnostic element
@@ -55,8 +42,17 @@ local function on_attach(_, buf)
   vim.keymap.set('i', '<C-k>', vim.lsp.buf.signature_help, { buffer = buf })
 end
 
-local server_configs = vim.iter(vim.fn.glob(files, true, true)):map(get_server_config):totable()
-vim.lsp.enable(server_configs)
+-- Set up LSP servers.
+vim.api.nvim_create_autocmd({ 'BufReadPre', 'BufNewFile' }, {
+  once = true,
+  callback = function()
+    local server_configs = vim
+      .iter(vim.api.nvim_get_runtime_file('lsp/*.lua', true))
+      :map(function(file) return vim.fn.fnamemodify(file, ':t:r') end)
+      :totable()
+    vim.lsp.enable(server_configs)
+  end,
+})
 
 local hide_handler = vim.diagnostic.handlers.virtual_text.hide
 vim.diagnostic.handlers.virtual_text = { show = show, hide = hide_handler }

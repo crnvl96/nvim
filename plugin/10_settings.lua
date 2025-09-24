@@ -124,6 +124,7 @@ vim.opt.foldmethod = 'indent'
 vim.opt.foldnestmax = 10
 vim.opt.foldtext = ''
 vim.opt.formatoptions = 'rql1j'
+vim.opt.guicursor = ''
 vim.opt.ignorecase = true
 vim.opt.incsearch = true
 vim.opt.infercase = true
