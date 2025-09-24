@@ -1,7 +1,12 @@
 return {
+  flags = {
+    debounce_text_changes = 150,
+  },
   settings = {
     gopls = {
       gofumpt = true,
+      staticcheck = true,
+      semanticTokens = true,
       codelenses = {
         gc_details = true,
         generate = true,
@@ -16,13 +21,12 @@ return {
         unusedvariable = true,
         unusedwrite = true,
         useany = true,
+        ST1000 = false, -- Incorrect or missing package comment
       },
-      -- staticcheck = true,
-      directoryFilters = { '-.git', '-node_modules' },
-      semanticTokens = true,
+      directoryFilters = {
+        '-.git',
+        '-node_modules',
+      },
     },
-  },
-  flags = {
-    debounce_text_changes = 150,
   },
 }
