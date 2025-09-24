@@ -17,9 +17,12 @@ local cargo_hooks = { post_install = build_cargo, post_checkout = build_cargo }
 MiniDeps.add({ source = 'tpope/vim-fugitive' })
 MiniDeps.add({ source = 'Saghen/blink.cmp', hooks = cargo_hooks })
 MiniDeps.add({ source = 'stevearc/conform.nvim' })
+MiniDeps.add({ source = 'MagicDuck/grug-far.nvim' })
 
 vim.g.autoformat = true
 vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
+
+require('grug-far').setup()
 
 require('blink.cmp').setup({
   appearance = { nerd_font_variant = 'mono' },

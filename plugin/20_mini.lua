@@ -34,6 +34,7 @@ require('mini.pick').setup()
 vim.keymap.set('n', '<Leader>f', '<Cmd>Pick files<CR>')
 vim.keymap.set('n', '<Leader>g', '<Cmd>Pick grep_live<CR>')
 
+---@diagnostic disable-next-line: duplicate-set-field
 vim.ui.select = function(items, opts, on_choice)
   local start_opts = { window = { config = { width = vim.o.columns } } }
   return MiniPick.ui_select(items, opts, on_choice, start_opts)

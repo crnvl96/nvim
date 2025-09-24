@@ -17,7 +17,7 @@ return {
         unusedwrite = true,
         useany = true,
       },
-      staticcheck = true,
+      -- staticcheck = true,
       directoryFilters = { '-.git', '-node_modules' },
       semanticTokens = true,
     },
