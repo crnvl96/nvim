@@ -42,7 +42,6 @@ local function on_attach(_, buf)
   vim.keymap.set('i', '<C-k>', vim.lsp.buf.signature_help, { buffer = buf })
 end
 
--- Set up LSP servers.
 vim.api.nvim_create_autocmd({ 'BufReadPre', 'BufNewFile' }, {
   once = true,
   callback = function()

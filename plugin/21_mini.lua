@@ -5,6 +5,13 @@ local function open_file_explorer()
   if path and vim.uv.fs_stat(path) then MiniFiles.open(bufname, false) end
 end
 
+--- Open the file explorer on current directory
+local function explore()
+  local current = vim.fn.expand('%')
+  local dir = vim.fn.fnamemodify(current, ':p:h')
+  return MiniExtra.pickers.explorer({ cwd = dir })
+end
+
 local minipath = vim.fn.stdpath('data') .. '/site/pack/deps/start/mini.nvim'
 if not vim.uv.fs_stat(minipath) then
   vim.fn.system({
@@ -22,9 +29,14 @@ require('mini.deps').setup()
 MiniDeps.add({ name = 'mini.nvim' })
 
 require('mini.icons').setup()
+require('mini.extra').setup()
 require('mini.misc').setup()
 require('mini.align').setup()
 require('mini.splitjoin').setup()
+-- require('mini.git').setup({ command = { split = 'vertical' } })
+-- require('mini.diff').setup({ view = { style = 'sign' } })
+--
+-- vim.keymap.set('n', '<Leader>o', '<Cmd>lua MiniDiff.toggle_overlay()<CR>')
 
 MiniMisc.setup_restore_cursor()
 MiniMisc.setup_auto_root()
@@ -33,6 +45,11 @@ require('mini.pick').setup()
 
 vim.keymap.set('n', '<Leader>f', '<Cmd>Pick files<CR>')
 vim.keymap.set('n', '<Leader>g', '<Cmd>Pick grep_live<CR>')
+vim.keymap.set('n', '<Leader>b', '<Cmd>Pick buffers include_current=false<CR>')
+vim.keymap.set('n', '<Leader>l', '<Cmd>Pick buf_lines scope="current"<CR>')
+
+vim.keymap.set('n', '<Leader>e', function() return explore() end)
+vim.keymap.set('n', '<Leader>E', '<Cmd>Pick explorer<CR>')
 
 ---@diagnostic disable-next-line: duplicate-set-field
 vim.ui.select = function(items, opts, on_choice)
