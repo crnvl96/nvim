@@ -32,14 +32,14 @@ hi Ignore ctermfg=NONE  ctermbg=NONE cterm=NONE
 hi Underlined cterm=underline
 hi Bold cterm=bold
 hi Italic cterm=italic
-hi StatusLine ctermfg=15 ctermbg=none cterm=NONE
-hi StatusLineNC ctermfg=15 ctermbg=none cterm=NONE
+hi StatusLine ctermfg=15 ctermbg=8 cterm=NONE
+hi StatusLineNC ctermfg=15 ctermbg=0 cterm=NONE
 hi VertSplit ctermfg=8
 hi TabLine ctermfg=7 ctermbg=0
 hi TabLineFill ctermfg=0 ctermbg=NONE
 hi TabLineSel ctermfg=0 ctermbg=11
 hi Title ctermfg=4 cterm=bold
-hi CursorLine ctermbg=8 ctermfg=NONE
+hi CursorLine ctermbg=0 ctermfg=NONE
 hi Cursor ctermbg=15 ctermfg=0
 hi CursorColumn ctermbg=0
 hi LineNr ctermfg=8
@@ -48,13 +48,17 @@ hi helpLeadBlank ctermbg=NONE ctermfg=NONE
 hi helpNormal ctermbg=NONE ctermfg=NONE
 hi Visual ctermbg=8 ctermfg=15 cterm=bold
 hi VisualNOS ctermbg=8 ctermfg=15 cterm=bold
+hi Pmenu ctermbg=0 ctermfg=15
+hi PmenuSbar ctermbg=8 ctermfg=7
+hi PmenuSel ctermbg=8 ctermfg=15 cterm=bold
+hi PmenuThumb ctermbg=7 ctermfg=NONE
 hi FoldColumn ctermfg=7
 hi Folded ctermfg=12
 hi WildMenu ctermbg=0 ctermfg=15 cterm=NONE
 hi SpecialKey ctermfg=0
 hi IncSearch ctermbg=1 ctermfg=0
 hi CurSearch ctermbg=3 ctermfg=0
-hi Search ctermfg=0 ctermbg=14
+hi Search ctermbg=11 ctermfg=0
 hi Directory ctermfg=4
 hi MatchParen ctermbg=0 ctermfg=3 cterm=underline
 hi SpellBad cterm=undercurl
@@ -113,33 +117,96 @@ hi Structure ctermfg=11
 hi Todo ctermfg=0 ctermbg=9 cterm=bold
 hi Type ctermfg=11
 
-hi NormalFloat ctermbg=none ctermfg=15
-hi FloatBorder ctermbg=none ctermfg=7
-hi FloatShadow ctermbg=none ctermfg=15
+" neovim-specific (remove if you're using vim)
+hi NormalFloat ctermbg=0 ctermfg=15
+hi FloatBorder ctermbg=0 ctermfg=7
+hi FloatShadow ctermbg=0 ctermfg=15
 
-hi Pmenu ctermbg=none ctermfg=none
-hi PmenuSbar ctermbg=none ctermfg=none
-hi PmenuSel ctermbg=8 ctermfg=15 cterm=bold
-hi PmenuThumb ctermbg=none ctermfg=NONE
+" Treesitter highlighting
+" - allows for more precise syntax highlighting
+" - only available for nvim >0.5
+" - see also :help treesitter-highlight-groups
 
-"lua << EOF
-"    for _, hl in ipairs({
-"      'Pmenu',
-"      'MiniFilesBorder',
-"      'MiniFilesBorderModified',
-"      'MiniFilesDirectory',
-"      'MiniFilesFile',
-"      'MiniFilesNormal',
-"      'MiniFilesTitle',
-"      'MiniFilesTitleFocused',
-"      'StatusLine',
-"      'StatusLineNC',
-"      'StatusLineTerm',
-"      'StatusLineTermNC',
-"    }) do
-"      local is_ok, hl_def = pcall(vim.api.nvim_get_hl, 0, { name = hl, link = false })
-"      if is_ok then
-"        vim.api.nvim_set_hl(0, hl, vim.tbl_deep_extend('force', hl_def --[[@as vim.api.keyset.highlight]], { bg = 'none' }))
-"      end
-"    end
-"EOF
+hi @variable ctermfg=15
+hi @variable.builtin ctermfg=1
+hi @variable.parameter ctermfg=1
+hi @variable.member ctermfg=1
+hi @constant.builtin ctermfg=5
+hi @string.regexp ctermfg=1
+hi @string.escape ctermfg=6
+hi @string.special.url ctermfg=4 cterm=underline
+hi @string.special.symbol ctermfg=13
+hi @type.builtin ctermfg=3
+hi @property ctermfg=1
+hi @function.builtin ctermfg=5
+hi @constructor ctermfg=11
+hi @keyword.coroutine ctermfg=1
+hi @keyword.function ctermfg=5
+hi @keyword.return ctermfg=5
+hi @keyword.export ctermfg=14
+hi @punctuation.bracket ctermfg=15
+hi @comment.error ctermbg=9 ctermfg=0
+hi @comment.warning ctermbg=11 ctermfg=0
+hi @comment.todo ctermbg=12 ctermfg=0
+hi @comment.note ctermbg=14 ctermfg=0
+hi @markup ctermfg=15
+hi @markup.strong ctermfg=15 cterm=bold
+hi @markup.italic ctermfg=15 cterm=italic
+hi @markup.strikethrough ctermfg=15 cterm=strikethrough
+hi @markup.heading ctermfg=4 cterm=bold
+hi @markup.quote ctermfg=6
+hi @markup.math ctermfg=4
+hi @markup.link.url ctermfg=5 cterm=underline
+hi @markup.raw ctermfg=14
+hi @markup.list.checked ctermfg=2
+hi @markup.list.unchecked ctermfg=7
+hi @tag ctermfg=5
+hi @tag.builtin ctermfg=6
+hi @tag.attribute ctermfg=4
+hi @tag.delimiter ctermfg=15
+
+hi link @variable.parameter.builtin @variable.parameter
+hi link @constant Constant
+hi link @constant.macro Macro
+hi link @module Structure
+hi link @module.builtin Special
+hi link @label Label
+hi link @string String
+hi link @string.special Special
+hi link @character Character
+hi link @character.special SpecialChar
+hi link @boolean Boolean
+hi link @number Number
+hi link @number.float Float
+hi link @type Type
+hi link @type.definition Type
+hi link @attribute Constant
+hi link @attribute.builtin Constant
+hi link @function Function
+hi link @function.call Function
+hi link @function.method Function
+hi link @function.method.call Function
+hi link @operator Operator
+hi link @keyword Keyword
+hi link @keyword.operator Operator
+hi link @keyword.import Include
+hi link @keyword.type Keyword
+hi link @keyword.modifier Keyword
+hi link @keyword.repeat Repeat
+hi link @keyword.debug Exception
+hi link @keyword.exception Exception
+hi link @keyword.conditional Conditional
+hi link @keyword.conditional.ternary Operator
+hi link @keyword.directive PreProc
+hi link @keyword.directive.define Define
+hi link @punctuation.delimiter Delimiter
+hi link @punctuation.special Special
+hi link @comment Comment
+hi link @comment.documentation Comment
+hi link @markup.underline underline
+hi link @markup.link Tag
+hi link @markup.link.label Label
+hi link @markup.list Special
+hi link @diff.plus diffAdded
+hi link @diff.minus diffRemoved
+hi link @diff.delta diffChanged

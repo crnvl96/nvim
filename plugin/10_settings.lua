@@ -105,7 +105,6 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ','
 vim.g.markdown_folding = 1
 vim.opt.autoindent = true
-vim.opt.background = 'dark'
 vim.opt.backup = false
 vim.opt.breakindent = true
 vim.opt.clipboard = 'unnamed'
