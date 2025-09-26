@@ -22,23 +22,19 @@ end
 ---@param _ vim.lsp.Client lsp Client
 ---@param buf integer target buffer
 local function on_attach(_, buf)
-  --- Get the options for navigating error diagnostics
-  ---@param count 1|-1 direction of the navigation (fw/bw)
-  local function err_diag_opts(count) return { count = count, severity = vim.diagnostic.severity.ERROR } end
-
-  vim.keymap.set('n', '[e', function() vim.diagnostic.jump(err_diag_opts(-1)) end)
-  vim.keymap.set('n', ']e', function() vim.diagnostic.jump(err_diag_opts(1)) end)
   vim.keymap.set('n', 'E', vim.diagnostic.open_float, { buffer = buf })
   vim.keymap.set('n', 'K', vim.lsp.buf.hover, { buffer = buf })
   vim.keymap.set('n', 'ga', vim.lsp.buf.code_action, { buffer = buf })
   vim.keymap.set('n', 'gn', vim.lsp.buf.rename, { buffer = buf })
-  vim.keymap.set('n', 'gd', vim.lsp.buf.definition, { buffer = buf })
-  vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, { buffer = buf })
-  vim.keymap.set('n', 'gr', vim.lsp.buf.references, { buffer = buf, nowait = true })
-  vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, { buffer = buf })
-  vim.keymap.set('n', 'gy', vim.lsp.buf.type_definition, { buffer = buf })
-  vim.keymap.set('n', 'ge', vim.diagnostic.setqflist, { buffer = buf })
-  vim.keymap.set('n', 'gs', vim.lsp.buf.document_symbol, { buffer = buf })
+  vim.keymap.set('n', 'gd', '<Cmd>Pick lsp scope="definition"<CR>', { buffer = buf })
+  vim.keymap.set('n', 'gD', '<Cmd>Pick lsp scope="declaration"<CR>', { buffer = buf })
+  vim.keymap.set('n', 'gr', '<Cmd>Pick lsp scope="references"<CR>', { buffer = buf, nowait = true })
+  vim.keymap.set('n', 'gi', '<Cmd>Pick lsp scope="implementation"<CR>', { buffer = buf })
+  vim.keymap.set('n', 'gy', '<Cmd>Pick lsp scope="type_definition"<CR>', { buffer = buf })
+  vim.keymap.set('n', 'ge', '<Cmd>Pick diagnostic scope="current"<CR>', { buffer = buf })
+  vim.keymap.set('n', 'gE', '<Cmd>Pick diagnostic scope="all"<CR>', { buffer = buf })
+  vim.keymap.set('n', 'gs', '<Cmd>Pick lsp scope="document_symbol"<CR>', { buffer = buf })
+  vim.keymap.set('n', 'gS', '<Cmd>Pick lsp scope="workspace_symbol"<CR>', { buffer = buf })
   vim.keymap.set('i', '<C-k>', vim.lsp.buf.signature_help, { buffer = buf })
 end
 

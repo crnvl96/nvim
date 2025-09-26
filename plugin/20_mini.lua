@@ -30,13 +30,10 @@ MiniDeps.add({ name = 'mini.nvim' })
 
 require('mini.icons').setup()
 require('mini.extra').setup()
+require('mini.visits').setup()
 require('mini.misc').setup()
 require('mini.align').setup()
 require('mini.splitjoin').setup()
--- require('mini.git').setup({ command = { split = 'vertical' } })
--- require('mini.diff').setup({ view = { style = 'sign' } })
---
--- vim.keymap.set('n', '<Leader>o', '<Cmd>lua MiniDiff.toggle_overlay()<CR>')
 
 MiniMisc.setup_restore_cursor()
 MiniMisc.setup_auto_root()
@@ -47,6 +44,8 @@ vim.keymap.set('n', '<Leader>f', '<Cmd>Pick files<CR>')
 vim.keymap.set('n', '<Leader>g', '<Cmd>Pick grep_live<CR>')
 vim.keymap.set('n', '<Leader>b', '<Cmd>Pick buffers include_current=false<CR>')
 vim.keymap.set('n', '<Leader>l', '<Cmd>Pick buf_lines scope="current"<CR>')
+vim.keymap.set('n', '<Leader>o', '<Cmd>Pick visit_paths<CR>')
+vim.keymap.set('n', '<Leader>h', '<Cmd>Pick history scope=":"<CR>')
 
 vim.keymap.set('n', '<Leader>e', function() return explore() end)
 vim.keymap.set('n', '<Leader>E', '<Cmd>Pick explorer<CR>')
