@@ -210,3 +210,6 @@ hi link @markup.list Special
 hi link @diff.plus diffAdded
 hi link @diff.minus diffRemoved
 hi link @diff.delta diffChanged
+
+" plugins
+hi MiniPickMatchCurrent ctermbg=15 ctermfg=0
