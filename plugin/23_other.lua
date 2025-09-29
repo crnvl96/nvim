@@ -19,9 +19,6 @@ MiniDeps.add({ source = 'Saghen/blink.cmp', hooks = cargo_hooks })
 MiniDeps.add({ source = 'stevearc/conform.nvim' })
 MiniDeps.add({ source = 'MagicDuck/grug-far.nvim' })
 
-vim.g.autoformat = true
-vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
-
 require('grug-far').setup()
 
 require('blink.cmp').setup({
@@ -64,6 +61,9 @@ require('blink.cmp').setup({
 
 vim.lsp.config('*', { capabilities = require('blink.cmp').get_lsp_capabilities(nil, true) })
 
+vim.g.autoformat = true
+vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
+
 require('conform').setup({
   notify_on_error = true,
   format_on_save = function()
@@ -89,7 +89,12 @@ require('conform').setup({
   },
 })
 
-vim.api.nvim_create_user_command('PluginToggleFormat', function()
+vim.api.nvim_create_user_command('Fmt', function()
+  local buf = vim.api.nvim_get_current_buf()
+  require('conform').format({ bufnr = buf })
+end, { nargs = 0 })
+
+vim.api.nvim_create_user_command('ToggleFmt', function()
   vim.g.autoformat = not vim.g.autoformat
   vim.notify(('%s formatting...'):format(vim.g.autoformat and 'Enabling' or 'Disabling'), vim.log.levels.INFO)
 end, { nargs = 0 })

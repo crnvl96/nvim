@@ -37,9 +37,6 @@ vim.keymap.set('n', '<Leader>f', '<Cmd>Pick files<CR>')
 vim.keymap.set('n', '<Leader>g', '<Cmd>Pick grep_live<CR>')
 vim.keymap.set('n', '<Leader>b', '<Cmd>Pick buffers include_current=false<CR>')
 vim.keymap.set('n', '<Leader>l', '<Cmd>Pick buf_lines scope="current"<CR>')
-vim.keymap.set('n', '<Leader>o', '<Cmd>Pick visit_paths<CR>')
-vim.keymap.set('n', '<Leader>h', '<Cmd>Pick history scope=":"<CR>')
-
 vim.keymap.set('n', '<Leader>e', function() return explore() end)
 vim.keymap.set('n', '<Leader>E', '<Cmd>Pick explorer<CR>')
 
