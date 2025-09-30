@@ -320,11 +320,10 @@ vim.keymap.set('n', '<C-j>', '<C-w>j')
 vim.keymap.set('n', '<C-k>', '<C-w>k')
 vim.keymap.set('n', '<C-l>', '<C-w>l')
 
+-- vim.keymap.set('t', '<C-j>', '<C-\\><C-n><C-w>j')
+-- vim.keymap.set('t', '<C-k>', '<C-\\><C-n><C-w>k')
 vim.keymap.set('t', '<C-h>', '<C-\\><C-n><C-w>h')
-vim.keymap.set('t', '<C-j>', '<C-\\><C-n><C-w>j')
-vim.keymap.set('t', '<C-k>', '<C-\\><C-n><C-w>k')
 vim.keymap.set('t', '<C-l>', '<C-\\><C-n><C-w>l')
--- vim.keymap.set('t', '<C-w>', function() return '<C-w>' end, { expr = true, nowait = true })
 
 vim.keymap.set('n', '<C-Down>', '<Cmd>resize -5<CR>')
 vim.keymap.set('n', '<C-Up>', '<Cmd>resize +5<CR>')

@@ -7,7 +7,11 @@ require('sidekick').setup({
     win = {
       layout = 'right', ---@type "float"|"left"|"bottom"|"top"|"right"
       split = { width = 120 },
-      keys = { hide_t = { '<C-.>', 'hide' } },
+      keys = {
+        hide_t = { '<C-.>', 'hide' },
+        win_p = { '<C-o>', 'blur' },
+        blur = { '<C-o>', 'blur' },
+      },
     },
     mux = { enabled = false },
   },
