@@ -38,16 +38,16 @@ local function on_attach(_, buf)
   vim.keymap.set('i', '<C-k>', vim.lsp.buf.signature_help, { buffer = buf })
 end
 
--- vim.api.nvim_create_autocmd({ 'BufReadPre', 'BufNewFile' }, {
---   once = true,
---   callback = function()
---     local server_configs = vim
---       .iter(vim.api.nvim_get_runtime_file('lsp/*.lua', true))
---       :map(function(file) return vim.fn.fnamemodify(file, ':t:r') end)
---       :totable()
---     vim.lsp.enable(server_configs)
---   end,
--- })
+vim.api.nvim_create_autocmd({ 'BufReadPre', 'BufNewFile' }, {
+  once = true,
+  callback = function()
+    local server_configs = vim
+      .iter(vim.api.nvim_get_runtime_file('lsp/*.lua', true))
+      :map(function(file) return vim.fn.fnamemodify(file, ':t:r') end)
+      :totable()
+    vim.lsp.enable(server_configs)
+  end,
+})
 
 local servers
 vim.api.nvim_create_user_command('LspEnable', function()

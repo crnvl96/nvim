@@ -1,6 +1,6 @@
 MiniDeps.add({ source = 'stevearc/conform.nvim' })
 
-vim.g.autoformat = false
+vim.g.autoformat = true
 vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
 
 require('conform').setup({
