@@ -1,3 +1,12 @@
+--- Auto format using conform.nvim
+local function format_current() require('conform').format({ bufnr = vim.api.nvim_get_current_buf() }) end
+
+--- Toggle auto format on save
+local function toggle_autoformat()
+  vim.g.autoformat = not vim.g.autoformat
+  vim.notify(('%s formatting...'):format(vim.g.autoformat and 'Enabling' or 'Disabling'), vim.log.levels.INFO)
+end
+
 vim.g.gruvbox_material_enable_italic = true
 vim.g.gruvbox_material_background = 'medium'
 vim.g.gruvbox_material_enable_bold = true
@@ -86,11 +95,5 @@ require('conform').setup({
   },
 })
 
-local function format_current() require('conform').format({ bufnr = vim.api.nvim_get_current_buf() }) end
 vim.api.nvim_create_user_command('Fmt', format_current, { nargs = 0 })
-
-local function toggle_autoformat()
-  vim.g.autoformat = not vim.g.autoformat
-  vim.notify(('%s formatting...'):format(vim.g.autoformat and 'Enabling' or 'Disabling'), vim.log.levels.INFO)
-end
 vim.api.nvim_create_user_command('ToggleFmt', toggle_autoformat, { nargs = 0 })

@@ -3,6 +3,8 @@ require('mini.misc').setup()
 require('mini.align').setup()
 require('mini.splitjoin').setup()
 require('mini.extra').setup()
+require('mini.git').setup()
+require('mini.diff').setup()
 
 require('mini.pick').setup()
 
@@ -10,6 +12,7 @@ vim.keymap.set('n', '<Leader>f', '<Cmd>Pick files<CR>')
 vim.keymap.set('n', '<Leader>g', '<Cmd>Pick grep_live<CR>')
 vim.keymap.set('n', '<Leader>b', '<Cmd>Pick buffers include_current=false<CR>')
 vim.keymap.set('n', '<Leader>l', '<Cmd>Pick buf_lines scope="current"<CR>')
+vim.keymap.set('n', '<Leader>o', '<Cmd>lua MiniDiff.toggle_overlay()<CR>')
 
 ---@diagnostic disable-next-line: duplicate-set-field
 vim.ui.select = function(items, opts, on_choice)

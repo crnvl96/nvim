@@ -298,7 +298,7 @@ vim.pack.add({
   { src = 'https://github.com/sainnhe/gruvbox-material' },
   { src = 'https://github.com/Saghen/blink.cmp', version = vim.version.range('^1') },
   { src = 'https://github.com/folke/sidekick.nvim' },
-  { src = 'https://github.com/tpope/vim-fugitive' },
+  -- { src = 'https://github.com/tpope/vim-fugitive' },
   { src = 'https://github.com/stevearc/conform.nvim' },
   { src = 'https://github.com/folke/snacks.nvim' },
 })

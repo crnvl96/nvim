@@ -21,13 +21,6 @@ require('sidekick').setup({
   debug = false,
 })
 
-vim.keymap.set('n', '<Tab>', function()
-  if not require('sidekick').nes_jump_or_apply() then return '<Tab>' end
-end, { expr = true })
-vim.keymap.set('n', '<c-.>', function() require('sidekick.cli').focus() end)
-vim.keymap.set('n', '<leader>ao', function() require('sidekick.cli').toggle({ name = 'opencode', focus = true }) end)
-vim.keymap.set({ 'n', 'v' }, '<leader>ap', function() require('sidekick.cli').select_prompt() end)
-
 require('snacks').setup({
   indent = {
     chunk = {
@@ -47,6 +40,11 @@ require('snacks').setup({
       count = true, -- use vim.v.count1
     },
   },
+  statuscolumn = {
+    enabled = true,
+    left = { 'mark', 'sign' }, -- priority of signs on the left (high to low)
+    right = { 'fold', 'git' }, -- priority of signs on the right (high to low)
+  },
   styles = {
     terminal = {
       bo = { filetype = 'snacks_terminal' },
@@ -57,6 +55,10 @@ require('snacks').setup({
 })
 
 vim.keymap.set('n', '<Leader>.', function() Snacks.scratch() end)
-
 vim.keymap.set('n', '<C-t>', function() Snacks.terminal() end)
-vim.keymap.set('n', '<Leader>g', function() Snacks.lazygit() end)
+vim.keymap.set('n', '<Leader>s', function() Snacks.lazygit() end)
+vim.keymap.set('n', '<c-.>', function() require('sidekick.cli').focus() end)
+vim.keymap.set('n', '<leader>ao', function() require('sidekick.cli').toggle({ name = 'opencode', focus = true }) end)
+vim.keymap.set({ 'n', 'v' }, '<leader>ap', function() require('sidekick.cli').select_prompt() end)
+-- stylua: ignore
+vim.keymap.set('n', '<Tab>', function() if not require('sidekick').nes_jump_or_apply() then return '<Tab>' end end, { expr = true })
