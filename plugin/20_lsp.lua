@@ -22,6 +22,8 @@ end
 ---@param _ vim.lsp.Client lsp Client
 ---@param buf integer target buffer
 local function on_attach(_, buf)
+  vim.lsp.inline_completion.enable()
+
   vim.keymap.set('n', 'E', vim.diagnostic.open_float, { buffer = buf })
   vim.keymap.set('n', 'K', vim.lsp.buf.hover, { buffer = buf })
   vim.keymap.set('n', 'ga', vim.lsp.buf.code_action, { buffer = buf })
@@ -34,7 +36,7 @@ local function on_attach(_, buf)
   vim.keymap.set('n', 'ge', '<Cmd>Pick diagnostic scope="current"<CR>', { buffer = buf })
   vim.keymap.set('n', 'gE', '<Cmd>Pick diagnostic scope="all"<CR>', { buffer = buf })
   vim.keymap.set('n', 'gs', '<Cmd>Pick lsp scope="document_symbol"<CR>', { buffer = buf })
-  vim.keymap.set('n', 'gS', '<Cmd>Pick lsp scope="workspace_symbol"<CR>', { buffer = buf })
+  -- vim.keymap.set('n', 'gS', '<Cmd>Pick lsp scope="workspace_symbol"<CR>', { buffer = buf })
   vim.keymap.set('i', '<C-k>', vim.lsp.buf.signature_help, { buffer = buf })
 end
 

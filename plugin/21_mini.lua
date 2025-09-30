@@ -1,42 +1,10 @@
-local minipath = vim.fn.stdpath('data') .. '/site/pack/deps/start/mini.nvim'
-if not vim.uv.fs_stat(minipath) then
-  vim.fn.system({
-    'git',
-    'clone',
-    '--filter=blob:none',
-    'https://github.com/echasnovski/mini.nvim',
-    minipath,
-  })
-  vim.cmd('packadd mini.nvim | helptags ALL')
-  vim.cmd('echo "Installed `mini.nvim`" | redraw')
-end
-
-require('mini.deps').setup()
-MiniDeps.add({ name = 'mini.nvim' })
-
+require('mini.icons').setup()
 require('mini.misc').setup()
 require('mini.align').setup()
 require('mini.splitjoin').setup()
 require('mini.extra').setup()
 
-require('mini.pick').setup({
-  window = {
-    config = function()
-      local height = math.floor(0.618 * vim.o.lines)
-      local width = math.floor(0.618 * vim.o.columns)
-      return {
-        anchor = 'NW',
-        height = height,
-        width = width,
-        row = math.floor(0.5 * (vim.o.lines - height)),
-        col = math.floor(0.5 * (vim.o.columns - width)),
-      }
-    end,
-  },
-  source = {
-    show = require('mini.pick').default_show,
-  },
-})
+require('mini.pick').setup()
 
 vim.keymap.set('n', '<Leader>f', '<Cmd>Pick files<CR>')
 vim.keymap.set('n', '<Leader>g', '<Cmd>Pick grep_live<CR>')
@@ -50,9 +18,6 @@ vim.ui.select = function(items, opts, on_choice)
 end
 
 require('mini.files').setup({
-  content = {
-    prefix = function() end,
-  },
   mappings = {
     show_help = '?',
     go_in = '',

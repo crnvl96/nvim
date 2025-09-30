@@ -1,0 +1,69 @@
+require('blink.cmp').setup({
+  appearance = {
+    use_nvim_cmp_as_default = false,
+    nerd_font_variant = 'mono',
+  },
+  keymap = {
+    preset = 'default',
+    ['<C-n>'] = {
+      'show',
+      'select_next',
+      'fallback_to_mappings',
+    },
+    ['<Tab>'] = {
+      'snippet_forward',
+      function() return require('sidekick').nes_jump_or_apply() end,
+      function() return vim.lsp.inline_completion.get() end,
+      'fallback',
+    },
+  },
+  cmdline = {
+    enabled = true,
+    keymap = { preset = 'cmdline' },
+    completion = {
+      list = { selection = { preselect = false } },
+      menu = { auto_show = function() return vim.fn.getcmdtype() == ':' end },
+      ghost_text = { enabled = true },
+    },
+  },
+  completion = {
+    list = {
+      selection = { preselect = false, auto_insert = true },
+    },
+    accept = {
+      auto_brackets = {
+        enabled = true,
+      },
+    },
+    menu = {
+      scrollbar = false,
+      draw = {
+        columns = { { 'kind_icon' }, { 'label', 'label_description', 'source_name', gap = 1 } },
+        treesitter = { 'lsp' },
+        components = {
+          kind_icon = {
+            text = function(ctx)
+              if ctx.source_id == 'cmdline' then return end
+              return ctx.kind_icon .. ctx.icon_gap
+            end,
+          },
+          source_name = {
+            text = function(ctx)
+              if ctx.source_id == 'cmdline' then return end
+              return ctx.source_name:sub(1, 4)
+            end,
+          },
+        },
+      },
+    },
+    documentation = {
+      auto_show = true,
+      auto_show_delay_ms = 200,
+    },
+    ghost_text = {
+      enabled = true,
+    },
+  },
+})
+
+vim.lsp.config('*', { capabilities = require('blink.cmp').get_lsp_capabilities(nil, true) })
