@@ -38,16 +38,32 @@ local function on_attach(_, buf)
   vim.keymap.set('i', '<C-k>', vim.lsp.buf.signature_help, { buffer = buf })
 end
 
-vim.api.nvim_create_autocmd({ 'BufReadPre', 'BufNewFile' }, {
-  once = true,
-  callback = function()
-    local server_configs = vim
+-- vim.api.nvim_create_autocmd({ 'BufReadPre', 'BufNewFile' }, {
+--   once = true,
+--   callback = function()
+--     local server_configs = vim
+--       .iter(vim.api.nvim_get_runtime_file('lsp/*.lua', true))
+--       :map(function(file) return vim.fn.fnamemodify(file, ':t:r') end)
+--       :totable()
+--     vim.lsp.enable(server_configs)
+--   end,
+-- })
+
+local servers
+vim.api.nvim_create_user_command('LspEnable', function()
+  if servers == nil then
+    servers = vim
       .iter(vim.api.nvim_get_runtime_file('lsp/*.lua', true))
       :map(function(file) return vim.fn.fnamemodify(file, ':t:r') end)
       :totable()
-    vim.lsp.enable(server_configs)
-  end,
-})
+  end
+  vim.lsp.enable(servers, true)
+end, { nargs = 0 })
+
+vim.api.nvim_create_user_command('LspDisable', function()
+  if servers == nil then servers = {} end
+  vim.lsp.enable(servers, false)
+end, { nargs = 0 })
 
 local hide_handler = vim.diagnostic.handlers.virtual_text.hide
 vim.diagnostic.handlers.virtual_text = { show = show, hide = hide_handler }

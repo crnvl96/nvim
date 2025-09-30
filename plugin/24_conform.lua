@@ -1,13 +1,16 @@
 MiniDeps.add({ source = 'stevearc/conform.nvim' })
 
-vim.g.autoformat = true
+vim.g.autoformat = false
 vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
 
 require('conform').setup({
   notify_on_error = true,
   format_on_save = function()
     if not vim.g.autoformat then return nil end
-    return { timeout_ms = 500, lsp_format = 'fallback' }
+    return {
+      timeout_ms = 500,
+      lsp_format = 'fallback',
+    }
   end,
   formatters = {
     prettier = {
