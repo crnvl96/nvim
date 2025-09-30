@@ -357,3 +357,5 @@ vim.keymap.set({ 'n', 't' }, '<C-Left>', '<Cmd>vertical resize -20<CR>')
 vim.keymap.set({ 'n', 't' }, '<C-Right>', '<Cmd>vertical resize +20<CR>')
 vim.keymap.set('ca', 'f', function() return expand_trigger('f', 'find<space>') end, { expr = true })
 vim.keymap.set('ca', 'g', function() return expand_trigger('g', 'sil<space>grep!') end, { expr = true })
+
+vim.cmd('colorscheme ham')
