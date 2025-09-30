@@ -46,6 +46,12 @@ require('snacks').setup({
     right = { 'fold', 'git' }, -- priority of signs on the right (high to low)
   },
   styles = {
+    lazygit = {
+      position = 'float',
+      backdrop = 60,
+      height = 0.9,
+      width = 0.9,
+    },
     terminal = {
       bo = { filetype = 'snacks_terminal' },
       wo = {},
