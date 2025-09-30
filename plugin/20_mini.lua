@@ -15,6 +15,9 @@ require('mini.deps').setup()
 MiniDeps.add({ name = 'mini.nvim' })
 
 require('mini.misc').setup()
+require('mini.align').setup()
+require('mini.splitjoin').setup()
+require('mini.extra').setup()
 
 require('mini.pick').setup({
   window = {
