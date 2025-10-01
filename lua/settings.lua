@@ -1,5 +1,5 @@
 local node_version_cmd =
-  "mise ls --cd ~ | grep '^node' | grep '22\\.' | head -n 1 | awk '{print $2}'"
+  "mise ls --cd ~ | grep '^node' | grep '24\\.' | head -n 1 | awk '{print $2}'"
 local version = vim.fn.system(node_version_cmd):gsub('\n', '')
 local home = os.getenv('HOME')
 
@@ -391,6 +391,15 @@ vim.api.nvim_create_autocmd('BufReadPost', {
 })
 
 vim.pack.add({
+  {
+    src = 'https://github.com/nvim-treesitter/nvim-treesitter',
+    version = 'main',
+  },
+  {
+    src = 'https://github.com/nvim-treesitter/nvim-treesitter-textobjects',
+    version = 'main',
+  },
+
   { src = 'https://github.com/nvim-mini/mini.nvim' },
   { src = 'https://github.com/brianhuster/unnest.nvim' },
   { src = 'https://github.com/sainnhe/gruvbox-material' },
@@ -398,9 +407,11 @@ vim.pack.add({
     src = 'https://github.com/Saghen/blink.cmp',
     version = vim.version.range('^1'),
   },
+  { src = 'https://github.com/tpope/vim-fugitive' },
   { src = 'https://github.com/folke/sidekick.nvim' },
   { src = 'https://github.com/stevearc/conform.nvim' },
   { src = 'https://github.com/folke/snacks.nvim' },
+  { src = 'https://github.com/folke/which-key.nvim' },
 })
 
 vim.keymap.set({ 'n', 'x' }, 'Y', 'yg_')

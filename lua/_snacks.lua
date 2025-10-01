@@ -70,15 +70,36 @@ local Sq = require('sidekick')
 local Cli = require('sidekick.cli')
 
 vim.keymap.set('n', '<c-.>', function() Cli.focus() end)
-vim.keymap.set(
-  'n',
-  '<leader>ao',
-  function() Cli.toggle({ name = 'opencode', focus = true }) end
-)
 vim.keymap.set({ 'n', 'v' }, '<leader>ap', function() Cli.select_prompt() end)
-vim.keymap.set(
-  'n',
-  '<Tab>',
-  function() return Sq.nes_jump_or_apply() or '<Tab>' end,
-  { expr = true }
-)
+
+--- Open the opencode CLI and focus it
+local function opencode() return Cli.toggle({ name = 'opencode', focus = true }) end
+vim.keymap.set('n', '<leader>ao', opencode)
+
+--- Try to jump to the next nes action, or insert a <tab>
+local function nes() return Sq.nes_jump_or_apply() or '<Tab>' end
+vim.keymap.set('n', '<Tab>', nes, { expr = true })
+
+require('which-key').setup({
+  preset = 'helix',
+  delay = 500,
+  spec = {},
+  win = {
+    -- don't allow the popup to overlap with the cursor
+    no_overlap = true,
+    -- width = 1,
+    -- height = { min = 4, max = 25 },
+    -- col = 0,
+    -- row = math.huge,
+    -- border = "none",
+    padding = { 1, 2 }, -- extra window padding [top/bottom, right/left]
+    title = true,
+    title_pos = 'center',
+    zindex = 1000,
+    -- Additional vim.wo and vim.bo options
+    bo = {},
+    wo = {
+      -- winblend = 10, -- value between 0-100 0 for fully opaque and 100 for fully transparent
+    },
+  },
+})

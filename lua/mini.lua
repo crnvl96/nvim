@@ -3,12 +3,16 @@ require('mini.misc').setup()
 require('mini.align').setup()
 require('mini.splitjoin').setup()
 require('mini.extra').setup()
-require('mini.git').setup()
 require('mini.diff').setup({ view = { style = 'sign' } })
 
-vim.api.nvim_create_autocmd('FileType', {
-  pattern = { 'diff', 'git', 'gitcommit', 'gitrebase' },
-  command = 'setlocal foldmethod=expr foldexpr=v:lua.MiniGit.diff_foldexpr()',
+require('mini.ai').setup({
+  custom_textobjects = {
+    g = MiniExtra.gen_ai_spec.buffer(),
+    f = require('mini.ai').gen_spec.treesitter({
+      a = '@function.outer',
+      i = '@function.inner',
+    }),
+  },
 })
 
 require('mini.pick').setup()
