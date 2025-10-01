@@ -13,7 +13,10 @@ require('sidekick').setup({
         blur = { '<C-o>', 'blur' },
       },
     },
-    mux = { enabled = false },
+    mux = {
+      backend = 'tmux',
+      enabled = true,
+    },
   },
   copilot = {
     status = { enabled = true },
@@ -58,6 +61,12 @@ require('snacks').setup({
       keys = {
         term_normal = { '<C-t>', '<C-\\><C-n><Cmd>close<CR>', mode = 't' },
       },
+    },
+    scratch = {
+      position = 'float',
+      backdrop = 60,
+      height = 0.9,
+      width = 0.9,
     },
   },
 })

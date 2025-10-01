@@ -31,6 +31,7 @@ vim.list_extend(filetypes, { 'markdown', 'pandoc' })
 
 local ts_start = function(ev)
   vim.treesitter.start(ev.buf)
+  vim.notify('nvim-treesitter started for ' .. ev.match, vim.log.levels.INFO)
   vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
   vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
 end

@@ -354,6 +354,24 @@ if vim.fn.has('nvim-0.12') == 1 then
   vim.keymap.set('c', '<c-s>', '<home><s-right><c-w>sp<end>')
 end
 
+local diagnostic_opts = {
+  signs = {
+    priority = 9999,
+    severity = { min = 'WARN', max = 'ERROR' },
+  },
+  underline = {
+    severity = { min = 'HINT', max = 'ERROR' },
+  },
+  virtual_lines = false,
+  virtual_text = {
+    current_line = true,
+    severity = { min = 'ERROR', max = 'ERROR' },
+  },
+  update_in_insert = false,
+}
+
+vim.diagnostic.config(diagnostic_opts)
+
 vim.api.nvim_create_autocmd(
   'FileType',
   { command = 'setlocal formatoptions-=c formatoptions-=o' }
