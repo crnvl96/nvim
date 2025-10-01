@@ -85,7 +85,7 @@ require('conform').setup({
     typescriptreact = { 'prettier', name = 'dprint' },
     json = { name = 'dprint' },
     jsonc = { name = 'dprint' },
-    lua = { 'stylua' },
+    lua = { name = 'stylua' },
     markdown = { name = 'dprint' },
     python = { 'ruff_fix', 'ruff_organize_imports', 'ruff_format', name = 'dprint' },
     rust = { lsp_format = 'prefer' },
