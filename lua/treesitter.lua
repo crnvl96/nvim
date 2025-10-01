@@ -29,7 +29,11 @@ local filetypes = vim
 
 vim.list_extend(filetypes, { 'markdown', 'pandoc' })
 
-local ts_start = function(ev) vim.treesitter.start(ev.buf) end
+local ts_start = function(ev)
+  vim.treesitter.start(ev.buf)
+  vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+  vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+end
 
 vim.api.nvim_create_autocmd(
   'FileType',
