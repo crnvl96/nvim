@@ -4,8 +4,11 @@ require('mini.align').setup()
 require('mini.splitjoin').setup()
 require('mini.extra').setup()
 require('mini.git').setup()
-require('mini.diff').setup({
-  view = { style = 'sign' },
+require('mini.diff').setup({ view = { style = 'sign' } })
+
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = { 'diff', 'git', 'gitcommit', 'gitrebase' },
+  command = 'setlocal foldmethod=expr foldexpr=v:lua.MiniGit.diff_foldexpr()',
 })
 
 require('mini.pick').setup()
