@@ -55,7 +55,9 @@ require('snacks').setup({
     terminal = {
       bo = { filetype = 'snacks_terminal' },
       wo = {},
-      keys = { term_normal = { '<C-t>', '<C-\\><C-n><Cmd>close<CR>', mode = 't' } },
+      keys = {
+        term_normal = { '<C-t>', '<C-\\><C-n><Cmd>close<CR>', mode = 't' },
+      },
     },
   },
 })
@@ -68,6 +70,15 @@ local Sq = require('sidekick')
 local Cli = require('sidekick.cli')
 
 vim.keymap.set('n', '<c-.>', function() Cli.focus() end)
-vim.keymap.set('n', '<leader>ao', function() Cli.toggle({ name = 'opencode', focus = true }) end)
+vim.keymap.set(
+  'n',
+  '<leader>ao',
+  function() Cli.toggle({ name = 'opencode', focus = true }) end
+)
 vim.keymap.set({ 'n', 'v' }, '<leader>ap', function() Cli.select_prompt() end)
-vim.keymap.set('n', '<Tab>', function() return Sq.nes_jump_or_apply() or '<Tab>' end, { expr = true })
+vim.keymap.set(
+  'n',
+  '<Tab>',
+  function() return Sq.nes_jump_or_apply() or '<Tab>' end,
+  { expr = true }
+)

@@ -1,10 +1,15 @@
 --- Auto format using conform.nvim
-local function format_current() require('conform').format({ bufnr = vim.api.nvim_get_current_buf() }) end
+local function format_current()
+  require('conform').format({ bufnr = vim.api.nvim_get_current_buf() })
+end
 
 --- Toggle auto format on save
 local function toggle_autoformat()
   vim.g.autoformat = not vim.g.autoformat
-  vim.notify(('%s formatting...'):format(vim.g.autoformat and 'Enabling' or 'Disabling'), vim.log.levels.INFO)
+  vim.notify(
+    ('%s formatting...'):format(vim.g.autoformat and 'Enabling' or 'Disabling'),
+    vim.log.levels.INFO
+  )
 end
 
 vim.g.gruvbox_material_enable_italic = true
@@ -17,7 +22,8 @@ vim.g.gruvbox_material_float_style = 'none'
 vim.cmd.colorscheme('gruvbox-material')
 
 local function mod_hl(hl_name, opts)
-  local is_ok, hl_def = pcall(vim.api.nvim_get_hl, 0, { name = hl_name, link = false })
+  local is_ok, hl_def =
+    pcall(vim.api.nvim_get_hl, 0, { name = hl_name, link = false })
   if is_ok then
     for k, v in pairs(opts) do
       hl_def[k] = v
@@ -85,9 +91,14 @@ require('conform').setup({
     typescriptreact = { 'prettier', name = 'dprint' },
     json = { name = 'dprint' },
     jsonc = { name = 'dprint' },
-    lua = { name = 'stylua' },
+    lua = { 'stylua' },
     markdown = { name = 'dprint' },
-    python = { 'ruff_fix', 'ruff_organize_imports', 'ruff_format', name = 'dprint' },
+    python = {
+      'ruff_fix',
+      'ruff_organize_imports',
+      'ruff_format',
+      name = 'dprint',
+    },
     rust = { lsp_format = 'prefer' },
     go = { lsp_format = 'prefer' },
     toml = { name = 'dprint' },

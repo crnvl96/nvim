@@ -28,43 +28,75 @@ local function on_attach(_, buf)
   vim.keymap.set('n', 'K', vim.lsp.buf.hover, { buffer = buf })
   vim.keymap.set('n', 'ga', vim.lsp.buf.code_action, { buffer = buf })
   vim.keymap.set('n', 'gn', vim.lsp.buf.rename, { buffer = buf })
-  vim.keymap.set('n', 'gd', '<Cmd>Pick lsp scope="definition"<CR>', { buffer = buf })
-  vim.keymap.set('n', 'gD', '<Cmd>Pick lsp scope="declaration"<CR>', { buffer = buf })
-  vim.keymap.set('n', 'gr', '<Cmd>Pick lsp scope="references"<CR>', { buffer = buf, nowait = true })
-  vim.keymap.set('n', 'gi', '<Cmd>Pick lsp scope="implementation"<CR>', { buffer = buf })
-  vim.keymap.set('n', 'gy', '<Cmd>Pick lsp scope="type_definition"<CR>', { buffer = buf })
-  vim.keymap.set('n', 'ge', '<Cmd>Pick diagnostic scope="current"<CR>', { buffer = buf })
-  vim.keymap.set('n', 'gE', '<Cmd>Pick diagnostic scope="all"<CR>', { buffer = buf })
-  vim.keymap.set('n', 'gs', '<Cmd>Pick lsp scope="document_symbol"<CR>', { buffer = buf })
+  vim.keymap.set(
+    'n',
+    'gd',
+    '<Cmd>Pick lsp scope="definition"<CR>',
+    { buffer = buf }
+  )
+  vim.keymap.set(
+    'n',
+    'gD',
+    '<Cmd>Pick lsp scope="declaration"<CR>',
+    { buffer = buf }
+  )
+  vim.keymap.set(
+    'n',
+    'gr',
+    '<Cmd>Pick lsp scope="references"<CR>',
+    { buffer = buf, nowait = true }
+  )
+  vim.keymap.set(
+    'n',
+    'gi',
+    '<Cmd>Pick lsp scope="implementation"<CR>',
+    { buffer = buf }
+  )
+  vim.keymap.set(
+    'n',
+    'gy',
+    '<Cmd>Pick lsp scope="type_definition"<CR>',
+    { buffer = buf }
+  )
+  vim.keymap.set(
+    'n',
+    'ge',
+    '<Cmd>Pick diagnostic scope="current"<CR>',
+    { buffer = buf }
+  )
+  vim.keymap.set(
+    'n',
+    'gE',
+    '<Cmd>Pick diagnostic scope="all"<CR>',
+    { buffer = buf }
+  )
+  vim.keymap.set(
+    'n',
+    'gs',
+    '<Cmd>Pick lsp scope="document_symbol"<CR>',
+    { buffer = buf }
+  )
   vim.keymap.set('i', '<C-k>', vim.lsp.buf.signature_help, { buffer = buf })
 end
 
 vim.api.nvim_create_autocmd({ 'BufReadPre', 'BufNewFile' }, {
   once = true,
   callback = function()
-    local server_configs = vim
-      .iter(vim.api.nvim_get_runtime_file('lsp/*.lua', true))
-      :map(function(file) return vim.fn.fnamemodify(file, ':t:r') end)
-      :totable()
+    local files = vim.api.nvim_get_runtime_file('lsp/*.lua', true)
+
+    local function mapfunc(file)
+      local disabled_servers = { 'stylua' }
+      local filename = vim.fn.fnamemodify(file, ':t:r')
+      for _, server in ipairs(disabled_servers) do
+        if filename == server then return nil end
+      end
+      return filename
+    end
+
+    local server_configs = vim.iter(files):map(mapfunc):totable()
     vim.lsp.enable(server_configs)
   end,
 })
-
-local servers
-vim.api.nvim_create_user_command('LspEnable', function()
-  if servers == nil then
-    servers = vim
-      .iter(vim.api.nvim_get_runtime_file('lsp/*.lua', true))
-      :map(function(file) return vim.fn.fnamemodify(file, ':t:r') end)
-      :totable()
-  end
-  vim.lsp.enable(servers, true)
-end, { nargs = 0 })
-
-vim.api.nvim_create_user_command('LspDisable', function()
-  if servers == nil then servers = {} end
-  vim.lsp.enable(servers, false)
-end, { nargs = 0 })
 
 local hide_handler = vim.diagnostic.handlers.virtual_text.hide
 vim.diagnostic.handlers.virtual_text = { show = show, hide = hide_handler }

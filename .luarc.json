@@ -8,7 +8,7 @@
     "MiniMisc",
     "MiniExtra",
     "MiniKeymap",
-        "MiniFiles",
-        "MiniCompletion"
+    "MiniFiles",
+    "MiniCompletion"
   ]
 }

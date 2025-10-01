@@ -38,7 +38,10 @@ require('blink.cmp').setup({
     menu = {
       scrollbar = false,
       draw = {
-        columns = { { 'kind_icon' }, { 'label', 'label_description', 'source_name', gap = 1 } },
+        columns = {
+          { 'kind_icon' },
+          { 'label', 'label_description', 'source_name', gap = 1 },
+        },
         treesitter = { 'lsp' },
         components = {
           kind_icon = {
@@ -66,4 +69,7 @@ require('blink.cmp').setup({
   },
 })
 
-vim.lsp.config('*', { capabilities = require('blink.cmp').get_lsp_capabilities(nil, true) })
+vim.lsp.config(
+  '*',
+  { capabilities = require('blink.cmp').get_lsp_capabilities(nil, true) }
+)

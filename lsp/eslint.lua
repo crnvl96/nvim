@@ -1,8 +1,20 @@
 ---@type vim.lsp.Config
 return {
   cmd = { 'vscode-eslint-language-server', '--stdio' },
-  filetypes = { 'javascript', 'javascriptreact', 'typescript', 'typescriptreact', 'graphql' },
-  root_markers = { '.eslintrc', '.eslintrc.js', '.eslintrc.json', 'eslint.config.js', 'eslint.config.mjs' },
+  filetypes = {
+    'javascript',
+    'javascriptreact',
+    'typescript',
+    'typescriptreact',
+    'graphql',
+  },
+  root_markers = {
+    '.eslintrc',
+    '.eslintrc.js',
+    '.eslintrc.json',
+    'eslint.config.js',
+    'eslint.config.mjs',
+  },
   -- Using roughly the same defaults as nvim-lspconfig: https://github.com/neovim/nvim-lspconfig/blob/d3ad666b7895f958d088cceb6f6c199672c404fe/lua/lspconfig/configs/eslint.lua#L70
   settings = {
     validate = 'on',
@@ -42,7 +54,10 @@ return {
       return {}
     end,
     ['eslint/noLibrary'] = function()
-      vim.notify('LSP[eslint]: Unable to load ESLint library.', vim.log.levels.WARN)
+      vim.notify(
+        'LSP[eslint]: Unable to load ESLint library.',
+        vim.log.levels.WARN
+      )
       return {}
     end,
   },

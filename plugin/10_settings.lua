@@ -1,10 +1,13 @@
-local node_version_cmd = "mise ls --cd ~ | grep '^node' | grep '22\\.' | head -n 1 | awk '{print $2}'"
+local node_version_cmd =
+  "mise ls --cd ~ | grep '^node' | grep '22\\.' | head -n 1 | awk '{print $2}'"
 local version = vim.fn.system(node_version_cmd):gsub('\n', '')
 local home = os.getenv('HOME')
 
 --- Get a specific nodejs binary path
 ---@param v string the nodejs version
-local function node_bin(v) return home .. '/.local/share/mise/installs/node/' .. v .. '/bin/' end
+local function node_bin(v)
+  return home .. '/.local/share/mise/installs/node/' .. v .. '/bin/'
+end
 
 if version == '' then
   vim.notify('Could not determine Node.js version', vim.log.levels.WARN)
@@ -14,8 +17,16 @@ else
   vim.env.PATH = bin .. ':' .. vim.env.PATH
 end
 
+---@alias Info {
+---  quickfix:integer,
+---  winid:integer,
+---  id:integer,
+---  start_idx:integer,
+---  end_idx:integer,
+---}
+
 --- Dynamically decide if we're into a quickfix or a location list, and return the respective items
----@param info {quickfix:integer,winid:integer,id:integer,start_idx:integer,end_idx:integer} Information about the current active list
+---@param info Info Information about the current active list
 local function get_quickfix_items(info)
   if info.quickfix == 1 then
     return vim.fn.getqflist({ id = info.id, items = 0 }).items
@@ -40,14 +51,18 @@ end
 --- Set the line number and column that will be exhibited together with the list item
 ---@param lnum integer line number
 ---@param col integer column
-local function format_location(lnum, col) return (lnum > 99999 and -1 or lnum), (col > 999 and -1 or col) end
+local function format_location(lnum, col)
+  return (lnum > 99999 and -1 or lnum), (col > 999 and -1 or col)
+end
 
 --- Set the kind of the item to render on the list
 ---@param qtype string item type
-local function format_type(qtype) return qtype == '' and '' or ' ' .. qtype:sub(1, 1):upper() end
+local function format_type(qtype)
+  return qtype == '' and '' or ' ' .. qtype:sub(1, 1):upper()
+end
 
 --- Specifies a function to be used to get the text to display in the quickfix and location list windows
----@param info {quickfix:integer,winid:integer,id:integer,start_idx:integer,end_idx:integer} Information about the current active list
+---@param info Info Information about the current active list
 function _G.qftf(info)
   local items = get_quickfix_items(info)
   local ret = {}
@@ -57,10 +72,18 @@ function _G.qftf(info)
     local formatted_text
     if entry.valid == 1 then
       local fname = ''
-      if entry.bufnr > 0 then fname = format_filename(vim.fn.bufname(entry.bufnr), limit) end
+      if entry.bufnr > 0 then
+        fname = format_filename(vim.fn.bufname(entry.bufnr), limit)
+      end
       local lnum, col = format_location(entry.lnum, entry.col)
       local qtype = format_type(entry.type)
-      formatted_text = ('%s │%5d:%-3d│%s %s'):format(fname, lnum, col, qtype, entry.text)
+      formatted_text = ('%s │%5d:%-3d│%s %s'):format(
+        fname,
+        lnum,
+        col,
+        qtype,
+        entry.text
+      )
     else
       formatted_text = entry.text
     end
@@ -110,10 +133,12 @@ vim.opt.backup = false
 vim.opt.breakindent = true
 vim.opt.clipboard = 'unnamed'
 vim.opt.cmdheight = 1
+vim.opt.colorcolumn = '+1'
 vim.opt.completeopt = 'menuone,noselect'
 vim.opt.cursorline = true
 vim.opt.cursorlineopt = 'number'
-vim.opt.diffopt = 'internal,filler,closeoff,algorithm:histogram,linematch:60,indent-heuristic,vertical,context:99'
+vim.opt.diffopt =
+  'internal,filler,closeoff,algorithm:histogram,linematch:60,indent-heuristic,vertical,context:99'
 vim.opt.expandtab = true
 vim.opt.fillchars =
   'eob: ,fold:╌,horiz:═,horizdown:╦,horizup:╩,vert:║,verthoriz:╬,vertleft:╣,vertright:╠'
@@ -202,8 +227,18 @@ if vim.fn.has('nvim-0.12') == 1 then
     },
   })
 
-  vim.keymap.set('c', '<C-n>', [[cmdcomplete_info().pum_visible ? "\<C-n>" : "\<Tab>"]], { expr = true })
-  vim.keymap.set('c', '<C-p>', [[cmdcomplete_info().pum_visible ? "\<C-p>" : "\<S-Tab>"]], { expr = true })
+  vim.keymap.set(
+    'c',
+    '<C-n>',
+    [[cmdcomplete_info().pum_visible ? "\<C-n>" : "\<Tab>"]],
+    { expr = true }
+  )
+  vim.keymap.set(
+    'c',
+    '<C-p>',
+    [[cmdcomplete_info().pum_visible ? "\<C-p>" : "\<S-Tab>"]],
+    { expr = true }
+  )
   vim.keymap.set('c', '<Down>', '<C-u><Down>')
   vim.keymap.set('c', '<Up>', '<C-u><Up>')
   vim.opt.completefuzzycollect = 'keyword,files,whole_line'
@@ -217,17 +252,49 @@ if vim.fn.has('nvim-0.12') == 1 then
   local findcmd
 
   if vim.fn.executable('fd') == 1 then
-    findcmd = { 'fd', '.', '--path-separator', '/', '--type', 'f', '--hidden', '--follow', '--exclude', '.git' }
+    findcmd = {
+      'fd',
+      '.',
+      '--path-separator',
+      '/',
+      '--type',
+      'f',
+      '--hidden',
+      '--follow',
+      '--exclude',
+      '.git',
+    }
   elseif vim.fn.executable('fdfind') == 1 then
-    findcmd = { 'fdfind', '.', '--path-separator', '/', '--type', 'f', '--hidden', '--follow', '--exclude', '.git' }
+    findcmd = {
+      'fdfind',
+      '.',
+      '--path-separator',
+      '/',
+      '--type',
+      'f',
+      '--hidden',
+      '--follow',
+      '--exclude',
+      '.git',
+    }
   elseif vim.fn.executable('rg') == 1 then
-    findcmd = { 'rg', '--path-separator', '/', '--files', '--hidden', '--glob', '!.git' }
+    findcmd = {
+      'rg',
+      '--path-separator',
+      '/',
+      '--files',
+      '--hidden',
+      '--glob',
+      '!.git',
+    }
   else
     findcmd = {}
   end
 
   local function fd_findfunc(cmdarg, _)
-    if #cmdarg ~= 0 then return vim.fn.matchfuzzy(fnames, cmdarg, { matchseq = 1, limit = 100 }) end
+    if #cmdarg ~= 0 then
+      return vim.fn.matchfuzzy(fnames, cmdarg, { matchseq = 1, limit = 100 })
+    end
     if handle ~= nil or not needs_refresh then return end
 
     local prev
@@ -275,7 +342,9 @@ if vim.fn.has('nvim-0.12') == 1 then
   end
 
   if vim.fn.executable('fd') == 1 then
-    function _G.Fd_findfunc(cmdarg, _cmdcomplete) return fd_findfunc(cmdarg, _cmdcomplete) end
+    function _G.Fd_findfunc(cmdarg, _cmdcomplete)
+      return fd_findfunc(cmdarg, _cmdcomplete)
+    end
     vim.o.findfunc = 'v:lua.Fd_findfunc'
   end
 
@@ -285,21 +354,39 @@ if vim.fn.has('nvim-0.12') == 1 then
   vim.keymap.set('c', '<c-s>', '<home><s-right><c-w>sp<end>')
 end
 
-vim.api.nvim_create_autocmd('FileType', { command = 'setlocal formatoptions-=c formatoptions-=o' })
-vim.api.nvim_create_autocmd('QuickFixCmdPost', { pattern = '*grep*', command = 'cwindow' })
-vim.api.nvim_create_autocmd('TextYankPost', { callback = function() (vim.hl or vim.highlight).on_yank() end })
-vim.api.nvim_create_autocmd('TermOpen', { command = 'setlocal listchars= nonumber norelativenumber' })
+vim.api.nvim_create_autocmd(
+  'FileType',
+  { command = 'setlocal formatoptions-=c formatoptions-=o' }
+)
+vim.api.nvim_create_autocmd(
+  'QuickFixCmdPost',
+  { pattern = '*grep*', command = 'cwindow' }
+)
+vim.api.nvim_create_autocmd(
+  'TextYankPost',
+  { callback = function() (vim.hl or vim.highlight).on_yank() end }
+)
+vim.api.nvim_create_autocmd(
+  'TermOpen',
+  { command = 'setlocal listchars= nonumber norelativenumber' }
+)
 -- vim.api.nvim_create_autocmd('CmdlineChanged', { callback = function() vim.fn.wildtrigger() end })
 vim.api.nvim_create_autocmd('VimResized', { command = 'tabdo wincmd =' })
 vim.api.nvim_create_autocmd('BufReadPost', {
   callback = function(e)
     local exclude = { 'gitcommit' }
     local buf = e.buf
-    if vim.tbl_contains(exclude, vim.bo[buf].filetype) or vim.b[buf].last_loc then return end
+    if
+      vim.tbl_contains(exclude, vim.bo[buf].filetype) or vim.b[buf].last_loc
+    then
+      return
+    end
     vim.b[buf].last_loc = true
     local mark = vim.api.nvim_buf_get_mark(buf, '"')
     local lcount = vim.api.nvim_buf_line_count(buf)
-    if mark[1] > 0 and mark[1] <= lcount then pcall(vim.api.nvim_win_set_cursor, 0, mark) end
+    if mark[1] > 0 and mark[1] <= lcount then
+      pcall(vim.api.nvim_win_set_cursor, 0, mark)
+    end
   end,
 })
 
@@ -307,7 +394,10 @@ vim.pack.add({
   { src = 'https://github.com/nvim-mini/mini.nvim' },
   { src = 'https://github.com/brianhuster/unnest.nvim' },
   { src = 'https://github.com/sainnhe/gruvbox-material' },
-  { src = 'https://github.com/Saghen/blink.cmp', version = vim.version.range('^1') },
+  {
+    src = 'https://github.com/Saghen/blink.cmp',
+    version = vim.version.range('^1'),
+  },
   { src = 'https://github.com/folke/sidekick.nvim' },
   { src = 'https://github.com/stevearc/conform.nvim' },
   { src = 'https://github.com/folke/snacks.nvim' },
@@ -319,7 +409,11 @@ vim.keymap.set({ 'n', 'x', 'o' }, '<Leader>P', '"+P')
 vim.keymap.set({ 'n', 'x', 'o' }, '<Leader>y', '"+y')
 vim.keymap.set({ 'n', 'x', 'o' }, '<Leader>Y', '"+yg_')
 vim.keymap.set({ 'n', 'x', 'i', 's' }, '<Esc>', '<Cmd>noh<CR><Esc>')
-vim.keymap.set({ 'n', 'i', 'x' }, '<C-S>', '<Esc><Cmd>silent! update | redraw<CR>')
+vim.keymap.set(
+  { 'n', 'i', 'x' },
+  '<C-S>',
+  '<Esc><Cmd>silent! update | redraw<CR>'
+)
 vim.keymap.set({ 'n', 'x' }, 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true })
 vim.keymap.set({ 'n', 'x' }, 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true })
 vim.keymap.set('n', '<C-d>', '<C-d>zz')
@@ -341,5 +435,15 @@ vim.keymap.set('x', '<', '<gv')
 vim.keymap.set('x', '>', '>gv')
 vim.keymap.set({ 'n', 't' }, '<C-Left>', '<Cmd>vertical resize -20<CR>')
 vim.keymap.set({ 'n', 't' }, '<C-Right>', '<Cmd>vertical resize +20<CR>')
-vim.keymap.set('ca', 'f', function() return expand_trigger('f', 'find<space>') end, { expr = true })
-vim.keymap.set('ca', 'g', function() return expand_trigger('g', 'sil<space>grep!') end, { expr = true })
+vim.keymap.set(
+  'ca',
+  'f',
+  function() return expand_trigger('f', 'find<space>') end,
+  { expr = true }
+)
+vim.keymap.set(
+  'ca',
+  'g',
+  function() return expand_trigger('g', 'sil<space>grep!') end,
+  { expr = true }
+)
