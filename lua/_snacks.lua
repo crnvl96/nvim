@@ -78,12 +78,12 @@ vim.keymap.set('n', '<Leader><Space>', function() Snacks.lazygit() end)
 local Sq = require('sidekick')
 local Cli = require('sidekick.cli')
 
-vim.keymap.set('n', '<c-.>', function() Cli.focus() end)
-vim.keymap.set({ 'n', 'v' }, '<leader>ap', function() Cli.select_prompt() end)
+vim.keymap.set({ 'n', 'x', 'i', 't' }, '<c-.>', function() Cli.focus() end)
+vim.keymap.set({ 'n', 'v' }, '<leader>ap', function() Cli.prompt() end)
 
 --- Open the opencode CLI and focus it
 local function opencode() return Cli.toggle({ name = 'opencode', focus = true }) end
-vim.keymap.set('n', '<leader>ao', opencode)
+vim.keymap.set({ 'n', 'v' }, '<leader>ao', opencode)
 
 --- Try to jump to the next nes action, or insert a <tab>
 local function nes() return Sq.nes_jump_or_apply() or '<Tab>' end
