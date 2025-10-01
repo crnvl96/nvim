@@ -289,8 +289,19 @@ vim.api.nvim_create_autocmd('FileType', { command = 'setlocal formatoptions-=c f
 vim.api.nvim_create_autocmd('QuickFixCmdPost', { pattern = '*grep*', command = 'cwindow' })
 vim.api.nvim_create_autocmd('TextYankPost', { callback = function() (vim.hl or vim.highlight).on_yank() end })
 vim.api.nvim_create_autocmd('TermOpen', { command = 'setlocal listchars= nonumber norelativenumber' })
-vim.api.nvim_create_autocmd('VimResized', { command = 'tabdo wincmd =' })
 -- vim.api.nvim_create_autocmd('CmdlineChanged', { callback = function() vim.fn.wildtrigger() end })
+vim.api.nvim_create_autocmd('VimResized', { command = 'tabdo wincmd =' })
+vim.api.nvim_create_autocmd('BufReadPost', {
+  callback = function(e)
+    local exclude = { 'gitcommit' }
+    local buf = e.buf
+    if vim.tbl_contains(exclude, vim.bo[buf].filetype) or vim.b[buf].last_loc then return end
+    vim.b[buf].last_loc = true
+    local mark = vim.api.nvim_buf_get_mark(buf, '"')
+    local lcount = vim.api.nvim_buf_line_count(buf)
+    if mark[1] > 0 and mark[1] <= lcount then pcall(vim.api.nvim_win_set_cursor, 0, mark) end
+  end,
+})
 
 vim.pack.add({
   { src = 'https://github.com/nvim-mini/mini.nvim' },
@@ -298,7 +309,6 @@ vim.pack.add({
   { src = 'https://github.com/sainnhe/gruvbox-material' },
   { src = 'https://github.com/Saghen/blink.cmp', version = vim.version.range('^1') },
   { src = 'https://github.com/folke/sidekick.nvim' },
-  -- { src = 'https://github.com/tpope/vim-fugitive' },
   { src = 'https://github.com/stevearc/conform.nvim' },
   { src = 'https://github.com/folke/snacks.nvim' },
 })
@@ -320,8 +330,7 @@ vim.keymap.set('n', '<C-j>', '<C-w>j')
 vim.keymap.set('n', '<C-k>', '<C-w>k')
 vim.keymap.set('n', '<C-l>', '<C-w>l')
 
--- vim.keymap.set('t', '<C-j>', '<C-\\><C-n><C-w>j')
--- vim.keymap.set('t', '<C-k>', '<C-\\><C-n><C-w>k')
+vim.keymap.set('t', '<C-k>', '<C-\\><C-n><C-w>k')
 vim.keymap.set('t', '<C-h>', '<C-\\><C-n><C-w>h')
 vim.keymap.set('t', '<C-l>', '<C-\\><C-n><C-w>l')
 

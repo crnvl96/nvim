@@ -36,7 +36,6 @@ local function on_attach(_, buf)
   vim.keymap.set('n', 'ge', '<Cmd>Pick diagnostic scope="current"<CR>', { buffer = buf })
   vim.keymap.set('n', 'gE', '<Cmd>Pick diagnostic scope="all"<CR>', { buffer = buf })
   vim.keymap.set('n', 'gs', '<Cmd>Pick lsp scope="document_symbol"<CR>', { buffer = buf })
-  -- vim.keymap.set('n', 'gS', '<Cmd>Pick lsp scope="workspace_symbol"<CR>', { buffer = buf })
   vim.keymap.set('i', '<C-k>', vim.lsp.buf.signature_help, { buffer = buf })
 end
 

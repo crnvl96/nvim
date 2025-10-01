@@ -4,7 +4,9 @@ require('mini.align').setup()
 require('mini.splitjoin').setup()
 require('mini.extra').setup()
 require('mini.git').setup()
-require('mini.diff').setup()
+require('mini.diff').setup({
+  view = { style = 'sign' },
+})
 
 require('mini.pick').setup()
 

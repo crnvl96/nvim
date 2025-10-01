@@ -60,11 +60,14 @@ require('snacks').setup({
   },
 })
 
-vim.keymap.set('n', '<Leader>.', function() Snacks.scratch() end)
+vim.keymap.set('n', '<Leader>s', function() Snacks.scratch() end)
 vim.keymap.set('n', '<C-t>', function() Snacks.terminal() end)
-vim.keymap.set('n', '<Leader>s', function() Snacks.lazygit() end)
-vim.keymap.set('n', '<c-.>', function() require('sidekick.cli').focus() end)
-vim.keymap.set('n', '<leader>ao', function() require('sidekick.cli').toggle({ name = 'opencode', focus = true }) end)
-vim.keymap.set({ 'n', 'v' }, '<leader>ap', function() require('sidekick.cli').select_prompt() end)
--- stylua: ignore
-vim.keymap.set('n', '<Tab>', function() if not require('sidekick').nes_jump_or_apply() then return '<Tab>' end end, { expr = true })
+vim.keymap.set('n', '<Leader><Space>', function() Snacks.lazygit() end)
+
+local Sq = require('sidekick')
+local Cli = require('sidekick.cli')
+
+vim.keymap.set('n', '<c-.>', function() Cli.focus() end)
+vim.keymap.set('n', '<leader>ao', function() Cli.toggle({ name = 'opencode', focus = true }) end)
+vim.keymap.set({ 'n', 'v' }, '<leader>ap', function() Cli.select_prompt() end)
+vim.keymap.set('n', '<Tab>', function() return Sq.nes_jump_or_apply() or '<Tab>' end, { expr = true })
