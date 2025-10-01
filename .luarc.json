@@ -9,6 +9,8 @@
     "MiniExtra",
     "MiniKeymap",
     "MiniFiles",
-    "MiniCompletion"
+    "MiniCompletion",
+    "MiniDiff",
+    "MiniColors"
   ]
 }
