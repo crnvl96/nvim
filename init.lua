@@ -43,7 +43,7 @@ require('snacks').setup {
     },
     styles = {
         lazygit = { position = 'float', height = 0.9, width = 0.9, border = 'double' },
-        scratch = { position = 'float', height = 0.9, width = 0.9 },
+        scratch = { position = 'float', height = 0.9, width = 0.9, border = 'double' },
         terminal = {
             position = 'float',
             border = 'double',
