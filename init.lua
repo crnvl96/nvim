@@ -9,14 +9,14 @@ vim.pack.add {
 }
 
 vim.cmd.colorscheme 'minispring'
-require('mini.colors').setup()
+require('mini.colors').setup {}
 MiniColors.get_colorscheme():add_transparency({ float = true }):apply()
 
-require('mini.icons').setup()
-require('mini.extra').setup()
-require('mini.misc').setup()
-require('mini.align').setup()
-require('mini.splitjoin').setup()
+require('mini.icons').setup {}
+require('mini.extra').setup {}
+require('mini.misc').setup {}
+require('mini.align').setup {}
+require('mini.splitjoin').setup {}
 
 local process_items_opts = { kind_priority = { Text = -1, Snippet = 99 } }
 local process_items = function(items, base) return MiniCompletion.default_process_items(items, base, process_items_opts) end
@@ -25,7 +25,7 @@ require('mini.completion').setup {
 }
 if vim.fn.has 'nvim-0.11' == 1 then vim.lsp.config('*', { capabilities = MiniCompletion.get_lsp_capabilities() }) end
 
-require('mini.files').setup { windows = { preview = true } }
+require('mini.files').setup {}
 vim.keymap.set('n', '-', '<Cmd>lua MiniFiles.open(vim.api.nvim_buf_get_name(0))<CR>')
 
 require('mini.pick').setup()
