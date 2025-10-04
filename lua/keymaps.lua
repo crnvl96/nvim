@@ -1,9 +1,7 @@
 local set = vim.keymap.set
 
-if vim.fn.has 'nvim-0.12' == 1 then
-    set('c', '<C-n>', [[cmdcomplete_info().pum_visible ? "\<C-n>" : "\<Tab>"]], { expr = true })
-    set('c', '<C-p>', [[cmdcomplete_info().pum_visible ? "\<C-p>" : "\<S-Tab>"]], { expr = true })
-end
+set('c', '<C-n>', [[cmdcomplete_info().pum_visible ? "\<C-n>" : "\<Tab>"]], { expr = true })
+set('c', '<C-p>', [[cmdcomplete_info().pum_visible ? "\<C-p>" : "\<S-Tab>"]], { expr = true })
 
 set({ 'n', 't' }, '<C-Down>', '<Cmd>resize -5<CR>')
 set({ 'n', 't' }, '<C-Up>', '<Cmd>resize +5<CR>')

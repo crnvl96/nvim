@@ -20,7 +20,6 @@ vim.opt.backup = false
 vim.opt.breakindent = true
 vim.opt.clipboard = 'unnamedplus'
 vim.opt.cmdheight = 1
-vim.opt.completeopt = table.concat({ 'menuone', 'noselect', 'noinsert' }, ',')
 vim.opt.conceallevel = 2
 vim.opt.confirm = true
 vim.opt.cursorline = true
@@ -105,49 +104,30 @@ vim.o.wildmode = 'noselect:lastused'
 vim.opt.winminwidth = 5
 vim.opt.wrap = false
 vim.opt.writebackup = false
-
-if vim.fn.has 'nvim-0.9' == 1 then
-    vim.opt.shortmess = 'CFOSWIaco'
-    vim.opt.splitkeep = 'screen'
-end
-
-if vim.fn.has 'nvim-0.10' == 1 then
-    vim.opt.foldtext = ''
-    vim.opt.termguicolors = true
-end
-
-if vim.fn.executable 'rg' == 1 then
-    vim.opt.grepprg = table.concat({ 'rg', '--vimgrep', '--hidden', '-g', "'.git/*'" }, ' ')
-    vim.opt.grepformat = '%f:%l:%c:%m'
-end
-
-if vim.fn.has 'nvim-0.11' == 1 then
-    vim.opt.completeopt = table.concat({ 'menuone', 'noselect', 'fuzzy', 'nosort' }, ',')
-    vim.opt.winborder = 'double'
-end
-
-if vim.fn.has 'nvim-0.12' == 1 then
-    vim.opt.completefuzzycollect = table.concat({ 'keyword', 'files', 'whole_line' }, ',')
-    vim.opt.pummaxwidth = 100
-    vim.opt.wildoptions = table.concat({ 'pum', 'fuzzy' }, ',')
-end
+vim.opt.shortmess = 'CFOSWIaco'
+vim.opt.splitkeep = 'screen'
+vim.opt.foldtext = ''
+vim.opt.termguicolors = true
+vim.opt.grepprg = table.concat({ 'rg', '--vimgrep', '--hidden', '-g', "'.git/*'" }, ' ')
+vim.opt.grepformat = '%f:%l:%c:%m'
+vim.opt.completeopt = table.concat({ 'menuone', 'noselect', 'fuzzy', 'nosort' }, ',')
+vim.opt.winborder = 'double'
+vim.opt.completefuzzycollect = table.concat({ 'keyword', 'files', 'whole_line' }, ',')
+vim.opt.pummaxwidth = 100
+vim.opt.wildoptions = table.concat({ 'pum', 'fuzzy' }, ',')
 
 vim.cmd 'filetype plugin indent on'
 vim.cmd 'packadd cfilter'
 
-if vim.fn.exists 'syntax_on' ~= 1 then vim.cmd 'syntax enable' end
-if vim.fn.has 'nvim-0.12' == 1 then require('vim._extui').enable { enable = true } end
+require('vim._extui').enable { enable = true }
 
+if vim.fn.exists 'syntax_on' ~= 1 then vim.cmd 'syntax enable' end
+
+local s = vim.diagnostic.severity
 vim.diagnostic.config {
     update_in_insert = false,
     virtual_lines = false,
-    underline = { severity = { min = vim.diagnostic.severity.HINT, max = vim.diagnostic.severity.ERROR } },
-    signs = {
-        priority = 9999,
-        severity = { min = vim.diagnostic.severity.WARN, max = vim.diagnostic.severity.ERROR },
-    },
-    virtual_text = {
-        current_line = true,
-        severity = { min = vim.diagnostic.severity.ERROR, max = vim.diagnostic.severity.ERROR },
-    },
+    underline = { severity = { min = s.HINT, max = s.ERROR } },
+    signs = { priority = 9999, severity = { min = s.WARN, max = s.ERROR } },
+    virtual_text = { current_line = true, severity = { min = s.ERROR, max = s.ERROR } },
 }

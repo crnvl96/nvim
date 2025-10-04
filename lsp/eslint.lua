@@ -75,17 +75,22 @@ return {
     },
     workspace_required = true,
     on_attach = function(client, bufnr)
-        vim.api.nvim_buf_create_user_command(0, 'LspEslintFixAll', function()
-            client:request_sync('workspace/executeCommand', {
-                command = 'eslint.applyAllFixes',
-                arguments = {
-                    {
-                        uri = vim.uri_from_bufnr(bufnr),
-                        version = lsp.util.buf_versions[bufnr],
+        vim.api.nvim_buf_create_user_command(
+            0,
+            'LspEslintFixAll',
+            function()
+                client:request_sync('workspace/executeCommand', {
+                    command = 'eslint.applyAllFixes',
+                    arguments = {
+                        {
+                            uri = vim.uri_from_bufnr(bufnr),
+                            version = lsp.util.buf_versions[bufnr],
+                        },
                     },
-                },
-            }, nil, bufnr)
-        end, {})
+                }, nil, bufnr)
+            end,
+            {}
+        )
     end,
     root_dir = function(bufnr, on_dir)
         -- The project root is where the LSP can be started from
@@ -100,8 +105,7 @@ return {
             'bun.lock',
         }
         -- Give the root markers equal priority by wrapping them in a table
-        root_markers = vim.fn.has 'nvim-0.11.3' == 1
-                and { root_markers, { '.git' } }
+        root_markers = vim.fn.has 'nvim-0.11.3' == 1 and { root_markers, { '.git' } }
             or vim.list_extend(root_markers, { '.git' })
         -- We fallback to the current working directory if no project root is found
         local project_root = vim.fs.root(bufnr, root_markers) or vim.fn.getcwd()
@@ -159,9 +163,7 @@ return {
 
             -- Support flat config files
             -- They contain 'config' in the file name
-            local flat_config_files = vim.tbl_filter(function(file)
-                return file:match 'config'
-            end, eslint_config_files)
+            local flat_config_files = vim.tbl_filter(function(file) return file:match 'config' end, eslint_config_files)
 
             for _, file in ipairs(flat_config_files) do
                 local found_files = vim.fn.globpath(root_dir, file, true, true)
@@ -169,16 +171,13 @@ return {
                 -- Filter out files inside node_modules
                 local filtered_files = {}
                 for _, found_file in ipairs(found_files) do
-                    if
-                        string.find(found_file, '[/\\]node_modules[/\\]') == nil
-                    then
+                    if string.find(found_file, '[/\\]node_modules[/\\]') == nil then
                         table.insert(filtered_files, found_file)
                     end
                 end
 
                 if #filtered_files > 0 then
-                    config.settings.experimental = config.settings.experimental
-                        or {}
+                    config.settings.experimental = config.settings.experimental or {}
                     ---@diagnostic disable-next-line: inject-field
                     config.settings.experimental.useFlatConfig = true
                     break
@@ -197,15 +196,11 @@ return {
     end,
     handlers = {
         ['eslint/openDoc'] = function(_, result)
-            if result then
-                vim.ui.open(result.url)
-            end
+            if result then vim.ui.open(result.url) end
             return {}
         end,
         ['eslint/confirmESLintExecution'] = function(_, result)
-            if not result then
-                return
-            end
+            if not result then return end
             return 4 -- approved
         end,
         ['eslint/probeFailed'] = function()
@@ -213,10 +208,7 @@ return {
             return {}
         end,
         ['eslint/noLibrary'] = function()
-            vim.notify(
-                '[lspconfig] Unable to find ESLint library.',
-                vim.log.levels.WARN
-            )
+            vim.notify('[lspconfig] Unable to find ESLint library.', vim.log.levels.WARN)
             return {}
         end,
     },

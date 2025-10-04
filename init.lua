@@ -8,7 +8,12 @@ vim.pack.add {
     { src = 'https://github.com/folke/snacks.nvim' },
 }
 
-vim.cmd.colorscheme 'minispring'
+vim.keymap.set('n', '<Leader>x', function()
+    local success, err = pcall(vim.fn.getqflist({ winid = 0 }).winid ~= 0 and vim.cmd.cclose or vim.cmd.copen)
+    if not success and err then vim.notify(err, vim.log.levels.ERROR) end
+end, { desc = 'Toggle Quickfix List' })
+
+vim.cmd.colorscheme 'minisummer'
 require('mini.colors').setup {}
 MiniColors.get_colorscheme():add_transparency({ float = true }):apply()
 
@@ -18,12 +23,12 @@ require('mini.misc').setup {}
 require('mini.align').setup {}
 require('mini.splitjoin').setup {}
 
-local process_items_opts = { kind_priority = { Text = -1, Snippet = 99 } }
-local process_items = function(items, base) return MiniCompletion.default_process_items(items, base, process_items_opts) end
+local popts = { kind_priority = { Text = -1, Snippet = -1 } }
+local process_items = function(items, base) return MiniCompletion.default_process_items(items, base, popts) end
 require('mini.completion').setup {
     lsp_completion = { source_func = 'omnifunc', auto_setup = false, process_items = process_items },
 }
-if vim.fn.has 'nvim-0.11' == 1 then vim.lsp.config('*', { capabilities = MiniCompletion.get_lsp_capabilities() }) end
+vim.lsp.config('*', { capabilities = MiniCompletion.get_lsp_capabilities() })
 
 require('mini.files').setup {}
 vim.keymap.set('n', '-', '<Cmd>lua MiniFiles.open(vim.api.nvim_buf_get_name(0))<CR>')
@@ -95,11 +100,6 @@ vim.api.nvim_create_user_command('ToggleFmt', function()
     local suffix = vim.g.autoformat and 'Enabling' or 'Disabling'
     vim.notify(('%s formatting...'):format(suffix), vim.log.levels.INFO)
 end, { nargs = 0 })
-
-vim.keymap.set('n', '<Leader>x', function()
-    local success, err = pcall(vim.fn.getqflist({ winid = 0 }).winid ~= 0 and vim.cmd.cclose or vim.cmd.copen)
-    if not success and err then vim.notify(err, vim.log.levels.ERROR) end
-end, { desc = 'Toggle Quickfix List' })
 
 require('mini.clue').setup {
     triggers = {
