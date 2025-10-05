@@ -10,15 +10,17 @@ require('conform').setup {
     formatters = { prettier = { require_cwd = true } },
     formatters_by_ft = {
         ['_'] = { 'trim_whitespace', 'trim_newlines' },
+
         javascript = { 'prettier', name = 'dprint' },
         javascriptreact = { 'prettier', name = 'dprint' },
         typescript = { 'prettier', name = 'dprint' },
         typescriptreact = { 'prettier', name = 'dprint' },
+        lua = { 'stylua' },
+
         json = { name = 'dprint' },
         jsonc = { name = 'dprint' },
-        lua = { 'stylua' },
         markdown = { name = 'dprint' },
-        python = { 'ruff_fix', 'ruff_organize_imports', 'ruff_format', name = 'dprint' },
+        python = { lsp_format = 'prefer', name = 'ruff' },
         rust = { lsp_format = 'prefer' },
         go = { lsp_format = 'prefer' },
         toml = { name = 'dprint' },
