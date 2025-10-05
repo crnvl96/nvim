@@ -1,7 +1,6 @@
 vim.opt.autoindent = true
 vim.opt.autoread = true
 vim.opt.autowrite = true
-vim.opt.backup = false
 vim.opt.breakindent = true
 vim.opt.clipboard = 'unnamedplus'
 vim.opt.cursorline = true

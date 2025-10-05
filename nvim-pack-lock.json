@@ -8,6 +8,10 @@
       "rev": "61a5d44",
       "src": "https://github.com/nvim-mini/mini.nvim"
     },
+    "seoul256.vim": {
+      "rev": "d9a91d8",
+      "src": "https://github.com/junegunn/seoul256.vim"
+    },
     "vim-fugitive": {
       "rev": "61b51c0",
       "src": "https://github.com/tpope/vim-fugitive"
