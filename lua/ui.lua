@@ -33,8 +33,6 @@ vim.diagnostic.config {
 
 vim.api.nvim_create_autocmd('TextYankPost', { callback = function() (vim.hl or vim.highlight).on_yank() end })
 
-vim.cmd.colorscheme 'retrobox'
-
 vim.cmd [[
 " seoul256 (dark):
 "   Range:   233 (darkest) ~ 239 (lightest)
