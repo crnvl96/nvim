@@ -1,10 +1,16 @@
+local set = vim.keymap.set
+
+set('c', '<C-n>', [[cmdcomplete_info().pum_visible ? "\<C-n>" : "\<Tab>"]], { expr = true })
+set('c', '<C-p>', [[cmdcomplete_info().pum_visible ? "\<C-p>" : "\<S-Tab>"]], { expr = true })
+
 vim.opt.completeopt = table.concat({ 'menuone', 'noselect', 'noinsert', 'fuzzy', 'nosort' }, ',')
 vim.opt.completefuzzycollect = table.concat({ 'keyword', 'files', 'whole_line' }, ',')
 vim.opt.pummaxwidth = 100
 vim.opt.wildoptions = table.concat({ 'pum', 'fuzzy' }, ',')
 vim.opt.wildignore:append '.DS_Store'
 vim.opt.wildignorecase = true
-vim.o.wildmode = 'noselect:lastused'
+vim.opt.wildmode = 'noselect:lastused,full'
+vim.opt.wildmenu = true
 
 vim.api.nvim_create_autocmd('CmdlineChanged', {
     pattern = { ':', '/', '?', '@' },

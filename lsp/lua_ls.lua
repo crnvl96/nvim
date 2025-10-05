@@ -89,7 +89,7 @@ return {
                 version = 'LuaJIT',
                 path = vim.split(package.path, ';'),
             },
-            completion = { callSnippet = 'Replace' },
+            completion = { callSnippet = 'Disable' },
             format = { enable = false },
             hint = { enable = false },
             diagnostics = {

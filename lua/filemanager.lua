@@ -1,3 +1,7 @@
+local set = vim.keymap.set
+
+set('n', '-', '<Cmd>20 Lex<CR>')
+
 require('mini.files').setup {
     content = { prefix = function() end },
     mappings = {

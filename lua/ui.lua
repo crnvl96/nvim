@@ -22,7 +22,7 @@ vim.opt.listchars = {
     trail = '·',
 }
 
-require('vim._extui').enable { enable = true }
+-- require('vim._extui').enable { enable = true }
 
 local s = vim.diagnostic.severity
 vim.diagnostic.config {

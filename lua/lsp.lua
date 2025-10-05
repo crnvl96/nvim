@@ -24,9 +24,16 @@ vim.api.nvim_create_autocmd('LspAttach', {
 
         set('n', 'E', vim.diagnostic.open_float, { buffer = buf })
         set('n', 'K', vim.lsp.buf.hover, { buffer = buf })
+        set('i', '<C-k>', vim.lsp.buf.signature_help, { buffer = buf })
+
         set('n', 'ga', vim.lsp.buf.code_action, { buffer = buf })
         set('n', 'gn', vim.lsp.buf.rename, { buffer = buf })
-        set('i', '<C-k>', vim.lsp.buf.signature_help, { buffer = buf })
+        set('n', 'gd', vim.lsp.buf.definition, { buffer = buf })
+        set('n', 'gD', vim.lsp.buf.declaration, { buffer = buf })
+        set('n', 'gr', vim.lsp.buf.references, { buffer = buf, nowait = true })
+        set('n', 'gi', vim.lsp.buf.implementation, { buffer = buf })
+        set('n', 'gy', vim.lsp.buf.type_definition, { buffer = buf })
+        set('n', 'ge', vim.diagnostic.setqflist, { buffer = buf })
 
         local diagnostic_goto = function(next, severity)
             return function()

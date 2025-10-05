@@ -1,10 +1,5 @@
 local set = vim.keymap.set
 
-set('n', '-', '<Cmd>20 Lex<CR>')
-
-set('c', '<C-n>', [[cmdcomplete_info().pum_visible ? "\<C-n>" : "\<Tab>"]], { expr = true })
-set('c', '<C-p>', [[cmdcomplete_info().pum_visible ? "\<C-p>" : "\<S-Tab>"]], { expr = true })
-
 set({ 'n', 't' }, '<C-Down>', '<Cmd>resize -5<CR>')
 set({ 'n', 't' }, '<C-Up>', '<Cmd>resize +5<CR>')
 set({ 'n', 't' }, '<C-Left>', '<Cmd>vertical resize -20<CR>')
