@@ -1,110 +1,56 @@
+vim.opt.autoindent = true
+vim.opt.autoread = true
+vim.opt.autowrite = true
+vim.opt.backup = false
+vim.opt.breakindent = true
+vim.opt.clipboard = 'unnamedplus'
+vim.opt.cursorline = true
+vim.opt.expandtab = true
+vim.opt.ignorecase = true
+vim.opt.incsearch = true
+vim.opt.infercase = true
+vim.opt.linebreak = true
+vim.opt.list = true
+vim.opt.mouse = 'a'
+vim.opt.number = true
+vim.opt.relativenumber = true
+vim.opt.ruler = false
+vim.opt.scrolloff = 8
+vim.opt.shiftround = true
+vim.opt.shiftwidth = 4
+vim.opt.showcmd = false
+vim.opt.showmode = false
+vim.opt.sidescrolloff = 24
+vim.opt.signcolumn = 'yes'
+vim.opt.smartcase = true
+vim.opt.smartindent = true
+vim.opt.smoothscroll = true
+vim.opt.splitbelow = true
+vim.opt.splitkeep = 'screen'
+vim.opt.splitright = true
+vim.opt.swapfile = false
+vim.opt.switchbuf = 'usetab'
+vim.opt.tabstop = 4
+vim.opt.termguicolors = true
+vim.opt.timeoutlen = 1000
+vim.opt.ttimeoutlen = 10
+vim.opt.undofile = true
+vim.opt.undolevels = 10000
+vim.opt.updatetime = 300
+vim.opt.virtualedit = 'block'
+vim.opt.winborder = 'double'
+vim.opt.winminwidth = 5
+vim.opt.wrap = false
+vim.opt.writebackup = false
+
 require 'opts'
 require 'keymaps'
-require 'autocmds'
-
-vim.pack.add {
-    { src = 'https://github.com/nvim-mini/mini.nvim' },
-    { src = 'https://github.com/stevearc/conform.nvim' },
-    { src = 'https://github.com/folke/snacks.nvim' },
-}
-
-vim.keymap.set('n', '<Leader>x', function()
-    local success, err = pcall(vim.fn.getqflist({ winid = 0 }).winid ~= 0 and vim.cmd.cclose or vim.cmd.copen)
-    if not success and err then vim.notify(err, vim.log.levels.ERROR) end
-end, { desc = 'Toggle Quickfix List' })
-
-vim.cmd.colorscheme 'minisummer'
-require('mini.colors').setup {}
-MiniColors.get_colorscheme():add_transparency({ float = true }):apply()
-
-require('mini.icons').setup {}
-require('mini.extra').setup {}
-require('mini.misc').setup {}
-require('mini.align').setup {}
-require('mini.splitjoin').setup {}
-
-local popts = { kind_priority = { Text = -1, Snippet = -1 } }
-local process_items = function(items, base) return MiniCompletion.default_process_items(items, base, popts) end
-require('mini.completion').setup {
-    lsp_completion = { source_func = 'omnifunc', auto_setup = false, process_items = process_items },
-}
-vim.lsp.config('*', { capabilities = MiniCompletion.get_lsp_capabilities() })
-
-require('mini.files').setup {}
-vim.keymap.set('n', '-', '<Cmd>lua MiniFiles.open(vim.api.nvim_buf_get_name(0))<CR>')
-
-require('mini.pick').setup()
-vim.keymap.set('n', '<Leader>f', '<Cmd>Pick files<CR>', { desc = 'Find files' })
-vim.keymap.set('n', '<Leader>g', '<Cmd>Pick grep_live<CR>', { desc = 'Grep' })
-vim.keymap.set('n', '<Leader>b', '<Cmd>Pick buffers include_current=false<CR>', { desc = 'Buffers' })
-vim.keymap.set('n', '<Leader>l', "<Cmd>Pick buf_lines scope='current'<CR>", { desc = 'Lines' })
-
-require('snacks').setup {
-    scratch = {
-        name = 'Notes',
-        ft = function() return 'markdown' end,
-        filekey = { branch = false },
-        win = { style = 'scratch' },
-    },
-    styles = {
-        lazygit = { position = 'float', height = 0.9, width = 0.9, border = 'double' },
-        scratch = { position = 'float', height = 0.9, width = 0.9, border = 'double' },
-        terminal = {
-            position = 'float',
-            border = 'double',
-            height = 0.9,
-            width = 0.9,
-            keys = {
-                term_normal = { '<C-t>', '<C-\\><C-n><Cmd>close<CR>', mode = 't' },
-            },
-        },
-    },
-}
-
-vim.keymap.set('n', '<Leader>.', function() Snacks.scratch() end, { desc = 'Scratch' })
-vim.keymap.set('n', '<Leader><Space>', function() Snacks.lazygit() end, { desc = 'Toggle Lazygit' })
-vim.keymap.set('n', '<C-t>', function() Snacks.terminal() end)
-
-vim.g.autoformat = true
-vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
-
-require('conform').setup {
-    notify_on_error = true,
-    format_on_save = function()
-        if not vim.g.autoformat then return nil end
-        return { timeout_ms = 500, lsp_format = 'fallback' }
-    end,
-    formatters = { prettier = { require_cwd = true } },
-    formatters_by_ft = {
-        ['_'] = { 'trim_whitespace', 'trim_newlines' },
-        javascript = { 'prettier', name = 'dprint' },
-        javascriptreact = { 'prettier', name = 'dprint' },
-        typescript = { 'prettier', name = 'dprint' },
-        typescriptreact = { 'prettier', name = 'dprint' },
-        json = { name = 'dprint' },
-        jsonc = { name = 'dprint' },
-        lua = { 'stylua' },
-        markdown = { name = 'dprint' },
-        python = { 'ruff_fix', 'ruff_organize_imports', 'ruff_format', name = 'dprint' },
-        rust = { lsp_format = 'prefer' },
-        go = { lsp_format = 'prefer' },
-        toml = { name = 'dprint' },
-        yaml = { lsp_format = 'prefer' },
-    },
-}
-
-local function fmt() require('conform').format { bufnr = vim.api.nvim_get_current_buf() } end
-vim.api.nvim_create_user_command('Fmt', fmt, { nargs = 0 })
-vim.api.nvim_create_user_command('ToggleFmt', function()
-    vim.g.autoformat = not vim.g.autoformat
-    local suffix = vim.g.autoformat and 'Enabling' or 'Disabling'
-    vim.notify(('%s formatting...'):format(suffix), vim.log.levels.INFO)
-end, { nargs = 0 })
-
-require('mini.clue').setup {
-    triggers = {
-        { mode = 'n', keys = '<leader>' },
-        { mode = 'x', keys = '<leader>' },
-    },
-    window = { delay = 500 },
-}
+require 'lsp'
+require 'pack'
+require 'complete'
+require 'ui'
+require 'filemanager'
+require 'picker'
+require 'formatter'
+require 'grep'
+require 'extras'

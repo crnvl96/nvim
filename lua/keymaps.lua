@@ -1,5 +1,7 @@
 local set = vim.keymap.set
 
+set('n', '-', '<Cmd>20 Lex<CR>')
+
 set('c', '<C-n>', [[cmdcomplete_info().pum_visible ? "\<C-n>" : "\<Tab>"]], { expr = true })
 set('c', '<C-p>', [[cmdcomplete_info().pum_visible ? "\<C-p>" : "\<S-Tab>"]], { expr = true })
 
@@ -13,9 +15,6 @@ set('n', '<C-h>', '<C-w>h')
 set('n', '<C-j>', '<C-w>j')
 set('n', '<C-k>', '<C-w>k')
 set('n', '<C-l>', '<C-w>l')
-set('t', '<C-h>', '<C-\\><C-n><C-w>h')
-set('t', '<C-k>', '<C-\\><C-n><C-w>k')
-set('t', '<C-l>', '<C-\\><C-n><C-w>l')
 set('x', '<', '<gv')
 set('x', '>', '>gv')
 set('x', 'p', 'P')
@@ -42,3 +41,8 @@ set('i', ';', ';<c-g>u')
 set({ 'i', 'x', 'n' }, '<C-s>', '<Cmd>noh<CR><Esc><Cmd>write!<CR><Esc>', {})
 set('n', '[x', vim.cmd.cprev)
 set('n', ']x', vim.cmd.cnext)
+
+set('n', '<Leader>x', function()
+    local success, err = pcall(vim.fn.getqflist({ winid = 0 }).winid ~= 0 and vim.cmd.cclose or vim.cmd.copen)
+    if not success and err then vim.notify(err, vim.log.levels.ERROR) end
+end, { desc = 'Toggle Quickfix List' })
