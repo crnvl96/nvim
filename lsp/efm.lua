@@ -25,7 +25,6 @@ return {
     root_markers = { '.git' },
     init_options = {
         documentFormatting = true,
-        documentRangeFormatting = true,
     },
     settings = {
         languages = {
@@ -33,7 +32,6 @@ return {
                 {
                     formatCommand = "stylua --color Never --stdin-filepath '${INPUT}' -",
                     formatStdin = true,
-                    formatCanRange = true,
                     rootMarkers = { 'stylua.toml', '.stylua.toml' },
                 },
             },
