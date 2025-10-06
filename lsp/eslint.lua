@@ -24,10 +24,47 @@ return {
         local project_root = vim.fs.root(bufnr, root_markers) or vim.fn.getcwd()
         on_dir(project_root)
     end,
+    before_init = function(params, config)
+        -- Set the workspace folder setting for correct search of tsconfig.json files etc.
+        config.settings.workspaceFolder = {
+            uri = params.rootPath,
+            ---@diagnostic disable-next-line: param-type-mismatch
+            name = vim.fn.fnamemodify(params.rootPath, ':t'),
+        }
+    end,
+    ---@type table<string, lsp.Handler>
+    handlers = {
+        ['eslint/openDoc'] = function(_, params)
+            vim.ui.open(params.url)
+            return {}
+        end,
+        ['eslint/probeFailed'] = function()
+            vim.notify('LSP[eslint]: Probe failed.', vim.log.levels.WARN)
+            return {}
+        end,
+        ['eslint/noLibrary'] = function()
+            vim.notify('LSP[eslint]: Unable to load ESLint library.', vim.log.levels.WARN)
+            return {}
+        end,
+    },
     settings = {
         validate = 'on',
+        packageManager = vim.NIL,
+        useESLintClass = false,
+        experimental = { useFlatConfig = false },
+        codeActionOnSave = { enable = false, mode = 'all' },
         format = false,
+        quiet = false,
+        onIgnoredFiles = 'off',
+        options = {},
+        rulesCustomizations = {},
         run = 'onType',
+        problems = { shortenToSingleLine = false },
+        nodePath = '',
         workingDirectory = { mode = 'auto' },
+        codeAction = {
+            disableRuleComment = { enable = true, location = 'separateLine' },
+            showDocumentation = { enable = true },
+        },
     },
 }

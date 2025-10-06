@@ -3,7 +3,7 @@ vim.api.nvim_create_autocmd({ 'BufReadPre', 'BufNewFile' }, {
     callback = function()
         local files = vim.api.nvim_get_runtime_file('lsp/*.lua', true)
         local function mapfunc(file)
-            local disabled_servers = { 'efm' }
+            local disabled_servers = {}
             local filename = vim.fn.fnamemodify(file, ':t:r')
             for _, server in ipairs(disabled_servers) do
                 if filename == server then return nil end
