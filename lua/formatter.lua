@@ -1,14 +1,14 @@
 -- vim.g.autoformat = true
 -- vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
 
-vim.api.nvim_create_autocmd('BufWritePre', {
-    callback = function(e) vim.lsp.buf.format { bufnr = e.buf } end,
-})
-
-vim.keymap.set('n', 'H', function()
-    local bufnr = vim.api.nvim_get_current_buf()
-    vim.lsp.buf.format { bufnr = bufnr }
-end, { desc = 'Format Buf (LSP)' })
+-- vim.api.nvim_create_autocmd('BufWritePre', {
+--     callback = function(e) vim.lsp.buf.format { bufnr = e.buf } end,
+-- })
+--
+-- vim.keymap.set('n', 'H', function()
+--     local bufnr = vim.api.nvim_get_current_buf()
+--     vim.lsp.buf.format { bufnr = bufnr }
+-- end, { desc = 'Format Buf (LSP)' })
 
 -- require('conform').setup {
 --     notify_on_error = true,

@@ -4,10 +4,10 @@ return {
     filetypes = {
         'lua',
         'typescript',
-        -- 'markdown',
-        -- 'json',
-        -- 'jsonc',
-        -- 'yaml'
+        'markdown',
+        'json',
+        'jsonc',
+        'yaml',
     },
     root_markers = { '.git' },
     init_options = {

@@ -3,7 +3,7 @@ vim.api.nvim_create_autocmd({ 'BufReadPre', 'BufNewFile' }, {
     callback = function()
         local files = vim.api.nvim_get_runtime_file('lsp/*.lua', true)
         local function mapfunc(file)
-            local disabled_servers = {}
+            local disabled_servers = { 'efm', 'eslint', 'ruff' }
             local filename = vim.fn.fnamemodify(file, ':t:r')
             for _, server in ipairs(disabled_servers) do
                 if filename == server then return nil end
@@ -21,6 +21,9 @@ vim.api.nvim_create_autocmd('LspAttach', {
         local client = vim.lsp.get_client_by_id(e.data.client_id)
         if not client then return end
         local buf = e.buf
+
+        client.server_capabilities.documentFormattingProvider = false
+        client.server_capabilities.documentRangeFormattingProvider = false
 
         set('n', 'E', vim.diagnostic.open_float, { buffer = buf })
         set('n', 'K', vim.lsp.buf.hover, { buffer = buf })
