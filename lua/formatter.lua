@@ -7,24 +7,22 @@ require('conform').setup {
         if not vim.g.autoformat then return nil end
         return { timeout_ms = 500, lsp_format = 'fallback' }
     end,
-    formatters = { prettier = { require_cwd = true } },
+    formatters = {
+        prettier = { require_cwd = false },
+    },
     formatters_by_ft = {
         ['_'] = { 'trim_whitespace', 'trim_newlines' },
-
-        javascript = { 'prettier', name = 'dprint' },
-        javascriptreact = { 'prettier', name = 'dprint' },
-        typescript = { 'prettier', name = 'dprint' },
-        typescriptreact = { 'prettier', name = 'dprint' },
+        javascript = { 'prettier' },
+        javascriptreact = { 'prettier' },
+        typescript = { 'prettier' },
+        typescriptreact = { 'prettier' },
+        json = { 'prettier' },
+        jsonc = { 'prettier' },
+        yaml = { 'prettier' },
         lua = { 'stylua' },
-
-        json = { name = 'dprint' },
-        jsonc = { name = 'dprint' },
-        markdown = { name = 'dprint' },
+        markdown = { 'prettier' },
         python = { lsp_format = 'prefer', name = 'ruff' },
-        rust = { lsp_format = 'prefer' },
         go = { lsp_format = 'prefer' },
-        toml = { name = 'dprint' },
-        yaml = { lsp_format = 'prefer' },
     },
 }
 
