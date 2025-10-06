@@ -25,6 +25,8 @@ vim.api.nvim_create_autocmd('LspAttach', {
         client.server_capabilities.documentFormattingProvider = false
         client.server_capabilities.documentRangeFormattingProvider = false
 
+        vim.bo[e.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
+
         set('n', 'E', vim.diagnostic.open_float, { buffer = buf })
         set('n', 'K', vim.lsp.buf.hover, { buffer = buf })
         set('i', '<C-k>', vim.lsp.buf.signature_help, { buffer = buf })
