@@ -18,10 +18,7 @@ return {
     end,
     settings = {
         Lua = {
-            runtime = {
-                version = 'LuaJIT',
-                path = vim.split(package.path, ';'),
-            },
+            runtime = { version = 'LuaJIT', path = vim.split(package.path, ';') },
             completion = { callSnippet = 'Disable' },
             -- Disable formatting
             format = { enable = false },
