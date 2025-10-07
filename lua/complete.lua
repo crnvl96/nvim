@@ -1,5 +1,17 @@
-vim.opt.completeopt = table.concat({ 'menuone', 'noselect', 'noinsert', 'fuzzy', 'nosort' }, ',')
-vim.opt.completefuzzycollect = table.concat({ 'keyword', 'files', 'whole_line' }, ',')
+vim.opt.completeopt = table.concat({
+    'menuone',
+    'noselect',
+    'noinsert',
+    'fuzzy',
+    'nosort',
+}, ',')
+
+vim.opt.completefuzzycollect = table.concat({
+    'keyword',
+    'files',
+    'whole_line',
+}, ',')
+
 vim.opt.pummaxwidth = 100
 vim.opt.wildoptions = table.concat({ 'pum', 'fuzzy' }, ',')
 vim.opt.wildignore:append '.DS_Store'
@@ -20,11 +32,12 @@ vim.api.nvim_create_autocmd('LspAttach', {
         if not client then return end
 
         if client:supports_method 'textDocument/completion' then
-            -- -- stylua: ignore
-            -- local chars = { 'a', 'e', 'i', 'o', 'u',
-            --     'A', 'E', 'I', 'O', 'U',
-            --     '.', ':', '_', '-', }
-            -- client.server_capabilities.completionProvider.triggerCharacters = chars
+            -- stylua: ignore
+            local chars = { 'a', 'e', 'i', 'o', 'u',
+                            'A', 'E', 'I', 'O', 'U',
+                            '.', ':', '_', '-' }
+
+            client.server_capabilities.completionProvider.triggerCharacters = chars
 
             vim.lsp.completion.enable(true, client.id, e.buf, {
                 autotrigger = true,

@@ -17,6 +17,8 @@ set({ 'n', 'x', 'o' }, 'Y', 'yg_')
 set({ 'n', 'x' }, 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true })
 set({ 'n', 'x' }, 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true })
 
+set('n', 'H', 'mzgggqG`z<cmd>delmarks z<cr>zz')
+
 set({ 'i', 'n', 's' }, '<esc>', function()
     vim.cmd 'noh'
     return '<esc>'

@@ -23,6 +23,7 @@ return {
                 path = vim.split(package.path, ';'),
             },
             completion = { callSnippet = 'Disable' },
+            -- Disable formatting
             format = { enable = false },
             hint = { enable = false },
             diagnostics = {
