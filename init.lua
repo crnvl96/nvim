@@ -20,7 +20,7 @@ vim.opt.shiftwidth = 4
 vim.opt.showcmd = false
 vim.opt.showmode = false
 vim.opt.sidescrolloff = 24
-vim.opt.signcolumn = 'yes'
+vim.opt.signcolumn = 'no'
 vim.opt.smartcase = true
 vim.opt.smartindent = true
 vim.opt.smoothscroll = true
@@ -41,6 +41,11 @@ vim.opt.winborder = 'double'
 vim.opt.winminwidth = 5
 vim.opt.wrap = false
 vim.opt.writebackup = false
+
+vim.cmd [[
+    set shortmess-=S
+    set shortmess+=WcCat
+]]
 
 require 'opts'
 require 'keymaps'

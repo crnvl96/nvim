@@ -40,6 +40,23 @@ set({ 'i', 'x', 'n' }, '<C-s>', '<Cmd>noh<CR><Esc><Cmd>write!<CR><Esc>')
 set('n', '<', vim.cmd.cprev)
 set('n', '>', vim.cmd.cnext)
 
+vim.cmd [[
+    cnoremap  <expr>  <left>     wildmenumode()  ?  "\<C-e>\<left>"     :  "\<left>"
+    cnoremap  <expr>  <down>     wildmenumode()  ?  "\<C-e>\<down>"     :  "\<down>"
+    cnoremap  <expr>  <up>       wildmenumode()  ?  "\<C-e>\<up>"       :  "\<up>"
+    cnoremap  <expr>  <right>    wildmenumode()  ?  "\<C-e>\<right>"    :  "\<right>"
+
+    cnoremap  <expr>  <m-h>      wildmenumode()  ?  "\<C-e>\<left>"     :  "\<left>"
+    cnoremap  <expr>  <m-j>      wildmenumode()  ?  "\<C-e>\<down>"     :  "\<down>"
+    cnoremap  <expr>  <m-k>      wildmenumode()  ?  "\<C-e>\<up>"       :  "\<up>"
+    cnoremap  <expr>  <m-l>      wildmenumode()  ?  "\<C-e>\<right>"    :  "\<right>"
+
+    cnoremap  <expr>  <m-left>   wildmenumode()  ?  "\<C-e>\<c-left>"   :  "\<c-left>"
+    cnoremap  <expr>  <m-down>   wildmenumode()  ?  "\<C-e>\<c-down>"   :  "\<c-down>"
+    cnoremap  <expr>  <m-up>     wildmenumode()  ?  "\<C-e>\<c-up>"     :  "\<c-up>"
+    cnoremap  <expr>  <m-right>  wildmenumode()  ?  "\<C-e>\<c-right>"  :  "\<c-right>"
+]]
+
 set('n', '<Leader>x', function()
     local success, err = pcall(vim.fn.getqflist({ winid = 0 }).winid ~= 0 and vim.cmd.cclose or vim.cmd.copen)
     if not success and err then vim.notify(err, vim.log.levels.ERROR) end

@@ -36,20 +36,7 @@ vim.diagnostic.config {
 
 vim.api.nvim_create_autocmd('TextYankPost', { callback = function() (vim.hl or vim.highlight).on_yank() end })
 
-vim.cmd [[
-" seoul256 (dark):
-"   Range:   233 (darkest) ~ 239 (lightest)
-"   Default: 237
-
-
-" seoul256 (light):
-"   Range:   252 (darkest) ~ 256 (lightest)
-"   Default: 253
-
-let g:seoul256_background = 234
-colo seoul256
-]]
-
+vim.cmd [[colo minispring]]
 require('mini.colors').setup {}
 
 MiniColors.get_colorscheme()
