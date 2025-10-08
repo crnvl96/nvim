@@ -12,3 +12,6 @@ vim.api.nvim_create_user_command('PackClean', function()
             :totable()
     )
 end, {})
+
+vim.cmd 'packadd cfilter'
+vim.cmd 'packadd nvim.undotree'

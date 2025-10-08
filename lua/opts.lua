@@ -6,6 +6,5 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ','
 
 vim.cmd 'filetype plugin indent on'
-vim.cmd 'packadd cfilter'
 
 if vim.fn.exists 'syntax_on' ~= 1 then vim.cmd 'syntax enable' end
