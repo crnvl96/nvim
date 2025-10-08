@@ -26,12 +26,9 @@ local s = vim.diagnostic.severity
 vim.diagnostic.config {
     update_in_insert = false,
     virtual_lines = false,
-    underline = false,
-    signs = false,
-    virtual_text = false,
-    -- underline = { severity = { min = s.HINT, max = s.ERROR } },
-    -- signs = { priority = 9999, severity = { min = s.WARN, max = s.ERROR } },
-    -- virtual_text = { current_line = true, severity = { min = s.ERROR, max = s.ERROR } },
+    underline = { severity = { min = s.HINT, max = s.ERROR } },
+    signs = { priority = 9999, severity = { min = s.WARN, max = s.ERROR } },
+    virtual_text = { current_line = true, severity = { min = s.ERROR, max = s.ERROR } },
 }
 
 vim.api.nvim_create_autocmd('TextYankPost', { callback = function() (vim.hl or vim.highlight).on_yank() end })
