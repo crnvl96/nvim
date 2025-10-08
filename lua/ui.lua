@@ -33,16 +33,18 @@ vim.diagnostic.config {
 
 vim.api.nvim_create_autocmd('TextYankPost', { callback = function() (vim.hl or vim.highlight).on_yank() end })
 
-vim.cmd [[colo minispring]]
+vim.cmd [[colo minischeme]]
 require('mini.colors').setup {}
+
+MiniMisc.setup_termbg_sync()
 
 MiniColors.get_colorscheme()
     :add_transparency({
         general = true,
         float = true,
-        statuscolumn = true,
-        statusline = true,
-        tabline = true,
-        winbar = true,
+        statuscolumn = false,
+        statusline = false,
+        tabline = false,
+        winbar = false,
     })
     :apply()

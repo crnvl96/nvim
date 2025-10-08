@@ -12,6 +12,7 @@ vim.opt.linebreak = true
 vim.opt.list = true
 vim.opt.mouse = 'a'
 vim.opt.number = true
+vim.opt.laststatus = 2
 vim.opt.relativenumber = true
 vim.opt.ruler = false
 vim.opt.scrolloff = 8
@@ -49,11 +50,11 @@ vim.cmd [[
 
 require 'opts'
 require 'keymaps'
-require 'lsp'
 require 'pack'
+require 'editor'
+require 'lsp'
 require 'complete'
 require 'ui'
 require 'filemanager'
 require 'grep'
 require 'find'
-require 'extras'
