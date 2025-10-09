@@ -56,3 +56,8 @@ vim.cmd [[
     cnoremap  <expr>  <m-up>     wildmenumode()  ?  "\<C-e>\<c-up>"     :  "\<c-up>"
     cnoremap  <expr>  <m-right>  wildmenumode()  ?  "\<C-e>\<c-right>"  :  "\<c-right>"
 ]]
+
+set('n', '<Leader>x', function()
+    local success, err = pcall(vim.fn.getqflist({ winid = 0 }).winid ~= 0 and vim.cmd.cclose or vim.cmd.copen)
+    if not success and err then vim.notify(err, vim.log.levels.ERROR) end
+end, { desc = 'Toggle Quickfix List' })

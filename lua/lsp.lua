@@ -1,44 +1,51 @@
 local util = require 'util.lsp'
 
+local s = vim.diagnostic.severity
+vim.diagnostic.config {
+    update_in_insert = false,
+    virtual_lines = false,
+    ---@want?
+    --- We rely on the BufWritePre (see below) autocmd to put the diagnostics of the
+    --- current buffer in the qflist
+    ---
+    --- If for some reason we change or remove it, restore this section
+    ---
+    -- underline = { severity = { min = s.HINT, max = s.ERROR } },
+    -- signs = { priority = 9999, severity = { min = s.WARN, max = s.ERROR } },
+    -- virtual_text = { current_line = true, severity = { min = s.ERROR, max = s.ERROR } },
+    underline = false,
+    signs = false,
+    virtual_text = false,
+}
+
 --- Creates a user command to start LSP servers
-vim.api.nvim_create_user_command('LspStart', function(info)
-    local servers = util.split_args(info.args)
-    if #servers == 0 then
-        vim.notify 'You must provide at least one server'
-        return
-    end
-    local valid_servers = util.validate_servers(servers)
-    util.enable_servers(valid_servers, true)
-end, { nargs = '+', complete = util.complete_config })
-
+vim.api.nvim_create_user_command(
+    'LspStart',
+    function(info) util.lspstart(info) end,
+    { nargs = '+', complete = util.complete_config }
+)
 --- Creates a user command to stop LSP servers
-vim.api.nvim_create_user_command('LspStop', function(info)
-    local servers = util.split_args(info.args)
-    if #servers == 0 then
-        vim.notify 'You must provide at least one server'
-        return
-    end
-    local valid_servers = util.validate_servers(servers)
-    util.enable_servers(valid_servers, false)
-end, { nargs = '+', complete = util.complete_client })
-
+vim.api.nvim_create_user_command(
+    'LspStop',
+    function(info) util.lspstop(info) end,
+    { nargs = '+', complete = util.complete_client }
+)
 --- Creates a user command to restart LSP clients
-vim.api.nvim_create_user_command('LspRestart', function(info)
-    local clients = info.fargs
-    if #clients == 0 then
-        clients = vim.iter(vim.lsp.get_clients()):map(function(client) return client.name end):totable()
-    end
-    local valid_clients = util.validate_servers(clients)
-    util.enable_servers(valid_clients, false)
-    local timer = assert(vim.uv.new_timer())
-    timer:start(500, 0, function()
-        vim.schedule(function() util.enable_servers(valid_clients, true) end)
-    end)
-end, { nargs = '?', complete = util.complete_client })
+vim.api.nvim_create_user_command(
+    'LspRestart',
+    function(info) util.lsprestart(info) end,
+    { nargs = '?', complete = util.complete_client }
+)
 
 --- Autoformats on buffer write
 vim.api.nvim_create_autocmd('BufWritePre', {
-    callback = function(e) vim.lsp.buf.format { bufnr = e.buf } end,
+    callback = function(e)
+        vim.lsp.buf.format { bufnr = e.buf }
+        vim.diagnostic.setloclist {
+            open = true,
+            { severity = { min = s.WARN, max = s.ERROR } },
+        }
+    end,
 })
 
 --- Enables LSP servers on buffer read/new file
@@ -61,19 +68,17 @@ vim.api.nvim_create_autocmd('LspAttach', {
 
         vim.bo[e.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
 
-        set('n', 'E', vim.diagnostic.open_float, { buffer = buf })
-        set('n', 'K', vim.lsp.buf.hover, { buffer = buf })
+        set('n', 'E', function() vim.diagnostic.open_float() end, { buffer = buf })
+        set('n', 'K', function() vim.lsp.buf.hover() end, { buffer = buf })
         set('i', '<C-k>', vim.lsp.buf.signature_help, { buffer = buf })
-
-        set('n', 'ga', vim.lsp.buf.code_action, { buffer = buf })
-        set('n', 'gn', vim.lsp.buf.rename, { buffer = buf })
-        set('n', 'gd', vim.lsp.buf.definition, { buffer = buf })
-        set('n', 'gD', vim.lsp.buf.declaration, { buffer = buf })
-        set('n', 'gr', vim.lsp.buf.references, { buffer = buf, nowait = true })
-        set('n', 'gi', vim.lsp.buf.implementation, { buffer = buf })
-        set('n', 'gy', vim.lsp.buf.type_definition, { buffer = buf })
-        set('n', 'ge', vim.diagnostic.setqflist, { buffer = buf })
-
+        set('n', 'ga', function() vim.lsp.buf.code_action() end, { buffer = buf })
+        set('n', 'gn', function() vim.lsp.buf.rename() end, { buffer = buf })
+        set('n', 'gd', function() vim.lsp.buf.definition { reuse_win = true } end, { buffer = buf })
+        set('n', 'gD', function() vim.lsp.buf.declaration() end, { buffer = buf })
+        set('n', 'gr', function() vim.lsp.buf.references() end, { buffer = buf, nowait = true })
+        set('n', 'gi', function() vim.lsp.buf.implementation { reuse_win = true } end, { buffer = buf })
+        set('n', 'gy', function() vim.lsp.buf.type_definition { reuse_win = true } end, { buffer = buf })
+        set('n', 'ge', function() vim.diagnostic.setqflist { open = true } end, { buffer = buf })
         set('n', ']d', util.diagnostic_goto(true), { buffer = buf })
         set('n', '[d', util.diagnostic_goto(false), { buffer = buf })
         set('n', ']e', util.diagnostic_goto(true, 'ERROR'), { buffer = buf })

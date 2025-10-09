@@ -4,7 +4,7 @@ local M = {}
 --- Splits a string into arguments separated by spaces
 ---@param str string The string to split into arguments
 ---@return string[] List of arguments
-function M.split_args(str) return vim.iter(str:gmatch '%S+'):totable() end
+local function split_args(str) return vim.iter(str:gmatch '%S+'):totable() end
 
 --- Completes client names based on partial input
 ---@param arg string The partial client name to complete
@@ -40,7 +40,7 @@ end
 --- Validates server names and notifies invalid ones
 ---@param servers string[] List of server names to validate
 ---@return string[] List of valid server names
-function M.validate_servers(servers)
+local function validate_servers(servers)
     return vim.iter(servers):filter(function(i) return vim.lsp.config[i] ~= nil end):totable()
 end
 
@@ -56,7 +56,7 @@ end
 --- Enables or disables the given servers
 ---@param servers string[] List of server names to enable/disable
 ---@param enable boolean Whether to enable or disable the servers
-function M.enable_servers(servers, enable)
+local function enable_servers(servers, enable)
     vim.iter(servers):each(function(i) vim.lsp.enable(i, enable) end)
 end
 
@@ -71,6 +71,45 @@ function M.diagnostic_goto(next, severity)
             float = true,
         }
     end
+end
+
+--- Start Lsp server(s)
+---@param info vim.api.keyset.create_user_command.command_args
+function M.lspstart(info)
+    local servers = split_args(info.args)
+    if #servers == 0 then
+        vim.notify 'You must provide at least one server'
+        return
+    end
+    local valid_servers = validate_servers(servers)
+    enable_servers(valid_servers, true)
+end
+
+--- Stop Lsp server(s)
+---@param info vim.api.keyset.create_user_command.command_args
+function M.lspstop(info)
+    local servers = split_args(info.args)
+    if #servers == 0 then
+        vim.notify 'You must provide at least one server'
+        return
+    end
+    local valid_servers = validate_servers(servers)
+    enable_servers(valid_servers, false)
+end
+
+--- Restart Lsp server(s)
+---@param info vim.api.keyset.create_user_command.command_args
+function M.lsprestart(info)
+    local clients = info.fargs
+    if #clients == 0 then
+        clients = vim.iter(vim.lsp.get_clients()):map(function(client) return client.name end):totable()
+    end
+    local valid_clients = validate_servers(clients)
+    enable_servers(valid_clients, false)
+    local timer = assert(vim.uv.new_timer())
+    timer:start(500, 0, function()
+        vim.schedule(function() enable_servers(valid_clients, true) end)
+    end)
 end
 
 return M

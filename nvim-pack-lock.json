@@ -4,10 +4,6 @@
       "rev": "61a5d44",
       "src": "https://github.com/nvim-mini/mini.nvim"
     },
-    "trouble.nvim": {
-      "rev": "c098362",
-      "src": "https://github.com/folke/trouble.nvim"
-    },
     "vim-fugitive": {
       "rev": "61b51c0",
       "src": "https://github.com/tpope/vim-fugitive"
