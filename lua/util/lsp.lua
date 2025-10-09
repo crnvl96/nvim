@@ -29,8 +29,10 @@ function M.complete_config(arg)
         :filter(function(name)
             local filetype = vim.bo.filetype
             if not filetype then return false end
+
             local filetypes = vim.lsp.config[name].filetypes
             if not filetypes then return false end
+
             return vim.tbl_contains(filetypes, filetype)
         end)
         :totable()

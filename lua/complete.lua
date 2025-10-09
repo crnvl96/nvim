@@ -42,8 +42,9 @@ vim.api.nvim_create_autocmd('LspAttach', {
             vim.lsp.completion.enable(true, client.id, e.buf, {
                 autotrigger = true,
                 convert = function(item)
-                    if not item.labelDetails then return {} end
-                    if not item.labelDetails.description then return {} end
+                    local desc = item.labelDetails and item.labelDetails.description
+                    if not desc then return {} end
+
                     return {
                         menu = item.labelDetails.description,
                         info = item.labelDetails.description,

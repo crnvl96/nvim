@@ -1,0 +1,25 @@
+
+{
+    {
+        severity = 2,
+        source = "Ruff",
+        user_data = {
+            lsp = {
+                code = "ANN201",
+                codeDescription = {
+                    href = "https://docs.astral.sh/ruff/rules/missing-return-type-undocumented-public-function"
+                },
+                data = {
+                    code = "ANN201",
+                    edits = { { newText = " -> None", range = { ["end"] = { character = 30, line = 31 }, start = { character = 30, line = 31 } } } },
+                    noqa_edit = { newText = "  # noqa: ANN201\n", range = { ["end"] = { character = 0, line = 32 }, start = { character = 31, line = 31 } } },
+                    title = "Add return type annotation: `None`"
+                },
+                message = "Missing return type annotation for public function `main`",
+                range = { ["end"] = { character = 8, line = 31 }, start = { character = 4, line = 31 } },
+                severity = 2,
+                source = "Ruff"
+            }
+        }
+    }
+}

@@ -41,9 +41,23 @@ vim.api.nvim_create_user_command(
 vim.api.nvim_create_autocmd('BufWritePre', {
     callback = function(e)
         vim.lsp.buf.format { bufnr = e.buf }
+
         vim.diagnostic.setloclist {
             open = true,
-            { severity = { min = s.WARN, max = s.ERROR } },
+            severity = { min = s.WARN, max = s.ERROR },
+            format = function(d)
+                if d.source ~= 'Ruff' then return d.message end
+
+                local href = d.user_data.lsp
+                    and d.user_data.lsp.codeDescription
+                    and d.user_data.lsp.codeDescription.href
+
+                if href then
+                    return ('%s - [%s] (%s)'):format(d.message, d.code, d.user_data.lsp.codeDescription.href)
+                end
+
+                return ('%s - [%s]'):format(d.message, d.code)
+            end,
         }
     end,
 })
