@@ -42,13 +42,7 @@ vim.opt.winborder = 'double'
 vim.opt.winminwidth = 5
 vim.opt.wrap = false
 vim.opt.writebackup = false
-vim.opt.textwidth = 80
-
-vim.cmd [[
-    set formatoptions+=w
-    set shortmess-=S
-    set shortmess+=WcCat
-]]
+vim.opt.shortmess = 'aCFoOtT'
 
 require 'opts'
 require 'keymaps'
