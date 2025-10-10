@@ -7,12 +7,12 @@ vim.api.nvim_create_autocmd('CmdlineEnter', {
 local function find_cmd()
     local cmd = ''
 
-    if vim.fn.executable 'fd' then
+    if vim.fn.executable 'rg' then
+        cmd = 'rg --path-separator / --files --hidden --glob !.git'
+    elseif vim.fn.executable 'fd' then
         cmd = 'fd . --path-separator / --type f --hidden --follow --exclude .git'
     elseif vim.fn.executable 'fdfind' then
         cmd = 'fdfind . --path-separator / --type f --hidden --follow --exclude .git'
-    elseif vim.fn.executable 'rg' then
-        cmd = 'rg --path-separator / --files --hidden --glob !.git'
     elseif vim.fn.executable 'ugrep' then
         cmd = 'ugrep "" -Rl -I --ignore-files'
     elseif vim.fn.executable 'find' then
