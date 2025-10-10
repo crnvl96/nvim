@@ -6,7 +6,7 @@ require('conform').setup {
     notify_on_error = false,
     notify_no_formatters = false,
     formatters = {
-        prettier = { require_cwd = true },
+        prettier = { require_cwd = false },
     },
     formatters_by_ft = {
         go = { name = 'gopls', timeout_ms = 500, lsp_format = 'prefer' },
@@ -19,7 +19,7 @@ require('conform').setup {
         jsonc = { 'prettier', timeout_ms = 500, lsp_format = 'never' },
         less = { 'prettier', timeout_ms = 500, lsp_format = 'never' },
         lua = { 'stylua', timeout_ms = 500, lsp_format = 'never' },
-        markdown = { 'prettier', timeout_ms = 500, lsp_format = 'never' },
+        markdown = { 'prettier', 'injected', timeout_ms = 1000, lsp_format = 'never' },
         css = { 'prettier', timeout_ms = 500, lsp_format = 'never' },
         scss = { 'prettier', timeout_ms = 500, lsp_format = 'never' },
         yaml = { 'prettier', timeout_ms = 500, lsp_format = 'never' },

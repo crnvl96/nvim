@@ -4,7 +4,7 @@ vim.diagnostic.config {
     update_in_insert = false,
     virtual_lines = false,
     ---@note
-    --- We rely on the BufWritePre (see below) autocmd to put the diagnostics of the
+    --- We rely on a BufWritePre autocmd to put the diagnostics of the
     --- current buffer in the qflist
     ---
     --- If for some reason we change or remove it, restore this section
@@ -63,10 +63,7 @@ vim.api.nvim_create_user_command(
 --     end,
 -- })
 
----@note
---- if we get rid of mini.completion, revert this change
--- vim.lsp.config('*', { capabilities = vim.lsp.protocol.make_client_capabilities() })
-vim.lsp.config('*', { capabilities = MiniCompletion.get_lsp_capabilities() })
+vim.lsp.config('*', { capabilities = vim.lsp.protocol.make_client_capabilities() })
 
 --- Enables LSP servers on buffer read/new file
 vim.api.nvim_create_autocmd({ 'BufReadPre', 'BufNewFile' }, {
