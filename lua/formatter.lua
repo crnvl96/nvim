@@ -14,7 +14,7 @@ require('conform').setup {
         javascriptreact = { 'prettier', timeout_ms = 500, lsp_format = 'fallback' },
         typescript = { 'prettier', timeout_ms = 500, lsp_format = 'fallback' },
         typescriptreact = { 'prettier', timeout_ms = 500, lsp_format = 'fallback' },
-        python = { 'prettier', timeout_ms = 500, lsp_format = 'fallback' },
+        python = { 'ruff_organize_imports', 'ruff_fix', timeout_ms = 500, lsp_format = 'last' },
         json = { 'prettier', timeout_ms = 500, lsp_format = 'never' },
         jsonc = { 'prettier', timeout_ms = 500, lsp_format = 'never' },
         less = { 'prettier', timeout_ms = 500, lsp_format = 'never' },

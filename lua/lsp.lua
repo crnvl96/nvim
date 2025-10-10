@@ -49,19 +49,24 @@ vim.api.nvim_create_user_command(
 --- Autoformats on buffer write
 -- vim.api.nvim_create_autocmd('BufWritePre', {
 --     callback = function(_e)
---         -- vim.lsp.buf.format { bufnr = e.buf }
+--         vim.lsp.buf.format { bufnr = e.buf }
 --
 --         -- Since virtual_text diagnostics are a bit too much, we enable an auto
 --         -- fill of the location list on every buffer write trigger.
 --         -- This way, we can be aware of diagnostics of the current buffer we're
 --         -- in without pollluting the screen too much
---         -- vim.diagnostic.setloclist {
---         --     open = true,
---         --     severity = { min = s.WARN, max = s.ERROR },
---         --     format = util.format_diagnostic,
---         -- }
+--         vim.diagnostic.setloclist {
+--             open = true,
+--             severity = { min = s.WARN, max = s.ERROR },
+--             format = util.format_diagnostic,
+--         }
 --     end,
 -- })
+
+---@note
+--- if we get rid of mini.completion, revert this change
+-- vim.lsp.config('*', { capabilities = vim.lsp.protocol.make_client_capabilities() })
+vim.lsp.config('*', { capabilities = MiniCompletion.get_lsp_capabilities() })
 
 --- Enables LSP servers on buffer read/new file
 vim.api.nvim_create_autocmd({ 'BufReadPre', 'BufNewFile' }, {
@@ -90,8 +95,6 @@ vim.api.nvim_create_autocmd('LspAttach', {
         local client = vim.lsp.get_client_by_id(e.data.client_id)
         if not client then return end
         local buf = e.buf
-
-        vim.bo[e.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
 
         set('n', 'E', function() vim.diagnostic.open_float() end, { buffer = buf })
         set('n', 'K', function() vim.lsp.buf.hover() end, { buffer = buf })
