@@ -43,10 +43,13 @@ vim.opt.winminwidth = 5
 vim.opt.wrap = false
 vim.opt.writebackup = false
 vim.opt.shortmess = 'aCFoOtT'
+vim.opt.textwidth = 80
+vim.opt.formatoptions = 'tcqjw21p'
 
 require 'opts'
 require 'keymaps'
 require 'pack'
+require 'treesitter'
 require 'editor'
 require 'lsp'
 require 'complete'

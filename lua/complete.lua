@@ -26,6 +26,21 @@ vim.api.nvim_create_autocmd('CmdlineChanged', {
 
 vim.lsp.config('*', { capabilities = vim.lsp.protocol.make_client_capabilities() })
 
+---@param keys string
+local function feedkeys(keys) vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(keys, true, true, true), 'n', true) end
+
+vim.keymap.set('i', '<C-n>', function() vim.lsp.completion.get() end)
+
+vim.keymap.set('c', '<C-n>', function()
+    if vim.fn.cmdcomplete_info().pum_visible then return feedkeys '<C-n>' end
+    feedkeys '<Tab>'
+end)
+
+vim.keymap.set('c', '<C-p>', function()
+    if vim.fn.cmdcomplete_info().pum_visible then return feedkeys '<C-p>' end
+    return feedkeys '<S-Tab>'
+end)
+
 vim.api.nvim_create_autocmd('LspAttach', {
     callback = function(e)
         local client = vim.lsp.get_client_by_id(e.data.client_id)
@@ -44,7 +59,6 @@ vim.api.nvim_create_autocmd('LspAttach', {
                 convert = function(item)
                     local desc = item.labelDetails and item.labelDetails.description
                     if not desc then return {} end
-
                     return {
                         menu = item.labelDetails.description,
                         info = item.labelDetails.description,

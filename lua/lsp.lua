@@ -4,29 +4,30 @@ local s = vim.diagnostic.severity
 vim.diagnostic.config {
     update_in_insert = false,
     virtual_lines = false,
-    ---@want?
+    ---@note
     --- We rely on the BufWritePre (see below) autocmd to put the diagnostics of the
     --- current buffer in the qflist
     ---
     --- If for some reason we change or remove it, restore this section
     ---
-    -- underline = { severity = { min = s.HINT, max = s.ERROR } },
-    -- signs = { priority = 9999, severity = { min = s.WARN, max = s.ERROR } },
-    -- virtual_text = { current_line = true, severity = { min = s.ERROR, max = s.ERROR } },
-    underline = false,
+    --- ```lua
+    --- signs = { priority = 9999, severity = { min = s.WARN, max = s.ERROR } },
+    --- virtual_text = { current_line = true, severity = { min = s.ERROR, max = s.ERROR } },
+    --- ```
+    underline = { severity = { min = s.HINT, max = s.ERROR } },
     signs = false,
     virtual_text = false,
 }
 
 --- Creates a user command to start LSP servers
 vim.api.nvim_create_user_command(
-    'LspStart',
+    'LspEnable',
     function(info) util.lspstart(info) end,
     { nargs = '+', complete = util.complete_config }
 )
 --- Creates a user command to stop LSP servers
 vim.api.nvim_create_user_command(
-    'LspStop',
+    'LspDisable',
     function(info) util.lspstop(info) end,
     { nargs = '+', complete = util.complete_client }
 )
@@ -42,22 +43,14 @@ vim.api.nvim_create_autocmd('BufWritePre', {
     callback = function(e)
         vim.lsp.buf.format { bufnr = e.buf }
 
+        -- Since virtual_text diagnostics are a bit too much, we enable an auto
+        -- fill of the location list on every buffer write trigger.
+        -- This way, we can be aware of diagnostics of the current buffer we're
+        -- in without pollluting the screen too much
         vim.diagnostic.setloclist {
             open = true,
             severity = { min = s.WARN, max = s.ERROR },
-            format = function(d)
-                if d.source ~= 'Ruff' then return d.message end
-
-                local href = d.user_data.lsp
-                    and d.user_data.lsp.codeDescription
-                    and d.user_data.lsp.codeDescription.href
-
-                if href then
-                    return ('%s - [%s] (%s)'):format(d.message, d.code, d.user_data.lsp.codeDescription.href)
-                end
-
-                return ('%s - [%s]'):format(d.message, d.code)
-            end,
+            format = util.format_diagnostic,
         }
     end,
 })
@@ -84,7 +77,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
 
         set('n', 'E', function() vim.diagnostic.open_float() end, { buffer = buf })
         set('n', 'K', function() vim.lsp.buf.hover() end, { buffer = buf })
-        set('i', '<C-k>', vim.lsp.buf.signature_help, { buffer = buf })
+        set('i', '<C-k>', function() vim.lsp.buf.signature_help() end, { buffer = buf })
         set('n', 'ga', function() vim.lsp.buf.code_action() end, { buffer = buf })
         set('n', 'gn', function() vim.lsp.buf.rename() end, { buffer = buf })
         set('n', 'gd', function() vim.lsp.buf.definition { reuse_win = true } end, { buffer = buf })

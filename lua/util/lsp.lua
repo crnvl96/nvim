@@ -114,4 +114,19 @@ function M.lsprestart(info)
     end)
 end
 
+--- Specify the formatting of diagnostics
+---@param d vim.Diagnostic The diagnostic to be formatted
+function M.format_diagnostic(d)
+    -- For now we only want to override the formatting of Ruff's diagnostics
+    -- The information about the diagnostic's source can be retrieved by the
+    -- function |:h vim.diagnostic.get()|
+    --
+    -- We normally wrap it inside MiniMisc.put_text(), so that the diagnostic
+    -- can be echoed in a buffer for us to better interpret it
+    if d.source ~= 'Ruff' then return d.message end
+    local href = d.user_data.lsp and d.user_data.lsp.codeDescription and d.user_data.lsp.codeDescription.href
+    if href then return ('%s - [%s] (%s)'):format(d.message, d.code, d.user_data.lsp.codeDescription.href) end
+    return ('%s - [%s]'):format(d.message, d.code)
+end
+
 return M

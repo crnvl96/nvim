@@ -4,6 +4,11 @@
       "rev": "61a5d44",
       "src": "https://github.com/nvim-mini/mini.nvim"
     },
+    "nvim-treesitter": {
+      "rev": "3ab4f2d2",
+      "src": "https://github.com/nvim-treesitter/nvim-treesitter",
+      "version": "'main'"
+    },
     "vim-fugitive": {
       "rev": "61b51c0",
       "src": "https://github.com/tpope/vim-fugitive"
