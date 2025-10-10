@@ -46,15 +46,6 @@ local function validate_servers(servers)
     return vim.iter(servers):filter(function(i) return vim.lsp.config[i] ~= nil end):totable()
 end
 
---- Check if a server is lot marked to be always disabled.
----@param server string The server to be checked
----@return string|nil The result of the validation (nil means that the server won't be activated)
-function M.filter_server(server)
-    local name = vim.fn.fnamemodify(server, ':t:r')
-    local ok = vim.iter({}):filter(function(i) return i == name end):totable()
-    return #ok == 0 and name or nil
-end
-
 --- Enables or disables the given servers
 ---@param servers string[] List of server names to enable/disable
 ---@param enable boolean Whether to enable or disable the servers

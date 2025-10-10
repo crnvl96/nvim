@@ -59,8 +59,17 @@ vim.api.nvim_create_autocmd('BufWritePre', {
 vim.api.nvim_create_autocmd({ 'BufReadPre', 'BufNewFile' }, {
     once = true,
     callback = function()
+        --- Check if a server is lot marked to be always disabled.
+        ---@param server string The server to be checked
+        ---@return string|nil The result of the validation (nil means that the server won't be activated)
+        local function filter_server(server)
+            local name = vim.fn.fnamemodify(server, ':t:r')
+            local ok = vim.iter({ 'efm' }):filter(function(i) return i == name end):totable()
+            return #ok == 0 and name or nil
+        end
+
         local files = vim.api.nvim_get_runtime_file('lsp/*.lua', true)
-        local server_configs = vim.iter(files):map(util.filter_server):totable()
+        local server_configs = vim.iter(files):map(filter_server):totable()
         vim.lsp.enable(server_configs)
     end,
 })
