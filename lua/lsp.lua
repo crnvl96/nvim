@@ -1,6 +1,5 @@
 local util = require 'util.lsp'
 
-local s = vim.diagnostic.severity
 vim.diagnostic.config {
     update_in_insert = false,
     virtual_lines = false,
@@ -14,7 +13,12 @@ vim.diagnostic.config {
     --- signs = { priority = 9999, severity = { min = s.WARN, max = s.ERROR } },
     --- virtual_text = { current_line = true, severity = { min = s.ERROR, max = s.ERROR } },
     --- ```
-    underline = { severity = { min = s.HINT, max = s.ERROR } },
+    underline = {
+        severity = {
+            min = vim.diagnostic.severity.HINT,
+            max = vim.diagnostic.severity.ERROR,
+        },
+    },
     signs = false,
     virtual_text = false,
 }
@@ -38,22 +42,26 @@ vim.api.nvim_create_user_command(
     { nargs = '?', complete = util.complete_client }
 )
 
+---@note
+--- We're currently using conform.nvim to handle formatting.
+--- If removed, reactivate this code
+---
 --- Autoformats on buffer write
-vim.api.nvim_create_autocmd('BufWritePre', {
-    callback = function(e)
-        vim.lsp.buf.format { bufnr = e.buf }
-
-        -- Since virtual_text diagnostics are a bit too much, we enable an auto
-        -- fill of the location list on every buffer write trigger.
-        -- This way, we can be aware of diagnostics of the current buffer we're
-        -- in without pollluting the screen too much
-        vim.diagnostic.setloclist {
-            open = true,
-            severity = { min = s.WARN, max = s.ERROR },
-            format = util.format_diagnostic,
-        }
-    end,
-})
+-- vim.api.nvim_create_autocmd('BufWritePre', {
+--     callback = function(_e)
+--         -- vim.lsp.buf.format { bufnr = e.buf }
+--
+--         -- Since virtual_text diagnostics are a bit too much, we enable an auto
+--         -- fill of the location list on every buffer write trigger.
+--         -- This way, we can be aware of diagnostics of the current buffer we're
+--         -- in without pollluting the screen too much
+--         -- vim.diagnostic.setloclist {
+--         --     open = true,
+--         --     severity = { min = s.WARN, max = s.ERROR },
+--         --     format = util.format_diagnostic,
+--         -- }
+--     end,
+-- })
 
 --- Enables LSP servers on buffer read/new file
 vim.api.nvim_create_autocmd({ 'BufReadPre', 'BufNewFile' }, {
@@ -64,6 +72,7 @@ vim.api.nvim_create_autocmd({ 'BufReadPre', 'BufNewFile' }, {
         ---@return string|nil The result of the validation (nil means that the server won't be activated)
         local function filter_server(server)
             local name = vim.fn.fnamemodify(server, ':t:r')
+            -- Disable efm by defualt to avoid auto formatting
             local ok = vim.iter({ 'efm' }):filter(function(i) return i == name end):totable()
             return #ok == 0 and name or nil
         end

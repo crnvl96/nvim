@@ -2,6 +2,7 @@ vim.pack.add {
     { src = 'https://github.com/nvim-treesitter/nvim-treesitter', version = 'main' },
     { src = 'https://github.com/nvim-mini/mini.nvim' },
     { src = 'https://github.com/tpope/vim-fugitive' },
+    { src = 'https://github.com/stevearc/conform.nvim' },
 }
 
 vim.api.nvim_create_user_command('PackClean', function()
