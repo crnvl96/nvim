@@ -10,7 +10,7 @@ if vim.fn.executable 'rg' then
     vim.opt.grepformat = '%f:%l:%c:%m'
 end
 
-vim.keymap.set('n', '<Leader>g', ':sil<space>grep!<space>', { desc = 'Grep' })
+vim.keymap.set('n', '<Leader>g', ":sil<space>grep!<space>''<left>", { desc = 'Grep' })
 
 vim.api.nvim_create_autocmd('QuickFixCmdPost', {
     pattern = '*grep*',
