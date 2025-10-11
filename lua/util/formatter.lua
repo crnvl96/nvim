@@ -1,6 +1,15 @@
 ---@class Util.Formater
 local M = {}
 
+---@param bufnr number current loaded buffer
+---@param root_markers string|string[] files that mark the project root
+---@param fallback? boolean fallback behavior if a root isn't found
+function M.root_file(bufnr, root_markers, fallback)
+    local root = vim.fs.root(bufnr, root_markers)
+    if fallback and not root then root = vim.fn.getcwd() end
+    return root
+end
+
 --- Checks if formatting can be applied, and triggers it
 ---@param bufnr number the current loaded buffer
 function M.format_if_able(bufnr)

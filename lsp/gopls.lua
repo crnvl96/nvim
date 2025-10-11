@@ -3,7 +3,8 @@ return {
     cmd = { 'gopls' },
     filetypes = { 'go', 'gomod', 'gowork', 'gotmpl' },
     root_markers = { 'go.mod' },
-    settings = {
-        gopls = { gofumpt = true },
-    },
+    on_attach = function(client, bufnr)
+        client.server_capabilities.documentFormattingProvider = false
+        client.server_capabilities.documentRangeFormattingProvider = false
+    end,
 }
