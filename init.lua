@@ -1,3 +1,10 @@
+local path = vim.env.HOME .. '/.local/share/mise/installs/node/24.9.0/bin/'
+vim.env.PATH = path .. ':' .. vim.env.PATH
+
+vim.g.node_host_prog = path .. 'node'
+vim.g.mapleader = ' '
+vim.g.maplocalleader = ','
+
 vim.opt.autoindent = true
 vim.opt.autoread = true
 vim.opt.autowrite = true
@@ -45,8 +52,10 @@ vim.opt.writebackup = false
 vim.opt.shortmess = 'aCFoOtT'
 vim.opt.textwidth = 80
 vim.opt.formatoptions = 'tcqjw21p'
+vim.opt.pumborder = 'double'
 
-require 'opts'
+vim.cmd 'filetype plugin indent on'
+
 require 'keymaps'
 require 'pack'
 require 'treesitter'

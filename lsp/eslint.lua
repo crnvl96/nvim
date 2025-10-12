@@ -24,10 +24,6 @@ return {
             showDocumentation = { enable = true },
         },
     },
-    on_attach = function(client, bufnr)
-        client.server_capabilities.documentFormattingProvider = false
-        client.server_capabilities.documentRangeFormattingProvider = false
-    end,
     before_init = function(params, config)
         -- Set the workspace folder setting for correct search of tsconfig.json files etc.
         config.settings.workspaceFolder = {

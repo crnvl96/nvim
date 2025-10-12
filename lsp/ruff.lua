@@ -16,9 +16,5 @@ return {
     capabilities = {
         general = { positionEncodings = { 'utf-16' } },
     },
-    on_attach = function(client, _bufnr)
-        client.server_capabilities.hoverProvider = false
-        client.server_capabilities.documentFormattingProvider = false
-        client.server_capabilities.documentRangeFormattingProvider = false
-    end,
+    on_attach = function(client, _bufnr) client.server_capabilities.hoverProvider = false end,
 }

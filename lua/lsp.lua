@@ -3,16 +3,6 @@ local util = require 'util.lsp'
 vim.diagnostic.config {
     update_in_insert = false,
     virtual_lines = false,
-    ---@note
-    --- We rely on a BufWritePre autocmd to put the diagnostics of the
-    --- current buffer in the qflist
-    ---
-    --- If for some reason we change or remove it, restore this section
-    ---
-    --- ```lua
-    --- signs = { priority = 9999, severity = { min = s.WARN, max = s.ERROR } },
-    --- virtual_text = { current_line = true, severity = { min = s.ERROR, max = s.ERROR } },
-    --- ```
     underline = {
         severity = {
             min = vim.diagnostic.severity.HINT,
@@ -41,27 +31,6 @@ vim.api.nvim_create_user_command(
     function(info) util.lsprestart(info) end,
     { nargs = '?', complete = util.complete_client }
 )
-
----@note
---- We're currently using conform.nvim to handle formatting.
---- If removed, reactivate this code
----
---- Autoformats on buffer write
--- vim.api.nvim_create_autocmd('BufWritePre', {
---     callback = function(_e)
---         vim.lsp.buf.format { bufnr = e.buf }
---
---         -- Since virtual_text diagnostics are a bit too much, we enable an auto
---         -- fill of the location list on every buffer write trigger.
---         -- This way, we can be aware of diagnostics of the current buffer we're
---         -- in without pollluting the screen too much
---         vim.diagnostic.setloclist {
---             open = true,
---             severity = { min = s.WARN, max = s.ERROR },
---             format = util.format_diagnostic,
---         }
---     end,
--- })
 
 vim.lsp.config('*', { capabilities = vim.lsp.protocol.make_client_capabilities() })
 

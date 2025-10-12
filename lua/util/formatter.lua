@@ -14,6 +14,7 @@ end
 ---@param bufnr number the current loaded buffer
 function M.format_if_able(bufnr)
     if not vim.g.autoformat then return nil end
+
     require('conform').format { bufnr = bufnr }
 
     vim.diagnostic.setloclist {

@@ -17,11 +17,11 @@ set({ 'n', 'x', 'o' }, 'Y', 'yg_')
 set({ 'n', 'x' }, 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true })
 set({ 'n', 'x' }, 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true })
 
-set('n', 'H', 'mzgggqG`z<cmd>delmarks z<cr>zz')
+set('n', 'H', 'mzgggqG`z<Cmd>delmarks z<CR>zz')
 set('x', 'H', 'gqzz')
 
 set({ 'i', 'n', 's' }, '<esc>', function()
-    vim.cmd 'noh'
+    vim.cmd.nohlsearch()
     return '<esc>'
 end, { expr = true })
 
@@ -37,27 +37,16 @@ set('i', ',', ',<c-g>u')
 set('i', '.', '.<c-g>u')
 set('i', ';', ';<c-g>u')
 set({ 'i', 'x', 'n' }, '<C-s>', '<Cmd>noh<CR><Esc><Cmd>write!<CR><Esc>')
-set('n', '<', vim.cmd.cprev)
-set('n', '>', vim.cmd.cnext)
 
-vim.cmd [[
-    cnoremap  <expr>  <left>     wildmenumode()  ?  "\<C-e>\<left>"     :  "\<left>"
-    cnoremap  <expr>  <down>     wildmenumode()  ?  "\<C-e>\<down>"     :  "\<down>"
-    cnoremap  <expr>  <up>       wildmenumode()  ?  "\<C-e>\<up>"       :  "\<up>"
-    cnoremap  <expr>  <right>    wildmenumode()  ?  "\<C-e>\<right>"    :  "\<right>"
-
-    cnoremap  <expr>  <m-h>      wildmenumode()  ?  "\<C-e>\<left>"     :  "\<left>"
-    cnoremap  <expr>  <m-j>      wildmenumode()  ?  "\<C-e>\<down>"     :  "\<down>"
-    cnoremap  <expr>  <m-k>      wildmenumode()  ?  "\<C-e>\<up>"       :  "\<up>"
-    cnoremap  <expr>  <m-l>      wildmenumode()  ?  "\<C-e>\<right>"    :  "\<right>"
-
-    cnoremap  <expr>  <m-left>   wildmenumode()  ?  "\<C-e>\<c-left>"   :  "\<c-left>"
-    cnoremap  <expr>  <m-down>   wildmenumode()  ?  "\<C-e>\<c-down>"   :  "\<c-down>"
-    cnoremap  <expr>  <m-up>     wildmenumode()  ?  "\<C-e>\<c-up>"     :  "\<c-up>"
-    cnoremap  <expr>  <m-right>  wildmenumode()  ?  "\<C-e>\<c-right>"  :  "\<c-right>"
-]]
+set('c', '<m-left>', function() return vim.fn.wildmenumode() and '<C-e><c-left>' or '<c-left>' end, { expr = true })
+set('c', '<m-down>', function() return vim.fn.wildmenumode() and '<C-e><c-down>' or '<c-down>' end, { expr = true })
+set('c', '<m-up>', function() return vim.fn.wildmenumode() and '<C-e><c-up>' or '<c-up>' end, { expr = true })
+set('c', '<m-right>', function() return vim.fn.wildmenumode() and '<C-e><c-right>' or '<c-right>' end, { expr = true })
 
 set('n', '<Leader>x', function()
-    local success, err = pcall(vim.fn.getqflist({ winid = 0 }).winid ~= 0 and vim.cmd.cclose or vim.cmd.copen)
-    if not success and err then vim.notify(err, vim.log.levels.ERROR) end
+    if vim.fn.getqflist({ winid = 0 }).winid ~= 0 then
+        vim.cmd 'cclose'
+    else
+        vim.cmd 'copen'
+    end
 end, { desc = 'Toggle Quickfix List' })
