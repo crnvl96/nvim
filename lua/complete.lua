@@ -33,15 +33,20 @@ vim.api.nvim_create_autocmd('LspAttach', {
         vim.bo[e.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
 
         if client:supports_method 'textDocument/completion' then
-            -- stylua: ignore
-            local chars = { 'a', 'e', 'i', 'o', 'u',
-                            'A', 'E', 'I', 'O', 'U',
-                            '.', ':', '_', '-' }
-
-            client.server_capabilities.completionProvider.triggerCharacters = chars
+            ---@note
+            --- A test to see if we're ok with manually triggering via
+            --- <C-x><C-o>
+            ---
+            -- -- stylua: ignore
+            -- local chars = { 'a', 'e', 'i', 'o', 'u',
+            --                 'A', 'E', 'I', 'O', 'U',
+            --                 '.', ':', '_', '-' }
+            --
+            -- client.server_capabilities.completionProvider.triggerCharacters = chars
 
             vim.lsp.completion.enable(true, client.id, e.buf, {
-                autotrigger = true,
+                -- Manual trigger with `<C-x><C-o>`
+                autotrigger = false,
                 convert = function(item)
                     local desc = item.labelDetails and item.labelDetails.description
                     if not desc then return {} end
