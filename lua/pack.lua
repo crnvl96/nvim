@@ -1,8 +1,13 @@
 vim.pack.add {
     { src = 'https://github.com/nvim-treesitter/nvim-treesitter', version = 'main' },
     { src = 'https://github.com/nvim-mini/mini.nvim' },
-    { src = 'https://github.com/tpope/vim-fugitive' },
     { src = 'https://github.com/stevearc/conform.nvim' },
+    { src = 'https://github.com/tpope/vim-fugitive' },
+    { src = 'https://github.com/tpope/vim-rhubarb' },
+    { src = 'https://github.com/tpope/vim-markdown' },
+    { src = 'https://github.com/tpope/vim-git' },
+    { src = 'https://github.com/tpope/vim-sleuth' },
+    { src = 'https://github.com/tpope/vim-dispatch' },
 }
 
 vim.api.nvim_create_user_command('PackClean', function()
