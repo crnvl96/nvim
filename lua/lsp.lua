@@ -48,7 +48,7 @@ vim.api.nvim_create_autocmd({ 'BufReadPre', 'BufNewFile' }, {
             return #ok == 0 and name or nil
         end
 
-        local files = vim.api.nvim_get_runtime_file('after/lsp/*.lua', true)
+        local files = vim.api.nvim_get_runtime_file('lsp/*.lua', true)
         local server_configs = vim.iter(files):map(filter_server):totable()
         vim.lsp.enable(server_configs)
     end,
