@@ -120,6 +120,13 @@ function M.format_diagnostic(d)
     return ('%s - [%s]'):format(d.message, d.code)
 end
 
+---For replacing certain <C-x>... keymaps.
+---@param keys string
+function M.feedkeys(keys) vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(keys, true, false, true), 'n', true) end
+
+---Is the completion menu open?
+function M.pumvisible() return tonumber(vim.fn.pumvisible()) ~= 0 end
+
 vim.diagnostic.config {
     update_in_insert = false,
     virtual_lines = false,
@@ -174,13 +181,57 @@ vim.api.nvim_create_autocmd({ 'BufReadPre', 'BufNewFile' }, {
     end,
 })
 
---- Sets up keymaps and options when LSP attaches
-vim.api.nvim_create_autocmd('LspAttach', {
-    callback = function(e)
-        local set = vim.keymap.set
-        local client = vim.lsp.get_client_by_id(e.data.client_id)
-        if not client then return end
-        local buf = e.buf
+-- Setup lsp features
+local lsp = function(e)
+    local set = vim.keymap.set
+    local client = vim.lsp.get_client_by_id(e.data.client_id)
+    if not client then return end
+    local buf = e.buf
+
+    if not client then return end
+
+    vim.bo[e.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
+
+    if client:supports_method 'textDocument/completion' then
+        ---@note
+        --- A test to see if we're ok with manually triggering via
+        --- <C-x><C-o>
+        ---
+        -- -- stylua: ignore
+        -- local chars = { 'a', 'e', 'i', 'o', 'u',
+        --                 'A', 'E', 'I', 'O', 'U',
+        --                 '.', ':', '_', '-' }
+        --
+        -- client.server_capabilities.completionProvider.triggerCharacters = chars
+
+        vim.lsp.completion.enable(true, client.id, e.buf, {
+            -- Manual trigger with `<C-x><C-o>`
+            autotrigger = false,
+            convert = function(item)
+                local desc = item.labelDetails and item.labelDetails.description
+                if not desc then return {} end
+                return {
+                    menu = item.labelDetails.description,
+                    info = item.labelDetails.description,
+                }
+            end,
+        })
+
+        set('i', '<C-n>', function()
+            if M.pumvisible() then
+                M.feedkeys '<C-n>'
+            else
+                if next(vim.lsp.get_clients { bufnr = 0 }) then
+                    vim.lsp.completion.get()
+                else
+                    if vim.bo.omnifunc == '' then
+                        M.feedkeys '<C-x><C-n>'
+                    else
+                        M.feedkeys '<C-x><C-o>'
+                    end
+                end
+            end
+        end, { buffer = buf })
 
         set('n', 'E', function() vim.diagnostic.open_float() end, { buffer = buf })
         set('n', 'K', function() vim.lsp.buf.hover() end, { buffer = buf })
@@ -199,5 +250,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
         set('n', '[e', M.diagnostic_goto(false, 'ERROR'), { buffer = buf })
         set('n', ']w', M.diagnostic_goto(true, 'WARN'), { buffer = buf })
         set('n', '[w', M.diagnostic_goto(false, 'WARN'), { buffer = buf })
-    end,
-})
+    end
+end
+
+_G.Config.new_autocmd('LspAttach', nil, lsp)

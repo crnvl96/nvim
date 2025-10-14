@@ -55,6 +55,7 @@ require('mini.indentscope').setup()
 require('mini.jump').setup()
 require('mini.move').setup()
 require('mini.trailspace').setup()
+require('mini.diff').setup { view = { style = 'sign' } }
 
 local ai = require 'mini.ai'
 ai.setup {
