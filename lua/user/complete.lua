@@ -1,29 +1,20 @@
-vim.opt.completeopt = table.concat({
-    'menuone',
-    'noselect',
-    'noinsert',
-    'fuzzy',
-    'nosort',
-}, ',')
+vim.o.completefuzzycollect = 'keyword,files,whole_line'
+vim.o.pummaxwidth = 100
+vim.o.pumheight = 10
+vim.o.wildoptions = table.concat({ 'pum', 'fuzzy' }, ',')
+vim.o.wildignorecase = true
+vim.o.wildmode = 'noselect:lastused,full'
+vim.o.wildmenu = true
+vim.o.complete = '.,w,b,kspell'
+vim.o.completeopt = 'menuone,noselect,fuzzy,nosort'
 
-vim.opt.completefuzzycollect = table.concat({
-    'keyword',
-    'files',
-    'whole_line',
-}, ',')
-
-vim.opt.pummaxwidth = 100
-vim.opt.wildoptions = table.concat({ 'pum', 'fuzzy' }, ',')
-vim.opt.wildignore:append '.DS_Store'
-vim.opt.wildignorecase = true
-vim.opt.wildmode = 'noselect:lastused,full'
-vim.opt.wildmenu = true
 vim.cmd [[set wc=^N]]
 
-vim.api.nvim_create_autocmd('CmdlineChanged', {
-    pattern = { ':', '/', '?', '@' },
-    command = 'call wildtrigger()',
-})
+vim.opt.wildignore:append '.DS_Store'
+
+local ft = { ':', '/', '?', '@' }
+local f = function() vim.cmd 'call wildtrigger()' end
+_G.Config.new_autocmd('CmdlineChanged', ft, f)
 
 vim.api.nvim_create_autocmd('LspAttach', {
     callback = function(e)

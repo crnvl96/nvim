@@ -1,6 +1,14 @@
-local set = vim.keymap.set
+require('mini.extra').setup {}
+require('mini.misc').setup {}
+require('mini.align').setup {}
+require('mini.splitjoin').setup {}
 
-set('n', '-', '<Cmd>20 Lex<CR>')
+MiniMisc.setup_restore_cursor()
+MiniMisc.setup_auto_root()
+
+require('mini.bracketed').setup()
+
+vim.keymap.set('n', '-', '<Cmd>20 Lex<CR>')
 
 require('mini.files').setup {
     content = { prefix = function() end },

@@ -32,4 +32,50 @@ function M.default_cache()
         :totable()
 end
 
-return M
+local files_cache = {}
+
+vim.api.nvim_create_autocmd('CmdlineEnter', {
+    callback = function() files_cache = {} end,
+})
+
+function _G.Find(cmdarg, _cmdcomplete)
+    if #files_cache == 0 then
+        local findcmd = M.findcmd()
+        local cmd = findcmd and findcmd.cmd
+
+        if not cmd then
+            files_cache = M.default_cache()
+        else
+            files_cache = vim.fn.systemlist(cmd)
+        end
+    end
+
+    if #cmdarg == 0 then
+        return files_cache
+    else
+        return vim.fn.matchfuzzy(files_cache, cmdarg)
+    end
+end
+
+vim.o.findfunc = 'v:lua.Find'
+
+vim.keymap.set('n', '<Leader>f', ':find<space>', { desc = 'Find files' })
+
+if vim.fn.executable 'rg' then
+    vim.opt.grepprg = table.concat({
+        'rg',
+        '-H',
+        '--no-heading',
+        '--vimgrep',
+        '--glob=!.git/*',
+    }, ' ')
+
+    vim.opt.grepformat = '%f:%l:%c:%m'
+end
+
+vim.keymap.set('n', '<Leader>g', ":sil<space>grep!<space>''<left>", { desc = 'Grep' })
+
+vim.api.nvim_create_autocmd('QuickFixCmdPost', {
+    pattern = '*grep*',
+    command = 'copen',
+})
