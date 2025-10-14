@@ -1,8 +1,4 @@
----@class Mini
-local M = {}
-
----@class Mini.Colorschemes
-M.colorschemes = {
+local colorschemes = {
     gruvbox_material_dark_medium = {
         base00 = '#292828',
         base01 = '#32302f',
@@ -27,18 +23,17 @@ require('mini.extra').setup {}
 require('mini.misc').setup {}
 require('mini.align').setup {}
 require('mini.splitjoin').setup {}
+require('mini.colors').setup {}
+require('mini.base16').setup { palette = colorschemes.gruvbox_material_dark_medium, use_cterm = true }
+require('mini.bracketed').setup()
+require('mini.jump').setup()
+require('mini.move').setup()
+require('mini.trailspace').setup()
+require('mini.diff').setup { view = { style = 'sign' } }
 
 MiniMisc.setup_restore_cursor()
 MiniMisc.setup_auto_root()
 MiniMisc.setup_termbg_sync()
-
-require('mini.colors').setup {}
-
-require('mini.base16').setup {
-    palette = M.colorschemes.gruvbox_material_dark_medium,
-    use_cterm = true,
-}
-
 MiniColors.get_colorscheme()
     :add_transparency({
         general = true,
@@ -50,50 +45,35 @@ MiniColors.get_colorscheme()
     })
     :apply()
 
-require('mini.bracketed').setup()
-require('mini.indentscope').setup()
-require('mini.jump').setup()
-require('mini.move').setup()
-require('mini.trailspace').setup()
-require('mini.diff').setup { view = { style = 'sign' } }
-
-local ai = require 'mini.ai'
-ai.setup {
+require('mini.ai').setup {
     custom_textobjects = {
         g = MiniExtra.gen_ai_spec.buffer(),
-        f = ai.gen_spec.treesitter { a = '@function.outer', i = '@function.inner' },
+        f = require('mini.ai').gen_spec.treesitter { a = '@function.outer', i = '@function.inner' },
+        d = MiniExtra.gen_ai_spec.diagnostic(),
+        i = MiniExtra.gen_ai_spec.indent(),
     },
     search_method = 'cover',
 }
 
-local hipatterns = require 'mini.hipatterns'
-local hi_words = MiniExtra.gen_highlighter.words
-hipatterns.setup {
+require('mini.hipatterns').setup {
     highlighters = {
-        fixme = hi_words({ 'FIXME', 'Fixme', 'fixme' }, 'MiniHipatternsFixme'),
-        hack = hi_words({ 'HACK', 'Hack', 'hack' }, 'MiniHipatternsHack'),
-        todo = hi_words({ 'TODO', 'Todo', 'todo' }, 'MiniHipatternsTodo'),
-        note = hi_words({ 'NOTE', 'Note', 'note' }, 'MiniHipatternsNote'),
-        hex_color = hipatterns.gen_highlighter.hex_color(),
+        fixme = MiniExtra.gen_highlighter.words({ 'FIXME', 'Fixme', 'fixme' }, 'MiniHipatternsFixme'),
+        hack = MiniExtra.gen_highlighter.words({ 'HACK', 'Hack', 'hack' }, 'MiniHipatternsHack'),
+        todo = MiniExtra.gen_highlighter.words({ 'TODO', 'Todo', 'todo' }, 'MiniHipatternsTodo'),
+        note = MiniExtra.gen_highlighter.words({ 'NOTE', 'Note', 'note' }, 'MiniHipatternsNote'),
+        hex_color = require('mini.hipatterns').gen_highlighter.hex_color(),
     },
 }
 
 require('mini.files').setup {
     content = { prefix = function() end },
-    mappings = {
-        close = 'q',
-        go_in = '',
-        go_in_plus = '<CR>',
-        go_out = '',
-        go_out_plus = '-',
-        mark_goto = "'",
-        mark_set = 'm',
-        reset = '<BS>',
-        reveal_cwd = '@',
-        show_help = 'g?',
-        synchronize = '=',
-        trim_left = '<',
-        trim_right = '>',
+    mappings = { go_in = '', go_in_plus = '<CR>', go_out = '', go_out_plus = '-' },
+}
+
+require('mini.clue').setup {
+    triggers = {
+        { mode = 'n', keys = '<leader>' },
+        { mode = 'x', keys = '<leader>' },
     },
 }
 

@@ -1,132 +1,3 @@
----@class Util.Lsp
-local M = {}
-
---- Splits a string into arguments separated by spaces
----@param str string The string to split into arguments
----@return string[] List of arguments
-local function split_args(str) return vim.iter(str:gmatch '%S+'):totable() end
-
---- Completes client names based on partial input
----@param arg string The partial client name to complete
----@return string[] List of matching client names
-function M.complete_client(arg)
-    local result = vim.iter(vim.lsp.get_clients())
-        :map(function(client) return client.name end)
-        :filter(function(name) return name:sub(1, #arg) == arg end)
-        :totable()
-    return result
-end
-
---- Completes config names based on partial input and current filetype
----@param arg string The partial config name to complete
----@return string[] List of matching config names for current filetype
-function M.complete_config(arg)
-    local result = vim.iter(vim.api.nvim_get_runtime_file(('lsp/%s*.lua'):format(arg), true))
-        :map(function(path)
-            local file_name = path:match '[^/]*.lua$'
-            return file_name:sub(0, #file_name - 4)
-        end)
-        :filter(function(name)
-            local filetype = vim.bo.filetype
-            if not filetype then return false end
-
-            local filetypes = vim.lsp.config[name].filetypes
-            if not filetypes then return false end
-
-            return vim.tbl_contains(filetypes, filetype)
-        end)
-        :totable()
-    return result
-end
-
---- Validates server names and notifies invalid ones
----@param servers string[] List of server names to validate
----@return string[] List of valid server names
-local function validate_servers(servers)
-    return vim.iter(servers):filter(function(i) return vim.lsp.config[i] ~= nil end):totable()
-end
-
---- Enables or disables the given servers
----@param servers string[] List of server names to enable/disable
----@param enable boolean Whether to enable or disable the servers
-local function enable_servers(servers, enable)
-    vim.iter(servers):each(function(i) vim.lsp.enable(i, enable) end)
-end
-
---- Wrapper over diagnostic jumps
----@param next boolean Whethen to go forward or backward on the search
----@param severity? 'ERROR'|'WARN' type of diagnostic to search
-function M.diagnostic_goto(next, severity)
-    return function()
-        vim.diagnostic.jump {
-            count = (next and 1 or -1) * vim.v.count1,
-            severity = severity and vim.diagnostic.severity[severity] or nil,
-            float = true,
-        }
-    end
-end
-
---- Start Lsp server(s)
----@param info vim.api.keyset.create_user_command.command_args
-function M.lspstart(info)
-    local servers = split_args(info.args)
-    if #servers == 0 then
-        vim.notify 'You must provide at least one server'
-        return
-    end
-    local valid_servers = validate_servers(servers)
-    enable_servers(valid_servers, true)
-end
-
---- Stop Lsp server(s)
----@param info vim.api.keyset.create_user_command.command_args
-function M.lspstop(info)
-    local servers = split_args(info.args)
-    if #servers == 0 then
-        vim.notify 'You must provide at least one server'
-        return
-    end
-    local valid_servers = validate_servers(servers)
-    enable_servers(valid_servers, false)
-end
-
---- Restart Lsp server(s)
----@param info vim.api.keyset.create_user_command.command_args
-function M.lsprestart(info)
-    local clients = info.fargs
-    if #clients == 0 then
-        clients = vim.iter(vim.lsp.get_clients()):map(function(client) return client.name end):totable()
-    end
-    local valid_clients = validate_servers(clients)
-    enable_servers(valid_clients, false)
-    local timer = assert(vim.uv.new_timer())
-    timer:start(500, 0, function()
-        vim.schedule(function() enable_servers(valid_clients, true) end)
-    end)
-end
-
---- Specify the formatting of diagnostics
----@param d vim.Diagnostic The diagnostic to be formatted
-function M.format_diagnostic(d)
-    -- For now we only want to override the formatting of Ruff's diagnostics
-    -- The information about the diagnostic's source can be retrieved by the
-    -- function |:h vim.diagnostic.get()|
-    --
-    -- We normally wrap it inside MiniMisc.put_text(), so that the diagnostic
-    -- can be echoed in a buffer for us to better interpret it
-    if d.source ~= 'Ruff' then return d.message end
-    local href = d.user_data.lsp and d.user_data.lsp.codeDescription and d.user_data.lsp.codeDescription.href
-    if href then return ('%s - [%s] (%s)'):format(d.message, d.code, d.user_data.lsp.codeDescription.href) end
-    return ('%s - [%s]'):format(d.message, d.code)
-end
-
----For replacing certain <C-x>... keymaps.
----@param keys string
-function M.feedkeys(keys) vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(keys, true, false, true), 'n', true) end
-
----Is the completion menu open?
-function M.pumvisible() return tonumber(vim.fn.pumvisible()) ~= 0 end
-
 vim.diagnostic.config {
     update_in_insert = false,
     virtual_lines = false,
@@ -139,25 +10,6 @@ vim.diagnostic.config {
     signs = false,
     virtual_text = false,
 }
-
---- Creates a user command to start LSP servers
-vim.api.nvim_create_user_command(
-    'LspEnable',
-    function(info) M.lspstart(info) end,
-    { nargs = '+', complete = M.complete_config }
-)
---- Creates a user command to stop LSP servers
-vim.api.nvim_create_user_command(
-    'LspDisable',
-    function(info) M.lspstop(info) end,
-    { nargs = '+', complete = M.complete_client }
-)
---- Creates a user command to restart LSP clients
-vim.api.nvim_create_user_command(
-    'LspRestart',
-    function(info) M.lsprestart(info) end,
-    { nargs = '?', complete = M.complete_client }
-)
 
 vim.lsp.config('*', { capabilities = vim.lsp.protocol.make_client_capabilities() })
 
@@ -181,76 +33,172 @@ vim.api.nvim_create_autocmd({ 'BufReadPre', 'BufNewFile' }, {
     end,
 })
 
--- Setup lsp features
-local lsp = function(e)
-    local set = vim.keymap.set
-    local client = vim.lsp.get_client_by_id(e.data.client_id)
-    if not client then return end
-    local buf = e.buf
+vim.api.nvim_create_autocmd('LspAttach', {
+    callback = function(e)
+        local set = vim.keymap.set
+        local client = vim.lsp.get_client_by_id(e.data.client_id)
+        if not client then return end
+        local buf = e.buf
 
-    if not client then return end
+        if not client then return end
 
-    vim.bo[e.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
+        vim.bo[e.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
 
-    if client:supports_method 'textDocument/completion' then
-        ---@note
-        --- A test to see if we're ok with manually triggering via
-        --- <C-x><C-o>
-        ---
-        -- -- stylua: ignore
-        -- local chars = { 'a', 'e', 'i', 'o', 'u',
-        --                 'A', 'E', 'I', 'O', 'U',
-        --                 '.', ':', '_', '-' }
-        --
-        -- client.server_capabilities.completionProvider.triggerCharacters = chars
+        if client:supports_method 'textDocument/completion' then
+            -- stylua: ignore
+            local chars = { 'a', 'e', 'i', 'o', 'u',
+                            'A', 'E', 'I', 'O', 'U',
+                            '.', ':', '_', '-' }
 
-        vim.lsp.completion.enable(true, client.id, e.buf, {
-            -- Manual trigger with `<C-x><C-o>`
-            autotrigger = false,
-            convert = function(item)
-                local desc = item.labelDetails and item.labelDetails.description
-                if not desc then return {} end
-                return {
-                    menu = item.labelDetails.description,
-                    info = item.labelDetails.description,
-                }
-            end,
-        })
+            client.server_capabilities.completionProvider.triggerCharacters = chars
 
-        set('i', '<C-n>', function()
-            if M.pumvisible() then
-                M.feedkeys '<C-n>'
-            else
-                if next(vim.lsp.get_clients { bufnr = 0 }) then
-                    vim.lsp.completion.get()
+            vim.lsp.completion.enable(true, client.id, e.buf, {
+                autotrigger = true,
+                convert = function(item)
+                    local desc = item.labelDetails and item.labelDetails.description
+                    if not desc then return {} end
+                    return {
+                        menu = item.labelDetails.description,
+                        info = item.labelDetails.description,
+                    }
+                end,
+            })
+
+            local function feedkeys(keys)
+                vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(keys, true, false, true), 'n', true)
+            end
+
+            local function pumvisible() return tonumber(vim.fn.pumvisible()) ~= 0 end
+
+            local function handle_c_n_trigger()
+                if pumvisible() then
+                    feedkeys '<C-n>'
                 else
-                    if vim.bo.omnifunc == '' then
-                        M.feedkeys '<C-x><C-n>'
+                    if next(vim.lsp.get_clients { bufnr = 0 }) then
+                        vim.lsp.completion.get()
                     else
-                        M.feedkeys '<C-x><C-o>'
+                        if vim.bo.omnifunc == '' then
+                            feedkeys '<C-x><C-n>'
+                        else
+                            feedkeys '<C-x><C-o>'
+                        end
                     end
                 end
             end
-        end, { buffer = buf })
 
-        set('n', 'E', function() vim.diagnostic.open_float() end, { buffer = buf })
-        set('n', 'K', function() vim.lsp.buf.hover() end, { buffer = buf })
-        set('i', '<C-k>', function() vim.lsp.buf.signature_help() end, { buffer = buf })
-        set('n', 'ga', function() vim.lsp.buf.code_action() end, { buffer = buf })
-        set('n', 'gn', function() vim.lsp.buf.rename() end, { buffer = buf })
-        set('n', 'gd', function() vim.lsp.buf.definition { reuse_win = true } end, { buffer = buf })
-        set('n', 'gD', function() vim.lsp.buf.declaration() end, { buffer = buf })
-        set('n', 'gr', function() vim.lsp.buf.references() end, { buffer = buf, nowait = true })
-        set('n', 'gi', function() vim.lsp.buf.implementation { reuse_win = true } end, { buffer = buf })
-        set('n', 'gy', function() vim.lsp.buf.type_definition { reuse_win = true } end, { buffer = buf })
-        set('n', 'ge', function() vim.diagnostic.setqflist { open = true } end, { buffer = buf })
-        set('n', ']d', M.diagnostic_goto(true), { buffer = buf })
-        set('n', '[d', M.diagnostic_goto(false), { buffer = buf })
-        set('n', ']e', M.diagnostic_goto(true, 'ERROR'), { buffer = buf })
-        set('n', '[e', M.diagnostic_goto(false, 'ERROR'), { buffer = buf })
-        set('n', ']w', M.diagnostic_goto(true, 'WARN'), { buffer = buf })
-        set('n', '[w', M.diagnostic_goto(false, 'WARN'), { buffer = buf })
-    end
+            set('i', '<C-n>', handle_c_n_trigger, { buffer = buf })
+
+            local function diagnostic_goto(next, severity)
+                return function()
+                    vim.diagnostic.jump {
+                        count = (next and 1 or -1) * vim.v.count1,
+                        severity = severity and vim.diagnostic.severity[severity] or nil,
+                        float = true,
+                    }
+                end
+            end
+
+            set('n', 'E', function() vim.diagnostic.open_float() end, { buffer = buf })
+            set('n', 'K', function() vim.lsp.buf.hover() end, { buffer = buf })
+            set('i', '<C-k>', function() vim.lsp.buf.signature_help() end, { buffer = buf })
+            set('n', 'ga', function() vim.lsp.buf.code_action() end, { buffer = buf })
+            set('n', 'gn', function() vim.lsp.buf.rename() end, { buffer = buf })
+            set('n', 'gd', function() vim.lsp.buf.definition { reuse_win = true } end, { buffer = buf })
+            set('n', 'gD', function() vim.lsp.buf.declaration() end, { buffer = buf })
+            set('n', 'gr', function() vim.lsp.buf.references() end, { buffer = buf, nowait = true })
+            set('n', 'gi', function() vim.lsp.buf.implementation { reuse_win = true } end, { buffer = buf })
+            set('n', 'gy', function() vim.lsp.buf.type_definition { reuse_win = true } end, { buffer = buf })
+            set('n', 'ge', function() vim.diagnostic.setqflist { open = true } end, { buffer = buf })
+            set('n', ']d', diagnostic_goto(true), { buffer = buf })
+            set('n', '[d', diagnostic_goto(false), { buffer = buf })
+            set('n', ']e', diagnostic_goto(true, 'ERROR'), { buffer = buf })
+            set('n', '[e', diagnostic_goto(false, 'ERROR'), { buffer = buf })
+            set('n', ']w', diagnostic_goto(true, 'WARN'), { buffer = buf })
+            set('n', '[w', diagnostic_goto(false, 'WARN'), { buffer = buf })
+        end
+    end,
+})
+
+local function split_args(str) return vim.iter(str:gmatch '%S+'):totable() end
+
+local function validate_servers(servers)
+    return vim.iter(servers):filter(function(i) return vim.lsp.config[i] ~= nil end):totable()
 end
 
-_G.Config.new_autocmd('LspAttach', nil, lsp)
+local function enable_servers(servers, enable)
+    vim.iter(servers):each(function(i) vim.lsp.enable(i, enable) end)
+end
+
+--- Creates a user command to start LSP servers
+vim.api.nvim_create_user_command('LspEnable', function(info)
+    local servers = split_args(info.args)
+    if #servers == 0 then
+        vim.notify 'You must provide at least one server'
+        return
+    end
+    local valid_servers = validate_servers(servers)
+    enable_servers(valid_servers, true)
+end, {
+    nargs = '+',
+    complete = function(arg)
+        local result = vim.iter(vim.api.nvim_get_runtime_file(('lsp/%s*.lua'):format(arg), true))
+            :map(function(path)
+                local file_name = path:match '[^/]*.lua$'
+                return file_name:sub(0, #file_name - 4)
+            end)
+            :filter(function(name)
+                local filetype = vim.bo.filetype
+                if not filetype then return false end
+
+                local filetypes = vim.lsp.config[name].filetypes
+                if not filetypes then return false end
+
+                return vim.tbl_contains(filetypes, filetype)
+            end)
+            :totable()
+        return result
+    end,
+})
+
+--- Creates a user command to stop LSP servers
+vim.api.nvim_create_user_command('LspDisable', function(info)
+    local servers = split_args(info.args)
+    if #servers == 0 then
+        vim.notify 'You must provide at least one server'
+        return
+    end
+    local valid_servers = validate_servers(servers)
+    enable_servers(valid_servers, false)
+end, {
+    nargs = '+',
+    complete = function(arg)
+        local result = vim.iter(vim.lsp.get_clients())
+            :map(function(client) return client.name end)
+            :filter(function(name) return name:sub(1, #arg) == arg end)
+            :totable()
+        return result
+    end,
+})
+
+--- Creates a user command to restart LSP clients
+vim.api.nvim_create_user_command('LspRestart', function(info)
+    local clients = info.fargs
+    if #clients == 0 then
+        clients = vim.iter(vim.lsp.get_clients()):map(function(client) return client.name end):totable()
+    end
+    local valid_clients = validate_servers(clients)
+    enable_servers(valid_clients, false)
+    local timer = assert(vim.uv.new_timer())
+    timer:start(500, 0, function()
+        vim.schedule(function() enable_servers(valid_clients, true) end)
+    end)
+end, {
+    nargs = '?',
+    complete = function(arg)
+        local result = vim.iter(vim.lsp.get_clients())
+            :map(function(client) return client.name end)
+            :filter(function(name) return name:sub(1, #arg) == arg end)
+            :totable()
+        return result
+    end,
+})

@@ -1,17 +1,9 @@
 -- stylua: ignore start
-_G.Config = {}
 
 -- Avoid occupying the 'lua' namespace.
 -- Since it is shared across all plugins, it might lead to conflicts during
 -- require().
 local r = function(m) require('user.' .. m) end
-
--- Setup a "global" autocommand group
-local gr = vim.api.nvim_create_augroup('crnvl96-config', {})
-_G.Config.new_autocmd = function(event, pattern, callback)
-    local opts = { group = gr, pattern = pattern, callback = callback }
-    vim.api.nvim_create_autocmd(event, opts)
-end
 
 -- When entering NojeJS projects that have a local version of Node different
 -- from the global one, Neovim usually searches for packages using this local
@@ -97,37 +89,42 @@ vim.o.wildignorecase       = true
 vim.o.wildmenu             = true
 vim.o.wildmode             = 'noselect:lastused,full'
 vim.o.wildoptions          = table.concat({ 'pum', 'fuzzy' }, ',')
-vim.o.grepprg              = 'rg -H --no-heading --vimgrep --glob = !.git/*'
+vim.o.grepprg              = 'rg -H --no-heading --vimgrep --glob=!.git/*'
 vim.o.grepformat           = '%f:%l:%c:%m'
 
 vim.opt.wildignore:append '.DS_Store'
 vim.cmd [[set wc=^N]]
 
+vim.cmd 'filetype plugin indent on'
+if vim.fn.exists('syntax_on') ~= 1 then vim.cmd('syntax enable') end
+
 -- Automatically open qflist after grep command
-local g = function() vim.cmd 'copen' end
-_G.Config.new_autocmd('QuickFixCmdPost', '*grep*', g)
+vim.api.nvim_create_autocmd('QuickFixCmdPost', {
+    pattern = '*grep*',
+    callback = function() vim.cmd 'copen' end
+})
 
 -- Don't auto-wrap comments and don't insert comment leader after hitting 'o'.
 -- Do on `FileType` to always override these changes from filetype plugins.
-local f = function() vim.cmd 'setlocal formatoptions-=c formatoptions-=o' end
-_G.Config.new_autocmd('FileType', nil, f)
+vim.api.nvim_create_autocmd('FileType', {
+    callback = function() vim.cmd 'setlocal formatoptions-=c formatoptions-=o' end
+})
 
 -- Highlight on Yank
-local h = function() (vim.hl or vim.highlight).on_yank() end
-_G.Config.new_autocmd('TextYankPost', nil, h)
+vim.api.nvim_create_autocmd('TextYankPost', {
+    callback = function() (vim.hl or vim.highlight).on_yank() end
+})
 
 -- Trigger cmdline completion
-local ft = { ':', '/', '?', '@' }
-local w = function() vim.cmd 'call wildtrigger()' end
-_G.Config.new_autocmd('CmdlineChanged', ft, w)
-
-vim.cmd 'filetype plugin indent on'
+vim.api.nvim_create_autocmd('CmdlineChanged', {
+    pattern = { ':', '/', '?', '@' },
+    callback = function() vim.cmd 'call wildtrigger()' end
+})
 
 r 'keymaps'
 r 'pack'
-r 'treesitter'
+r 'plugins'
 r 'mini'
 r 'lsp'
 r 'picker'
-r 'formatter'
 -- stylua: ignore end
