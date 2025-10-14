@@ -71,6 +71,35 @@ vim.o.formatoptions = 'rqnl1j'
 vim.o.spelloptions = 'camel'
 vim.o.pumborder = 'double'
 
+vim.opt.fillchars = {
+    foldopen = '',
+    foldclose = '',
+    fold = '╌',
+    foldsep = ' ',
+    diff = '╱',
+    eob = '~',
+    horiz = '═',
+    horizdown = '╦',
+    horizup = '╩',
+    vert = '║',
+    verthoriz = '╬',
+    vertleft = '╣',
+    vertright = '╠',
+}
+
+vim.opt.listchars = {
+    extends = '…',
+    nbsp = '␣',
+    precedes = '…',
+    tab = '> ',
+    trail = '·',
+}
+
+vim.o.foldlevel = 10
+vim.o.foldmethod = 'indent'
+vim.o.foldnestmax = 10
+vim.o.foldtext = ''
+
 -- Pattern for a start of numbered list (used in `gw`). This reads as
 -- "Start of list item is: at least one special character (digit, -, +, *)
 -- possibly followed by punctuation (. or `)`) followed by at least one space".
@@ -81,6 +110,9 @@ vim.o.formatlistpat = [[^\s*[0-9\-\+\*]\+[\.\)]*\s\+]]
 local f = function() vim.cmd 'setlocal formatoptions-=c formatoptions-=o' end
 _G.Config.new_autocmd('FileType', nil, f)
 
+local h = function() (vim.hl or vim.highlight).on_yank() end
+_G.Config.new_autocmd('TextYankPost', nil, h)
+
 vim.cmd 'filetype plugin indent on'
 
 r 'keymaps'
@@ -89,6 +121,5 @@ r 'treesitter'
 r 'mini'
 r 'complete'
 r 'lsp'
-r 'ui'
 r 'picker'
 r 'formatter'

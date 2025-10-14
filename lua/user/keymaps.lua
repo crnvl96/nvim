@@ -1,5 +1,7 @@
 local set = vim.keymap.set
 
+set('n', '-', '<Cmd>20 Lex<CR>')
+
 set('n', '<C-Down>', '<Cmd>resize -5<CR>')
 set('n', '<C-Up>', '<Cmd>resize +5<CR>')
 set('n', '<C-Left>', '<Cmd>vertical resize -20<CR>')
@@ -10,8 +12,6 @@ set('n', '<C-h>', '<C-w>h')
 set('n', '<C-j>', '<C-w>j')
 set('n', '<C-k>', '<C-w>k')
 set('n', '<C-l>', '<C-w>l')
-set('x', '<', '<gv')
-set('x', '>', '>gv')
 set('x', 'p', 'P')
 set({ 'n', 'x', 'o' }, 'Y', 'yg_')
 set({ 'n', 'x' }, 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true })
