@@ -71,3 +71,5 @@ vim.api.nvim_create_user_command('Fmt', function()
     local buf = vim.api.nvim_get_current_buf()
     require('conform').format { bufnr = buf }
 end, {})
+
+vim.keymap.set('n', '<C-g>', '<Cmd>Git<CR>')

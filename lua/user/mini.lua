@@ -138,15 +138,65 @@ require('mini.files').setup {
 }
 
 require('mini.clue').setup {
+    triggers = {
+        -- Leader triggers
+        { mode = 'n', keys = '<Leader>' },
+        { mode = 'x', keys = '<Leader>' },
+
+        -- `[` and `]` keys
+        { mode = 'n', keys = '[' },
+        { mode = 'n', keys = ']' },
+
+        -- Built-in completion
+        { mode = 'i', keys = '<C-x>' },
+
+        -- `g` key
+        { mode = 'n', keys = 'g' },
+        { mode = 'x', keys = 'g' },
+
+        -- Marks
+        { mode = 'n', keys = "'" },
+        { mode = 'n', keys = '`' },
+        { mode = 'x', keys = "'" },
+        { mode = 'x', keys = '`' },
+
+        -- Registers
+        { mode = 'n', keys = '"' },
+        { mode = 'x', keys = '"' },
+        { mode = 'i', keys = '<C-r>' },
+        { mode = 'c', keys = '<C-r>' },
+
+        -- Window commands
+        { mode = 'n', keys = '<C-w>' },
+
+        -- `z` key
+        { mode = 'n', keys = 'z' },
+        { mode = 'x', keys = 'z' },
+    },
     clues = {
+        require('mini.clue').gen_clues.square_brackets(),
+        require('mini.clue').gen_clues.builtin_completion(),
+        require('mini.clue').gen_clues.g(),
+        require('mini.clue').gen_clues.marks(),
+        require('mini.clue').gen_clues.registers(),
+        require('mini.clue').gen_clues.windows(),
+        require('mini.clue').gen_clues.z(),
+
+        { mode = 'i', keys = '<C-x><C-f>', desc = 'File names' },
+        { mode = 'i', keys = '<C-x><C-l>', desc = 'Whole lines' },
+        { mode = 'i', keys = '<C-x><C-o>', desc = 'Omni completion' },
+        { mode = 'i', keys = '<C-x><C-s>', desc = 'Spelling suggestions' },
+        { mode = 'i', keys = '<C-x><C-u>', desc = "With 'completefunc'" },
+
         { mode = 'n', keys = '<Leader>f', desc = '+Find' },
         { mode = 'n', keys = '<Leader>l', desc = '+Lsp' },
         { mode = 'n', keys = '<Leader>b', desc = '+Buffers' },
         { mode = 'n', keys = '<Leader>t', desc = '+Term' },
-    },
-    triggers = {
-        { mode = 'n', keys = '<leader>' },
-        { mode = 'x', keys = '<leader>' },
+
+        { mode = 'n', keys = ']b', postkeys = ']' },
+        { mode = 'n', keys = '[b', postkeys = '[' },
+        { mode = 'n', keys = ']q', postkeys = ']' },
+        { mode = 'n', keys = '[q', postkeys = '[' },
     },
     window = {
         config = {},
