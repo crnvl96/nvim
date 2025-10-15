@@ -56,7 +56,7 @@ vim.o.laststatus           = 2
 vim.o.list                 = true
 vim.o.number               = true
 vim.o.pumborder            = 'double'
--- vim.o.pumblend             = 10
+vim.o.pumblend             = 0
 vim.o.pumheight            = 20
 vim.o.relativenumber       = true
 vim.o.ruler                = false
@@ -86,7 +86,7 @@ vim.o.wildignorecase       = true
 vim.o.wildmenu             = true
 vim.o.wildmode             = 'noselect:lastused,full'
 vim.o.wildoptions          = table.concat({ 'pum', 'fuzzy' }, ',')
--- vim.o.winblend             = 10
+vim.o.winblend             = 100
 vim.o.grepprg              = 'rg -H --no-heading --vimgrep --glob=!.git/*'
 vim.o.grepformat           = '%f:%l:%c:%m'
 
