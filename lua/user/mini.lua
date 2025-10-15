@@ -172,6 +172,9 @@ require('mini.clue').setup {
         -- `z` key
         { mode = 'n', keys = 'z' },
         { mode = 'x', keys = 'z' },
+
+        -- `\` (toggle) key
+        { mode = 'n', keys = [[\]] },
     },
     clues = {
         require('mini.clue').gen_clues.square_brackets(),
