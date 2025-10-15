@@ -15,6 +15,7 @@
     "MiniNotify",
     "MiniBufremove",
     "MiniStarter",
-    "MiniMap"
+    "MiniMap",
+        "MiniJump2d"
   ]
 }

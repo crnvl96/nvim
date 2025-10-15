@@ -50,17 +50,14 @@ vim.o.undofile             = true
 vim.o.undolevels           = 10000
 vim.o.updatetime           = 300
 vim.o.virtualedit          = 'block'
--- Pattern for a start of numbered list (used in `gw`). This reads as
--- "Start of list item is: at least one special character (digit, -, +, *)
--- possibly followed by punctuation (. or `)`) followed by at least one space".
-vim.o.formatlistpat        = [[^\s*[0-9\-\+\*]\+[\.\)]*\s\+]]
-vim.o.colorcolumn          = '+1'
 vim.o.cursorline           = true
 vim.o.cursorlineopt        = 'screenline,number'
 vim.o.laststatus           = 2
 vim.o.list                 = true
 vim.o.number               = true
 vim.o.pumborder            = 'double'
+-- vim.o.pumblend             = 10
+vim.o.pumheight            = 20
 vim.o.relativenumber       = true
 vim.o.ruler                = false
 vim.o.showcmd              = false
@@ -89,6 +86,7 @@ vim.o.wildignorecase       = true
 vim.o.wildmenu             = true
 vim.o.wildmode             = 'noselect:lastused,full'
 vim.o.wildoptions          = table.concat({ 'pum', 'fuzzy' }, ',')
+-- vim.o.winblend             = 10
 vim.o.grepprg              = 'rg -H --no-heading --vimgrep --glob=!.git/*'
 vim.o.grepformat           = '%f:%l:%c:%m'
 
@@ -98,24 +96,15 @@ vim.cmd [[set wc=^N]]
 vim.cmd 'filetype plugin indent on'
 if vim.fn.exists('syntax_on') ~= 1 then vim.cmd('syntax enable') end
 
--- Automatically open qflist after grep command
 vim.api.nvim_create_autocmd('QuickFixCmdPost', {
     pattern = '*grep*',
     callback = function() vim.cmd 'copen' end
 })
 
--- Don't auto-wrap comments and don't insert comment leader after hitting 'o'.
--- Do on `FileType` to always override these changes from filetype plugins.
 vim.api.nvim_create_autocmd('FileType', {
     callback = function() vim.cmd 'setlocal formatoptions-=c formatoptions-=o' end
 })
 
--- Highlight on Yank
-vim.api.nvim_create_autocmd('TextYankPost', {
-    callback = function() (vim.hl or vim.highlight).on_yank() end
-})
-
--- Trigger cmdline completion
 vim.api.nvim_create_autocmd('CmdlineChanged', {
     pattern = { ':', '/', '?', '@' },
     callback = function() vim.cmd 'call wildtrigger()' end

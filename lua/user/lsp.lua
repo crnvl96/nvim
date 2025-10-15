@@ -26,45 +26,6 @@ vim.api.nvim_create_autocmd({ 'BufReadPre', 'BufNewFile' }, {
     end,
 })
 
-vim.api.nvim_create_autocmd('LspAttach', {
-    callback = function(e)
-        local set = vim.keymap.set
-        local client = vim.lsp.get_client_by_id(e.data.client_id)
-        if not client then return end
-        local buf = e.buf
-
-        if not client then return end
-
-        local function diagnostic_goto(next, severity)
-            return function()
-                vim.diagnostic.jump {
-                    count = (next and 1 or -1) * vim.v.count1,
-                    severity = severity and vim.diagnostic.severity[severity] or nil,
-                    float = true,
-                }
-            end
-        end
-
-        set('n', 'E', function() vim.diagnostic.open_float() end, { buffer = buf })
-        set('n', 'K', function() vim.lsp.buf.hover() end, { buffer = buf })
-        set('i', '<C-k>', function() vim.lsp.buf.signature_help() end, { buffer = buf })
-        set('n', 'ga', function() vim.lsp.buf.code_action() end, { buffer = buf })
-        set('n', 'gn', function() vim.lsp.buf.rename() end, { buffer = buf })
-        set('n', 'gd', function() vim.lsp.buf.definition { reuse_win = true } end, { buffer = buf })
-        set('n', 'gD', function() vim.lsp.buf.declaration() end, { buffer = buf })
-        set('n', 'gr', function() vim.lsp.buf.references() end, { buffer = buf, nowait = true })
-        set('n', 'gi', function() vim.lsp.buf.implementation { reuse_win = true } end, { buffer = buf })
-        set('n', 'gy', function() vim.lsp.buf.type_definition { reuse_win = true } end, { buffer = buf })
-        set('n', 'ge', function() vim.diagnostic.setqflist { open = true } end, { buffer = buf })
-        set('n', ']d', diagnostic_goto(true), { buffer = buf })
-        set('n', '[d', diagnostic_goto(false), { buffer = buf })
-        set('n', ']e', diagnostic_goto(true, 'ERROR'), { buffer = buf })
-        set('n', '[e', diagnostic_goto(false, 'ERROR'), { buffer = buf })
-        set('n', ']w', diagnostic_goto(true, 'WARN'), { buffer = buf })
-        set('n', '[w', diagnostic_goto(false, 'WARN'), { buffer = buf })
-    end,
-})
-
 local function split_args(str) return vim.iter(str:gmatch '%S+'):totable() end
 
 local function validate_servers(servers)
