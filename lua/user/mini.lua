@@ -1,4 +1,22 @@
-vim.cmd.colorscheme 'miniwinter'
+-- stylua: ignore
+local hues = {
+    catppuccin   = { background = '#24273a', foreground = '#cad3f5' },
+    dracula      = { background = '#282a36', foreground = '#f8f8f2' },
+    kanagawa     = { background = '#1f1f28', foreground = '#dcd7ba' },
+    nord         = { background = '#2e3440', foreground = '#d8dee9' },
+    tokyonight   = { background = '#1a1b26', foreground = '#a9b1d6' },
+    everforest   = { background = '#2d353b', foreground = '#d3c6aa' },
+    osaka_jade   = { background = '#111c18', foreground = '#C1C497' },
+    ristretto    = { background = '#2c2525', foreground = '#e6d9db' },
+    monkey       = { background = '#32302f', foreground = '#e7aa5a' },
+    gruvbox      = { background = '#282828', foreground = '#ebdbb2' },
+    rose_pine    = { background = '#191724', foreground = '#e0def4' },
+}
+
+math.randomseed(vim.loop.hrtime())
+local keys = vim.tbl_keys(hues)
+local key = keys[math.random(#keys)]
+require('mini.hues').setup(hues[key])
 
 require('mini.extra').setup()
 require('mini.misc').setup()
@@ -22,9 +40,9 @@ require('mini.diff').setup {
     options = { algorithm = 'myers' },
 }
 
-require('mini.git').setup {
-    command = { split = 'vertical' },
-}
+-- require('mini.git').setup {
+--     command = { split = 'vertical' },
+-- }
 
 require('mini.operators').setup {
     evaluate = { prefix = 'g=' },

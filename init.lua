@@ -19,6 +19,7 @@ vim.o.autoindent           = true
 vim.o.autoread             = true
 vim.o.autowrite            = true
 vim.o.breakindent          = true
+vim.o.background           = 'dark'
 vim.o.breakindentopt       = 'list:-1'
 vim.o.clipboard            = 'unnamedplus'
 vim.o.expandtab            = true
