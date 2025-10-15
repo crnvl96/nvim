@@ -46,30 +46,6 @@ require('conform').setup {
         ['_'] = { 'trim_whitespace', 'trim_newlines' },
     },
     format_on_save = function()
-        vim.diagnostic.setqflist {
-            open = true,
-            severity = {
-                min = vim.diagnostic.severity.WARN,
-                max = vim.diagnostic.severity.ERROR,
-            },
-            format = function(d)
-                -- For now we only want to override the formatting of Ruff's diagnostics
-                -- The information about the diagnostic's source can be retrieved by the
-                -- function |:h vim.diagnostic.get()|
-                --
-                -- We normally wrap it inside MiniMisc.put_text(), so that the diagnostic
-                -- can be echoed in a buffer for us to better interpret it
-                if d.source ~= 'Ruff' then return d.message end
-                local href = d.user_data.lsp
-                    and d.user_data.lsp.codeDescription
-                    and d.user_data.lsp.codeDescription.href
-                if href then
-                    return ('%s - [%s] (%s)'):format(d.message, d.code, d.user_data.lsp.codeDescription.href)
-                end
-                return ('%s - [%s]'):format(d.message, d.code)
-            end,
-        }
-
         if not vim.g.autoformat then return nil end
         return {}
     end,
@@ -86,13 +62,11 @@ vim.api.nvim_create_autocmd('FileType', {
     end,
 })
 
---- Toggle autoformatting
 vim.api.nvim_create_user_command('FmtToggle', function()
     local t = vim.g.autoformat
     vim.g.autoformat = not t
 end, {})
 
---- Manual format
 vim.api.nvim_create_user_command('Fmt', function()
     local buf = vim.api.nvim_get_current_buf()
     require('conform').format { bufnr = buf }

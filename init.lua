@@ -75,7 +75,7 @@ vim.o.winminwidth          = 10
 vim.o.wrap                 = false
 vim.o.writebackup          = false
 vim.o.fillchars            = 'foldopen:,foldclose:,fold:╌,foldsep: ,diff:╱,eob:~,horiz:═,horizdown:╦,horizup:╩,vert:║,verthoriz:╬,vertleft:╣,vertright:╠'
-vim.opt.listchars          = 'extends:…,nbsp:␣,precedes:…,tab:> ,trail:·'
+vim.opt.listchars          = 'extends:…,nbsp:␣,precedes:…,tab:  ,trail:·'
 vim.o.foldlevel            = 10
 vim.o.foldmethod           = 'indent'
 vim.o.foldnestmax          = 10
@@ -126,5 +126,4 @@ r 'pack'
 r 'plugins'
 r 'mini'
 r 'lsp'
-r 'picker'
 -- stylua: ignore end

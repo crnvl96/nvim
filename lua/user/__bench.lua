@@ -1,0 +1,120 @@
+-- Picker
+-- local files_cache = {}
+--
+-- local function getcmd()
+--     local cmds = {
+--         { tool = 'fd', cmd = 'fd . --path-separator / --type f --hidden --follow --exclude .git' },
+--         { tool = 'fdfind', cmd = 'fdfind . --path-separator / --type f --hidden --follow --exclude .git' },
+--         { tool = 'rg', cmd = 'rg --path-separator / --files --hidden --glob !.git' },
+--         { tool = 'ugrep', cmd = 'ugrep "" -Rl -I --ignore-files' },
+--         { tool = 'find', cmd = 'find ! ( -path "*/.git" -prune -o -name "*.swp" ) -type f -follow' },
+--     }
+--
+--     return vim.iter(cmds):find(function(c) return vim.fn.executable(c.tool) == 1 end)
+-- end
+--
+-- local function default_cache()
+--     return vim.iter(vim.fn.globpath('.', '**', true, true))
+--         :filter(function(v) return vim.fn.isdirectory(v) == 0 end)
+--         :map(function(v) return vim.fn.substitute(v, '^.[/]', '', '') end)
+--         :flatten()
+--         :totable()
+-- end
+--
+-- function _G.Find(cmdarg, _cmdcomplete)
+--     if #files_cache == 0 then
+--         local findcmd = getcmd()
+--         local cmd = findcmd and findcmd.cmd
+--
+--         if not cmd then
+--             files_cache = default_cache()
+--         else
+--             files_cache = vim.fn.systemlist(cmd)
+--         end
+--     end
+--
+--     if #cmdarg == 0 then
+--         return files_cache
+--     else
+--         return vim.fn.matchfuzzy(files_cache, cmdarg)
+--     end
+-- end
+--
+-- vim.o.findfunc = 'v:lua.Find'
+--
+-- vim.api.nvim_create_autocmd('CmdlineEnter', {
+--     callback = function() files_cache = {} end,
+-- })
+--
+-- vim.keymap.set('n', '<Leader>f', ':find<space>', { desc = 'Find files' })
+-- vim.keymap.set('n', '<Leader>g', ":sil<space>grep!<space>''<left>", { desc = 'Grep' })
+
+--- Completion
+-- vim.lsp.config('*', { capabilities = vim.lsp.protocol.make_client_capabilities() })
+-- vim.bo[e.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
+--
+-- if client:supports_method 'textDocument/completion' then
+--     -- stylua: ignore
+--     local chars = { 'a', 'e', 'i', 'o', 'u',
+--                     'A', 'E', 'I', 'O', 'U',
+--                     '.', ':', '_', '-' }
+--
+--     client.server_capabilities.completionProvider.triggerCharacters = chars
+--
+--     vim.lsp.completion.enable(true, client.id, e.buf, {
+--         autotrigger = true,
+--         convert = function(item)
+--             local desc = item.labelDetails and item.labelDetails.description
+--             if not desc then return {} end
+--             return {
+--                 menu = item.labelDetails.description,
+--                 info = item.labelDetails.description,
+--             }
+--         end,
+--     })
+--
+--     local function feedkeys(keys)
+--         vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(keys, true, false, true), 'n', true)
+--     end
+--
+--     local function pumvisible() return tonumber(vim.fn.pumvisible()) ~= 0 end
+--
+--     local function handle_c_n_trigger()
+--         if pumvisible() then
+--             feedkeys '<C-n>'
+--         else
+--             if next(vim.lsp.get_clients { bufnr = 0 }) then
+--                 vim.lsp.completion.get()
+--             else
+--                 if vim.bo.omnifunc == '' then
+--                     feedkeys '<C-x><C-n>'
+--                 else
+--                     feedkeys '<C-x><C-o>'
+--                 end
+--             end
+--         end
+--     end
+--
+--     set('i', '<C-n>', handle_c_n_trigger, { buffer = buf })
+-- end
+
+-- Conform (inside `format_on_save` config opt)
+-- vim.diagnostic.setqflist {
+--     open = true,
+--     severity = {
+--         min = vim.diagnostic.severity.WARN,
+--         max = vim.diagnostic.severity.ERROR,
+--     },
+--     format = function(d)
+--         -- For now we only want to override the formatting of Ruff's diagnostics
+--         -- The information about the diagnostic's source can be retrieved by the
+--         -- function |:h vim.diagnostic.get()|
+--         --
+--         -- We normally wrap it inside MiniMisc.put_text(), so that the diagnostic
+--         -- can be echoed in a buffer for us to better interpret it
+--         if d.source ~= 'Ruff' then return d.message end
+--         local href = d.user_data.lsp and d.user_data.lsp.codeDescription and d.user_data.lsp.codeDescription.href
+--         if href then return ('%s - [%s] (%s)'):format(d.message, d.code, d.user_data.lsp.codeDescription.href) end
+--         return ('%s - [%s]'):format(d.message, d.code)
+--     end,
+-- }

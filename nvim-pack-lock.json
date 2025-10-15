@@ -17,18 +17,7 @@
       "rev": "1b2d85d",
       "src": "https://github.com/nvim-treesitter/nvim-treesitter-textobjects",
       "version": "'main'"
-    },
-    "vim-fugitive": {
-      "rev": "61b51c0",
-      "src": "https://github.com/tpope/vim-fugitive"
-    },
-    "vim-rhubarb": {
-      "rev": "5496d7c",
-      "src": "https://github.com/tpope/vim-rhubarb"
-    },
-    "vim-sleuth": {
-      "rev": "be69bff",
-      "src": "https://github.com/tpope/vim-sleuth"
     }
   }
 }
+
