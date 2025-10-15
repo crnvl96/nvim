@@ -12,12 +12,40 @@ require('mini.splitjoin').setup()
 require('mini.bracketed').setup()
 require('mini.jump').setup()
 require('mini.move').setup()
-require('mini.diff').setup { view = { style = 'sign' }, options = { algorithm = 'myers' } }
-require('mini.git').setup { command = { split = 'vertical' } }
 require('mini.pick').setup()
 require('mini.visits').setup()
 require('mini.keymap').setup()
 require('mini.pairs').setup()
+
+require('mini.diff').setup {
+    view = { style = 'sign' },
+    options = { algorithm = 'myers' },
+}
+
+require('mini.git').setup {
+    command = { split = 'vertical' },
+}
+
+require('mini.operators').setup {
+    evaluate = { prefix = 'g=' },
+    exchange = { prefix = 'gx' },
+    multiply = { prefix = 'gm' },
+    replace = { prefix = 'gr' },
+    sort = { prefix = 'gs' },
+}
+
+require('mini.surround').setup {
+    mappings = {
+        add = 'sa',
+        delete = 'sd',
+        find = 'sf',
+        find_left = 'sF',
+        highlight = 'sh',
+        replace = 'sr',
+        suffix_last = 'l',
+        suffix_next = 'n',
+    },
+}
 
 require('mini.basics').setup {
     options = {
@@ -71,6 +99,7 @@ require('mini.jump2d').setup {
     spotter = require('mini.jump2d').gen_spotter.pattern '[^%s%p]+',
     labels = "asdfghjkl'",
     view = { dim = true, n_steps_ahead = 1 },
+    mappings = { start_jumping = 'S' },
 }
 
 require('mini.icons').setup {
