@@ -11,6 +11,8 @@
     "MiniFiles",
     "MiniCompletion",
     "MiniDiff",
-    "MiniColors"
+    "MiniColors",
+    "MiniNotify",
+    "MiniBufremove"
   ]
 }

@@ -85,4 +85,8 @@ local qf_toggle = function()
 end
 
 set('n', '<Leader>x', qf_toggle, { desc = 'Toggle Quickfix List' })
+
+set('n','<leader>tT', '<Cmd>horizontal term<CR>', {desc='Terminal (horizontal)'})
+set('n','<leader>tt', '<Cmd>vertical term<CR>',   {desc='Terminal (vertical)'})
+
 -- stylua: ignore end

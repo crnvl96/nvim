@@ -126,5 +126,4 @@ r 'pack'
 r 'plugins'
 r 'mini'
 r 'lsp'
-r 'picker'
 -- stylua: ignore end
