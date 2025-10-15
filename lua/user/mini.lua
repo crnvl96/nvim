@@ -27,17 +27,6 @@ require('mini.basics').setup {
     },
     mappings = {
         basic = true,
-        -- - `b` - |'background'|.
-        -- - `c` - |'cursorline'|.
-        -- - `C` - |'cursorcolumn'|.
-        -- - `d` - diagnostic (via |vim.diagnostic| functions).
-        -- - `h` - |'hlsearch'| (or |v:hlsearch| to be precise).
-        -- - `i` - |'ignorecase'|.
-        -- - `l` - |'list'|.
-        -- - `n` - |'number'|.
-        -- - `r` - |'relativenumber'|.
-        -- - `s` - |'spell'|.
-        -- - `w` - |'wrap'|.
         option_toggle_prefix = [[\]],
         windows = true,
         move_with_alt = false,
