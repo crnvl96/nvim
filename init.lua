@@ -118,7 +118,7 @@ vim.api.nvim_create_autocmd('WinEnter', {
 
 r 'keymaps'
 r 'pack'
-r 'plugins'
 r 'mini'
+r 'plugins'
 r 'lsp'
 -- stylua: ignore end

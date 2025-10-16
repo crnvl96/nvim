@@ -3,18 +3,17 @@ vim.g.autoformat = true
 
 -- stylua: ignore
 local ensure_installed = {
-    'html', 'css',        'go',       'python',
-    'diff', 'bash',       'json',     'regex',
-    'toml', 'yaml',       'markdown', 'javascript',
-    'jsx',  'typescript', 'tsx',
+    'html',       'css',  'go',       'python',
+    'diff',       'bash', 'json',     'regex',
+    'toml',       'yaml', 'markdown', 'javascript',
+    'typescript', 'tsx'
 }
 
-local to_install = vim.tbl_filter(function(lang)
-    local has_parser = vim.api.nvim_get_runtime_file('parser/' .. lang .. '.*', false)
-    return #has_parser == 0
-end, ensure_installed)
-
-if #to_install > 0 then require('nvim-treesitter').install(to_install) end
+require('nvim-treesitter').install(
+    vim.iter(ensure_installed)
+        :filter(function(i) return #vim.api.nvim_get_runtime_file('parser/' .. i .. '.*', false) == 0 end)
+        :totable()
+)
 
 require('conform').setup {
     notify_on_error = false,
