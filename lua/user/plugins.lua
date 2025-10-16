@@ -61,14 +61,7 @@ vim.api.nvim_create_autocmd('FileType', {
     end,
 })
 
-vim.api.nvim_create_user_command('FmtToggle', function()
+vim.keymap.set('n', [[\f]], function()
     local t = vim.g.autoformat
     vim.g.autoformat = not t
-end, {})
-
-vim.api.nvim_create_user_command('Fmt', function()
-    local buf = vim.api.nvim_get_current_buf()
-    require('conform').format { bufnr = buf }
-end, {})
-
-vim.keymap.set('n', '<C-g>', '<Cmd>Git<CR>')
+end, { desc = "Toggle 'vim.g.autoformat'" })

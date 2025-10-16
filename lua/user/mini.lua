@@ -36,6 +36,8 @@ require('mini.visits').setup()
 require('mini.keymap').setup()
 require('mini.pairs').setup()
 
+require('mini.git').setup()
+
 require('mini.diff').setup {
     view = { style = 'sign' },
     options = { algorithm = 'myers' },
@@ -307,4 +309,6 @@ set('n', '<leader>ld', '<Cmd>Pick lsp scope="definition"<CR>',       { desc='Sou
 set('n', '<leader>ly', '<Cmd>Pick lsp scope="type_definition"<CR>',  { desc='Type definition' })
 set('n', '<leader>ls', '<Cmd>Pick lsp scope="document_symbol"<CR>',  { desc='Type definition' })
 set('n', '<leader>lw', '<Cmd>Pick lsp scope="workspace_symbol"<CR>', { desc='Type definition' })
+
+set('n', '<leader>gd', '<Cmd>lua MiniDiff.toggle_overlay()<CR>',     { desc='Diff this'         })
 -- stylua: ignore end
