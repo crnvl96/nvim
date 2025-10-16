@@ -34,7 +34,7 @@ require('conform').setup {
         javascriptreact = { 'prettierd' },
         typescript = { 'prettierd' },
         typescriptreact = { 'prettierd' },
-        python = { 'ruff_organize_imports', 'ruff_fix', 'ruff' },
+        python = { 'ruff_organize_imports', 'ruff_fix', 'ruff_format' },
         json = { 'prettierd' },
         jsonc = { 'prettierd' },
         less = { 'prettierd' },

@@ -111,6 +111,11 @@ vim.api.nvim_create_autocmd('CmdlineChanged', {
     callback = function() vim.cmd 'call wildtrigger()' end
 })
 
+vim.api.nvim_create_autocmd('WinEnter', {
+    pattern = 'term://*',
+    callback = function() vim.cmd 'startinsert' end
+})
+
 r 'keymaps'
 r 'pack'
 r 'plugins'

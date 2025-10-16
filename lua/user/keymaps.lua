@@ -13,6 +13,12 @@ set('n', 'Y', 'yg_')
 set('x', 'Y', 'yg_')
 set('o', 'Y', 'yg_')
 
+-- The most common wayt of navigating from/to a terminal
+set('t', '<C-h>', [[<C-\><C-N><C-w>h]])
+set('t', '<C-j>', [[<C-\><C-N><C-w>j]])
+set('t', '<C-k>', [[<C-\><C-N><C-w>k]])
+set('t', '<C-l>', [[<C-\><C-N><C-w>l]])
+
 set('n', 'H', 'mzgggqG`z<Cmd>delmarks z<CR>zz')
 set('x', 'H', 'gqzz')
 
