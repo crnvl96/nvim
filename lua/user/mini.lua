@@ -19,6 +19,8 @@ local hues = {
 -- require('mini.hues').setup(hues[key])
 require('mini.hues').setup(hues.gruvbox)
 
+require('mini.starter').setup()
+
 require('mini.extra').setup()
 require('mini.misc').setup()
 require('mini.statusline').setup()
@@ -36,7 +38,11 @@ require('mini.visits').setup()
 require('mini.keymap').setup()
 require('mini.pairs').setup()
 
-require('mini.git').setup()
+require('mini.git').setup {
+    command = {
+        split = 'vertical',
+    },
+}
 
 require('mini.diff').setup {
     view = { style = 'sign' },
