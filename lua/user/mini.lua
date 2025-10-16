@@ -17,7 +17,7 @@ local hues = {
 -- local keys = vim.tbl_keys(hues)
 -- local key = keys[math.random(#keys)]
 -- require('mini.hues').setup(hues[key])
-require('mini.hues').setup(hues.monkey)
+require('mini.hues').setup(hues.gruvbox)
 
 require('mini.extra').setup()
 require('mini.misc').setup()
@@ -40,7 +40,6 @@ require('mini.git').setup()
 
 require('mini.diff').setup {
     view = { style = 'sign' },
-    options = { algorithm = 'myers' },
 }
 
 require('mini.operators').setup {
@@ -311,4 +310,5 @@ set('n', '<leader>ls', '<Cmd>Pick lsp scope="document_symbol"<CR>',  { desc='Typ
 set('n', '<leader>lw', '<Cmd>Pick lsp scope="workspace_symbol"<CR>', { desc='Type definition' })
 
 set('n', '<leader>gd', '<Cmd>lua MiniDiff.toggle_overlay()<CR>',     { desc='Diff this'         })
+set('n', '<leader>gs', '<Cmd>Git status<CR>',     { desc='Diff this'         })
 -- stylua: ignore end
