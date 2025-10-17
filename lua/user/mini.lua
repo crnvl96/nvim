@@ -38,11 +38,15 @@ require('mini.visits').setup()
 require('mini.keymap').setup()
 require('mini.pairs').setup()
 
-require('mini.git').setup {
-    command = {
-        split = 'vertical',
-    },
-}
+require('mini.git').setup()
+
+vim.api.nvim_create_autocmd('User', {
+    pattern = 'MiniGitCommandSplit',
+    callback = function(e)
+        if e.data.git_subcommand ~= 'status' then return end
+        vim.bo.filetype = 'gitstatus'
+    end,
+})
 
 require('mini.diff').setup {
     view = { style = 'sign' },
@@ -235,6 +239,7 @@ require('mini.clue').setup {
         { mode = 'n', keys = '<Leader>l', desc = '+Lsp' },
         { mode = 'n', keys = '<Leader>b', desc = '+Buffers' },
         { mode = 'n', keys = '<Leader>t', desc = '+Term' },
+        { mode = 'n', keys = '<Leader>u', desc = '+UI' },
 
         { mode = 'n', keys = ']b', postkeys = ']' },
         { mode = 'n', keys = '[b', postkeys = '[' },

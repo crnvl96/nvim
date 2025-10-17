@@ -19,6 +19,9 @@ set('t', '<C-j>', [[<C-\><C-N><C-w>j]])
 set('t', '<C-k>', [[<C-\><C-N><C-w>k]])
 set('t', '<C-l>', [[<C-\><C-N><C-w>l]])
 
+set("n", "<leader>ui", vim.show_pos, { desc = "Inspect Pos" })
+set("n", "<leader>uI", function() vim.treesitter.inspect_tree() vim.api.nvim_input("I") end, { desc = "Inspect Tree" })
+
 set('n', 'H', 'mzgggqG`z<Cmd>delmarks z<CR>zz')
 set('x', 'H', 'gqzz')
 
