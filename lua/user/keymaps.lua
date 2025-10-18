@@ -7,6 +7,17 @@ set('n', '<C-d>', '<C-d>zz')
 set('n', '<C-u>', '<C-u>zz')
 
 set('x', 'p', 'P')
+-- Paste linewise before/after current line
+
+-- Usage: `yiw` to yank a word and `]p` to put it on the next line.
+set('n', '[p', '<Cmd>exe "put! " . v:register<CR>', { desc='Paste Above' })
+set('n', ']p', '<Cmd>exe "put "  . v:register<CR>', { desc='Paste Below' })
+
+local new_scratch_buffer = function()
+  vim.api.nvim_win_set_buf(0, vim.api.nvim_create_buf(true, true))
+end
+
+set('n', '<leader>bs', new_scratch_buffer, { desc='Scratch' })
 
 -- Yank till end of line
 set('n', 'Y', 'yg_')
