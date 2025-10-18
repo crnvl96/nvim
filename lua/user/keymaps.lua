@@ -54,16 +54,6 @@ set('n', 'N', "'nN'[v:searchforward].'zv'", { expr = true })
 set('x', 'N', "'nN'[v:searchforward]",      { expr = true })
 set('o', 'N', "'nN'[v:searchforward]",      { expr = true })
 
-local qf_toggle = function()
-    if vim.fn.getqflist({ winid = 0 }).winid ~= 0 then
-        vim.cmd 'cclose'
-    else
-        vim.cmd 'copen'
-    end
-end
-
-set('n', '<Leader>x', qf_toggle, { desc = 'Toggle Quickfix List' })
-
 set('n','<leader>tT', '<Cmd>horizontal term<CR>', {desc='Terminal (horizontal)'})
 set('n','<leader>tt', '<Cmd>vertical term<CR>',   {desc='Terminal (vertical)'})
 
