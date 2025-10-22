@@ -185,7 +185,30 @@ later(function()
   _G.Config.new_autocmd('User', 'MiniFilesExplorerOpen', add_marks, 'Add bookmarks')
 end)
 
-later(function() require('mini.git').setup() end)
+later(function()
+  require('mini.git').setup {
+    command = {
+      split = 'vertical',
+    },
+  }
+
+  local align_blame = function(au_data)
+    if au_data.data.git_subcommand ~= 'blame' then return end
+    local win_src = au_data.data.win_source
+    vim.wo.wrap = false
+    vim.fn.winrestview { topline = vim.fn.line('w0', win_src) }
+    vim.api.nvim_win_set_cursor(0, { vim.fn.line('.', win_src), 0 })
+    vim.wo[win_src].scrollbind, vim.wo.scrollbind = true, true
+  end
+  _G.Config.new_autocmd('User', 'MiniGitCommandSplit', align_blame)
+
+  local set_filetype = function(au_data)
+    if au_data.data.git_subcommand ~= 'status' then return end
+    local buf = vim.api.nvim_get_current_buf()
+    vim.bo[buf].filetype = 'gitstatus'
+  end
+  _G.Config.new_autocmd('User', 'MiniGitCommandSplit', set_filetype)
+end)
 
 later(function()
   local hipatterns = require 'mini.hipatterns'
