@@ -49,6 +49,11 @@ now_if_args(function()
 end)
 
 later(function()
+  add 'tpope/vim-fugitive'
+  add 'tpope/vim-rhubarb'
+end)
+
+later(function()
   add 'stevearc/conform.nvim'
 
   vim.g.autoformat = true
