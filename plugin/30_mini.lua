@@ -245,6 +245,10 @@ later(function()
   MiniKeymap.map_multistep('i', '<C-p>', { 'pmenu_prev' })
   MiniKeymap.map_multistep('i', '<CR>', { 'pmenu_accept', 'minipairs_cr' })
   MiniKeymap.map_multistep('i', '<BS>', { 'minipairs_bs' })
+
+  local mode = { 'i', 'c', 'x', 's' }
+  require('mini.keymap').map_combo(mode, 'jk', '<BS><BS><Esc>')
+  require('mini.keymap').map_combo(mode, 'kj', '<BS><BS><Esc>')
 end)
 
 later(function() require('mini.move').setup() end)
