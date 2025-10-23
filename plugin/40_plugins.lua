@@ -45,6 +45,7 @@ now_if_args(function()
     'pyright',
     'ruff',
     'ts_ls',
+    'clojure_lsp',
   }
 end)
 
