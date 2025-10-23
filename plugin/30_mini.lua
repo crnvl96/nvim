@@ -122,6 +122,8 @@ later(function()
     triggers = {
       { mode = 'n', keys = '<Leader>' },
       { mode = 'x', keys = '<Leader>' },
+      { mode = 'n', keys = '<Localleader>' },
+      { mode = 'x', keys = '<Localleader>' },
       { mode = 'n', keys = '\\' },
       { mode = 'n', keys = '[' },
       { mode = 'n', keys = ']' },
@@ -243,6 +245,8 @@ later(function()
   local mode = { 'i', 'c', 'x', 's' }
   require('mini.keymap').map_combo(mode, 'jk', '<BS><BS><Esc>')
   require('mini.keymap').map_combo(mode, 'kj', '<BS><BS><Esc>')
+  require('mini.keymap').map_combo('t', 'jk', '<BS><BS><C-\\><C-n>')
+  require('mini.keymap').map_combo('t', 'kj', '<BS><BS><C-\\><C-n>')
 end)
 
 later(function() require('mini.move').setup() end)

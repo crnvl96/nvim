@@ -9,6 +9,7 @@
         "MiniFiles",
         "MiniKeymap",
         "MiniColors",
-        "MiniNotify"
+        "MiniNotify",
+        "MiniClue"
     ]
 }
