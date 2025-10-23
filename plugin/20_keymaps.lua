@@ -22,8 +22,16 @@ local xmap_leader = function(suffix, rhs, desc) vim.keymap.set('x', '<Leader>' .
 
 local new_scratch_buffer = function() vim.api.nvim_win_set_buf(0, vim.api.nvim_create_buf(true, true)) end
 
+local deleteothers = function()
+  local cur = vim.api.nvim_get_current_buf()
+  vim.iter(vim.api.nvim_list_bufs()):each(function(buf)
+    if buf ~= cur then MiniBufremove.delete(buf) end
+  end)
+end
+
 nmap_leader('bd', '<Cmd>lua MiniBufremove.delete()<CR>', 'Delete')
 nmap_leader('bD', '<Cmd>lua MiniBufremove.delete(0, true)<CR>', 'Delete!')
+nmap_leader('bo', deleteothers, 'Delete others')
 nmap_leader('bs', new_scratch_buffer, 'Scratch')
 nmap_leader('bw', '<Cmd>lua MiniBufremove.wipeout()<CR>', 'Wipeout')
 nmap_leader('bW', '<Cmd>lua MiniBufremove.wipeout(0, true)<CR>', 'Wipeout!')
@@ -31,16 +39,21 @@ nmap_leader('bW', '<Cmd>lua MiniBufremove.wipeout(0, true)<CR>', 'Wipeout!')
 local edit_plugin_file = function(filename)
   return string.format('<Cmd>edit %s/plugin/%s<CR>', vim.fn.stdpath 'config', filename)
 end
-local explore_at_file = '<Cmd>lua MiniFiles.open(vim.api.nvim_buf_get_name(0))<CR>'
+
 local explore_quickfix = function()
-  for _, win_id in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
-    if vim.fn.getwininfo(win_id)[1].quickfix == 1 then return vim.cmd 'cclose' end
+  local has_qf = vim
+    .iter(vim.api.nvim_tabpage_list_wins(0))
+    :any(function(win) return vim.fn.getwininfo(win)[1].quickfix == 1 end)
+
+  if has_qf then
+    vim.cmd 'cclose'
+  else
+    vim.cmd 'copen'
   end
-  vim.cmd 'copen'
 end
 
 nmap_leader('ed', '<Cmd>lua MiniFiles.open()<CR>', 'Directory')
-nmap_leader('ef', explore_at_file, 'File directory')
+nmap_leader('ef', '<Cmd>lua MiniFiles.open(vim.api.nvim_buf_get_name(0))<CR>', 'File directory')
 nmap_leader('ei', '<Cmd>edit $MYVIMRC<CR>', 'init.lua')
 nmap_leader('ek', edit_plugin_file '20_keymaps.lua', 'Keymaps config')
 nmap_leader('em', edit_plugin_file '30_mini.lua', 'MINI config')
@@ -99,8 +112,8 @@ nmap_leader('la', '<Cmd>lua vim.lsp.buf.code_action()<CR>', 'Actions')
 nmap_leader('ld', '<Cmd>Pick lsp scope="definition"<CR>', 'Source definition')
 nmap_leader('le', '<Cmd>lua vim.diagnostic.open_float()<CR>', 'Diagnostic popup')
 nmap_leader('lf', formatting_cmd, 'Format')
-nmap_leader('lh', '<Cmd>lua vim.lsp.buf.hover()<CR>', 'Hover')
 nmap_leader('li', '<Cmd>Pick lsp scope="implementation"<CR>', 'Implementation')
+nmap_leader('lk', '<Cmd>lua vim.lsp.buf.hover()<CR>', 'Hover')
 nmap_leader('ln', '<Cmd>lua vim.lsp.buf.rename()<CR>', 'Rename')
 nmap_leader('lr', '<Cmd>Pick lsp scope="references"<CR>', 'References')
 nmap_leader('ls', '<Cmd>Pick lsp scope="workspace_symbol"<CR>', 'Symbols workspace')

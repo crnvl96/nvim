@@ -14,7 +14,7 @@ now(function()
   }
 
   require('mini.colors').setup()
-  require('mini.hues').setup(hues.everforest)
+  require('mini.hues').setup(hues.nord)
 
   MiniColors.get_colorscheme()
     :add_transparency({
@@ -49,6 +49,19 @@ now(function()
 
   later(MiniIcons.mock_nvim_web_devicons)
   later(MiniIcons.tweak_lsp_kind)
+end)
+
+now(function()
+  require('mini.notify').setup {
+    content = {
+      sort = function(notif_arr)
+        return MiniNotify.default_sort(vim.tbl_filter(function(notif)
+          if not (notif.data.source == 'lsp_progress' and notif.data.client_name == 'lua_ls') then return true end
+          return notif.msg:find 'Diagnosing' == nil and notif.msg:find 'semantic tokens' == nil
+        end, notif_arr))
+      end,
+    },
+  }
 end)
 
 now_if_args(function()
@@ -142,20 +155,28 @@ end)
 later(function() require('mini.comment').setup() end)
 
 later(function()
-  local process_items_opts = { kind_priority = { Text = -1, Snippet = -1 } }
-  local process_items = function(items, base)
-    return MiniCompletion.default_process_items(items, base, process_items_opts)
-  end
   require('mini.completion').setup {
     lsp_completion = {
       source_func = 'omnifunc',
       auto_setup = false,
-      process_items = process_items,
+      process_items = function(items, base)
+        return MiniCompletion.default_process_items(items, base, {
+          kind_priority = {
+            Text = -1,
+            Snippet = -1,
+          },
+        })
+      end,
     },
   }
 
-  local on_attach = function(ev) vim.bo[ev.buf].omnifunc = 'v:lua.MiniCompletion.completefunc_lsp' end
-  _G.Config.new_autocmd('LspAttach', nil, on_attach, "Set 'omnifunc'")
+  _G.Config.new_autocmd(
+    'LspAttach',
+    nil,
+    function(ev) vim.bo[ev.buf].omnifunc = 'v:lua.MiniCompletion.completefunc_lsp' end,
+    "Set 'omnifunc'"
+  )
+
   vim.lsp.config('*', { capabilities = MiniCompletion.get_lsp_capabilities() })
 end)
 
