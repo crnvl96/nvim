@@ -17,22 +17,22 @@ now_if_args(function()
     'html',       'css',  'go',       'python',
     'diff',       'bash', 'json',     'regex',
     'toml',       'yaml', 'markdown', 'javascript',
-    'typescript', 'tsx',  'lua',      'vimdoc'
+    'typescript', 'tsx',  'rust',     'lua', 'vimdoc'
   }
 
-  require('nvim-treesitter').install(
-    vim
-      .iter(languages)
-      :filter(function(lang) return #vim.api.nvim_get_runtime_file('parser/' .. lang .. '.*', false) == 0 end)
-      :totable()
-  )
+  local isnt_installed = function(lang) return #vim.api.nvim_get_runtime_file('parser/' .. lang .. '.*', false) == 0 end
+  local to_install = vim.tbl_filter(isnt_installed, languages)
+  if #to_install > 0 then require('nvim-treesitter').install(to_install) end
 
-  _G.Config.new_autocmd(
-    'FileType',
-    vim.iter(languages):map(vim.treesitter.language.get_filetypes):flatten():totable(),
-    function(ev) vim.treesitter.start(ev.buf) end,
-    'Start tree-sitter'
-  )
+  local filetypes = {}
+  for _, lang in ipairs(languages) do
+    for _, ft in ipairs(vim.treesitter.language.get_filetypes(lang)) do
+      table.insert(filetypes, ft)
+    end
+  end
+
+  local ts_start = function(ev) vim.treesitter.start(ev.buf) end
+  _G.Config.new_autocmd('FileType', filetypes, ts_start, 'Start tree-sitter')
 end)
 
 now_if_args(function()

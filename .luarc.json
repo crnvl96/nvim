@@ -8,8 +8,6 @@
         "MiniCompletion",
         "MiniFiles",
         "MiniKeymap",
-        "MiniColors",
-        "MiniBufremove",
-        "MiniNotify"
+        "MiniColors"
     ]
 }
