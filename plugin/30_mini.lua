@@ -28,6 +28,18 @@ now(function()
     :apply()
 end)
 
+now(function()
+  local custom_sort = function(notif_arr)
+    return MiniNotify.default_sort(vim.tbl_filter(function(notif)
+      if not (notif.data.source == 'lsp_progress' and notif.data.client_name == 'lua_ls') then return true end
+      return notif.msg:find 'Diagnosing' == nil and notif.msg:find 'semantic tokens' == nil
+    end, notif_arr))
+  end
+
+  require('mini.notify').setup { content = { sort = custom_sort } }
+  require('mini.notify').make_notify()
+end)
+
 now(
   function()
     require('mini.basics').setup {
@@ -151,6 +163,13 @@ later(function()
       source_func = 'omnifunc',
       auto_setup = false,
       process_items = process_items,
+    },
+    fallback_action = '<C-x><C-l>',
+    mappings = {
+      force_twostep = '<C-n>',
+      force_fallback = '<A-n>',
+      scroll_down = '<C-d>',
+      scroll_up = '<C-u>',
     },
   }
 
