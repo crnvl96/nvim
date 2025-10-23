@@ -103,10 +103,9 @@ nmap_leader('lh', '<Cmd>lua vim.lsp.buf.hover()<CR>', 'Hover')
 nmap_leader('li', '<Cmd>Pick lsp scope="implementation"<CR>', 'Implementation')
 nmap_leader('ln', '<Cmd>lua vim.lsp.buf.rename()<CR>', 'Rename')
 nmap_leader('lr', '<Cmd>Pick lsp scope="references"<CR>', 'References')
-nmap_leader('ls', '<Cmd>Pick lsp scope="workspace_symbol"<CR>', 'Symbols workspace')
+nmap_leader('lS', '<Cmd>Pick lsp scope="workspace_symbol"<CR>', 'Symbols workspace')
 nmap_leader('ly', '<CmdPick lsp scope="type_definition"<CR>', 'Type definition')
-
-nmap_leader('lS', '<Cmd>Pick lsp scope="document_symbol"<CR>', 'Symbols document')
+nmap_leader('ls', '<Cmd>Pick lsp scope="document_symbol"<CR>', 'Symbols document')
 
 xmap_leader('lf', formatting_cmd, 'Format selection')
 
