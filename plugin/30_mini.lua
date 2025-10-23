@@ -80,6 +80,7 @@ now(function()
     items = {
       starter.sections.builtin_actions(),
       starter.sections.sessions(10, true),
+      starter.sections.pick(),
     },
     content_hooks = {
       starter.gen_hook.adding_bullet(),
