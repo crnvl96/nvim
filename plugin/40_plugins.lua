@@ -86,6 +86,7 @@ later(function()
       markdown = { 'prettier', 'injected', timeout_ms = 1500 },
       css = { 'prettier' },
       clojure = { lsp_format = 'prefer', name = 'clojure_lsp' },
+      java = { lsp_format = 'prefer', name = 'jdtls' },
       scss = { 'prettier' },
       yaml = { 'prettier' },
       ['_'] = { 'trim_whitespace', 'trim_newlines' },

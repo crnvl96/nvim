@@ -31,8 +31,15 @@ end)
 now(function()
   local custom_sort = function(notif_arr)
     return MiniNotify.default_sort(vim.tbl_filter(function(notif)
-      if not (notif.data.source == 'lsp_progress' and notif.data.client_name == 'lua_ls') then return true end
-      return notif.msg:find 'Diagnosing' == nil and notif.msg:find 'semantic tokens' == nil
+      if notif.data.source == 'lsp_progress' and notif.data.client_name == 'lua_ls' then
+        return notif.msg:find 'Diagnosing' == nil and notif.msg:find 'semantic tokens' == nil
+      end
+
+      if notif.data.client_name == 'jdtls' then
+        return notif.msg:find 'Validate documents' == nil and notif.msg:find 'Publish Diagnostics' == nil
+      end
+
+      return true
     end, notif_arr))
   end
 
