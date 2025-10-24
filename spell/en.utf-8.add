@@ -22,3 +22,7 @@ kubernetes
 dynamodb
 aws
 communications-service
+timestamp
+eventoo
+parameters.event
+blip.ticket
