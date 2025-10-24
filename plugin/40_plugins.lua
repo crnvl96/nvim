@@ -36,8 +36,10 @@ now_if_args(function()
 end)
 
 now_if_args(function()
+  add 'mfussenegger/nvim-jdtls'
   add 'neovim/nvim-lspconfig'
 
+  -- NOTE: jdtls is added as well, but via ftplugin/java.lua
   vim.lsp.enable {
     'eslint',
     'gopls',
@@ -46,7 +48,6 @@ now_if_args(function()
     'ruff',
     'ts_ls',
     'clojure_lsp',
-    'jdtls',
   }
 end)
 

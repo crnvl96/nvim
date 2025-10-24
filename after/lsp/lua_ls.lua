@@ -7,7 +7,7 @@ return {
       runtime = { version = 'LuaJIT', path = vim.split(package.path, ';') },
       workspace = {
         ignoreSubmodules = true,
-        library = { vim.env.VIMRUNTIME },
+        library = { vim.env.VIMRUNTIME, '${3rd}/luv/library' },
       },
     },
   },
