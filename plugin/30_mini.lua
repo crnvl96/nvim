@@ -78,24 +78,6 @@ now_if_args(function()
   MiniMisc.setup_termbg_sync()
 end)
 
-now(function() require('mini.sessions').setup() end)
-
-now(function()
-  local starter = require 'mini.starter'
-  starter.setup {
-    evaluate_single = true,
-    items = {
-      starter.sections.builtin_actions(),
-      starter.sections.sessions(10, true),
-      starter.sections.pick(),
-    },
-    content_hooks = {
-      starter.gen_hook.adding_bullet(),
-      starter.gen_hook.aligning('center', 'center'),
-    },
-  }
-end)
-
 now(function() require('mini.statusline').setup() end)
 now(function() require('mini.tabline').setup() end)
 
