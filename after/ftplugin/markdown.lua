@@ -1,5 +1,5 @@
 vim.cmd 'setlocal spell wrap'
-
+vim.cmd 'setlocal colorcolumn=81'
 vim.cmd 'setlocal foldmethod=expr foldexpr=v:lua.vim.treesitter.foldexpr()'
 
 vim.bo.shiftwidth = 2
