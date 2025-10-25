@@ -3,7 +3,7 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ','
 
 vim.o.mouse = 'a'
-vim.o.mousescroll = 'ver:25,hor:6'
+vim.o.mousescroll = 'ver:1,hor:2'
 vim.o.switchbuf = 'usetab'
 vim.o.undofile = true
 
@@ -50,12 +50,12 @@ vim.o.formatoptions = 'rqnl1j'
 vim.o.ignorecase = true
 vim.o.incsearch = true
 vim.o.infercase = true
-vim.o.shiftwidth = 2
+vim.o.shiftwidth = 4
 vim.o.smartcase = true
 vim.o.smartindent = true
 vim.o.spelllang = 'en,pt'
 vim.o.spelloptions = 'camel'
-vim.o.tabstop = 2
+vim.o.tabstop = 4
 vim.o.virtualedit = 'block'
 
 vim.o.iskeyword = '@,48-57,_,192-255,-'

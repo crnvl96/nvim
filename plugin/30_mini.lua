@@ -156,13 +156,6 @@ later(function()
       auto_setup = false,
       process_items = process_items,
     },
-    fallback_action = '<C-x><C-l>',
-    mappings = {
-      force_twostep = '<C-n>',
-      force_fallback = '<A-n>',
-      scroll_down = '<C-d>',
-      scroll_up = '<C-u>',
-    },
   }
 
   local on_attach = function(ev) vim.bo[ev.buf].omnifunc = 'v:lua.MiniCompletion.completefunc_lsp' end
