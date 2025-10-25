@@ -1,0 +1,7 @@
+{
+  "local": {
+    "prefix": "l",
+    "body": "local $1 = $0",
+    "description": "Declare a variable"
+  }
+}

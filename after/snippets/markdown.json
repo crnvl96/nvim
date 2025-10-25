@@ -1,0 +1,6 @@
+{
+  "Code block": {
+    "prefix": "cblock",
+    "body": "```$1\n$0\n```"
+  }
+}

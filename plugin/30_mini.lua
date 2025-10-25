@@ -242,6 +242,22 @@ end)
 later(function() require('mini.move').setup() end)
 
 later(function()
+  local lang_patterns = {
+    markdown_inline = { 'markdown.json' },
+  }
+
+  local snippets = require 'mini.snippets'
+  local config_path = vim.fn.stdpath 'config'
+
+  snippets.setup {
+    snippets = {
+      snippets.gen_loader.from_file(config_path .. '/snippets/global.json'),
+      snippets.gen_loader.from_lang { lang_patterns = lang_patterns },
+    },
+  }
+end)
+
+later(function()
   require('mini.operators').setup()
   vim.keymap.set('n', '(', 'gxiagxila', { remap = true, desc = 'Swap arg left' })
   vim.keymap.set('n', ')', 'gxiagxina', { remap = true, desc = 'Swap arg right' })

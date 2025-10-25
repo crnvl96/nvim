@@ -10,6 +10,7 @@
         "MiniKeymap",
         "MiniColors",
         "MiniNotify",
-        "MiniClue"
+        "MiniClue",
+        "MiniSnippets"
     ]
 }
