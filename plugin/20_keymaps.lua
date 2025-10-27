@@ -1,8 +1,37 @@
+local map = function(mode, lhs, rhs, opts) vim.keymap.set(mode, lhs, rhs, opts) end
 local nmap = function(lhs, rhs, desc) vim.keymap.set('n', lhs, rhs, { desc = desc }) end
 
 nmap('[p', '<Cmd>exe "put! " . v:register<CR>', 'Paste Above')
 nmap(']p', '<Cmd>exe "put "  . v:register<CR>', 'Paste Below')
 nmap('<C-5>', '<Cmd>noh<CR>', 'Clear Highlights')
+
+map({ 'n', 'x' }, 'j', [[v:count == 0 ? 'gj' : 'j']], { expr = true })
+map({ 'n', 'x' }, 'k', [[v:count == 0 ? 'gk' : 'k']], { expr = true })
+map({ 'n', 'i', 'x' }, '<C-s>', '<Esc>:noh<CR>:w<CR>')
+
+map('n', '<C-H>', '<C-w>h', { desc = 'Focus on left window' })
+map('n', '<C-J>', '<C-w>j', { desc = 'Focus on below window' })
+map('n', '<C-K>', '<C-w>k', { desc = 'Focus on above window' })
+map('n', '<C-L>', '<C-w>l', { desc = 'Focus on right window' })
+
+map('n', '<C-Left>', '<Cmd>vertical resize -20<CR>')
+map('n', '<C-Down>', '<Cmd>resize -5<CR>')
+map('n', '<C-Up>', '<Cmd>resize +5<CR>')
+map('n', '<C-Right>', '<Cmd>vertical resize +20<CR>')
+
+map('c', '<M-h>', '<Left>', { silent = false, desc = 'Left' })
+map('c', '<M-l>', '<Right>', { silent = false, desc = 'Right' })
+
+-- Don't `noremap` in insert mode to have these keybindings behave exactly like arrows
+map('i', '<M-h>', '<Left>', { noremap = false, desc = 'Left' })
+map('i', '<M-j>', '<Down>', { noremap = false, desc = 'Down' })
+map('i', '<M-k>', '<Up>', { noremap = false, desc = 'Up' })
+map('i', '<M-l>', '<Right>', { noremap = false, desc = 'Right' })
+
+map('t', '<M-h>', '<Left>', { desc = 'Left' })
+map('t', '<M-j>', '<Down>', { desc = 'Down' })
+map('t', '<M-k>', '<Up>', { desc = 'Up' })
+map('t', '<M-l>', '<Right>', { desc = 'Right' })
 
 _G.Config.leader_group_clues = {
   { mode = 'n', keys = '<Leader>b', desc = '+Buffer' },

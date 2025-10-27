@@ -15,7 +15,7 @@ now_if_args(function()
   -- stylua: ignore
   local languages = {
     'html',       'css',  'go',       'python',
-    'diff',       'bash', 'json',     'regex',
+    'diff',       'bash', 'json',     'regex',      'lisp',
     'toml',       'yaml', 'markdown', 'javascript', 'clojure',
     'typescript', 'tsx',  'rust',     'lua',        'vimdoc', 'java'
   }

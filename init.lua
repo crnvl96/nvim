@@ -20,3 +20,12 @@ _G.Config.new_autocmd = function(event, pattern, callback, desc)
 end
 
 _G.Config.now_if_args = vim.fn.argc(-1) > 0 and MiniDeps.now or MiniDeps.later
+
+local f = function() vim.highlight.on_yank() end
+_G.Config.new_autocmd('TextYankPost', '*', f, 'Highlight yanked text')
+
+local start_terminal_insert = vim.schedule_wrap(function(data)
+  if not (vim.api.nvim_get_current_buf() == data.buf and vim.bo.buftype == 'terminal') then return end
+  vim.cmd 'startinsert'
+end)
+_G.Config.new_autocmd('TermOpen', 'term://*', start_terminal_insert, 'Start builtin terminal in Insert mode')

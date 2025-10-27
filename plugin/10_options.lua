@@ -6,6 +6,7 @@ vim.o.mouse = 'a'
 vim.o.mousescroll = 'ver:1,hor:2'
 vim.o.switchbuf = 'usetab'
 vim.o.undofile = true
+vim.o.clipboard = 'unnamedplus'
 
 vim.o.shada = "'100,<50,s10,:1000,/100,@100,h"
 vim.o.swapfile = false
@@ -32,6 +33,7 @@ vim.o.splitkeep = 'screen'
 vim.o.splitright = true
 vim.o.winborder = 'single'
 vim.o.wrap = false
+vim.o.laststatus = 0
 
 vim.o.cursorlineopt = 'screenline,number'
 

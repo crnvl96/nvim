@@ -18,46 +18,15 @@ now(function()
 
   MiniColors.get_colorscheme()
     :add_transparency({
-      general = false,
+      general = true,
       float = true,
-      statuscolumn = false,
-      statusline = false,
-      tabline = false,
-      winbar = false,
+      statuscolumn = true,
+      statusline = true,
+      tabline = true,
+      winbar = true,
     })
     :apply()
 end)
-
-now(function()
-  local custom_sort = function(notif_arr)
-    return MiniNotify.default_sort(vim.tbl_filter(function(notif)
-      if notif.data.source == 'lsp_progress' and notif.data.client_name == 'lua_ls' then
-        return notif.msg:find 'Diagnosing' == nil and notif.msg:find 'semantic tokens' == nil
-      end
-
-      if notif.data.client_name == 'jdtls' then
-        return notif.msg:find 'Validate documents' == nil and notif.msg:find 'Publish Diagnostics' == nil
-      end
-
-      return true
-    end, notif_arr))
-  end
-
-  require('mini.notify').setup { content = { sort = custom_sort } }
-  require('mini.notify').make_notify()
-end)
-
-now(
-  function()
-    require('mini.basics').setup {
-      options = { basic = false },
-      mappings = {
-        windows = true,
-        move_with_alt = true,
-      },
-    }
-  end
-)
 
 now(function()
   local ext3_blocklist = { scm = true, txt = true, yml = true }
@@ -75,11 +44,7 @@ now_if_args(function()
 
   MiniMisc.setup_auto_root()
   MiniMisc.setup_restore_cursor()
-  MiniMisc.setup_termbg_sync()
 end)
-
-now(function() require('mini.statusline').setup() end)
-now(function() require('mini.tabline').setup() end)
 
 later(function() require('mini.extra').setup() end)
 
