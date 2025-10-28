@@ -64,7 +64,8 @@ vim.o.iskeyword = '@,48-57,_,192-255,-'
 
 vim.o.formatlistpat = [[^\s*[0-9\-\+\*]\+[\.\)]*\s\+]]
 
-vim.o.complete = '.,w,b'
+-- vim.o.complete = '.,w,b,kspell'
+vim.o.complete = 'kspell'
 vim.o.completeopt = 'menuone,noselect,fuzzy,nosort'
 
 -- Autocommands ===============================================================
