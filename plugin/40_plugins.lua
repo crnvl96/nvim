@@ -51,6 +51,8 @@ now_if_args(function()
   }
 end)
 
+later(function() add 'Olical/conjure' end)
+
 later(function()
   add 'tpope/vim-fugitive'
   add 'tpope/vim-rhubarb'
@@ -102,5 +104,3 @@ later(function()
   local function toggle_format() vim.g.autoformat = not vim.g.autoformat end
   set('n', [[\f]], toggle_format, { desc = "Toggle 'vim.g.autoformat'" })
 end)
-
-later(function() add 'Olical/conjure' end)
