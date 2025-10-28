@@ -13,19 +13,21 @@ now(function()
     tokyonight   = { background = '#1a1b26', foreground = '#a9b1d6' },
   }
 
-  require('mini.colors').setup()
-  require('mini.hues').setup(hues.everforest)
+  vim.cmd 'colo miniwinter'
 
-  MiniColors.get_colorscheme()
-    :add_transparency({
-      general = true,
-      float = true,
-      statuscolumn = true,
-      statusline = true,
-      tabline = true,
-      winbar = true,
-    })
-    :apply()
+  -- require('mini.colors').setup()
+  -- require('mini.hues').setup(hues.everforest)
+  --
+  -- MiniColors.get_colorscheme()
+  --   :add_transparency({
+  --     general = true,
+  --     float = true,
+  --     statuscolumn = true,
+  --     statusline = true,
+  --     tabline = true,
+  --     winbar = true,
+  --   })
+  --   :apply()
 end)
 
 now(function()
@@ -44,6 +46,7 @@ now_if_args(function()
 
   MiniMisc.setup_auto_root()
   MiniMisc.setup_restore_cursor()
+  MiniMisc.setup_termbg_sync()
 end)
 
 later(function() require('mini.extra').setup() end)
