@@ -34,6 +34,7 @@ vim.o.splitright = true
 vim.o.winborder = 'single'
 vim.o.wrap = false
 vim.o.laststatus = 0
+vim.o.scrolloff = 999
 
 vim.o.cursorlineopt = 'screenline,number'
 
@@ -60,7 +61,7 @@ vim.o.spelloptions = 'camel'
 vim.o.tabstop = 4
 vim.o.virtualedit = 'block'
 
-vim.o.iskeyword = '@,48-57,_,192-255,-'
+-- vim.o.iskeyword = '@,48-57,_,192-255,-'
 
 vim.o.formatlistpat = [[^\s*[0-9\-\+\*]\+[\.\)]*\s\+]]
 

@@ -1,9 +1,7 @@
 local map = function(mode, lhs, rhs, opts) vim.keymap.set(mode, lhs, rhs, opts) end
 local nmap = function(lhs, rhs, desc) vim.keymap.set('n', lhs, rhs, { desc = desc }) end
 
-map('n', 'p', 'P')
-map('x', 'p', 'P')
-map('o', 'p', 'P')
+map('v', 'p', 'P')
 
 nmap('[p', '<Cmd>exe "put! " . v:register<CR>', 'Paste Above')
 nmap(']p', '<Cmd>exe "put "  . v:register<CR>', 'Paste Below')
