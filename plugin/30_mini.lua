@@ -1,32 +1,32 @@
 local now, later = MiniDeps.now, MiniDeps.later
 
 now(function()
-  -- -- stylua: ignore
-  -- local hues = {
-  --   catppuccin   = { background = '#24273a', foreground = '#cad3f5' },
-  --   everforest   = { background = '#2d353b', foreground = '#d3c6aa' },
-  --   gruvbox      = { background = '#282828', foreground = '#ebdbb2' },
-  --   kanagawa     = { background = '#1f1f28', foreground = '#dcd7ba' },
-  --   nord         = { background = '#2e3440', foreground = '#d8dee9' },
-  --   osaka_jade   = { background = '#111c18', foreground = '#C1C497' },
-  --   tokyonight   = { background = '#1a1b26', foreground = '#a9b1d6' },
-  -- }
+  -- stylua: ignore
+  local hues = {
+    catppuccin   = { background = '#24273a', foreground = '#cad3f5' },
+    everforest   = { background = '#2d353b', foreground = '#d3c6aa' },
+    gruvbox      = { background = '#282828', foreground = '#ebdbb2' },
+    kanagawa     = { background = '#1f1f28', foreground = '#dcd7ba' },
+    nord         = { background = '#2e3440', foreground = '#d8dee9' },
+    osaka_jade   = { background = '#111c18', foreground = '#C1C497' },
+    tokyonight   = { background = '#1a1b26', foreground = '#a9b1d6' },
+  }
 
-  vim.cmd 'colo miniwinter'
+  -- vim.cmd 'colo miniwinter'
 
-  -- require('mini.colors').setup()
-  -- require('mini.hues').setup(hues.everforest)
-  --
-  -- MiniColors.get_colorscheme()
-  --   :add_transparency({
-  --     general = true,
-  --     float = true,
-  --     statuscolumn = true,
-  --     statusline = true,
-  --     tabline = true,
-  --     winbar = true,
-  --   })
-  --   :apply()
+  require('mini.colors').setup()
+  require('mini.hues').setup(hues.everforest)
+
+  MiniColors.get_colorscheme()
+    :add_transparency({
+      general = true,
+      float = true,
+      statuscolumn = true,
+      statusline = true,
+      tabline = true,
+      winbar = true,
+    })
+    :apply()
 end)
 
 now(function()
