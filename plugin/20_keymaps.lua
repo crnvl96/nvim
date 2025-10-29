@@ -7,6 +7,9 @@ nmap('[p', '<Cmd>exe "put! " . v:register<CR>', 'Paste Above')
 nmap(']p', '<Cmd>exe "put "  . v:register<CR>', 'Paste Below')
 nmap('<C-5>', '<Cmd>noh<CR>', 'Clear Highlights')
 
+nmap('<C-d>', '<C-d>zz', 'Scroll down and center')
+nmap('<C-u>', '<C-u>zz', 'Scroll up and center')
+
 map({ 'n', 'x' }, 'j', [[v:count == 0 ? 'gj' : 'j']], { expr = true })
 map({ 'n', 'x' }, 'k', [[v:count == 0 ? 'gk' : 'k']], { expr = true })
 map({ 'n', 'i', 'x' }, '<C-s>', '<Esc>:noh<CR>:w<CR>')
@@ -34,18 +37,6 @@ map('t', '<M-h>', '<Left>', { desc = 'Left' })
 map('t', '<M-j>', '<Down>', { desc = 'Down' })
 map('t', '<M-k>', '<Up>', { desc = 'Up' })
 map('t', '<M-l>', '<Right>', { desc = 'Right' })
-
-_G.Config.leader_group_clues = {
-  { mode = 'n', keys = '<Leader>b', desc = '+Buffer' },
-  { mode = 'n', keys = '<Leader>e', desc = '+Explore/Edit' },
-  { mode = 'n', keys = '<Leader>f', desc = '+Find' },
-  { mode = 'n', keys = '<Leader>g', desc = '+Git' },
-  { mode = 'n', keys = '<Leader>l', desc = '+Language' },
-  { mode = 'n', keys = '<Leader>o', desc = '+Other' },
-
-  { mode = 'x', keys = '<Leader>g', desc = '+Git' },
-  { mode = 'x', keys = '<Leader>l', desc = '+Language' },
-}
 
 local nmap_leader = function(suffix, rhs, desc) vim.keymap.set('n', '<Leader>' .. suffix, rhs, { desc = desc }) end
 local xmap_leader = function(suffix, rhs, desc) vim.keymap.set('x', '<Leader>' .. suffix, rhs, { desc = desc }) end

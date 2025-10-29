@@ -34,7 +34,7 @@ vim.o.splitright = true
 vim.o.winborder = 'single'
 vim.o.wrap = false
 vim.o.laststatus = 0
-vim.o.scrolloff = 999
+vim.o.scrolloff = 8
 
 vim.o.cursorlineopt = 'screenline,number'
 
@@ -71,8 +71,10 @@ vim.o.completeopt = 'menuone,noselect,fuzzy,nosort'
 
 -- Autocommands ===============================================================
 
-local f = function() vim.cmd 'setlocal formatoptions-=c formatoptions-=o' end
-_G.Config.new_autocmd('FileType', nil, f, "Proper 'formatoptions'")
+vim.api.nvim_create_autocmd('FileType', {
+  group = vim.api.nvim_create_augroup('crnvl96-formatoptions', {}),
+  callback = function() vim.cmd 'setlocal formatoptions-=c formatoptions-=o' end,
+})
 
 -- Diagnostics ================================================================
 

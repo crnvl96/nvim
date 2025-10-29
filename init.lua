@@ -11,21 +11,7 @@ end
 
 require('mini.deps').setup()
 
-_G.Config = {}
-
-local gr = vim.api.nvim_create_augroup('custom-config', {})
-_G.Config.new_autocmd = function(event, pattern, callback, desc)
-  local opts = { group = gr, pattern = pattern, callback = callback, desc = desc }
-  vim.api.nvim_create_autocmd(event, opts)
-end
-
-_G.Config.now_if_args = vim.fn.argc(-1) > 0 and MiniDeps.now or MiniDeps.later
-
-local f = function() vim.highlight.on_yank() end
-_G.Config.new_autocmd('TextYankPost', '*', f, 'Highlight yanked text')
-
-local start_terminal_insert = vim.schedule_wrap(function(data)
-  if not (vim.api.nvim_get_current_buf() == data.buf and vim.bo.buftype == 'terminal') then return end
-  vim.cmd 'startinsert'
-end)
-_G.Config.new_autocmd('TermOpen', 'term://*', start_terminal_insert, 'Start builtin terminal in Insert mode')
+vim.api.nvim_create_autocmd('TextYankPost', {
+  group = vim.api.nvim_create_augroup('crnvl96-highlight-after-yank', {}),
+  callback = function() vim.highlight.on_yank() end,
+})

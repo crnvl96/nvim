@@ -1,17 +1,16 @@
 local now, later = MiniDeps.now, MiniDeps.later
-local now_if_args = _G.Config.now_if_args
 
 now(function()
-  -- stylua: ignore
-  local hues = {
-    catppuccin   = { background = '#24273a', foreground = '#cad3f5' },
-    everforest   = { background = '#2d353b', foreground = '#d3c6aa' },
-    gruvbox      = { background = '#282828', foreground = '#ebdbb2' },
-    kanagawa     = { background = '#1f1f28', foreground = '#dcd7ba' },
-    nord         = { background = '#2e3440', foreground = '#d8dee9' },
-    osaka_jade   = { background = '#111c18', foreground = '#C1C497' },
-    tokyonight   = { background = '#1a1b26', foreground = '#a9b1d6' },
-  }
+  -- -- stylua: ignore
+  -- local hues = {
+  --   catppuccin   = { background = '#24273a', foreground = '#cad3f5' },
+  --   everforest   = { background = '#2d353b', foreground = '#d3c6aa' },
+  --   gruvbox      = { background = '#282828', foreground = '#ebdbb2' },
+  --   kanagawa     = { background = '#1f1f28', foreground = '#dcd7ba' },
+  --   nord         = { background = '#2e3440', foreground = '#d8dee9' },
+  --   osaka_jade   = { background = '#111c18', foreground = '#C1C497' },
+  --   tokyonight   = { background = '#1a1b26', foreground = '#a9b1d6' },
+  -- }
 
   vim.cmd 'colo miniwinter'
 
@@ -41,7 +40,7 @@ now(function()
   later(MiniIcons.tweak_lsp_kind)
 end)
 
-now_if_args(function()
+now(function()
   require('mini.misc').setup()
 
   MiniMisc.setup_auto_root()
@@ -69,7 +68,14 @@ later(function()
   local miniclue = require 'mini.clue'
   miniclue.setup {
     clues = {
-      _G.Config.leader_group_clues,
+      { mode = 'n', keys = '<Leader>b', desc = '+Buffer' },
+      { mode = 'n', keys = '<Leader>e', desc = '+Explore/Edit' },
+      { mode = 'n', keys = '<Leader>f', desc = '+Find' },
+      { mode = 'n', keys = '<Leader>g', desc = '+Git' },
+      { mode = 'n', keys = '<Leader>l', desc = '+Language' },
+      { mode = 'n', keys = '<Leader>o', desc = '+Other' },
+      { mode = 'x', keys = '<Leader>g', desc = '+Git' },
+      { mode = 'x', keys = '<Leader>l', desc = '+Language' },
       miniclue.gen_clues.builtin_completion(),
       miniclue.gen_clues.g(),
       miniclue.gen_clues.marks(),
@@ -126,36 +132,34 @@ later(function()
     },
   }
 
-  local on_attach = function(ev) vim.bo[ev.buf].omnifunc = 'v:lua.MiniCompletion.completefunc_lsp' end
-  _G.Config.new_autocmd('LspAttach', nil, on_attach, "Set 'omnifunc'")
+  vim.api.nvim_create_autocmd('LspAttach', {
+    group = vim.api.nvim_create_augroup('crnvl96-on-lspattach', {}),
+    callback = function(ev) vim.bo[ev.buf].omnifunc = 'v:lua.MiniCompletion.completefunc_lsp' end,
+  })
+
   vim.lsp.config('*', { capabilities = MiniCompletion.get_lsp_capabilities() })
 end)
 
 later(function() require('mini.diff').setup() end)
 
-later(function()
-  require('mini.files').setup {
-    mappings = {
-      go_in = '',
-      go_in_plus = '<CR>',
-      go_out = '',
-      go_out_plus = '-',
-    },
-    windows = {
-      preview = true,
-      width_focus = 50,
-      width_nofocus = 15,
-      width_preview = 50,
-    },
-  }
-  local add_marks = function()
-    MiniFiles.set_bookmark('c', vim.fn.stdpath 'config', { desc = 'Config' })
-    local minideps_plugins = vim.fn.stdpath 'data' .. '/site/pack/deps/opt'
-    MiniFiles.set_bookmark('p', minideps_plugins, { desc = 'Plugins' })
-    MiniFiles.set_bookmark('w', vim.fn.getcwd, { desc = 'Working directory' })
+later(
+  function()
+    require('mini.files').setup {
+      mappings = {
+        go_in = '',
+        go_in_plus = '<CR>',
+        go_out = '',
+        go_out_plus = '-',
+      },
+      windows = {
+        preview = true,
+        width_focus = 50,
+        width_nofocus = 15,
+        width_preview = 50,
+      },
+    }
   end
-  _G.Config.new_autocmd('User', 'MiniFilesExplorerOpen', add_marks, 'Add bookmarks')
-end)
+)
 
 later(function()
   local hipatterns = require 'mini.hipatterns'
