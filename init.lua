@@ -13,7 +13,7 @@ require('mini.deps').setup()
 
 local node_bin = vim.env.HOME .. '/.local/share/mise/installs/node/24.11.0/bin'
 vim.g.node_host_prog = node_bin .. '/node'
--- vim.env.PATH = node_bin .. vim.env.PATH
+vim.env.PATH = node_bin .. ':' .. vim.env.PATH
 
 vim.api.nvim_create_autocmd('TextYankPost', {
   group = vim.api.nvim_create_augroup('crnvl96-highlight-after-yank', {}),
