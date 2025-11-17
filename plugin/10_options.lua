@@ -56,8 +56,8 @@ vim.o.infercase = true
 vim.o.shiftwidth = 4
 vim.o.smartcase = true
 vim.o.smartindent = true
-vim.o.spelllang = 'en,pt'
-vim.o.spelloptions = 'camel'
+-- vim.o.spelllang = 'en,pt'
+-- vim.o.spelloptions = 'camel'
 vim.o.tabstop = 4
 vim.o.virtualedit = 'block'
 
