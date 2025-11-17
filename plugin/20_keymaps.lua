@@ -27,7 +27,6 @@ map('n', '<C-Right>', '<Cmd>vertical resize +20<CR>')
 map('c', '<M-h>', '<Left>', { silent = false, desc = 'Left' })
 map('c', '<M-l>', '<Right>', { silent = false, desc = 'Right' })
 
--- Don't `noremap` in insert mode to have these keybindings behave exactly like arrows
 map('i', '<M-h>', '<Left>', { noremap = false, desc = 'Left' })
 map('i', '<M-j>', '<Down>', { noremap = false, desc = 'Down' })
 map('i', '<M-k>', '<Up>', { noremap = false, desc = 'Up' })
@@ -52,7 +51,9 @@ nmap_leader('bW', '<Cmd>lua MiniBufremove.wipeout(0, true)<CR>', 'Wipeout!')
 local edit_plugin_file = function(filename)
   return string.format('<Cmd>edit %s/plugin/%s<CR>', vim.fn.stdpath 'config', filename)
 end
+
 local explore_at_file = '<Cmd>lua MiniFiles.open(vim.api.nvim_buf_get_name(0))<CR>'
+
 local explore_quickfix = function()
   for _, win_id in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
     if vim.fn.getwininfo(win_id)[1].quickfix == 1 then return vim.cmd 'cclose' end

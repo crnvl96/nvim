@@ -56,16 +56,9 @@ vim.o.infercase = true
 vim.o.shiftwidth = 4
 vim.o.smartcase = true
 vim.o.smartindent = true
--- vim.o.spelllang = 'en,pt'
--- vim.o.spelloptions = 'camel'
 vim.o.tabstop = 4
 vim.o.virtualedit = 'block'
-
--- vim.o.iskeyword = '@,48-57,_,192-255,-'
-
 vim.o.formatlistpat = [[^\s*[0-9\-\+\*]\+[\.\)]*\s\+]]
-
--- vim.o.complete = '.,w,b,kspell'
 vim.o.complete = 'kspell'
 vim.o.completeopt = 'menuone,noselect,fuzzy,nosort'
 

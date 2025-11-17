@@ -6,6 +6,7 @@ now(function()
     checkout = 'main',
     hooks = { post_checkout = function() vim.cmd 'TSUpdate' end },
   }
+
   add {
     source = 'nvim-treesitter/nvim-treesitter-textobjects',
     checkout = 'main',
