@@ -12,8 +12,6 @@ now(function()
     tokyonight   = { background = '#1a1b26', foreground = '#a9b1d6' },
   }
 
-  -- vim.cmd 'colo miniwinter'
-
   require('mini.colors').setup()
   require('mini.hues').setup(hues.everforest)
 
@@ -182,7 +180,6 @@ later(
   function()
     require('mini.jump2d').setup {
       spotter = require('mini.jump2d').gen_spotter.pattern '[^%s%p]+',
-      labels = "asdfghjkl'",
       view = { dim = true, n_steps_ahead = 2 },
     }
   end
