@@ -1,52 +1,15 @@
 local now, later = MiniDeps.now, MiniDeps.later
 
-now(function()
-  -- stylua: ignore
-  local hues = {
-    catppuccin   = { background = '#24273a', foreground = '#cad3f5' },
-    everforest   = { background = '#2d353b', foreground = '#d3c6aa' },
-    gruvbox      = { background = '#282828', foreground = '#ebdbb2' },
-    kanagawa     = { background = '#1f1f28', foreground = '#dcd7ba' },
-    nord         = { background = '#2e3440', foreground = '#d8dee9' },
-    osaka_jade   = { background = '#111c18', foreground = '#C1C497' },
-    tokyonight   = { background = '#1a1b26', foreground = '#a9b1d6' },
-  }
+-- This is important for other mini modules
+later(function() require('mini.extra').setup() end)
 
-  require('mini.colors').setup()
-  require('mini.hues').setup(hues.everforest)
-
-  MiniColors.get_colorscheme()
-    :add_transparency({
-      general = true,
-      float = true,
-      statuscolumn = true,
-      statusline = true,
-      tabline = true,
-      winbar = true,
-    })
-    :apply()
-end)
-
-now(function()
-  local ext3_blocklist = { scm = true, txt = true, yml = true }
-  local ext4_blocklist = { json = true, yaml = true }
-  require('mini.icons').setup {
-    use_file_extension = function(ext, _) return not (ext3_blocklist[ext:sub(-3)] or ext4_blocklist[ext:sub(-4)]) end,
-  }
-
-  later(MiniIcons.mock_nvim_web_devicons)
-  later(MiniIcons.tweak_lsp_kind)
-end)
+now(function() vim.cmd 'colorscheme slate' end)
 
 now(function()
   require('mini.misc').setup()
-
   MiniMisc.setup_auto_root()
   MiniMisc.setup_restore_cursor()
-  MiniMisc.setup_termbg_sync()
 end)
-
-later(function() require('mini.extra').setup() end)
 
 later(function()
   local ai = require 'mini.ai'
@@ -59,9 +22,8 @@ later(function()
   }
 end)
 
-later(function() require('mini.align').setup() end)
-later(function() require('mini.bracketed').setup() end)
 later(function() require('mini.bufremove').setup() end)
+
 later(function()
   local miniclue = require 'mini.clue'
   miniclue.setup {
@@ -71,7 +33,8 @@ later(function()
       { mode = 'n', keys = '<Leader>f', desc = '+Find' },
       { mode = 'n', keys = '<Leader>g', desc = '+Git' },
       { mode = 'n', keys = '<Leader>l', desc = '+Language' },
-      { mode = 'n', keys = '<Leader>o', desc = '+Other' },
+      { mode = 'n', keys = '<Leader>w', desc = '+Window' },
+      { mode = 'n', keys = '<Leader>h', desc = '+Misc' },
       { mode = 'x', keys = '<Leader>g', desc = '+Git' },
       { mode = 'x', keys = '<Leader>l', desc = '+Language' },
       miniclue.gen_clues.builtin_completion(),
@@ -138,8 +101,6 @@ later(function()
   vim.lsp.config('*', { capabilities = MiniCompletion.get_lsp_capabilities() })
 end)
 
-later(function() require('mini.diff').setup() end)
-
 later(
   function()
     require('mini.files').setup {
@@ -159,21 +120,6 @@ later(
   end
 )
 
-later(function()
-  local hipatterns = require 'mini.hipatterns'
-  local hi_words = MiniExtra.gen_highlighter.words
-  hipatterns.setup {
-    highlighters = {
-      fixme = hi_words({ 'FIXME', 'Fixme', 'fixme' }, 'MiniHipatternsFixme'),
-      hack = hi_words({ 'HACK', 'Hack', 'hack' }, 'MiniHipatternsHack'),
-      todo = hi_words({ 'TODO', 'Todo', 'todo' }, 'MiniHipatternsTodo'),
-      note = hi_words({ 'NOTE', 'Note', 'note' }, 'MiniHipatternsNote'),
-      hex_color = hipatterns.gen_highlighter.hex_color(),
-    },
-  }
-end)
-
-later(function() require('mini.indentscope').setup() end)
 later(function() require('mini.jump').setup() end)
 
 later(
@@ -207,22 +153,6 @@ end)
 later(function() require('mini.move').setup() end)
 
 later(function()
-  local lang_patterns = {
-    markdown_inline = { 'markdown.json' },
-  }
-
-  local snippets = require 'mini.snippets'
-  local config_path = vim.fn.stdpath 'config'
-
-  snippets.setup {
-    snippets = {
-      snippets.gen_loader.from_file(config_path .. '/snippets/global.json'),
-      snippets.gen_loader.from_lang { lang_patterns = lang_patterns },
-    },
-  }
-end)
-
-later(function()
   require('mini.operators').setup()
   vim.keymap.set('n', '(', 'gxiagxila', { remap = true, desc = 'Swap arg left' })
   vim.keymap.set('n', ')', 'gxiagxina', { remap = true, desc = 'Swap arg right' })
@@ -230,5 +160,3 @@ end)
 
 later(function() require('mini.pick').setup() end)
 later(function() require('mini.splitjoin').setup() end)
-later(function() require('mini.trailspace').setup() end)
-later(function() require('mini.visits').setup() end)

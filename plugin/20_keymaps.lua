@@ -9,9 +9,13 @@ nmap(']p', '<Cmd>exe "put "  . v:register<CR>', 'Paste Below')
 nmap('<C-d>', '<C-d>zz', 'Scroll down and center')
 nmap('<C-u>', '<C-u>zz', 'Scroll up and center')
 
+nmap('gl', 'g$', 'Go to the rightmost visible column')
+nmap('gh', 'g^', 'Go to the leftmost visible column')
+
+nmap('L', '%', 'Go to matching bracket')
+
 map({ 'n', 'x' }, 'j', [[v:count == 0 ? 'gj' : 'j']], { expr = true })
 map({ 'n', 'x' }, 'k', [[v:count == 0 ? 'gk' : 'k']], { expr = true })
-map({ 'n', 'i', 'x' }, '<C-s>', '<Esc>:noh<CR>:w<CR>')
 
 map('n', '<C-h>', '<C-w>h', { desc = 'Focus on left window' })
 map('n', '<C-j>', '<C-w>j', { desc = 'Focus on below window' })
@@ -42,6 +46,7 @@ local xmap_leader = function(suffix, rhs, desc) vim.keymap.set('x', '<Leader>' .
 local new_scratch_buffer = function() vim.api.nvim_win_set_buf(0, vim.api.nvim_create_buf(true, true)) end
 
 nmap_leader('hh', '<Cmd>noh<CR>', 'Clear Highlights')
+nmap_leader('hs', '<Esc>:noh<CR>:w<CR>', 'Save buffer')
 
 nmap_leader('bd', '<Cmd>lua MiniBufremove.delete()<CR>', 'Delete')
 nmap_leader('bD', '<Cmd>lua MiniBufremove.delete(0, true)<CR>', 'Delete!')
@@ -83,8 +88,6 @@ nmap_leader('fo', '<Cmd>Pick oldfiles<CR>', 'Oldfiles')
 nmap_leader('fr', '<Cmd>Pick lsp scope="references"<CR>', 'References (LSP)')
 nmap_leader('fS', '<Cmd>Pick lsp scope="workspace_symbol"<CR>', 'Symbols workspace')
 nmap_leader('fs', '<Cmd>Pick lsp scope="document_symbol"<CR>', 'Symbols document')
-nmap_leader('fV', '<Cmd>Pick visit_paths cwd=""<CR>', 'Visit paths (all)')
-nmap_leader('fv', '<Cmd>Pick visit_paths<CR>', 'Visit paths (cwd)')
 
 nmap_leader('gs', '<Cmd>Git<CR>', 'Status')
 
@@ -103,10 +106,6 @@ nmap_leader('ly', '<CmdPick lsp scope="type_definition"<CR>', 'Type definition')
 nmap_leader('ls', '<Cmd>Pick lsp scope="document_symbol"<CR>', 'Symbols document')
 
 xmap_leader('lf', formatting_cmd, 'Format selection')
-
-nmap_leader('or', '<Cmd>lua MiniMisc.resize_window()<CR>', 'Resize to default width')
-nmap_leader('ot', '<Cmd>lua MiniTrailspace.trim()<CR>', 'Trim trailspace')
-nmap_leader('oz', '<Cmd>lua MiniMisc.zoom()<CR>', 'Zoom toggle')
 
 nmap_leader('wh', '<C-w>h', 'Split window vertically')
 nmap_leader('wv', '<C-w>v', 'Split window horizontally')

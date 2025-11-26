@@ -7,44 +7,22 @@ vim.g.maplocalleader = ','
 
 vim.o.mouse = 'a'
 vim.o.mousescroll = 'ver:1,hor:2'
-vim.o.switchbuf = 'usetab'
 vim.o.undofile = true
 vim.o.clipboard = 'unnamedplus'
-vim.o.shada = "'100,<50,s10,:1000,/100,@100,h"
 vim.o.swapfile = false
-
 vim.o.breakindent = true
-vim.o.breakindentopt = 'list:-1'
-vim.o.colorcolumn = '+1'
 vim.o.cursorline = true
 vim.o.linebreak = true
-vim.o.list = true
 vim.o.number = true
 vim.o.relativenumber = true
-vim.o.pumheight = 10
-vim.o.ruler = false
-vim.o.shortmess = 'CFOSWaco'
-vim.o.showmode = false
 vim.o.signcolumn = 'yes'
 vim.o.splitbelow = true
-vim.o.splitkeep = 'screen'
 vim.o.splitright = true
 vim.o.winborder = 'single'
 vim.o.wrap = false
-vim.o.laststatus = 0
 vim.o.scrolloff = 8
-
-vim.o.cursorlineopt = 'screenline,number'
-vim.o.fillchars = 'eob: ,fold:╌'
-vim.o.listchars = 'extends:…,nbsp:␣,precedes:…,tab:  '
-vim.o.foldlevel = 10
-vim.o.foldmethod = 'indent'
-vim.o.foldnestmax = 10
-vim.o.foldtext = ''
-
 vim.o.autoindent = true
 vim.o.expandtab = true
-vim.o.formatoptions = 'rqnl1j'
 vim.o.ignorecase = true
 vim.o.incsearch = true
 vim.o.infercase = true
@@ -53,14 +31,7 @@ vim.o.smartcase = true
 vim.o.smartindent = true
 vim.o.tabstop = 4
 vim.o.virtualedit = 'block'
-vim.o.formatlistpat = [[^\s*[0-9\-\+\*]\+[\.\)]*\s\+]]
-vim.o.complete = 'kspell'
 vim.o.completeopt = 'menuone,noselect,fuzzy,nosort'
-
-vim.api.nvim_create_autocmd('FileType', {
-  group = vim.api.nvim_create_augroup('crnvl96-formatoptions', {}),
-  callback = function() vim.cmd 'setlocal formatoptions-=c formatoptions-=o' end,
-})
 
 vim.api.nvim_create_autocmd('TextYankPost', {
   group = vim.api.nvim_create_augroup('crnvl96-highlight-after-yank', {}),
