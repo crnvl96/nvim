@@ -179,8 +179,12 @@ later(function() require('mini.jump').setup() end)
 later(
   function()
     require('mini.jump2d').setup {
+      labels = "asdfghjkl;'",
       spotter = require('mini.jump2d').gen_spotter.pattern '[^%s%p]+',
       view = { dim = true, n_steps_ahead = 2 },
+      mappings = {
+        start_jumping = 's',
+      },
     }
   end
 )
@@ -191,8 +195,7 @@ later(function()
   MiniKeymap.map_multistep('i', '<C-n>', { 'pmenu_next' })
   MiniKeymap.map_multistep('i', '<S-Tab>', { 'pmenu_prev' })
   MiniKeymap.map_multistep('i', '<C-p>', { 'pmenu_prev' })
-  MiniKeymap.map_multistep('i', '<CR>', { 'pmenu_accept', 'minipairs_cr' })
-  MiniKeymap.map_multistep('i', '<BS>', { 'minipairs_bs' })
+  MiniKeymap.map_multistep('i', '<CR>', { 'pmenu_accept' })
 
   local mode = { 'i', 'c', 'x', 's' }
   require('mini.keymap').map_combo(mode, 'jk', '<BS><BS><Esc>')
@@ -225,9 +228,7 @@ later(function()
   vim.keymap.set('n', ')', 'gxiagxina', { remap = true, desc = 'Swap arg right' })
 end)
 
-later(function() require('mini.pairs').setup { modes = { command = true } } end)
 later(function() require('mini.pick').setup() end)
 later(function() require('mini.splitjoin').setup() end)
-later(function() require('mini.surround').setup() end)
 later(function() require('mini.trailspace').setup() end)
 later(function() require('mini.visits').setup() end)
