@@ -38,20 +38,5 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   callback = function() vim.highlight.on_yank() end,
 })
 
-MiniDeps.later(
-  function()
-    vim.diagnostic.config {
-      signs = { priority = 9999, severity = { min = 'WARN', max = 'ERROR' } },
-      underline = { severity = { min = 'HINT', max = 'ERROR' } },
-      virtual_lines = false,
-      virtual_text = {
-        current_line = true,
-        severity = { min = 'ERROR', max = 'ERROR' },
-      },
-      update_in_insert = false,
-    }
-  end
-)
-
 vim.cmd 'filetype plugin indent on'
 if vim.fn.exists 'syntax_on' ~= 1 then vim.cmd 'syntax enable' end

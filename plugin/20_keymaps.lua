@@ -3,9 +3,6 @@ local nmap = function(lhs, rhs, desc) vim.keymap.set('n', lhs, rhs, { desc = des
 
 map('v', 'p', 'P')
 
-nmap('[p', '<Cmd>exe "put! " . v:register<CR>', 'Paste Above')
-nmap(']p', '<Cmd>exe "put "  . v:register<CR>', 'Paste Below')
-
 nmap('<C-d>', '<C-d>zz', 'Scroll down and center')
 nmap('<C-u>', '<C-u>zz', 'Scroll up and center')
 
@@ -26,19 +23,6 @@ map('n', '<C-Left>', '<Cmd>vertical resize -20<CR>')
 map('n', '<C-Down>', '<Cmd>resize -5<CR>')
 map('n', '<C-Up>', '<Cmd>resize +5<CR>')
 map('n', '<C-Right>', '<Cmd>vertical resize +20<CR>')
-
-map('c', '<M-h>', '<Left>', { silent = false, desc = 'Left' })
-map('c', '<M-l>', '<Right>', { silent = false, desc = 'Right' })
-
-map('i', '<M-h>', '<Left>', { noremap = false, desc = 'Left' })
-map('i', '<M-j>', '<Down>', { noremap = false, desc = 'Down' })
-map('i', '<M-k>', '<Up>', { noremap = false, desc = 'Up' })
-map('i', '<M-l>', '<Right>', { noremap = false, desc = 'Right' })
-
-map('t', '<M-h>', '<Left>', { desc = 'Left' })
-map('t', '<M-j>', '<Down>', { desc = 'Down' })
-map('t', '<M-k>', '<Up>', { desc = 'Up' })
-map('t', '<M-l>', '<Right>', { desc = 'Right' })
 
 local nmap_leader = function(suffix, rhs, desc) vim.keymap.set('n', '<Leader>' .. suffix, rhs, { desc = desc }) end
 local xmap_leader = function(suffix, rhs, desc) vim.keymap.set('x', '<Leader>' .. suffix, rhs, { desc = desc }) end
@@ -68,28 +52,21 @@ nmap_leader('ef', explore_at_file, 'File directory')
 nmap_leader('ei', '<Cmd>edit $MYVIMRC<CR>', 'init.lua')
 nmap_leader('ex', explore_quickfix, 'Quickfix')
 
-nmap_leader('f/', '<Cmd>Pick history scope="/"<CR>', '"/" history')
-nmap_leader('f:', '<Cmd>Pick history scope=":"<CR>', '":" history')
 nmap_leader("f'", '<Cmd>Pick resume<CR>', 'Resume')
-nmap_leader('f.', '<Cmd>Pick commands<CR>', 'Commands')
 nmap_leader('fb', '<Cmd>Pick buffers<CR>', 'Buffers')
 nmap_leader('fD', '<Cmd>Pick diagnostic scope="all"<CR>', 'Diagnostic workspace')
 nmap_leader('fd', '<Cmd>Pick diagnostic scope="current"<CR>', 'Diagnostic buffer')
 nmap_leader('ff', '<Cmd>Pick files<CR>', 'Files')
 nmap_leader('fg', '<Cmd>Pick grep_live<CR>', 'Grep live')
-nmap_leader('fG', '<Cmd>Pick grep pattern="<cword>"<CR>', 'Grep current word')
 nmap_leader('fh', '<Cmd>Pick help<CR>', 'Help tags')
 nmap_leader('fH', '<Cmd>Pick hl_groups<CR>', 'Highlight groups')
-nmap_leader('fk', '<Cmd>Pick keymaps<CR>', 'keymaps')
-nmap_leader('fL', '<Cmd>Pick buf_lines scope="all"<CR>', 'Lines (all)')
 nmap_leader('fl', '<Cmd>Pick buf_lines scope="current"<CR>', 'Lines (buf)')
-nmap_leader('fn', '<Cmd>lua MiniNotify.show_history()<CR>', 'Notifications')
 nmap_leader('fo', '<Cmd>Pick oldfiles<CR>', 'Oldfiles')
 nmap_leader('fr', '<Cmd>Pick lsp scope="references"<CR>', 'References (LSP)')
 nmap_leader('fS', '<Cmd>Pick lsp scope="workspace_symbol"<CR>', 'Symbols workspace')
 nmap_leader('fs', '<Cmd>Pick lsp scope="document_symbol"<CR>', 'Symbols document')
 
-nmap_leader('gs', '<Cmd>Git<CR>', 'Status')
+nmap_leader('gg', ':Git<space>', 'Git')
 
 local formatting_cmd = '<Cmd>lua require("conform").format({lsp_fallback=true})<CR>'
 
