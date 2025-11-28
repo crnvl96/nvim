@@ -10,3 +10,7 @@ if not vim.loop.fs_stat(mini_path) then
 end
 
 require('mini.deps').setup()
+
+local node_bin = vim.env.HOME .. '/.local/share/mise/installs/node/24.11.0/bin'
+vim.g.node_host_prog = node_bin .. '/node'
+vim.env.PATH = node_bin .. ':' .. vim.env.PATH
