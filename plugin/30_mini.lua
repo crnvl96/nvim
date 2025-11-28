@@ -125,7 +125,7 @@ later(function() require('mini.jump').setup() end)
 later(
   function()
     require('mini.jump2d').setup {
-      labels = "asdfghjkl;'",
+      labels = 'asdfghjkl;',
       spotter = require('mini.jump2d').gen_spotter.pattern '[^%s%p]+',
       view = { dim = true, n_steps_ahead = 2 },
       mappings = {
