@@ -1,12 +1,15 @@
 local map = function(mode, lhs, rhs, opts) vim.keymap.set(mode, lhs, rhs, opts) end
 local nmap = function(lhs, rhs, desc) vim.keymap.set('n', lhs, rhs, { desc = desc }) end
+local xmap = function(lhs, rhs, desc) vim.keymap.set('x', lhs, rhs, { desc = desc }) end
 local nmap_leader = function(suffix, rhs, desc) vim.keymap.set('n', '<Leader>' .. suffix, rhs, { desc = desc }) end
 local xmap_leader = function(suffix, rhs, desc) vim.keymap.set('x', '<Leader>' .. suffix, rhs, { desc = desc }) end
 
 nmap('<C-d>', '<C-d>zz', 'Scroll down and center')
 nmap('<C-u>', '<C-u>zz', 'Scroll up and center')
 nmap('gl', 'g$', 'Go to the rightmost visible column')
+xmap('gl', 'g$', 'Go to the rightmost visible column')
 nmap('gh', 'g^', 'Go to the leftmost visible column')
+xmap('gh', 'g^', 'Go to the leftmost visible column')
 
 map({ 'n', 'x' }, 'j', [[v:count == 0 ? 'gj' : 'j']], { expr = true })
 map({ 'n', 'x' }, 'k', [[v:count == 0 ? 'gk' : 'k']], { expr = true })
