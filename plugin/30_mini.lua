@@ -1,9 +1,12 @@
 local now, later = MiniDeps.now, MiniDeps.later
 
--- This is important for other mini modules
 later(function() require('mini.extra').setup() end)
-
-now(function() vim.cmd 'colorscheme slate' end)
+later(function() require('mini.bufremove').setup() end)
+later(function() require('mini.comment').setup() end)
+later(function() require('mini.jump').setup() end)
+later(function() require('mini.move').setup() end)
+later(function() require('mini.pick').setup() end)
+later(function() require('mini.splitjoin').setup() end)
 
 now(function()
   require('mini.misc').setup()
@@ -15,14 +18,12 @@ later(function()
   local ai = require 'mini.ai'
   ai.setup {
     custom_textobjects = {
-      g = MiniExtra.gen_ai_spec.buffer(),
+      b = MiniExtra.gen_ai_spec.buffer(),
       f = ai.gen_spec.treesitter { a = '@function.outer', i = '@function.inner' },
     },
     search_method = 'cover',
   }
 end)
-
-later(function() require('mini.bufremove').setup() end)
 
 later(function()
   local miniclue = require 'mini.clue'
@@ -78,13 +79,12 @@ later(function()
   }
 end)
 
-later(function() require('mini.comment').setup() end)
-
 later(function()
   local process_items_opts = { kind_priority = { Text = -1, Snippet = -1 } }
   local process_items = function(items, base)
     return MiniCompletion.default_process_items(items, base, process_items_opts)
   end
+
   require('mini.completion').setup {
     lsp_completion = {
       source_func = 'omnifunc',
@@ -114,18 +114,15 @@ later(
         preview = true,
         width_focus = 50,
         width_nofocus = 15,
-        width_preview = 50,
+        width_preview = 80,
       },
     }
   end
 )
 
-later(function() require('mini.jump').setup() end)
-
 later(
   function()
     require('mini.jump2d').setup {
-      labels = 'asdfghjkl;',
       spotter = require('mini.jump2d').gen_spotter.pattern '[^%s%p]+',
       view = { dim = true, n_steps_ahead = 2 },
       mappings = {
@@ -149,14 +146,3 @@ later(function()
   require('mini.keymap').map_combo('t', 'jk', '<BS><BS><C-\\><C-n>')
   require('mini.keymap').map_combo('t', 'kj', '<BS><BS><C-\\><C-n>')
 end)
-
-later(function() require('mini.move').setup() end)
-
-later(function()
-  require('mini.operators').setup()
-  vim.keymap.set('n', '(', 'gxiagxila', { remap = true, desc = 'Swap arg left' })
-  vim.keymap.set('n', ')', 'gxiagxina', { remap = true, desc = 'Swap arg right' })
-end)
-
-later(function() require('mini.pick').setup() end)
-later(function() require('mini.splitjoin').setup() end)

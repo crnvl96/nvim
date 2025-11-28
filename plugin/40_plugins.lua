@@ -14,10 +14,10 @@ now(function()
 
   -- stylua: ignore
   local languages = {
-    'html',       'css',  'go',       'python',
-    'diff',       'bash', 'json',     'regex',      'lisp',
-    'toml',       'yaml', 'markdown', 'javascript', 'clojure', 'fennel',
-    'typescript', 'tsx',  'rust',     'lua',        'vimdoc',  'java'
+    'html', 'css', 'go', 'python', 'diff',
+    'bash', 'json', 'regex', 'lisp', 'toml',
+    'yaml', 'markdown', 'javascript', 'typescript', 'tsx',
+    'rust', 'lua', 'vimdoc', 'java',
   }
 
   local isnt_installed = function(lang) return #vim.api.nvim_get_runtime_file('parser/' .. lang .. '.*', false) == 0 end
@@ -50,11 +50,8 @@ now(function()
     'pyright',
     'ruff',
     'ts_ls',
-    'clojure_lsp',
   }
 end)
-
-later(function() add 'Olical/conjure' end)
 
 later(function()
   add 'tpope/vim-fugitive'
@@ -91,7 +88,6 @@ later(function()
       lua = { 'stylua' },
       markdown = { 'prettier', 'injected', timeout_ms = 1500 },
       css = { 'prettier' },
-      clojure = { lsp_format = 'prefer', name = 'clojure_lsp' },
       java = { lsp_format = 'prefer', name = 'jdtls' },
       scss = { 'prettier' },
       yaml = { 'prettier' },
