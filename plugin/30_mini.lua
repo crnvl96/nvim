@@ -84,7 +84,6 @@ later(function()
   local process_items = function(items, base)
     return MiniCompletion.default_process_items(items, base, process_items_opts)
   end
-
   require('mini.completion').setup {
     lsp_completion = {
       source_func = 'omnifunc',
@@ -92,12 +91,10 @@ later(function()
       process_items = process_items,
     },
   }
-
   vim.api.nvim_create_autocmd('LspAttach', {
     group = vim.api.nvim_create_augroup('crnvl96-on-lspattach', {}),
     callback = function(ev) vim.bo[ev.buf].omnifunc = 'v:lua.MiniCompletion.completefunc_lsp' end,
   })
-
   vim.lsp.config('*', { capabilities = MiniCompletion.get_lsp_capabilities() })
 end)
 
@@ -139,7 +136,6 @@ later(function()
   MiniKeymap.map_multistep('i', '<S-Tab>', { 'pmenu_prev' })
   MiniKeymap.map_multistep('i', '<C-p>', { 'pmenu_prev' })
   MiniKeymap.map_multistep('i', '<CR>', { 'pmenu_accept' })
-
   local mode = { 'i', 'c', 'x', 's' }
   require('mini.keymap').map_combo(mode, 'jk', '<BS><BS><Esc>')
   require('mini.keymap').map_combo(mode, 'kj', '<BS><BS><Esc>')

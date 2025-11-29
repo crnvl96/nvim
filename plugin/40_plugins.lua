@@ -6,31 +6,38 @@ now(function()
     checkout = 'main',
     hooks = { post_checkout = function() vim.cmd 'TSUpdate' end },
   }
-
   add {
     source = 'nvim-treesitter/nvim-treesitter-textobjects',
     checkout = 'main',
   }
-
-  -- stylua: ignore
   local languages = {
-    'html', 'css', 'go', 'python', 'diff',
-    'bash', 'json', 'regex', 'lisp', 'toml',
-    'yaml', 'markdown', 'javascript', 'typescript', 'tsx',
-    'rust', 'lua', 'vimdoc', 'java',
+    'html',
+    'css',
+    'go',
+    'python',
+    'diff',
+    'bash',
+    'json',
+    'regex',
+    'lisp',
+    'toml',
+    'yaml',
+    'markdown',
+    'javascript',
+    'typescript',
+    'tsx',
+    'lua',
+    'vimdoc',
   }
-
   local isnt_installed = function(lang) return #vim.api.nvim_get_runtime_file('parser/' .. lang .. '.*', false) == 0 end
   local to_install = vim.tbl_filter(isnt_installed, languages)
   if #to_install > 0 then require('nvim-treesitter').install(to_install) end
-
   local filetypes = {}
   for _, lang in ipairs(languages) do
     for _, ft in ipairs(vim.treesitter.language.get_filetypes(lang)) do
       table.insert(filetypes, ft)
     end
   end
-
   vim.api.nvim_create_autocmd('FileType', {
     group = vim.api.nvim_create_augroup('crnvl96-nvim-treesitter', {}),
     pattern = filetypes,
@@ -39,10 +46,7 @@ now(function()
 end)
 
 now(function()
-  add 'mfussenegger/nvim-jdtls'
   add 'neovim/nvim-lspconfig'
-
-  -- NOTE: jdtls is added as well, but via ftplugin/java.lua
   vim.lsp.enable {
     'eslint',
     'gopls',
@@ -53,16 +57,11 @@ now(function()
   }
 end)
 
-later(function()
-  add 'tpope/vim-fugitive'
-  add 'tpope/vim-rhubarb'
-end)
+later(function() add 'tpope/vim-fugitive' end)
 
 later(function()
   add 'stevearc/conform.nvim'
-
   vim.g.autoformat = true
-
   require('conform').setup {
     notify_on_error = false,
     notify_no_formatters = false,
@@ -84,11 +83,9 @@ later(function()
       python = { 'ruff_organize_imports', 'ruff_fix', 'ruff_format' },
       json = { 'prettier' },
       jsonc = { 'prettier' },
-      less = { 'prettier' },
       lua = { 'stylua' },
       markdown = { 'prettier', 'injected', timeout_ms = 1500 },
       css = { 'prettier' },
-      java = { lsp_format = 'prefer', name = 'jdtls' },
       scss = { 'prettier' },
       yaml = { 'prettier' },
       ['_'] = { 'trim_whitespace', 'trim_newlines' },
@@ -98,7 +95,6 @@ later(function()
       return {}
     end,
   }
-
   local set = vim.keymap.set
   local function toggle_format() vim.g.autoformat = not vim.g.autoformat end
   set('n', [[\f]], toggle_format, { desc = "Toggle 'vim.g.autoformat'" })
