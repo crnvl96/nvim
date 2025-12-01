@@ -1,5 +1,4 @@
 local mini_path = vim.fn.stdpath 'data' .. '/site/pack/deps/start/mini.nvim'
----@diagnostic disable-next-line: undefined-field
 if not vim.loop.fs_stat(mini_path) then
   vim.cmd 'echo "Installing `mini.nvim`" | redraw'
   local origin = 'https://github.com/nvim-mini/mini.nvim'
@@ -14,6 +13,8 @@ require('mini.deps').setup()
 local node_bin = vim.env.HOME .. '/.local/share/mise/installs/node/24.11.0/bin'
 vim.g.node_host_prog = node_bin .. '/node'
 vim.env.PATH = node_bin .. ':' .. vim.env.PATH
+
+vim.cmd.colorscheme 'miniautumn'
 
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ','
