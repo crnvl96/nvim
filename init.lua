@@ -121,12 +121,19 @@ local xmap_leader = function(suffix, rhs, desc) vim.keymap.set('x', '<Leader>' .
 -- nmap('<CR>', easy_motion, 'Jump to 2 characters')
 -- xmap('<CR>', easy_motion, 'Jump to 2 characters')
 
+nmap(';', ':', '')
+
 nmap('<C-d>', '<C-d>zz', 'Scroll down and center')
 nmap('<C-u>', '<C-u>zz', 'Scroll up and center')
-nmap('gl', 'g$', 'Go to the rightmost visible column')
-xmap('gl', 'g$', 'Go to the rightmost visible column')
-nmap('gh', 'g^', 'Go to the leftmost visible column')
-xmap('gh', 'g^', 'Go to the leftmost visible column')
+
+vim.keymap.set('', 'H', '^')
+vim.keymap.set('', 'L', '$')
+
+nmap('n', 'nzz', '')
+nmap('N', 'Nzz', '')
+nmap('*', '*zz', '')
+nmap('#', '#zz', '')
+nmap('g*', 'g*zz', '')
 
 map({ 'n', 'x' }, 'j', [[v:count == 0 ? 'gj' : 'j']], { expr = true })
 map({ 'n', 'x' }, 'k', [[v:count == 0 ? 'gk' : 'k']], { expr = true })
