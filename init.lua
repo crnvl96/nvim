@@ -52,7 +52,6 @@ if vim.fn.exists 'syntax_on' ~= 1 then vim.cmd 'syntax enable' end
 
 local map = function(mode, lhs, rhs, opts) vim.keymap.set(mode, lhs, rhs, opts) end
 local nmap = function(lhs, rhs, desc) vim.keymap.set('n', lhs, rhs, { desc = desc }) end
-local xmap = function(lhs, rhs, desc) vim.keymap.set('x', lhs, rhs, { desc = desc }) end
 local nmap_leader = function(suffix, rhs, desc) vim.keymap.set('n', '<Leader>' .. suffix, rhs, { desc = desc }) end
 local xmap_leader = function(suffix, rhs, desc) vim.keymap.set('x', '<Leader>' .. suffix, rhs, { desc = desc }) end
 
@@ -121,13 +120,11 @@ local xmap_leader = function(suffix, rhs, desc) vim.keymap.set('x', '<Leader>' .
 -- nmap('<CR>', easy_motion, 'Jump to 2 characters')
 -- xmap('<CR>', easy_motion, 'Jump to 2 characters')
 
-nmap(';', ':', '')
-
 nmap('<C-d>', '<C-d>zz', 'Scroll down and center')
 nmap('<C-u>', '<C-u>zz', 'Scroll up and center')
 
-vim.keymap.set('', 'H', '^')
-vim.keymap.set('', 'L', '$')
+map('', 'H', '^')
+map('', 'L', '$')
 
 nmap('n', 'nzz', '')
 nmap('N', 'Nzz', '')
