@@ -55,71 +55,6 @@ local nmap = function(lhs, rhs, desc) vim.keymap.set('n', lhs, rhs, { desc = des
 local nmap_leader = function(suffix, rhs, desc) vim.keymap.set('n', '<Leader>' .. suffix, rhs, { desc = desc }) end
 local xmap_leader = function(suffix, rhs, desc) vim.keymap.set('x', '<Leader>' .. suffix, rhs, { desc = desc }) end
 
--- Borrowed from https://antonk52.github.io/webdevandstuff/post/2025-11-30-diy-easymotion.html
---
--- local EASYMOTION_NS = vim.api.nvim_create_namespace('EASYMOTION_NS')
--- local EM_CHARS = vim.split('fjdkslgha;rueiwotyqpvbcnxmzFJDKSLGHARUEIWOTYQPVBCNXMZ', '')
---
--- local function easy_motion()
---     local char1 = vim.fn.nr2char( vim.fn.getchar() --[[@as number]] )
---     local char2 = vim.fn.nr2char( vim.fn.getchar() --[[@as number]] )
---     local line_idx_start, line_idx_end = vim.fn.line('w0'), vim.fn.line('w$')
---     local bufnr = vim.api.nvim_get_current_buf()
---     vim.api.nvim_buf_clear_namespace(bufnr, EASYMOTION_NS, 0, -1)
---
---     local char_idx = 1
---     ---@type table<string, {line: integer, col: integer, id: integer}>
---     local extmarks = {}
---     local lines = vim.api.nvim_buf_get_lines(bufnr, line_idx_start - 1, line_idx_end, false)
---     local needle = char1 .. char2
---
---     local is_case_sensitive = needle ~= string.lower(needle)
---
---     for lines_i, line_text in ipairs(lines) do
---         if not is_case_sensitive then
---             line_text = string.lower(line_text)
---         end
---         local line_idx = lines_i + line_idx_start - 1
---         -- skip folded lines
---         if vim.fn.foldclosed(line_idx) == -1 then
---             for i = 1, #line_text do
---                 if line_text:sub(i, i + 1) == needle and char_idx <= #EM_CHARS then
---                     local overlay_char = EM_CHARS[char_idx]
---                     local linenr = line_idx_start + lines_i - 2
---                     local col = i - 1
---                     local id = vim.api.nvim_buf_set_extmark(bufnr, EASYMOTION_NS, linenr, col + 2, {
---                         virt_text = { { overlay_char, 'CurSearch' } },
---                         virt_text_pos = 'overlay',
---                         hl_mode = 'replace',
---                     })
---                     extmarks[overlay_char] = { line = linenr, col = col, id = id }
---                     char_idx = char_idx + 1
---                     if char_idx > #EM_CHARS then
---                         goto break_outer
---                     end
---                 end
---             end
---         end
---     end
---     ::break_outer::
---
---     -- otherwise setting extmarks and waiting for next char is on the same frame
---     vim.schedule(function()
---         local next_char = vim.fn.nr2char(vim.fn.getchar() --[[@as number]])
---         if extmarks[next_char] then
---             local pos = extmarks[next_char]
---             -- to make <C-o> work
---             vim.cmd("normal! m'")
---             vim.api.nvim_win_set_cursor(0, { pos.line + 1, pos.col })
---         end
---         -- clear extmarks
---         vim.api.nvim_buf_clear_namespace(0, EASYMOTION_NS, 0, -1)
---     end)
--- end
---
--- nmap('<CR>', easy_motion, 'Jump to 2 characters')
--- xmap('<CR>', easy_motion, 'Jump to 2 characters')
-
 nmap('<C-d>', '<C-d>zz', 'Scroll down and center')
 nmap('<C-u>', '<C-u>zz', 'Scroll up and center')
 
@@ -206,62 +141,13 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   callback = function() vim.highlight.on_yank() end,
 })
 
-vim.api.nvim_create_autocmd('FileType', {
-  group = vim.api.nvim_create_augroup('crnvl96-ft-go', {}),
-  pattern = { 'go' },
-  callback = function() vim.cmd 'setlocal noexpandtab' end,
-})
-
-vim.api.nvim_create_autocmd('FileType', {
-  group = vim.api.nvim_create_augroup('crnvl96-ft-help', {}),
-  pattern = { 'help' },
-  callback = function() vim.cmd 'setlocal nofoldenable' end,
-})
-
-vim.api.nvim_create_autocmd('FileType', {
-  group = vim.api.nvim_create_augroup('crnvl96-ft-markdown', {}),
-  pattern = { 'markdown' },
-  callback = function()
-    vim.cmd 'setlocal wrap'
-    vim.cmd 'setlocal colorcolumn=81'
-    vim.cmd 'setlocal shiftwidth=2'
-  end,
-})
-
-vim.api.nvim_create_autocmd('FileType', {
-  group = vim.api.nvim_create_augroup('crnvl96-ft-minideps-confirm', {}),
-  pattern = { 'minideps-confirm' },
-  callback = function() vim.cmd 'setlocal foldlevel=0' end,
-})
-
-vim.api.nvim_create_autocmd('FileType', {
-  group = vim.api.nvim_create_augroup('crnvl96-ft-python', {}),
-  pattern = { 'python' },
-  callback = function() vim.cmd 'setlocal colorcolumn=89' end,
-})
-
-vim.api.nvim_create_autocmd('FileType', {
-  group = vim.api.nvim_create_augroup('crnvl96-ft-text', {}),
-  pattern = { 'text' },
-  callback = function()
-    vim.cmd 'setlocal wrap'
-    vim.cmd 'setlocal colorcolumn=81'
-  end,
-})
-
-vim.api.nvim_create_autocmd('FileType', {
-  group = vim.api.nvim_create_augroup('crnvl96-ft-vim', {}),
-  pattern = { 'vim' },
-  callback = function() vim.cmd 'setlocal shiftwidth=2' end,
-})
-
 MiniDeps.later(
   function()
     vim.diagnostic.config {
       signs = { priority = 9999, severity = { min = 'WARN', max = 'ERROR' } },
       underline = { severity = { min = 'HINT', max = 'ERROR' } },
-      virtual_lines = false,
       virtual_text = { current_line = true, severity = { min = 'ERROR', max = 'ERROR' } },
+      virtual_lines = false,
       update_in_insert = false,
     }
   end
@@ -276,6 +162,7 @@ later(function() require('mini.jump').setup() end)
 later(function() require('mini.move').setup() end)
 later(function() require('mini.pick').setup() end)
 later(function() require('mini.splitjoin').setup() end)
+later(function() add 'tpope/vim-fugitive' end)
 
 now(function()
   require('mini.misc').setup()
@@ -459,55 +346,6 @@ end)
 
 now(function()
   add 'neovim/nvim-lspconfig'
-
-  vim.lsp.config('lua_ls', {
-    on_attach = function(client, buf_id)
-      client.server_capabilities.completionProvider.triggerCharacters = { '.', ':', '#', '(' }
-    end,
-    settings = {
-      Lua = {
-        runtime = { version = 'LuaJIT', path = vim.split(package.path, ';') },
-        workspace = {
-          ignoreSubmodules = true,
-          library = { vim.env.VIMRUNTIME, '${3rd}/luv/library' },
-        },
-      },
-    },
-  })
-
-  vim.lsp.config('pyright', {
-    settings = {
-      pyright = {
-        disableOrganizeImports = true, -- Using Ruff's import organizer
-      },
-      python = {
-        analysis = {
-          ignore = { '*' }, -- Ignore all files for analysis to exclusively use Ruff for linting
-          autoSearchPaths = true,
-          useLibraryCodeForTypes = true,
-          diagnosticMode = 'openFilesOnly',
-        },
-      },
-    },
-  })
-
-  vim.lsp.config('ruff', {
-    settings = {},
-    init_options = {
-      settings = {
-        logLevel = 'debug',
-        fixAll = true,
-        organizeImports = true,
-        lint = { enable = true },
-        format = { backend = 'uv' },
-      },
-    },
-    capabilities = {
-      general = { positionEncodings = { 'utf-16' } },
-    },
-    on_attach = function(client, _bufnr) client.server_capabilities.hoverProvider = false end,
-  })
-
   vim.lsp.enable {
     'eslint',
     'gopls',
@@ -517,8 +355,6 @@ now(function()
     'ts_ls',
   }
 end)
-
-later(function() add 'tpope/vim-fugitive' end)
 
 later(function()
   add 'stevearc/conform.nvim'
