@@ -3,6 +3,7 @@ local add, now, later = MiniDeps.add, MiniDeps.now, MiniDeps.later
 later(function() require('mini.extra').setup() end)
 later(function() require('mini.bufremove').setup() end)
 later(function() require('mini.comment').setup() end)
+later(function() require('mini.cmdline').setup() end)
 later(function() require('mini.jump').setup() end)
 later(function() require('mini.move').setup() end)
 later(function() require('mini.pick').setup() end)
@@ -84,6 +85,7 @@ later(function()
   local process_items = function(items, base)
     return MiniCompletion.default_process_items(items, base, process_items_opts)
   end
+
   require('mini.completion').setup {
     lsp_completion = {
       source_func = 'omnifunc',
@@ -91,52 +93,57 @@ later(function()
       process_items = process_items,
     },
   }
+
   vim.api.nvim_create_autocmd('LspAttach', {
     group = vim.api.nvim_create_augroup('crnvl96-on-lspattach', {}),
     callback = function(ev) vim.bo[ev.buf].omnifunc = 'v:lua.MiniCompletion.completefunc_lsp' end,
   })
+
   vim.lsp.config('*', { capabilities = MiniCompletion.get_lsp_capabilities() })
 end)
 
-later(
-  function()
-    require('mini.files').setup {
-      mappings = {
-        go_in = '',
-        go_in_plus = '<CR>',
-        go_out = '',
-        go_out_plus = '-',
-      },
-      windows = {
-        preview = true,
-        width_focus = 50,
-        width_nofocus = 15,
-        width_preview = 80,
-      },
-    }
-  end
-)
+later(function()
+  local minifiles = require 'mini.files'
 
-later(
-  function()
-    require('mini.jump2d').setup {
-      spotter = require('mini.jump2d').gen_spotter.pattern '[^%s%p]+',
-      view = { dim = true, n_steps_ahead = 2 },
-      mappings = {
-        start_jumping = 's',
-      },
-    }
-  end
-)
+  minifiles.setup {
+    mappings = {
+      go_in = '',
+      go_in_plus = '<CR>',
+      go_out = '',
+      go_out_plus = '-',
+    },
+    windows = {
+      preview = true,
+      width_focus = 50,
+      width_nofocus = 15,
+      width_preview = 80,
+    },
+  }
+end)
+
+later(function()
+  local jump2d = require 'mini.jump2d'
+
+  jump2d.setup {
+    spotter = require('mini.jump2d').gen_spotter.pattern '[^%s%p]+',
+    view = { dim = true, n_steps_ahead = 2 },
+    mappings = {
+      start_jumping = 's',
+    },
+  }
+end)
 
 later(function()
   require('mini.keymap').setup()
+
   MiniKeymap.map_multistep('i', '<Tab>', { 'pmenu_next' })
   MiniKeymap.map_multistep('i', '<C-n>', { 'pmenu_next' })
   MiniKeymap.map_multistep('i', '<S-Tab>', { 'pmenu_prev' })
   MiniKeymap.map_multistep('i', '<C-p>', { 'pmenu_prev' })
   MiniKeymap.map_multistep('i', '<CR>', { 'pmenu_accept' })
+
   local mode = { 'i', 'c', 'x', 's' }
+
   require('mini.keymap').map_combo(mode, 'jk', '<BS><BS><Esc>')
   require('mini.keymap').map_combo(mode, 'kj', '<BS><BS><Esc>')
   require('mini.keymap').map_combo('t', 'jk', '<BS><BS><C-\\><C-n>')

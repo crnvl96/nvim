@@ -8,38 +8,28 @@ now(function()
     checkout = 'main',
     hooks = { post_checkout = function() vim.cmd 'TSUpdate' end },
   }
-  add {
-    source = 'nvim-treesitter/nvim-treesitter-textobjects',
-    checkout = 'main',
-  }
+
+  add { source = 'nvim-treesitter/nvim-treesitter-textobjects', checkout = 'main' }
+
+  -- stylua: ignore
   local languages = {
-    'html',
-    'css',
-    'go',
-    'python',
-    'diff',
-    'bash',
-    'json',
-    'regex',
-    'lisp',
-    'toml',
-    'yaml',
-    'markdown',
-    'javascript',
-    'typescript',
-    'tsx',
-    'lua',
-    'vimdoc',
-  }
+    'html', 'css', 'go', 'python', 'diff',
+    'bash', 'json', 'regex', 'lisp', 'toml',
+    'yaml', 'markdown', 'javascript', 'typescript', 'tsx',
+    'lua', 'vimdoc', }
+
   local isnt_installed = function(lang) return #vim.api.nvim_get_runtime_file('parser/' .. lang .. '.*', false) == 0 end
   local to_install = vim.tbl_filter(isnt_installed, languages)
+
   if #to_install > 0 then require('nvim-treesitter').install(to_install) end
   local filetypes = {}
+
   for _, lang in ipairs(languages) do
     for _, ft in ipairs(vim.treesitter.language.get_filetypes(lang)) do
       table.insert(filetypes, ft)
     end
   end
+
   vim.api.nvim_create_autocmd('FileType', {
     group = vim.api.nvim_create_augroup('crnvl96-nvim-treesitter', {}),
     pattern = filetypes,
@@ -49,19 +39,18 @@ end)
 
 now(function()
   add 'neovim/nvim-lspconfig'
+
+  -- stylua: ignore
   vim.lsp.enable {
-    'eslint',
-    'gopls',
-    'lua_ls',
-    'pyright',
-    'ruff',
-    'ts_ls',
+    'eslint', 'gopls', 'lua_ls',
+    'pyright', 'ruff', 'ts_ls',
   }
 end)
 
 later(function()
   add 'stevearc/conform.nvim'
   vim.g.autoformat = true
+
   require('conform').setup {
     notify_on_error = false,
     notify_no_formatters = false,
@@ -95,6 +84,7 @@ later(function()
       return {}
     end,
   }
+
   local set = vim.keymap.set
   local function toggle_format() vim.g.autoformat = not vim.g.autoformat end
   set('n', [[\f]], toggle_format, { desc = "Toggle 'vim.g.autoformat'" })
