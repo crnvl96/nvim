@@ -121,18 +121,6 @@ later(function()
 end)
 
 later(function()
-  local jump2d = require 'mini.jump2d'
-
-  jump2d.setup {
-    spotter = require('mini.jump2d').gen_spotter.pattern '[^%s%p]+',
-    view = { dim = true, n_steps_ahead = 2 },
-    mappings = {
-      start_jumping = 's',
-    },
-  }
-end)
-
-later(function()
   require('mini.keymap').setup()
 
   MiniKeymap.map_multistep('i', '<Tab>', { 'pmenu_next' })
@@ -140,11 +128,4 @@ later(function()
   MiniKeymap.map_multistep('i', '<S-Tab>', { 'pmenu_prev' })
   MiniKeymap.map_multistep('i', '<C-p>', { 'pmenu_prev' })
   MiniKeymap.map_multistep('i', '<CR>', { 'pmenu_accept' })
-
-  local mode = { 'i', 'c', 'x', 's' }
-
-  require('mini.keymap').map_combo(mode, 'jk', '<BS><BS><Esc>')
-  require('mini.keymap').map_combo(mode, 'kj', '<BS><BS><Esc>')
-  require('mini.keymap').map_combo('t', 'jk', '<BS><BS><C-\\><C-n>')
-  require('mini.keymap').map_combo('t', 'kj', '<BS><BS><C-\\><C-n>')
 end)

@@ -62,6 +62,12 @@ now(function()
 end)
 
 later(function()
+  add 'MagicDuck/grug-far.nvim'
+
+  require('grug-far').setup {}
+end)
+
+later(function()
   add 'stevearc/conform.nvim'
 
   vim.g.autoformat = true
