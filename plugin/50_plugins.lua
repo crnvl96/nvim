@@ -11,12 +11,24 @@ now(function()
 
   add { source = 'nvim-treesitter/nvim-treesitter-textobjects', checkout = 'main' }
 
-  -- stylua: ignore
   local languages = {
-    'html', 'css', 'go', 'python', 'diff',
-    'bash', 'json', 'regex', 'lisp', 'toml',
-    'yaml', 'markdown', 'javascript', 'typescript', 'tsx',
-    'lua', 'vimdoc', }
+    'bash',
+    'css',
+    'diff',
+    'html',
+    'javascript',
+    'json',
+    'lisp',
+    'lua',
+    'markdown',
+    'python',
+    'regex',
+    'toml',
+    'tsx',
+    'typescript',
+    'vimdoc',
+    'yaml',
+  }
 
   local isnt_installed = function(lang) return #vim.api.nvim_get_runtime_file('parser/' .. lang .. '.*', false) == 0 end
   local to_install = vim.tbl_filter(isnt_installed, languages)
@@ -40,15 +52,18 @@ end)
 now(function()
   add 'neovim/nvim-lspconfig'
 
-  -- stylua: ignore
   vim.lsp.enable {
-    'eslint', 'gopls', 'lua_ls',
-    'pyright', 'ruff', 'ts_ls',
+    'eslint',
+    'lua_ls',
+    'pyright',
+    'ruff',
+    'ts_ls',
   }
 end)
 
 later(function()
   add 'stevearc/conform.nvim'
+
   vim.g.autoformat = true
 
   require('conform').setup {
@@ -64,7 +79,6 @@ later(function()
       injected = { ignore_errors = true },
     },
     formatters_by_ft = {
-      go = { 'gofumpt' },
       javascript = { 'prettier' },
       javascriptreact = { 'prettier' },
       typescript = { 'prettier' },

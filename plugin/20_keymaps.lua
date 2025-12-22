@@ -3,11 +3,12 @@ local nmap = function(lhs, rhs, desc) vim.keymap.set('n', lhs, rhs, { desc = des
 local nmap_leader = function(suffix, rhs, desc) vim.keymap.set('n', '<Leader>' .. suffix, rhs, { desc = desc }) end
 local xmap_leader = function(suffix, rhs, desc) vim.keymap.set('x', '<Leader>' .. suffix, rhs, { desc = desc }) end
 
-nmap('<C-d>', '<C-d>zz', 'Scroll down and center')
-nmap('<C-u>', '<C-u>zz', 'Scroll up and center')
-
 map('', 'H', '^')
 map('', 'L', '$')
+map('v', 'p', 'P')
+
+nmap('<C-d>', '<C-d>zz', 'Scroll down and center')
+nmap('<C-u>', '<C-u>zz', 'Scroll up and center')
 
 nmap('n', 'nzz', '')
 nmap('N', 'Nzz', '')
@@ -26,8 +27,6 @@ map('n', '<C-Left>', '<Cmd>vertical resize -20<CR>')
 map('n', '<C-Down>', '<Cmd>resize -5<CR>')
 map('n', '<C-Up>', '<Cmd>resize +5<CR>')
 map('n', '<C-Right>', '<Cmd>vertical resize +20<CR>')
-
-map('v', 'p', 'P')
 
 nmap_leader('bd', '<Cmd>lua MiniBufremove.delete()<CR>', 'Delete')
 nmap_leader('bD', '<Cmd>lua MiniBufremove.delete(0, true)<CR>', 'Delete!')
@@ -74,12 +73,3 @@ nmap_leader('lr', '<Cmd>Pick lsp scope="references"<CR>', 'References')
 nmap_leader('lS', '<Cmd>Pick lsp scope="workspace_symbol"<CR>', 'Symbols workspace')
 nmap_leader('ly', '<CmdPick lsp scope="type_definition"<CR>', 'Type definition')
 nmap_leader('ls', '<Cmd>Pick lsp scope="document_symbol"<CR>', 'Symbols document')
-
-nmap_leader('wh', '<C-w>h', 'Split window vertically')
-nmap_leader('wv', '<C-w>v', 'Split window horizontally')
-nmap_leader('wc', '<C-w>c', 'Close current window')
-nmap_leader('wo', '<C-w>o', 'Close other windows')
-nmap_leader('wH', '<C-w>H', 'Move window to the left')
-nmap_leader('wJ', '<C-w>J', 'Move window to bottom')
-nmap_leader('wK', '<C-w>K', 'Move window to top')
-nmap_leader('wL', '<C-w>L', 'Move window to the right')

@@ -35,7 +35,6 @@ later(function()
       { mode = 'n', keys = '<Leader>f', desc = '+Find' },
       { mode = 'n', keys = '<Leader>g', desc = '+Git' },
       { mode = 'n', keys = '<Leader>l', desc = '+Language' },
-      { mode = 'n', keys = '<Leader>w', desc = '+Window' },
       { mode = 'n', keys = '<Leader>h', desc = '+Misc' },
       { mode = 'x', keys = '<Leader>g', desc = '+Git' },
       { mode = 'x', keys = '<Leader>l', desc = '+Language' },

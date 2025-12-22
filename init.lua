@@ -24,17 +24,9 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 MiniDeps.later(function()
   local conf = vim.diagnostic.config
   conf {
-    signs = {
-      priority = 9999,
-      severity = { min = 'HINT', max = 'ERROR' },
-    },
-    underline = {
-      severity = { min = 'HINT', max = 'ERROR' },
-    },
-    virtual_text = {
-      current_line = true,
-      severity = { min = 'ERROR', max = 'ERROR' },
-    },
+    signs = { priority = 9999, severity = { min = 'HINT', max = 'ERROR' } },
+    underline = { severity = { min = 'HINT', max = 'ERROR' } },
+    virtual_text = { current_line = true, severity = { min = 'ERROR', max = 'ERROR' } },
     virtual_lines = false,
     update_in_insert = false,
   }
