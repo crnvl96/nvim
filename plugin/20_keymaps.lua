@@ -3,8 +3,6 @@ local nmap = function(lhs, rhs, desc) vim.keymap.set('n', lhs, rhs, { desc = des
 local nmap_leader = function(suffix, rhs, desc) vim.keymap.set('n', '<Leader>' .. suffix, rhs, { desc = desc }) end
 local xmap_leader = function(suffix, rhs, desc) vim.keymap.set('x', '<Leader>' .. suffix, rhs, { desc = desc }) end
 
-map('', '>', '}')
-map('', '<', '{')
 map('v', 'p', 'P')
 
 nmap('<C-d>', '<C-d>zz', 'Scroll down and center')
@@ -33,17 +31,15 @@ nmap_leader('bD', '<Cmd>lua MiniBufremove.delete(0, true)<CR>', 'Delete!')
 nmap_leader('bw', '<Cmd>lua MiniBufremove.wipeout()<CR>', 'Wipeout')
 nmap_leader('bW', '<Cmd>lua MiniBufremove.wipeout(0, true)<CR>', 'Wipeout!')
 
-local explore_quickfix = function()
+nmap_leader('ed', '<Cmd>lua MiniFiles.open()<CR>', 'Directory')
+nmap_leader('ef', '<Cmd>lua MiniFiles.open(vim.api.nvim_buf_get_name(0))<CR>', 'File directory')
+nmap_leader('ei', '<Cmd>edit $MYVIMRC<CR>', 'init.lua')
+nmap_leader('ex', function()
   for _, win_id in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
     if vim.fn.getwininfo(win_id)[1].quickfix == 1 then return vim.cmd 'cclose' end
   end
   vim.cmd 'copen'
-end
-
-nmap_leader('ed', '<Cmd>lua MiniFiles.open()<CR>', 'Directory')
-nmap_leader('ef', '<Cmd>lua MiniFiles.open(vim.api.nvim_buf_get_name(0))<CR>', 'File directory')
-nmap_leader('ei', '<Cmd>edit $MYVIMRC<CR>', 'init.lua')
-nmap_leader('ex', explore_quickfix, 'Quickfix')
+end, 'Quickfix')
 
 nmap_leader("f'", '<Cmd>Pick resume<CR>', 'Resume')
 nmap_leader('fb', '<Cmd>Pick buffers<CR>', 'Buffers')

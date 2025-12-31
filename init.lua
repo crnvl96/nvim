@@ -16,11 +16,6 @@ vim.env.PATH = node_bin .. ':' .. vim.env.PATH
 
 vim.cmd.colorscheme 'miniwinter'
 
-vim.api.nvim_create_autocmd('TextYankPost', {
-  group = vim.api.nvim_create_augroup('crnvl96-highlight-after-yank', {}),
-  callback = function() vim.highlight.on_yank() end,
-})
-
 MiniDeps.later(function()
   local conf = vim.diagnostic.config
   conf {

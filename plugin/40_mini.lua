@@ -80,16 +80,13 @@ later(function()
 end)
 
 later(function()
-  local process_items_opts = { kind_priority = { Text = -1, Snippet = -1 } }
-  local process_items = function(items, base)
-    return MiniCompletion.default_process_items(items, base, process_items_opts)
-  end
-
   require('mini.completion').setup {
     lsp_completion = {
       source_func = 'omnifunc',
       auto_setup = false,
-      process_items = process_items,
+      process_items = function(items, base)
+        return MiniCompletion.default_process_items(items, base, { kind_priority = { Text = -1, Snippet = -1 } })
+      end,
     },
   }
 
@@ -123,12 +120,8 @@ end)
 later(function()
   require('mini.keymap').setup()
 
-  MiniKeymap.map_combo({ 'n', 'x' }, 'll', 'g$')
-  MiniKeymap.map_combo({ 'n', 'x' }, 'hh', 'g^')
-
-  local mode = { 'i', 'c', 'x', 's' }
-  MiniKeymap.map_combo(mode, 'jk', '<BS><BS><Esc>')
-  MiniKeymap.map_combo(mode, 'kj', '<BS><BS><Esc>')
+  MiniKeymap.map_combo({ 'i', 'c', 'x', 's' }, 'jk', '<BS><BS><Esc>')
+  MiniKeymap.map_combo({ 'i', 'c', 'x', 's' }, 'kj', '<BS><BS><Esc>')
 
   MiniKeymap.map_multistep('i', '<Tab>', { 'pmenu_next' })
   MiniKeymap.map_multistep('i', '<C-n>', { 'pmenu_next' })
