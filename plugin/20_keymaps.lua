@@ -3,8 +3,8 @@ local nmap = function(lhs, rhs, desc) vim.keymap.set('n', lhs, rhs, { desc = des
 local nmap_leader = function(suffix, rhs, desc) vim.keymap.set('n', '<Leader>' .. suffix, rhs, { desc = desc }) end
 local xmap_leader = function(suffix, rhs, desc) vim.keymap.set('x', '<Leader>' .. suffix, rhs, { desc = desc }) end
 
-map('', 'H', '^')
-map('', 'L', '$')
+map('', '>', '}')
+map('', '<', '{')
 map('v', 'p', 'P')
 
 nmap('<C-d>', '<C-d>zz', 'Scroll down and center')

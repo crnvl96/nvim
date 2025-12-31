@@ -1,4 +1,4 @@
-local add, now, later = MiniDeps.add, MiniDeps.now, MiniDeps.later
+local now, later = MiniDeps.now, MiniDeps.later
 
 later(function() require('mini.extra').setup() end)
 later(function() require('mini.bufremove').setup() end)
@@ -122,6 +122,13 @@ end)
 
 later(function()
   require('mini.keymap').setup()
+
+  MiniKeymap.map_combo({ 'n', 'x' }, 'll', 'g$')
+  MiniKeymap.map_combo({ 'n', 'x' }, 'hh', 'g^')
+
+  local mode = { 'i', 'c', 'x', 's' }
+  MiniKeymap.map_combo(mode, 'jk', '<BS><BS><Esc>')
+  MiniKeymap.map_combo(mode, 'kj', '<BS><BS><Esc>')
 
   MiniKeymap.map_multistep('i', '<Tab>', { 'pmenu_next' })
   MiniKeymap.map_multistep('i', '<C-n>', { 'pmenu_next' })
