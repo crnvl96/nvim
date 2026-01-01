@@ -11,22 +11,11 @@ now(function()
 
   add { source = 'nvim-treesitter/nvim-treesitter-textobjects', checkout = 'main' }
 
+  -- stylua: ignore
   local languages = {
-    'bash',
-    'css',
-    'diff',
-    'html',
-    'javascript',
-    'json',
-    'lisp',
-    'lua',
-    'markdown',
-    'python',
-    'regex',
-    'toml',
-    'tsx',
-    'typescript',
-    'vimdoc',
+    'bash', 'css', 'diff', 'html', 'javascript',
+    'json', 'lisp', 'lua', 'markdown', 'python',
+    'regex', 'toml', 'tsx', 'typescript', 'vimdoc',
     'yaml',
   }
 
@@ -64,7 +53,7 @@ end)
 later(function()
   add 'MagicDuck/grug-far.nvim'
 
-  require('grug-far').setup {}
+  require('grug-far').setup()
 end)
 
 later(function()

@@ -9,20 +9,3 @@ if not vim.loop.fs_stat(mini_path) then
 end
 
 require('mini.deps').setup()
-
-local node_bin = vim.env.HOME .. '/.local/share/mise/installs/node/24.11.0/bin'
-vim.g.node_host_prog = node_bin .. '/node'
-vim.env.PATH = node_bin .. ':' .. vim.env.PATH
-
-vim.cmd.colorscheme 'miniwinter'
-
-MiniDeps.later(function()
-  local conf = vim.diagnostic.config
-  conf {
-    signs = { priority = 9999, severity = { min = 'HINT', max = 'ERROR' } },
-    underline = { severity = { min = 'HINT', max = 'ERROR' } },
-    virtual_text = { current_line = true, severity = { min = 'ERROR', max = 'ERROR' } },
-    virtual_lines = false,
-    update_in_insert = false,
-  }
-end)

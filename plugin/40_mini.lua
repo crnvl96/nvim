@@ -1,13 +1,25 @@
 local now, later = MiniDeps.now, MiniDeps.later
 
 later(function() require('mini.extra').setup() end)
-later(function() require('mini.bufremove').setup() end)
 later(function() require('mini.comment').setup() end)
 later(function() require('mini.cmdline').setup() end)
 later(function() require('mini.jump').setup() end)
+later(function() require('mini.trailspace').setup() end)
 later(function() require('mini.move').setup() end)
 later(function() require('mini.pick').setup() end)
 later(function() require('mini.splitjoin').setup() end)
+later(function() require('mini.align').setup() end)
+
+later(function()
+  local jump2d = require 'mini.jump2d'
+  jump2d.setup {
+    spotter = jump2d.gen_spotter.pattern '[^%s%p]+',
+    labels = 'fjdkslah',
+    view = { dim = true, n_steps_ahead = 2 },
+    mappings = { start_jumping = 's' },
+  }
+  vim.keymap.set({ 'n', 'x', 'o' }, 'S', function() MiniJump2d.start(MiniJump2d.builtin_opts.single_character) end)
+end)
 
 now(function()
   require('mini.misc').setup()
@@ -23,6 +35,20 @@ later(function()
       f = ai.gen_spec.treesitter { a = '@function.outer', i = '@function.inner' },
     },
     search_method = 'cover',
+  }
+end)
+
+later(function()
+  local hipatterns = require 'mini.hipatterns'
+  local hi_words = MiniExtra.gen_highlighter.words
+  hipatterns.setup {
+    highlighters = {
+      fixme = hi_words({ 'FIXME', 'Fixme', 'fixme' }, 'MiniHipatternsFixme'),
+      hack = hi_words({ 'HACK', 'Hack', 'hack' }, 'MiniHipatternsHack'),
+      todo = hi_words({ 'TODO', 'Todo', 'todo' }, 'MiniHipatternsTodo'),
+      note = hi_words({ 'NOTE', 'Note', 'note' }, 'MiniHipatternsNote'),
+      hex_color = hipatterns.gen_highlighter.hex_color(),
+    },
   }
 end)
 

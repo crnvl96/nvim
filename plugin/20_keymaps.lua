@@ -26,11 +26,6 @@ map('n', '<C-Down>', '<Cmd>resize -5<CR>')
 map('n', '<C-Up>', '<Cmd>resize +5<CR>')
 map('n', '<C-Right>', '<Cmd>vertical resize +20<CR>')
 
-nmap_leader('bd', '<Cmd>lua MiniBufremove.delete()<CR>', 'Delete')
-nmap_leader('bD', '<Cmd>lua MiniBufremove.delete(0, true)<CR>', 'Delete!')
-nmap_leader('bw', '<Cmd>lua MiniBufremove.wipeout()<CR>', 'Wipeout')
-nmap_leader('bW', '<Cmd>lua MiniBufremove.wipeout(0, true)<CR>', 'Wipeout!')
-
 nmap_leader('ed', '<Cmd>lua MiniFiles.open()<CR>', 'Directory')
 nmap_leader('ef', '<Cmd>lua MiniFiles.open(vim.api.nvim_buf_get_name(0))<CR>', 'File directory')
 nmap_leader('ei', '<Cmd>edit $MYVIMRC<CR>', 'init.lua')

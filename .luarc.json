@@ -11,6 +11,7 @@
         "MiniColors",
         "MiniNotify",
         "MiniClue",
-        "MiniSnippets"
+        "MiniSnippets",
+        "MiniJump2d"
     ]
 }
