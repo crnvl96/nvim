@@ -1,4 +1,7 @@
-local now, later = MiniDeps.now, MiniDeps.later
+local add, now, later = MiniDeps.add, MiniDeps.now, MiniDeps.later
+
+local nmap_leader = function(suffix, rhs, desc) vim.keymap.set('n', '<Leader>' .. suffix, rhs, { desc = desc }) end
+local xmap_leader = function(suffix, rhs, desc) vim.keymap.set('x', '<Leader>' .. suffix, rhs, { desc = desc }) end
 
 later(function() require('mini.extra').setup() end)
 later(function() require('mini.comment').setup() end)
@@ -6,9 +9,22 @@ later(function() require('mini.cmdline').setup() end)
 later(function() require('mini.jump').setup() end)
 later(function() require('mini.trailspace').setup() end)
 later(function() require('mini.move').setup() end)
-later(function() require('mini.pick').setup() end)
 later(function() require('mini.splitjoin').setup() end)
 later(function() require('mini.align').setup() end)
+
+later(function()
+  require('mini.pick').setup()
+  nmap_leader("f'", '<Cmd>Pick resume<CR>', 'Resume')
+  nmap_leader('fb', '<Cmd>Pick buffers<CR>', 'Buffers')
+  nmap_leader('fD', '<Cmd>Pick diagnostic scope="all"<CR>', 'Diagnostic workspace')
+  nmap_leader('fd', '<Cmd>Pick diagnostic scope="current"<CR>', 'Diagnostic buffer')
+  nmap_leader('ff', '<Cmd>Pick files<CR>', 'Files')
+  nmap_leader('fg', '<Cmd>Pick grep_live<CR>', 'Grep live')
+  nmap_leader('fh', '<Cmd>Pick help<CR>', 'Help tags')
+  nmap_leader('fH', '<Cmd>Pick hl_groups<CR>', 'Highlight groups')
+  nmap_leader('fl', '<Cmd>Pick buf_lines scope="current"<CR>', 'Lines (buf)')
+  nmap_leader('fo', '<Cmd>Pick oldfiles<CR>', 'Oldfiles')
+end)
 
 later(function()
   local jump2d = require 'mini.jump2d'
@@ -141,6 +157,9 @@ later(function()
       width_preview = 80,
     },
   }
+
+  nmap_leader('ed', '<Cmd>lua MiniFiles.open()<CR>', 'Directory')
+  nmap_leader('ef', '<Cmd>lua MiniFiles.open(vim.api.nvim_buf_get_name(0))<CR>', 'File directory')
 end)
 
 later(function()
@@ -154,4 +173,118 @@ later(function()
   MiniKeymap.map_multistep('i', '<S-Tab>', { 'pmenu_prev' })
   MiniKeymap.map_multistep('i', '<C-p>', { 'pmenu_prev' })
   MiniKeymap.map_multistep('i', '<CR>', { 'pmenu_accept' })
+end)
+
+later(function()
+  add 'tpope/vim-fugitive'
+  nmap_leader('gg', ':Git<space>', 'Git')
+end)
+
+now(function()
+  add {
+    source = 'nvim-treesitter/nvim-treesitter',
+    checkout = 'main',
+    hooks = { post_checkout = function() vim.cmd 'TSUpdate' end },
+  }
+
+  add { source = 'nvim-treesitter/nvim-treesitter-textobjects', checkout = 'main' }
+
+  -- stylua: ignore
+  local languages = {
+    'bash', 'css', 'diff', 'html', 'javascript',
+    'json', 'lisp', 'lua', 'markdown', 'python',
+    'regex', 'toml', 'tsx', 'typescript', 'vimdoc',
+    'yaml',
+  }
+
+  local isnt_installed = function(lang) return #vim.api.nvim_get_runtime_file('parser/' .. lang .. '.*', false) == 0 end
+  local to_install = vim.tbl_filter(isnt_installed, languages)
+
+  if #to_install > 0 then require('nvim-treesitter').install(to_install) end
+  local filetypes = {}
+
+  for _, lang in ipairs(languages) do
+    for _, ft in ipairs(vim.treesitter.language.get_filetypes(lang)) do
+      table.insert(filetypes, ft)
+    end
+  end
+
+  vim.api.nvim_create_autocmd('FileType', {
+    group = vim.api.nvim_create_augroup('crnvl96-nvim-treesitter', {}),
+    pattern = filetypes,
+    callback = function(ev) vim.treesitter.start(ev.buf) end,
+  })
+end)
+
+now(function()
+  add 'neovim/nvim-lspconfig'
+
+  vim.lsp.enable {
+    'eslint',
+    'lua_ls',
+    'pyright',
+    'ruff',
+    'ts_ls',
+  }
+
+  nmap_leader('la', '<Cmd>lua vim.lsp.buf.code_action()<CR>', 'Actions')
+  nmap_leader('ld', '<Cmd>Pick lsp scope="definition"<CR>', 'Source definition')
+  nmap_leader('le', '<Cmd>lua vim.diagnostic.open_float()<CR>', 'Diagnostic popup')
+  nmap_leader('lf', '<Cmd>lua require("conform").format({lsp_fallback=true})<CR>', 'Format')
+  xmap_leader('lf', '<Cmd>lua require("conform").format({lsp_fallback=true})<CR>', 'Format selection')
+  nmap_leader('lh', '<Cmd>lua vim.lsp.buf.hover()<CR>', 'Hover')
+  nmap_leader('li', '<Cmd>Pick lsp scope="implementation"<CR>', 'Implementation')
+  nmap_leader('ln', '<Cmd>lua vim.lsp.buf.rename()<CR>', 'Rename')
+  nmap_leader('lr', '<Cmd>Pick lsp scope="references"<CR>', 'References')
+  nmap_leader('lS', '<Cmd>Pick lsp scope="workspace_symbol"<CR>', 'Symbols workspace')
+  nmap_leader('ly', '<CmdPick lsp scope="type_definition"<CR>', 'Type definition')
+  nmap_leader('ls', '<Cmd>Pick lsp scope="document_symbol"<CR>', 'Symbols document')
+end)
+
+later(function()
+  add 'MagicDuck/grug-far.nvim'
+  require('grug-far').setup()
+end)
+
+later(function()
+  add 'stevearc/conform.nvim'
+
+  vim.g.autoformat = true
+
+  require('conform').setup {
+    notify_on_error = false,
+    notify_no_formatters = false,
+    default_format_opts = {
+      lsp_format = 'fallback',
+      timeout_ms = 1000,
+    },
+    formatters = {
+      stylua = { require_cwd = true },
+      prettier = { require_cwd = false },
+      injected = { ignore_errors = true },
+    },
+    formatters_by_ft = {
+      javascript = { 'prettier' },
+      javascriptreact = { 'prettier' },
+      typescript = { 'prettier' },
+      typescriptreact = { 'prettier' },
+      python = { 'ruff_organize_imports', 'ruff_fix', 'ruff_format' },
+      json = { 'prettier' },
+      jsonc = { 'prettier' },
+      lua = { 'stylua' },
+      markdown = { 'prettier', 'injected', timeout_ms = 1500 },
+      css = { 'prettier' },
+      scss = { 'prettier' },
+      yaml = { 'prettier' },
+      ['_'] = { 'trim_whitespace', 'trim_newlines' },
+    },
+    format_on_save = function()
+      if not vim.g.autoformat then return nil end
+      return {}
+    end,
+  }
+
+  local set = vim.keymap.set
+  local function toggle_format() vim.g.autoformat = not vim.g.autoformat end
+  set('n', [[\f]], toggle_format, { desc = "Toggle 'vim.g.autoformat'" })
 end)
