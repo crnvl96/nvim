@@ -53,15 +53,9 @@ vim.o.completeopt = 'menuone,noselect,fuzzy,nosort'
 vim.cmd 'filetype plugin indent on'
 if vim.fn.exists 'syntax_on' ~= 1 then vim.cmd 'syntax enable' end
 
+map('', '<M-e>', ':')
 map('v', 'p', 'P')
-nmap('<C-d>', '<C-d>zz', 'Scroll down and center')
-nmap('<C-u>', '<C-u>zz', 'Scroll up and center')
-nmap('n', 'nzz', '')
-nmap('M-e', ':', '')
-nmap('N', 'Nzz', '')
-nmap('*', '*zz', '')
-nmap('#', '#zz', '')
-nmap('g*', 'g*zz', '')
+
 map({ 'n', 'x' }, 'j', [[v:count == 0 ? 'gj' : 'j']], { expr = true })
 map({ 'n', 'x' }, 'k', [[v:count == 0 ? 'gk' : 'k']], { expr = true })
 map('n', '<C-h>', '<C-w>h', { desc = 'Focus on left window' })
@@ -72,6 +66,14 @@ map('n', '<C-Left>', '<Cmd>vertical resize -20<CR>')
 map('n', '<C-Down>', '<Cmd>resize -5<CR>')
 map('n', '<C-Up>', '<Cmd>resize +5<CR>')
 map('n', '<C-Right>', '<Cmd>vertical resize +20<CR>')
+
+nmap('<C-d>', '<C-d>zz', 'Scroll down and center')
+nmap('<C-u>', '<C-u>zz', 'Scroll up and center')
+nmap('n', 'nzz', '')
+nmap('N', 'Nzz', '')
+nmap('*', '*zz', '')
+nmap('#', '#zz', '')
+nmap('g*', 'g*zz', '')
 
 nmap_leader('ex', function()
   for _, win_id in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
