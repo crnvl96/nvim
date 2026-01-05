@@ -47,7 +47,7 @@ later(function()
   local ai = require 'mini.ai'
   ai.setup {
     custom_textobjects = {
-      b = MiniExtra.gen_ai_spec.buffer(),
+      g = MiniExtra.gen_ai_spec.buffer(),
       f = ai.gen_spec.treesitter { a = '@function.outer', i = '@function.inner' },
     },
     search_method = 'cover',
