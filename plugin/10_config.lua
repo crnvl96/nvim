@@ -9,8 +9,6 @@ local node_bin = vim.env.HOME .. '/.local/share/mise/installs/node/24.12.0/bin'
 vim.g.node_host_prog = node_bin .. '/node'
 vim.env.PATH = node_bin .. ':' .. vim.env.PATH
 
-vim.cmd.colorscheme 'miniwinter'
-
 MiniDeps.later(function()
   local conf = vim.diagnostic.config
   conf {

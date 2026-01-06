@@ -3,6 +3,19 @@ local add, now, later = MiniDeps.add, MiniDeps.now, MiniDeps.later
 local nmap_leader = function(suffix, rhs, desc) vim.keymap.set('n', '<Leader>' .. suffix, rhs, { desc = desc }) end
 local xmap_leader = function(suffix, rhs, desc) vim.keymap.set('x', '<Leader>' .. suffix, rhs, { desc = desc }) end
 
+now(function()
+  add 'sainnhe/everforest'
+
+  vim.cmd [[
+    let g:everforest_background = 'hard'
+    let g:everforest_better_performance = 1
+    let g:everforest_enable_italic = 1
+    let g:everforest_transparent_background = 2
+    ]]
+
+  vim.cmd.colorscheme 'everforest'
+end)
+
 later(function() require('mini.extra').setup() end)
 later(function() require('mini.comment').setup() end)
 later(function() require('mini.cmdline').setup() end)
