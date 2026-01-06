@@ -53,7 +53,7 @@ vim.o.completeopt = 'menuone,noselect,fuzzy,nosort'
 vim.cmd 'filetype plugin indent on'
 if vim.fn.exists 'syntax_on' ~= 1 then vim.cmd 'syntax enable' end
 
-map('', '<C-f>', ':')
+map('', '<C-x>', ':')
 map('v', 'p', 'P')
 
 map({ 'n', 'x' }, 'j', [[v:count == 0 ? 'gj' : 'j']], { expr = true })
