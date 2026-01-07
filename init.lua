@@ -88,14 +88,6 @@ nmap('N', 'Nzz', '')
 nmap('*', '*zz', '')
 nmap('#', '#zz', '')
 nmap('g*', 'g*zz', '')
-nmap_leader('hh', '<Cmd>noh<CR>', 'Clear Highlights')
-nmap_leader('hs', '<Esc>:noh<CR>:w<CR>', 'Save buffer')
-nmap_leader('ex', function()
-  for _, win_id in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
-    if vim.fn.getwininfo(win_id)[1].quickfix == 1 then return vim.cmd 'cclose' end
-  end
-  vim.cmd 'copen'
-end, 'Quickfix')
 
 vim.api.nvim_create_autocmd('TextYankPost', {
   group = vim.api.nvim_create_augroup('crnvl96-highlight-after-yank', {}),
@@ -238,6 +230,7 @@ end)
 
 later(function()
   require('mini.completion').setup {
+    delay = { completion = 10 ^ 7, info = 10 ^ 7, signature = 10 ^ 7 },
     lsp_completion = {
       source_func = 'omnifunc',
       auto_setup = false,
