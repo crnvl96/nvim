@@ -69,7 +69,8 @@ vim.o.completeopt = 'menuone,noselect,fuzzy,nosort'
 vim.cmd 'filetype plugin indent on'
 if vim.fn.exists 'syntax_on' ~= 1 then vim.cmd 'syntax enable' end
 
-map('', '<C-x>', ':')
+map({ 'i', 'c', 'x', 's', 'n', 'o' }, '<C-x>', ':')
+map({ 'i', 'c', 'x', 's', 'n', 'o' }, '<C-s>', '<Esc><Cmd>noh<CR><Cmd>w!<CR><Esc>')
 map('v', 'p', 'P')
 map({ 'n', 'x' }, 'j', [[v:count == 0 ? 'gj' : 'j']], { expr = true })
 map({ 'n', 'x' }, 'k', [[v:count == 0 ? 'gk' : 'k']], { expr = true })
@@ -118,6 +119,7 @@ later(function() require('mini.trailspace').setup() end)
 later(function() require('mini.move').setup() end)
 later(function() require('mini.splitjoin').setup() end)
 later(function() require('mini.align').setup() end)
+later(function() require('mini.move').setup() end)
 
 later(function()
   require('mini.pick').setup()
@@ -139,7 +141,7 @@ later(function()
     spotter = jump2d.gen_spotter.pattern '[^%s%p]+',
     labels = 'fjdkslah',
     view = { dim = true, n_steps_ahead = 2 },
-    mappings = { start_jumping = 's' },
+    mappings = { start_jumping = '' },
   }
   vim.keymap.set({ 'n', 'x', 'o' }, 'S', function() MiniJump2d.start(MiniJump2d.builtin_opts.single_character) end)
 end)
@@ -273,8 +275,11 @@ end)
 later(function()
   require('mini.keymap').setup()
 
-  MiniKeymap.map_combo({ 'i', 'c', 'x', 's' }, 'jk', '<BS><BS><Esc>')
-  MiniKeymap.map_combo({ 'i', 'c', 'x', 's' }, 'kj', '<BS><BS><Esc>')
+  MiniKeymap.map_combo({ 'i', 'c', 'x', 's' }, 'jk', '<BS><BS><Esc><Cmd>noh<CR><Esc>')
+  MiniKeymap.map_combo({ 'i', 'c', 'x', 's' }, 'kj', '<BS><BS><Esc><Cmd>noh<CR><Esc>')
+
+  MiniKeymap.map_combo('n', 'jk', '<Esc><Cmd>noh<CR><Esc>')
+  MiniKeymap.map_combo('n', 'kj', '<Esc><Cmd>noh<CR><Esc>')
 
   MiniKeymap.map_multistep('i', '<Tab>', { 'pmenu_next' })
   MiniKeymap.map_multistep('i', '<C-n>', { 'pmenu_next' })
