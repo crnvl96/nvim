@@ -307,7 +307,7 @@ now(function()
     'bash', 'css', 'diff', 'html', 'javascript',
     'json', 'lisp', 'lua', 'markdown', 'python',
     'regex', 'toml', 'tsx', 'typescript', 'vimdoc',
-    'yaml',
+    'yaml', 'c',
   }
 
   local isnt_installed = function(lang) return #vim.api.nvim_get_runtime_file('parser/' .. lang .. '.*', false) == 0 end
@@ -333,6 +333,7 @@ now(function()
   add 'neovim/nvim-lspconfig'
 
   vim.lsp.enable {
+    'clangd',
     'eslint',
     'lua_ls',
     'pyright',
@@ -381,6 +382,7 @@ later(function()
       javascriptreact = { 'prettier' },
       typescript = { 'prettier' },
       typescriptreact = { 'prettier' },
+      c = { 'clang-format' },
       python = { 'ruff_organize_imports', 'ruff_fix', 'ruff_format' },
       json = { 'prettier' },
       jsonc = { 'prettier' },
