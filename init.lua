@@ -300,14 +300,27 @@ now(function()
     hooks = { post_checkout = function() vim.cmd 'TSUpdate' end },
   }
 
-  add { source = 'nvim-treesitter/nvim-treesitter-textobjects', checkout = 'main' }
+  add {
+    source = 'nvim-treesitter/nvim-treesitter-textobjects',
+    checkout = 'main',
+  }
 
-  -- stylua: ignore
   local languages = {
-    'bash', 'css', 'diff', 'html', 'javascript',
-    'json', 'lisp', 'lua', 'markdown', 'python',
-    'regex', 'toml', 'tsx', 'typescript', 'vimdoc',
-    'yaml', 'c',
+    -- note: parsers for c, lua, vim, vimdoc, query and markdown are already included in neovim
+    'bash',
+    'css',
+    'diff',
+    'go',
+    'html',
+    'javascript',
+    'json',
+    'lisp',
+    'python',
+    'regex',
+    'toml',
+    'tsx',
+    'typescript',
+    'yaml',
   }
 
   local isnt_installed = function(lang) return #vim.api.nvim_get_runtime_file('parser/' .. lang .. '.*', false) == 0 end
@@ -315,7 +328,6 @@ now(function()
 
   if #to_install > 0 then require('nvim-treesitter').install(to_install) end
   local filetypes = {}
-
   for _, lang in ipairs(languages) do
     for _, ft in ipairs(vim.treesitter.language.get_filetypes(lang)) do
       table.insert(filetypes, ft)
@@ -338,6 +350,7 @@ now(function()
     'lua_ls',
     'pyright',
     'ruff',
+    'gopls',
     'ts_ls',
   }
 
@@ -383,6 +396,7 @@ later(function()
       typescript = { 'prettier' },
       typescriptreact = { 'prettier' },
       c = { 'clang-format' },
+      go = { 'gofumpt' },
       python = { 'ruff_organize_imports', 'ruff_fix', 'ruff_format' },
       json = { 'prettier' },
       jsonc = { 'prettier' },
