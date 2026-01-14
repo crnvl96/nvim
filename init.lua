@@ -95,21 +95,23 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   callback = function() vim.highlight.on_yank() end,
 })
 
-now(function()
-  -- vim.cmd.colorscheme 'miniwinter'
+vim.cmd.colorscheme 'minisummer'
 
-  require('mini.colors')
-    .get_colorscheme()
-    :add_transparency({
-      general = true,
-      float = true,
-      statuscolumn = true,
-      statusline = true,
-      tabline = true,
-      winbar = true,
-    })
-    :apply()
-end)
+later(
+  function()
+    require('mini.colors')
+      .get_colorscheme()
+      :add_transparency({
+        general = true,
+        float = true,
+        statuscolumn = true,
+        statusline = true,
+        tabline = true,
+        winbar = true,
+      })
+      :apply()
+  end
+)
 
 later(function() require('mini.extra').setup() end)
 later(function() require('mini.comment').setup() end)
