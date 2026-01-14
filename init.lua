@@ -96,7 +96,7 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 })
 
 now(function()
-  vim.cmd.colorscheme 'miniwinter'
+  -- vim.cmd.colorscheme 'miniwinter'
 
   require('mini.colors')
     .get_colorscheme()
