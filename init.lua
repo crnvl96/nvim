@@ -5,8 +5,8 @@ if not vim.loop.fs_stat(mini_path) then
 
   local origin = 'https://github.com/nvim-mini/mini.nvim'
   local clone_cmd = { 'git', 'clone', '--filter=blob:none', origin, mini_path }
-  vim.fn.system(clone_cmd)
 
+  vim.fn.system(clone_cmd)
   vim.cmd 'packadd mini.nvim | helptags ALL'
   vim.cmd 'echo "Installed `mini.nvim`" | redraw'
 end
@@ -14,29 +14,29 @@ end
 require('mini.deps').setup()
 
 local add, now, later = MiniDeps.add, MiniDeps.now, MiniDeps.later
-
+local node_bin = vim.env.HOME .. '/.local/share/mise/installs/node/24.12.0/bin'
 local map = function(mode, lhs, rhs, opts) vim.keymap.set(mode, lhs, rhs, opts) end
 local nmap = function(lhs, rhs, desc) vim.keymap.set('n', lhs, rhs, { desc = desc }) end
 local nmap_leader = function(suffix, rhs, desc) vim.keymap.set('n', '<Leader>' .. suffix, rhs, { desc = desc }) end
 local xmap_leader = function(suffix, rhs, desc) vim.keymap.set('x', '<Leader>' .. suffix, rhs, { desc = desc }) end
 
-vim.g.mapleader = ' '
-vim.g.maplocalleader = ','
+MiniDeps.later(
+  function()
+    vim.diagnostic.config {
+      signs = { priority = 9999, severity = { min = 'HINT', max = 'ERROR' } },
+      underline = { severity = { min = 'HINT', max = 'ERROR' } },
+      virtual_text = { current_line = true, severity = { min = 'ERROR', max = 'ERROR' } },
+      virtual_lines = false,
+      update_in_insert = false,
+    }
+  end
+)
 
-local node_bin = vim.env.HOME .. '/.local/share/mise/installs/node/24.12.0/bin'
-vim.g.node_host_prog = node_bin .. '/node'
 vim.env.PATH = node_bin .. ':' .. vim.env.PATH
 
-MiniDeps.later(function()
-  local conf = vim.diagnostic.config
-  conf {
-    signs = { priority = 9999, severity = { min = 'HINT', max = 'ERROR' } },
-    underline = { severity = { min = 'HINT', max = 'ERROR' } },
-    virtual_text = { current_line = true, severity = { min = 'ERROR', max = 'ERROR' } },
-    virtual_lines = false,
-    update_in_insert = false,
-  }
-end)
+vim.g.mapleader = ' '
+vim.g.maplocalleader = ','
+vim.g.node_host_prog = node_bin .. '/node'
 
 vim.o.mouse = 'a'
 vim.o.mousescroll = 'ver:1,hor:2'
@@ -67,6 +67,7 @@ vim.o.virtualedit = 'block'
 vim.o.completeopt = 'menuone,noselect,fuzzy,nosort'
 
 vim.cmd 'filetype plugin indent on'
+vim.cmd.colorscheme 'minisummer'
 if vim.fn.exists 'syntax_on' ~= 1 then vim.cmd 'syntax enable' end
 
 map({ 'i', 'c', 'x', 's', 'n', 'o' }, '<C-x>', ':')
@@ -94,8 +95,6 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   group = vim.api.nvim_create_augroup('crnvl96-highlight-after-yank', {}),
   callback = function() vim.highlight.on_yank() end,
 })
-
-vim.cmd.colorscheme 'minisummer'
 
 later(
   function()
@@ -125,6 +124,7 @@ later(function() require('mini.move').setup() end)
 
 later(function()
   require('mini.pick').setup()
+
   nmap_leader("f'", '<Cmd>Pick resume<CR>', 'Resume')
   nmap_leader('fb', '<Cmd>Pick buffers<CR>', 'Buffers')
   nmap_leader('ff', '<Cmd>Pick files<CR>', 'Files')
@@ -137,23 +137,27 @@ end)
 
 later(function()
   local jump2d = require 'mini.jump2d'
+
   jump2d.setup {
     spotter = jump2d.gen_spotter.pattern '[^%s%p]+',
     labels = 'fjdkslah',
     view = { dim = true, n_steps_ahead = 2 },
     mappings = { start_jumping = '' },
   }
+
   vim.keymap.set({ 'n', 'x', 'o' }, 'S', function() MiniJump2d.start(MiniJump2d.builtin_opts.single_character) end)
 end)
 
 now(function()
   require('mini.misc').setup()
+
   MiniMisc.setup_auto_root()
   MiniMisc.setup_restore_cursor()
 end)
 
 later(function()
   local ai = require 'mini.ai'
+
   ai.setup {
     custom_textobjects = {
       g = MiniExtra.gen_ai_spec.buffer(),
@@ -166,6 +170,7 @@ end)
 later(function()
   local hipatterns = require 'mini.hipatterns'
   local hi_words = MiniExtra.gen_highlighter.words
+
   hipatterns.setup {
     highlighters = {
       fixme = hi_words({ 'FIXME', 'Fixme', 'fixme' }, 'MiniHipatternsFixme'),
@@ -179,6 +184,7 @@ end)
 
 later(function()
   local miniclue = require 'mini.clue'
+
   miniclue.setup {
     clues = {
       { mode = 'n', keys = '<Leader>b', desc = '+Buffer' },
@@ -232,7 +238,11 @@ end)
 
 later(function()
   require('mini.completion').setup {
-    delay = { completion = 10 ^ 7, info = 10 ^ 7, signature = 10 ^ 7 },
+    delay = {
+      completion = 10 ^ 7,
+      info = 10 ^ 7,
+      signature = 10 ^ 7,
+    },
     lsp_completion = {
       source_func = 'omnifunc',
       auto_setup = false,
@@ -251,9 +261,7 @@ later(function()
 end)
 
 later(function()
-  local minifiles = require 'mini.files'
-
-  minifiles.setup {
+  require('mini.files').setup {
     mappings = {
       go_in = '',
       go_in_plus = '<CR>',
@@ -290,6 +298,7 @@ end)
 
 later(function()
   add 'tpope/vim-fugitive'
+
   nmap_leader('gg', ':Git<space>', 'Git')
 end)
 
@@ -327,6 +336,7 @@ now(function()
   local to_install = vim.tbl_filter(isnt_installed, languages)
 
   if #to_install > 0 then require('nvim-treesitter').install(to_install) end
+
   local filetypes = {}
   for _, lang in ipairs(languages) do
     for _, ft in ipairs(vim.treesitter.language.get_filetypes(lang)) do
@@ -357,6 +367,7 @@ now(function()
   map('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>')
   map('n', 'E', '<Cmd>lua vim.diagnostic.open_float()<CR>')
   map('i', '<C-k>', '<Cmd>lua vim.lsp.buf.signature_help()<CR>')
+
   nmap_leader('la', '<Cmd>lua vim.lsp.buf.code_action()<CR>', 'Actions')
   nmap_leader('ld', '<Cmd>Pick lsp scope="definition"<CR>', 'Source definition')
   nmap_leader('lf', '<Cmd>lua require("conform").format({lsp_fallback=true})<CR>', 'Format')
@@ -373,6 +384,7 @@ end)
 
 later(function()
   add 'MagicDuck/grug-far.nvim'
+
   require('grug-far').setup()
 end)
 
@@ -416,7 +428,10 @@ later(function()
     end,
   }
 
-  local set = vim.keymap.set
-  local function toggle_format() vim.g.autoformat = not vim.g.autoformat end
-  set('n', [[\f]], toggle_format, { desc = "Toggle 'vim.g.autoformat'" })
+  vim.keymap.set(
+    'n',
+    [[\f]],
+    function() vim.g.autoformat = not vim.g.autoformat end,
+    { desc = "Toggle 'vim.g.autoformat'" }
+  )
 end)
