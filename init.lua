@@ -72,6 +72,7 @@ if vim.fn.exists 'syntax_on' ~= 1 then vim.cmd 'syntax enable' end
 
 map({ 'i', 'c', 'x', 's', 'n', 'o' }, '<C-x>', ':')
 map({ 'i', 'c', 'x', 's', 'n', 'o' }, '<C-s>', '<Esc><Cmd>noh<CR><Cmd>w!<CR><Esc>')
+map({ 'i', 'c', 'x', 's', 'n', 'o' }, '<Esc>', '<Esc><Cmd>noh<CR><Esc>', { noremap = true })
 map('v', 'p', 'P')
 map({ 'n', 'x' }, 'j', [[v:count == 0 ? 'gj' : 'j']], { expr = true })
 map({ 'n', 'x' }, 'k', [[v:count == 0 ? 'gk' : 'k']], { expr = true })
