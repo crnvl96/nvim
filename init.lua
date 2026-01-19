@@ -115,8 +115,6 @@ later(
 
 later(function() require('mini.extra').setup() end)
 later(function() require('mini.comment').setup() end)
-later(function() require('mini.cmdline').setup() end)
-later(function() require('mini.jump').setup() end)
 later(function() require('mini.trailspace').setup() end)
 later(function() require('mini.move').setup() end)
 later(function() require('mini.splitjoin').setup() end)
@@ -146,7 +144,7 @@ later(function()
     mappings = { start_jumping = '' },
   }
 
-  vim.keymap.set({ 'n', 'x', 'o' }, 'S', function() MiniJump2d.start(MiniJump2d.builtin_opts.single_character) end)
+  map({ 'n', 'x', 'o' }, 's', function() MiniJump2d.start(MiniJump2d.builtin_opts.query) end)
 end)
 
 now(function()
