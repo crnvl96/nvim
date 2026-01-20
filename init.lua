@@ -80,15 +80,12 @@ vim.keymap.set('n', '*', '*zz')
 vim.keymap.set('n', '#', '#zz')
 vim.keymap.set('n', 'g*', 'g*zz')
 
--- Colorscheme
 MiniDeps.add 'sainnhe/gruvbox-material'
-vim.cmd [[
-    let g:gruvbox_material_background = 'medium'
-    let g:gruvbox_material_enable_bold = 1
-    let g:gruvbox_material_enable_italic = 1
-    let g:gruvbox_material_better_performance = 1
-    colorscheme gruvbox-material
-]]
+vim.g.gruvbox_material_background = 'hard'
+vim.g.gruvbox_material_enable_bold = 1
+vim.g.gruvbox_material_enable_italic = 1
+vim.g.gruvbox_material_better_performance = 1
+vim.cmd.colorscheme 'gruvbox-material'
 
 require('mini.extra').setup()
 require('mini.comment').setup()
