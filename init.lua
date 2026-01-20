@@ -18,33 +18,33 @@ vim.env.PATH = node_bin .. ':' .. vim.env.PATH
 vim.g.node_host_prog = node_bin .. '/node'
 
 -- stylua: ignore start
-vim.o.guicursor = ''              -- Aspect of cursor
-vim.o.mouse = 'a'                 -- Enable mouse in all modes
-vim.o.mousescroll = 'ver:1,hor:2' -- Make mouse scroll more smoothly
-vim.o.undofile = true             -- Persistent undo
-vim.o.clipboard = 'unnamedplus'   -- Sync with system clipboard
-vim.o.swapfile = false            -- Disable swap
-vim.o.breakindent = true          -- Keep line breaks visually indented
-vim.o.linebreak = true            -- Break lines at word boundaries
-vim.o.number = true               -- Enable line numbers
-vim.o.relativenumber = true       -- Make line numbers relative
-vim.o.signcolumn = 'yes'          -- Keep signcol always visible
-vim.o.splitbelow = true           -- Prever below splits
-vim.o.splitright = true           -- Prefer right splits
-vim.o.winborder = 'single'        -- Prefer 'single' borders
-vim.o.wrap = false                -- Don't auto break lines
-vim.o.scrolloff = 8
-vim.o.autoindent = true
-vim.o.expandtab = true
-vim.o.ignorecase = true
-vim.o.incsearch = true
-vim.o.infercase = true
-vim.o.shiftwidth = 4
-vim.o.smartcase = true
-vim.o.smartindent = true
-vim.o.tabstop = 4
-vim.o.virtualedit = 'block'
-vim.o.completeopt = 'menuone,noselect,fuzzy,nosort'
+vim.o.guicursor = ''                                -- Aspect of cursor
+vim.o.mouse = 'a'                                   -- Enable mouse in all modes
+vim.o.mousescroll = 'ver:1,hor:2'                   -- Make mouse scroll more smoothly
+vim.o.undofile = true                               -- Persistent undo
+vim.o.clipboard = 'unnamedplus'                     -- Sync with system clipboard
+vim.o.swapfile = false                              -- Disable swap
+vim.o.breakindent = true                            -- Keep line breaks visually indented
+vim.o.linebreak = true                              -- Break lines at word boundaries
+vim.o.number = true                                 -- Enable line numbers
+vim.o.relativenumber = true                         -- Make line numbers relative
+vim.o.signcolumn = 'yes'                            -- Keep signcol always visible
+vim.o.splitbelow = true                             -- Prever below splits
+vim.o.splitright = true                             -- Prefer right splits
+vim.o.winborder = 'single'                          -- Prefer 'single' borders
+vim.o.wrap = false                                  -- Don't auto break lines
+vim.o.scrolloff = 8                                 -- Vertical cursor margin
+vim.o.autoindent = true                             -- Keep indenting of current line when starting a new line 
+vim.o.expandtab = true                              -- Convert tabs into spaces
+vim.o.ignorecase = true                             -- Ignore case in search patterns
+vim.o.incsearch = true                              -- Show pattern matches gradually when typing
+vim.o.infercase = true                              -- Smart case guessing algorithm on completion
+vim.o.shiftwidth = 4                                -- How many spaces each step of indentation counts for
+vim.o.smartcase = true                              -- Override 'ignorecase' if pattern contains upper case chars
+vim.o.smartindent = true                            -- Smarter indenting
+vim.o.tabstop = 4                                   -- How many spaces a tab count for
+vim.o.virtualedit = 'block'                         -- Allow rectangle selection of text
+vim.o.completeopt = 'menuone,noselect,fuzzy,nosort' -- Completion options
 -- stylua: ignore end
 
 vim.cmd 'filetype plugin indent on'
@@ -80,13 +80,14 @@ vim.keymap.set('n', '*', '*zz')
 vim.keymap.set('n', '#', '#zz')
 vim.keymap.set('n', 'g*', 'g*zz')
 
+-- Colorscheme
 MiniDeps.add 'sainnhe/gruvbox-material'
 vim.cmd [[
-let g:gruvbox_material_background = 'medium'
-let g:gruvbox_material_enable_bold = 1
-let g:gruvbox_material_enable_italic = 1
-let g:gruvbox_material_better_performance = 1
-colorscheme gruvbox-material
+    let g:gruvbox_material_background = 'medium'
+    let g:gruvbox_material_enable_bold = 1
+    let g:gruvbox_material_enable_italic = 1
+    let g:gruvbox_material_better_performance = 1
+    colorscheme gruvbox-material
 ]]
 
 require('mini.extra').setup()
@@ -142,14 +143,10 @@ hipatterns.setup {
 local miniclue = require 'mini.clue'
 miniclue.setup {
   clues = {
-    { mode = 'n', keys = '<Leader>b', desc = '+Buffer' },
     { mode = 'n', keys = '<Leader>e', desc = '+Explore/Edit' },
     { mode = 'n', keys = '<Leader>f', desc = '+Find' },
-    { mode = 'n', keys = '<Leader>g', desc = '+Git' },
-    { mode = 'n', keys = '<Leader>l', desc = '+Language' },
-    { mode = 'n', keys = '<Leader>h', desc = '+Misc' },
-    { mode = 'x', keys = '<Leader>g', desc = '+Git' },
-    { mode = 'x', keys = '<Leader>l', desc = '+Language' },
+    { mode = 'n', keys = '<Leader>l', desc = '+LSP' },
+    { mode = 'x', keys = '<Leader>l', desc = '+LSP' },
     miniclue.gen_clues.builtin_completion(),
     miniclue.gen_clues.g(),
     miniclue.gen_clues.marks(),
@@ -191,11 +188,6 @@ miniclue.setup {
 }
 
 require('mini.completion').setup {
-  delay = {
-    completion = 10 ^ 7,
-    info = 10 ^ 7,
-    signature = 10 ^ 7,
-  },
   lsp_completion = {
     source_func = 'omnifunc',
     auto_setup = false,
@@ -204,11 +196,11 @@ require('mini.completion').setup {
     end,
   },
 }
+vim.lsp.config('*', { capabilities = MiniCompletion.get_lsp_capabilities() })
 vim.api.nvim_create_autocmd('LspAttach', {
   group = vim.api.nvim_create_augroup('crnvl96-on-lspattach', {}),
   callback = function(ev) vim.bo[ev.buf].omnifunc = 'v:lua.MiniCompletion.completefunc_lsp' end,
 })
-vim.lsp.config('*', { capabilities = MiniCompletion.get_lsp_capabilities() })
 
 require('mini.files').setup {
   mappings = {
@@ -225,12 +217,7 @@ require('mini.files').setup {
   },
 }
 vim.keymap.set('n', '<leader>ed', '<Cmd>lua MiniFiles.open()<CR>', { desc = 'Directory' })
-vim.keymap.set(
-  'n',
-  '<leader>ef',
-  '<Cmd>lua MiniFiles.open(vim.api.nvim_buf_get_name(0))<CR>',
-  { desc = 'File directory' }
-)
+vim.keymap.set('n', '<leader>ef', '<Cmd>lua MiniFiles.open(vim.api.nvim_buf_get_name(0))<CR>', { desc = 'File' })
 
 require('mini.keymap').setup()
 MiniKeymap.map_combo({ 'i', 'c', 'x', 's' }, 'jk', '<BS><BS><Esc><Cmd>noh<CR><Esc>')
@@ -302,12 +289,7 @@ vim.keymap.set('i', '<C-k>', '<Cmd>lua vim.lsp.buf.signature_help()<CR>')
 vim.keymap.set('n', '<leader>la', '<Cmd>lua vim.lsp.buf.code_action()<CR>', { desc = 'Actions' })
 vim.keymap.set('n', '<leader>ld', '<Cmd>Pick lsp scope="definition"<CR>', { desc = 'Source definition' })
 vim.keymap.set('n', '<leader>lf', '<Cmd>lua require("conform").format({lsp_fallback=true})<CR>', { desc = 'Format' })
-vim.keymap.set(
-  'n',
-  '<leader>lf',
-  '<Cmd>lua require("conform").format({lsp_fallback=true})<CR>',
-  { desc = 'Format selection' }
-)
+vim.keymap.set('n', '<leader>lf', '<Cmd>lua require("conform").format({lsp_fallback=true})<CR>', { desc = 'Format' })
 vim.keymap.set('n', '<leader>li', '<Cmd>Pick lsp scope="implementation"<CR>', { desc = 'Implementation' })
 vim.keymap.set('n', '<leader>ln', '<Cmd>lua vim.lsp.buf.rename()<CR>', { desc = 'Rename' })
 vim.keymap.set('n', '<leader>lr', '<Cmd>Pick lsp scope="references"<CR>', { desc = 'References' })
@@ -356,9 +338,4 @@ require('conform').setup {
     return {}
   end,
 }
-vim.keymap.set(
-  'n',
-  [[\f]],
-  function() vim.g.autoformat = not vim.g.autoformat end,
-  { desc = "Toggle 'vim.g.autoformat'" }
-)
+vim.keymap.set('n', [[\f]], function() vim.g.autoformat = not vim.g.autoformat end, { desc = 'Toggle Autofmt' })
