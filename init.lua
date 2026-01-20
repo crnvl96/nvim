@@ -47,9 +47,11 @@ vim.o.virtualedit = 'block'                         -- Allow rectangle selection
 vim.o.completeopt = 'menuone,noselect,fuzzy,nosort' -- Completion options
 -- stylua: ignore end
 
+-- Enable all filetype plugins and syntax (if not enabled, for better startup)
 vim.cmd 'filetype plugin indent on'
 if vim.fn.exists 'syntax_on' ~= 1 then vim.cmd 'syntax enable' end
 
+-- Set diagnostic configurations
 vim.diagnostic.config {
   signs = { priority = 9999, severity = { min = 'HINT', max = 'ERROR' } },
   underline = { severity = { min = 'WARN', max = 'ERROR' } },
@@ -92,6 +94,29 @@ require('mini.comment').setup()
 require('mini.move').setup()
 require('mini.cmdline').setup()
 require('mini.align').setup()
+
+require('mini.colors').setup()
+MiniColors.get_colorscheme()
+  :add_transparency({
+    general = true,
+    float = true,
+    statuscolumn = true,
+    statusline = true,
+    tabline = true,
+    winbar = true,
+  })
+  :apply()
+
+-- Set up to not prefer extension-based icon for some extensions
+require('mini.icons').setup {
+  use_file_extension = function(ext, _)
+    local ext3_blocklist = { scm = true, txt = true, yml = true }
+    local ext4_blocklist = { json = true, yaml = true }
+    return not (ext3_blocklist[ext:sub(-3)] or ext4_blocklist[ext:sub(-4)])
+  end,
+}
+MiniIcons.mock_nvim_web_devicons()
+MiniIcons.tweak_lsp_kind()
 
 require('mini.pick').setup()
 vim.keymap.set('n', "<leader>f'", '<Cmd>Pick resume<CR>', { desc = 'Resume' })
