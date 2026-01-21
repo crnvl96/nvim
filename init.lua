@@ -1,12 +1,17 @@
 local mini_path = vim.fn.stdpath 'data' .. '/site/pack/deps/start/mini.nvim'
+
 if not vim.loop.fs_stat(mini_path) then
   vim.cmd 'echo "Installing `mini.nvim`" | redraw'
+
   local origin = 'https://github.com/nvim-mini/mini.nvim'
   local clone_cmd = { 'git', 'clone', '--filter=blob:none', origin, mini_path }
+
   vim.fn.system(clone_cmd)
+
   vim.cmd 'packadd mini.nvim | helptags ALL'
   vim.cmd 'echo "Installed `mini.nvim`" | redraw'
 end
+
 require('mini.deps').setup()
 
 vim.g.mapleader = ' '
@@ -18,7 +23,6 @@ vim.env.PATH = node_bin .. ':' .. vim.env.PATH
 vim.g.node_host_prog = node_bin .. '/node'
 
 -- stylua: ignore start
-vim.o.guicursor = ''                                -- Aspect of cursor
 vim.o.mouse = 'a'                                   -- Enable mouse in all modes
 vim.o.mousescroll = 'ver:1,hor:2'                   -- Make mouse scroll more smoothly
 vim.o.undofile = true                               -- Persistent undo
@@ -82,20 +86,29 @@ vim.keymap.set('n', '*', '*zz')
 vim.keymap.set('n', '#', '#zz')
 vim.keymap.set('n', 'g*', 'g*zz')
 
+vim.api.nvim_create_autocmd('TextYankPost', {
+  group = vim.api.nvim_create_augroup('crnvl96-highlight-on-yank', {}),
+  callback = function() vim.highlight.on_yank() end,
+})
+
 MiniDeps.add 'sainnhe/gruvbox-material'
+
 vim.g.gruvbox_material_background = 'hard'
 vim.g.gruvbox_material_enable_bold = 1
 vim.g.gruvbox_material_enable_italic = 1
 vim.g.gruvbox_material_better_performance = 1
+
 vim.cmd.colorscheme 'gruvbox-material'
 
 require('mini.extra').setup()
 require('mini.comment').setup()
 require('mini.move').setup()
 require('mini.cmdline').setup()
+require('mini.git').setup()
 require('mini.align').setup()
 
 require('mini.colors').setup()
+
 MiniColors.get_colorscheme()
   :add_transparency({
     general = true,
@@ -107,18 +120,11 @@ MiniColors.get_colorscheme()
   })
   :apply()
 
--- Set up to not prefer extension-based icon for some extensions
-require('mini.icons').setup {
-  use_file_extension = function(ext, _)
-    local ext3_blocklist = { scm = true, txt = true, yml = true }
-    local ext4_blocklist = { json = true, yaml = true }
-    return not (ext3_blocklist[ext:sub(-3)] or ext4_blocklist[ext:sub(-4)])
-  end,
-}
-MiniIcons.mock_nvim_web_devicons()
-MiniIcons.tweak_lsp_kind()
+require('mini.diff').setup()
+vim.keymap.set('n', '<leader>gd', '<Cmd>lua MiniDiff.toggle_overlay()<CR>', { desc = 'Diff' })
 
 require('mini.pick').setup()
+
 vim.keymap.set('n', "<leader>f'", '<Cmd>Pick resume<CR>', { desc = 'Resume' })
 vim.keymap.set('n', '<leader>fb', '<Cmd>Pick buffers<CR>', { desc = 'Buffers' })
 vim.keymap.set('n', '<leader>ff', '<Cmd>Pick files<CR>', { desc = 'Files' })
@@ -128,30 +134,42 @@ vim.keymap.set('n', '<leader>fH', '<Cmd>Pick hl_groups<CR>', { desc = 'Highlight
 vim.keymap.set('n', '<leader>fl', '<Cmd>Pick buf_lines scope="current"<CR>', { desc = 'Lines (buf)' })
 vim.keymap.set('n', '<leader>fo', '<Cmd>Pick oldfiles<CR>', { desc = 'Oldfiles' })
 
+vim.keymap.set('n', '<leader>gb', '<Cmd>Pick git_branches<CR>', { desc = 'Branches' })
+vim.keymap.set('n', '<leader>gc', '<Cmd>Pick git_commits<CR>', { desc = 'Commits' })
+vim.keymap.set('n', '<leader>gs', '<Cmd>Pick git_hunks<CR>', { desc = 'Hunks' })
+vim.keymap.set('n', '<leader>gS', '<Cmd>Pick git_hunks scope="staged"<CR>', { desc = 'Staged hunks' })
+
 local jump2d = require 'mini.jump2d'
+
 jump2d.setup {
   spotter = jump2d.gen_spotter.pattern '[^%s%p]+',
   labels = 'fjdkslah',
   view = { dim = true, n_steps_ahead = 2 },
   mappings = { start_jumping = '' },
 }
+
 vim.keymap.set({ 'n', 'x', 'o' }, 's', function() MiniJump2d.start(MiniJump2d.builtin_opts.single_character) end)
 
 require('mini.misc').setup()
+
 MiniMisc.setup_auto_root()
 MiniMisc.setup_restore_cursor()
 
 local ai = require 'mini.ai'
+
 ai.setup {
   custom_textobjects = {
     g = MiniExtra.gen_ai_spec.buffer(),
     f = ai.gen_spec.treesitter { a = '@function.outer', i = '@function.inner' },
+    c = ai.gen_spec.treesitter { a = '@comment.outer', i = '@comment.inner' },
+    o = ai.gen_spec.treesitter { a = '@block.outer', i = '@block.inner' },
   },
   search_method = 'cover',
 }
 
 local hipatterns = require 'mini.hipatterns'
 local hi_words = MiniExtra.gen_highlighter.words
+
 hipatterns.setup {
   highlighters = {
     fixme = hi_words({ 'FIXME', 'Fixme', 'fixme' }, 'MiniHipatternsFixme'),
@@ -163,6 +181,7 @@ hipatterns.setup {
 }
 
 local miniclue = require 'mini.clue'
+
 miniclue.setup {
   clues = {
     { mode = 'n', keys = '<Leader>e', desc = '+Explore/Edit' },
@@ -219,6 +238,7 @@ require('mini.completion').setup {
   },
 }
 vim.lsp.config('*', { capabilities = MiniCompletion.get_lsp_capabilities() })
+
 vim.api.nvim_create_autocmd('LspAttach', {
   group = vim.api.nvim_create_augroup('crnvl96-on-lspattach', {}),
   callback = function(ev) vim.bo[ev.buf].omnifunc = 'v:lua.MiniCompletion.completefunc_lsp' end,
@@ -242,6 +262,7 @@ vim.keymap.set('n', '<leader>ed', '<Cmd>lua MiniFiles.open()<CR>', { desc = 'Dir
 vim.keymap.set('n', '<leader>ef', '<Cmd>lua MiniFiles.open(vim.api.nvim_buf_get_name(0))<CR>', { desc = 'File' })
 
 require('mini.keymap').setup()
+
 MiniKeymap.map_combo({ 'i', 'c', 'x', 's' }, 'jk', '<BS><BS><Esc><Cmd>noh<CR><Esc>')
 MiniKeymap.map_combo({ 'i', 'c', 'x', 's' }, 'kj', '<BS><BS><Esc><Cmd>noh<CR><Esc>')
 MiniKeymap.map_combo('n', 'jk', '<Esc><Cmd>noh<CR><Esc>')
@@ -252,43 +273,37 @@ MiniKeymap.map_multistep('i', '<S-Tab>', { 'pmenu_prev' })
 MiniKeymap.map_multistep('i', '<C-p>', { 'pmenu_prev' })
 MiniKeymap.map_multistep('i', '<CR>', { 'pmenu_accept' })
 
-MiniDeps.add 'tpope/vim-fugitive'
-
 MiniDeps.add {
   source = 'nvim-treesitter/nvim-treesitter',
   checkout = 'main',
   hooks = { post_checkout = function() vim.cmd 'TSUpdate' end },
 }
+
 MiniDeps.add {
   source = 'nvim-treesitter/nvim-treesitter-textobjects',
   checkout = 'main',
 }
+
+-- stylua: ignore
 local languages = {
   -- note: parsers for c, lua, vim, vimdoc, query and markdown are already included in neovim
-  'bash',
-  'css',
-  'diff',
-  'go',
-  'html',
-  'javascript',
-  'json',
-  'lisp',
-  'python',
-  'regex',
-  'toml',
-  'tsx',
-  'typescript',
-  'yaml',
+  'bash', 'css', 'diff', 'go', 'html',
+  'javascript', 'json', 'python', 'regex',
+  'toml', 'tsx', 'typescript', 'yaml',
 }
+
 local isnt_installed = function(lang) return #vim.api.nvim_get_runtime_file('parser/' .. lang .. '.*', false) == 0 end
 local to_install = vim.tbl_filter(isnt_installed, languages)
 if #to_install > 0 then require('nvim-treesitter').install(to_install) end
+
 local filetypes = {}
+
 for _, lang in ipairs(languages) do
   for _, ft in ipairs(vim.treesitter.language.get_filetypes(lang)) do
     table.insert(filetypes, ft)
   end
 end
+
 vim.api.nvim_create_autocmd('FileType', {
   group = vim.api.nvim_create_augroup('crnvl96-nvim-treesitter', {}),
   pattern = filetypes,
@@ -296,15 +311,9 @@ vim.api.nvim_create_autocmd('FileType', {
 })
 
 MiniDeps.add 'neovim/nvim-lspconfig'
-vim.lsp.enable {
-  'clangd',
-  'eslint',
-  'lua_ls',
-  'pyright',
-  'ruff',
-  'gopls',
-  'ts_ls',
-}
+
+vim.lsp.enable { 'lua_ls', 'pyright', 'ruff' }
+
 vim.keymap.set('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>')
 vim.keymap.set('n', 'E', '<Cmd>lua vim.diagnostic.open_float()<CR>')
 vim.keymap.set('i', '<C-k>', '<Cmd>lua vim.lsp.buf.signature_help()<CR>')
@@ -322,10 +331,11 @@ vim.keymap.set('n', '<leader>lX', '<Cmd>Pick diagnostic scope="all"<CR>', { desc
 vim.keymap.set('n', '<leader>lx', '<Cmd>Pick diagnostic scope="current"<CR>', { desc = 'Diagnostic buffer' })
 
 MiniDeps.add 'MagicDuck/grug-far.nvim'
+
 require('grug-far').setup()
 
 MiniDeps.add 'stevearc/conform.nvim'
-vim.g.autoformat = true
+
 require('conform').setup {
   notify_on_error = false,
   notify_no_formatters = false,
@@ -335,29 +345,21 @@ require('conform').setup {
   },
   formatters = {
     stylua = { require_cwd = true },
-    prettier = { require_cwd = false },
-    injected = { ignore_errors = true },
   },
   formatters_by_ft = {
-    javascript = { 'prettier' },
-    javascriptreact = { 'prettier' },
-    typescript = { 'prettier' },
-    typescriptreact = { 'prettier' },
-    c = { 'clang-format' },
-    go = { 'gofumpt' },
+    ['_'] = { 'trim_whitespace', 'trim_newlines' },
     python = { 'ruff_organize_imports', 'ruff_fix', 'ruff_format' },
     json = { 'prettier' },
     jsonc = { 'prettier' },
-    lua = { 'stylua' },
-    markdown = { 'prettier', 'injected', timeout_ms = 1500 },
-    css = { 'prettier' },
-    scss = { 'prettier' },
     yaml = { 'prettier' },
-    ['_'] = { 'trim_whitespace', 'trim_newlines' },
+    markdown = { 'prettier', timeout_ms = 1500 },
+    lua = { 'stylua' },
   },
   format_on_save = function()
     if not vim.g.autoformat then return nil end
     return {}
   end,
 }
+
+vim.g.autoformat = true
 vim.keymap.set('n', [[\f]], function() vim.g.autoformat = not vim.g.autoformat end, { desc = 'Toggle Autofmt' })
