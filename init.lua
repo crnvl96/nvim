@@ -64,34 +64,51 @@ vim.diagnostic.config {
   update_in_insert = false,
 }
 
-vim.keymap.set({ 'i', 'c', 'x', 's', 'n', 'o' }, '<C-x>', ':')
-vim.keymap.set({ 'i', 'c', 'x', 's', 'n', 'o' }, '<C-s>', '<Esc><Cmd>noh<CR><Cmd>w!<CR><Esc>')
-vim.keymap.set({ 'i', 'c', 'x', 's', 'n', 'o' }, '<Esc>', '<Esc><Cmd>noh<CR><Esc>', { noremap = true })
-vim.keymap.set('v', 'p', 'P')
-vim.keymap.set({ 'n', 'x' }, 'j', [[v:count == 0 ? 'gj' : 'j']], { expr = true })
-vim.keymap.set({ 'n', 'x' }, 'k', [[v:count == 0 ? 'gk' : 'k']], { expr = true })
-vim.keymap.set('n', '<C-h>', '<C-w>h', { desc = 'Focus on left window' })
-vim.keymap.set('n', '<C-j>', '<C-w>j', { desc = 'Focus on below window' })
-vim.keymap.set('n', '<C-k>', '<C-w>k', { desc = 'Focus on above window' })
-vim.keymap.set('n', '<C-l>', '<C-w>l', { desc = 'Focus on right window' })
-vim.keymap.set('n', '<C-Left>', '<Cmd>vertical resize -20<CR>')
-vim.keymap.set('n', '<C-Down>', '<Cmd>resize -5<CR>')
-vim.keymap.set('n', '<C-Up>', '<Cmd>resize +5<CR>')
-vim.keymap.set('n', '<C-Right>', '<Cmd>vertical resize +20<CR>')
-vim.keymap.set('n', '<C-d>', '<C-d>zz', { desc = 'Scroll down and center' })
-vim.keymap.set('n', '<C-u>', '<C-u>zz', { desc = 'Scroll up and center' })
-vim.keymap.set('n', 'n', 'nzz')
-vim.keymap.set('n', 'N', 'Nzz')
-vim.keymap.set('n', '*', '*zz')
-vim.keymap.set('n', '#', '#zz')
-vim.keymap.set('n', 'g*', 'g*zz')
+MiniDeps.add 'sainnhe/gruvbox-material'
+MiniDeps.add 'MagicDuck/grug-far.nvim'
+MiniDeps.add 'stevearc/conform.nvim'
+MiniDeps.add 'neovim/nvim-lspconfig'
+MiniDeps.add { source = 'nvim-treesitter/nvim-treesitter-textobjects', checkout = 'main' }
+MiniDeps.add {
+  source = 'nvim-treesitter/nvim-treesitter',
+  checkout = 'main',
+  hooks = { post_checkout = function() vim.cmd 'TSUpdate' end },
+}
 
 vim.api.nvim_create_autocmd('TextYankPost', {
   group = vim.api.nvim_create_augroup('crnvl96-highlight-on-yank', {}),
   callback = function() vim.highlight.on_yank() end,
 })
 
-MiniDeps.add 'sainnhe/gruvbox-material'
+vim.api.nvim_create_autocmd('LspAttach', {
+  group = vim.api.nvim_create_augroup('crnvl96-on-lspattach', {}),
+  callback = function(ev) vim.bo[ev.buf].omnifunc = 'v:lua.MiniCompletion.completefunc_lsp' end,
+})
+
+-- stylua: ignore
+local languages = {
+  -- note: parsers for c, lua, vim, vimdoc, query and markdown are already included in neovim
+  'bash', 'css', 'diff', 'go', 'html',
+  'javascript', 'json', 'python', 'regex',
+  'toml', 'tsx', 'typescript', 'yaml',
+}
+
+local isnt_installed = function(lang) return #vim.api.nvim_get_runtime_file('parser/' .. lang .. '.*', false) == 0 end
+local to_install = vim.tbl_filter(isnt_installed, languages)
+if #to_install > 0 then require('nvim-treesitter').install(to_install) end
+
+local filetypes = {}
+for _, lang in ipairs(languages) do
+  for _, ft in ipairs(vim.treesitter.language.get_filetypes(lang)) do
+    table.insert(filetypes, ft)
+  end
+end
+
+vim.api.nvim_create_autocmd('FileType', {
+  group = vim.api.nvim_create_augroup('crnvl96-nvim-treesitter', {}),
+  pattern = filetypes,
+  callback = function(ev) vim.treesitter.start(ev.buf) end,
+})
 
 vim.g.gruvbox_material_background = 'hard'
 vim.g.gruvbox_material_enable_bold = 1
@@ -106,8 +123,15 @@ require('mini.move').setup()
 require('mini.cmdline').setup()
 require('mini.git').setup()
 require('mini.align').setup()
-
+require('mini.keymap').setup()
+require('mini.misc').setup()
 require('mini.colors').setup()
+require('mini.diff').setup()
+require('mini.pick').setup()
+require('grug-far').setup()
+
+MiniMisc.setup_auto_root()
+MiniMisc.setup_restore_cursor()
 
 MiniColors.get_colorscheme()
   :add_transparency({
@@ -120,80 +144,44 @@ MiniColors.get_colorscheme()
   })
   :apply()
 
-require('mini.diff').setup()
-vim.keymap.set('n', '<leader>gd', '<Cmd>lua MiniDiff.toggle_overlay()<CR>', { desc = 'Diff' })
-
-require('mini.pick').setup()
-
-vim.keymap.set('n', "<leader>f'", '<Cmd>Pick resume<CR>', { desc = 'Resume' })
-vim.keymap.set('n', '<leader>fb', '<Cmd>Pick buffers<CR>', { desc = 'Buffers' })
-vim.keymap.set('n', '<leader>ff', '<Cmd>Pick files<CR>', { desc = 'Files' })
-vim.keymap.set('n', '<leader>fg', '<Cmd>Pick grep_live<CR>', { desc = 'Grep live' })
-vim.keymap.set('n', '<leader>fh', '<Cmd>Pick help<CR>', { desc = 'Help tags' })
-vim.keymap.set('n', '<leader>fH', '<Cmd>Pick hl_groups<CR>', { desc = 'Highlight groups' })
-vim.keymap.set('n', '<leader>fl', '<Cmd>Pick buf_lines scope="current"<CR>', { desc = 'Lines (buf)' })
-vim.keymap.set('n', '<leader>fo', '<Cmd>Pick oldfiles<CR>', { desc = 'Oldfiles' })
-
-vim.keymap.set('n', '<leader>gb', '<Cmd>Pick git_branches<CR>', { desc = 'Branches' })
-vim.keymap.set('n', '<leader>gc', '<Cmd>Pick git_commits<CR>', { desc = 'Commits' })
-vim.keymap.set('n', '<leader>gs', '<Cmd>Pick git_hunks<CR>', { desc = 'Hunks' })
-vim.keymap.set('n', '<leader>gS', '<Cmd>Pick git_hunks scope="staged"<CR>', { desc = 'Staged hunks' })
-
-local jump2d = require 'mini.jump2d'
-
-jump2d.setup {
-  spotter = jump2d.gen_spotter.pattern '[^%s%p]+',
+require('mini.jump2d').setup {
+  spotter = require('mini.jump2d').gen_spotter.pattern '[^%s%p]+',
   labels = 'fjdkslah',
   view = { dim = true, n_steps_ahead = 2 },
   mappings = { start_jumping = '' },
 }
 
-vim.keymap.set({ 'n', 'x', 'o' }, 's', function() MiniJump2d.start(MiniJump2d.builtin_opts.single_character) end)
-
-require('mini.misc').setup()
-
-MiniMisc.setup_auto_root()
-MiniMisc.setup_restore_cursor()
-
-local ai = require 'mini.ai'
-
-ai.setup {
+require('mini.ai').setup {
   custom_textobjects = {
     g = MiniExtra.gen_ai_spec.buffer(),
-    f = ai.gen_spec.treesitter { a = '@function.outer', i = '@function.inner' },
-    c = ai.gen_spec.treesitter { a = '@comment.outer', i = '@comment.inner' },
-    o = ai.gen_spec.treesitter { a = '@block.outer', i = '@block.inner' },
+    f = require('mini.ai').gen_spec.treesitter { a = '@function.outer', i = '@function.inner' },
+    c = require('mini.ai').gen_spec.treesitter { a = '@comment.outer', i = '@comment.inner' },
   },
   search_method = 'cover',
 }
 
-local hipatterns = require 'mini.hipatterns'
-local hi_words = MiniExtra.gen_highlighter.words
-
-hipatterns.setup {
+require('mini.hipatterns').setup {
   highlighters = {
-    fixme = hi_words({ 'FIXME', 'Fixme', 'fixme' }, 'MiniHipatternsFixme'),
-    hack = hi_words({ 'HACK', 'Hack', 'hack' }, 'MiniHipatternsHack'),
-    todo = hi_words({ 'TODO', 'Todo', 'todo' }, 'MiniHipatternsTodo'),
-    note = hi_words({ 'NOTE', 'Note', 'note' }, 'MiniHipatternsNote'),
-    hex_color = hipatterns.gen_highlighter.hex_color(),
+    fixme = MiniExtra.gen_highlighter.words({ 'FIXME', 'Fixme', 'fixme' }, 'MiniHipatternsFixme'),
+    hack = MiniExtra.gen_highlighter.words({ 'HACK', 'Hack', 'hack' }, 'MiniHipatternsHack'),
+    todo = MiniExtra.gen_highlighter.words({ 'TODO', 'Todo', 'todo' }, 'MiniHipatternsTodo'),
+    note = MiniExtra.gen_highlighter.words({ 'NOTE', 'Note', 'note' }, 'MiniHipatternsNote'),
+    hex_color = require('mini.hipatterns').gen_highlighter.hex_color(),
   },
 }
 
-local miniclue = require 'mini.clue'
-
-miniclue.setup {
+require('mini.clue').setup {
   clues = {
     { mode = 'n', keys = '<Leader>e', desc = '+Explore/Edit' },
     { mode = 'n', keys = '<Leader>f', desc = '+Find' },
     { mode = 'n', keys = '<Leader>l', desc = '+LSP' },
     { mode = 'x', keys = '<Leader>l', desc = '+LSP' },
-    miniclue.gen_clues.builtin_completion(),
-    miniclue.gen_clues.g(),
-    miniclue.gen_clues.marks(),
-    miniclue.gen_clues.registers(),
-    miniclue.gen_clues.windows { submode_resize = true },
-    miniclue.gen_clues.z(),
+    require('mini.clue').gen_clues.builtin_completion(),
+    require('mini.clue').gen_clues.g(),
+    require('mini.clue').gen_clues.marks(),
+    require('mini.clue').gen_clues.registers(),
+    require('mini.clue').gen_clues.windows { submode_resize = true },
+    require('mini.clue').gen_clues.z(),
   },
   triggers = {
     { mode = 'n', keys = '<Leader>' },
@@ -237,12 +225,9 @@ require('mini.completion').setup {
     end,
   },
 }
-vim.lsp.config('*', { capabilities = MiniCompletion.get_lsp_capabilities() })
 
-vim.api.nvim_create_autocmd('LspAttach', {
-  group = vim.api.nvim_create_augroup('crnvl96-on-lspattach', {}),
-  callback = function(ev) vim.bo[ev.buf].omnifunc = 'v:lua.MiniCompletion.completefunc_lsp' end,
-})
+vim.lsp.config('*', { capabilities = MiniCompletion.get_lsp_capabilities() })
+vim.lsp.enable { 'lua_ls', 'pyright', 'ruff' }
 
 require('mini.files').setup {
   mappings = {
@@ -258,83 +243,6 @@ require('mini.files').setup {
     width_preview = 80,
   },
 }
-vim.keymap.set('n', '<leader>ed', '<Cmd>lua MiniFiles.open()<CR>', { desc = 'Directory' })
-vim.keymap.set('n', '<leader>ef', '<Cmd>lua MiniFiles.open(vim.api.nvim_buf_get_name(0))<CR>', { desc = 'File' })
-
-require('mini.keymap').setup()
-
-MiniKeymap.map_combo({ 'i', 'c', 'x', 's' }, 'jk', '<BS><BS><Esc><Cmd>noh<CR><Esc>')
-MiniKeymap.map_combo({ 'i', 'c', 'x', 's' }, 'kj', '<BS><BS><Esc><Cmd>noh<CR><Esc>')
-MiniKeymap.map_combo('n', 'jk', '<Esc><Cmd>noh<CR><Esc>')
-MiniKeymap.map_combo('n', 'kj', '<Esc><Cmd>noh<CR><Esc>')
-MiniKeymap.map_multistep('i', '<Tab>', { 'pmenu_next' })
-MiniKeymap.map_multistep('i', '<C-n>', { 'pmenu_next' })
-MiniKeymap.map_multistep('i', '<S-Tab>', { 'pmenu_prev' })
-MiniKeymap.map_multistep('i', '<C-p>', { 'pmenu_prev' })
-MiniKeymap.map_multistep('i', '<CR>', { 'pmenu_accept' })
-
-MiniDeps.add {
-  source = 'nvim-treesitter/nvim-treesitter',
-  checkout = 'main',
-  hooks = { post_checkout = function() vim.cmd 'TSUpdate' end },
-}
-
-MiniDeps.add {
-  source = 'nvim-treesitter/nvim-treesitter-textobjects',
-  checkout = 'main',
-}
-
--- stylua: ignore
-local languages = {
-  -- note: parsers for c, lua, vim, vimdoc, query and markdown are already included in neovim
-  'bash', 'css', 'diff', 'go', 'html',
-  'javascript', 'json', 'python', 'regex',
-  'toml', 'tsx', 'typescript', 'yaml',
-}
-
-local isnt_installed = function(lang) return #vim.api.nvim_get_runtime_file('parser/' .. lang .. '.*', false) == 0 end
-local to_install = vim.tbl_filter(isnt_installed, languages)
-if #to_install > 0 then require('nvim-treesitter').install(to_install) end
-
-local filetypes = {}
-
-for _, lang in ipairs(languages) do
-  for _, ft in ipairs(vim.treesitter.language.get_filetypes(lang)) do
-    table.insert(filetypes, ft)
-  end
-end
-
-vim.api.nvim_create_autocmd('FileType', {
-  group = vim.api.nvim_create_augroup('crnvl96-nvim-treesitter', {}),
-  pattern = filetypes,
-  callback = function(ev) vim.treesitter.start(ev.buf) end,
-})
-
-MiniDeps.add 'neovim/nvim-lspconfig'
-
-vim.lsp.enable { 'lua_ls', 'pyright', 'ruff' }
-
-vim.keymap.set('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>')
-vim.keymap.set('n', 'E', '<Cmd>lua vim.diagnostic.open_float()<CR>')
-vim.keymap.set('i', '<C-k>', '<Cmd>lua vim.lsp.buf.signature_help()<CR>')
-vim.keymap.set('n', '<leader>la', '<Cmd>lua vim.lsp.buf.code_action()<CR>', { desc = 'Actions' })
-vim.keymap.set('n', '<leader>ld', '<Cmd>Pick lsp scope="definition"<CR>', { desc = 'Source definition' })
-vim.keymap.set('n', '<leader>lf', '<Cmd>lua require("conform").format({lsp_fallback=true})<CR>', { desc = 'Format' })
-vim.keymap.set('n', '<leader>lf', '<Cmd>lua require("conform").format({lsp_fallback=true})<CR>', { desc = 'Format' })
-vim.keymap.set('n', '<leader>li', '<Cmd>Pick lsp scope="implementation"<CR>', { desc = 'Implementation' })
-vim.keymap.set('n', '<leader>ln', '<Cmd>lua vim.lsp.buf.rename()<CR>', { desc = 'Rename' })
-vim.keymap.set('n', '<leader>lr', '<Cmd>Pick lsp scope="references"<CR>', { desc = 'References' })
-vim.keymap.set('n', '<leader>lS', '<Cmd>Pick lsp scope="workspace_symbol"<CR>', { desc = 'Symbols workspace' })
-vim.keymap.set('n', '<leader>ly', '<CmdPick lsp scope="type_definition"<CR>', { desc = 'Type definition' })
-vim.keymap.set('n', '<leader>ls', '<Cmd>Pick lsp scope="document_symbol"<CR>', { desc = 'Symbols document' })
-vim.keymap.set('n', '<leader>lX', '<Cmd>Pick diagnostic scope="all"<CR>', { desc = 'Diagnostic workspace' })
-vim.keymap.set('n', '<leader>lx', '<Cmd>Pick diagnostic scope="current"<CR>', { desc = 'Diagnostic buffer' })
-
-MiniDeps.add 'MagicDuck/grug-far.nvim'
-
-require('grug-far').setup()
-
-MiniDeps.add 'stevearc/conform.nvim'
 
 require('conform').setup {
   notify_on_error = false,
@@ -362,4 +270,67 @@ require('conform').setup {
 }
 
 vim.g.autoformat = true
+
+MiniKeymap.map_combo({ 'i', 'c', 'x', 's' }, 'jk', '<BS><BS><Esc><Cmd>noh<CR><Esc>')
+MiniKeymap.map_combo({ 'i', 'c', 'x', 's' }, 'kj', '<BS><BS><Esc><Cmd>noh<CR><Esc>')
+MiniKeymap.map_combo('n', 'jk', '<Esc><Cmd>noh<CR><Esc>')
+MiniKeymap.map_combo('n', 'kj', '<Esc><Cmd>noh<CR><Esc>')
+MiniKeymap.map_multistep('i', '<Tab>', { 'pmenu_next' })
+MiniKeymap.map_multistep('i', '<C-n>', { 'pmenu_next' })
+MiniKeymap.map_multistep('i', '<S-Tab>', { 'pmenu_prev' })
+MiniKeymap.map_multistep('i', '<C-p>', { 'pmenu_prev' })
+MiniKeymap.map_multistep('i', '<CR>', { 'pmenu_accept' })
+
+vim.keymap.set({ 'i', 'c', 'x', 's', 'n', 'o' }, '<C-x>', ':')
+vim.keymap.set({ 'i', 'c', 'x', 's', 'n', 'o' }, '<C-s>', '<Esc><Cmd>noh<CR><Cmd>w!<CR><Esc>')
+vim.keymap.set({ 'i', 'c', 'x', 's', 'n', 'o' }, '<Esc>', '<Esc><Cmd>noh<CR><Esc>', { noremap = true })
+vim.keymap.set('v', 'p', 'P')
+vim.keymap.set({ 'n', 'x' }, 'j', [[v:count == 0 ? 'gj' : 'j']], { expr = true })
+vim.keymap.set({ 'n', 'x' }, 'k', [[v:count == 0 ? 'gk' : 'k']], { expr = true })
+vim.keymap.set('n', '<C-h>', '<C-w>h', { desc = 'Focus on left window' })
+vim.keymap.set('n', '<C-j>', '<C-w>j', { desc = 'Focus on below window' })
+vim.keymap.set('n', '<C-k>', '<C-w>k', { desc = 'Focus on above window' })
+vim.keymap.set('n', '<C-l>', '<C-w>l', { desc = 'Focus on right window' })
+vim.keymap.set('n', '<C-Left>', '<Cmd>vertical resize -20<CR>')
+vim.keymap.set('n', '<C-Down>', '<Cmd>resize -5<CR>')
+vim.keymap.set('n', '<C-Up>', '<Cmd>resize +5<CR>')
+vim.keymap.set('n', '<C-Right>', '<Cmd>vertical resize +20<CR>')
+vim.keymap.set('n', '<C-d>', '<C-d>zz', { desc = 'Scroll down and center' })
+vim.keymap.set('n', '<C-u>', '<C-u>zz', { desc = 'Scroll up and center' })
+vim.keymap.set('n', 'n', 'nzz')
+vim.keymap.set('n', 'N', 'Nzz')
+vim.keymap.set('n', '*', '*zz')
+vim.keymap.set('n', '#', '#zz')
+vim.keymap.set('n', 'g*', 'g*zz')
+vim.keymap.set('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>')
+vim.keymap.set('n', 'E', '<Cmd>lua vim.diagnostic.open_float()<CR>')
+vim.keymap.set('i', '<C-k>', '<Cmd>lua vim.lsp.buf.signature_help()<CR>')
+vim.keymap.set('n', '<leader>ed', '<Cmd>lua MiniFiles.open()<CR>', { desc = 'Directory' })
+vim.keymap.set('n', '<leader>ef', '<Cmd>lua MiniFiles.open(vim.api.nvim_buf_get_name(0))<CR>', { desc = 'File' })
+vim.keymap.set('n', '<leader>la', '<Cmd>lua vim.lsp.buf.code_action()<CR>', { desc = 'Actions' })
+vim.keymap.set('n', '<leader>ld', '<Cmd>Pick lsp scope="definition"<CR>', { desc = 'Source definition' })
+vim.keymap.set('n', '<leader>lf', '<Cmd>lua require("conform").format({lsp_fallback=true})<CR>', { desc = 'Format' })
+vim.keymap.set('n', '<leader>lf', '<Cmd>lua require("conform").format({lsp_fallback=true})<CR>', { desc = 'Format' })
+vim.keymap.set('n', '<leader>li', '<Cmd>Pick lsp scope="implementation"<CR>', { desc = 'Implementation' })
+vim.keymap.set('n', '<leader>ln', '<Cmd>lua vim.lsp.buf.rename()<CR>', { desc = 'Rename' })
+vim.keymap.set('n', '<leader>lr', '<Cmd>Pick lsp scope="references"<CR>', { desc = 'References' })
+vim.keymap.set('n', '<leader>lS', '<Cmd>Pick lsp scope="workspace_symbol"<CR>', { desc = 'Symbols workspace' })
+vim.keymap.set('n', '<leader>ly', '<CmdPick lsp scope="type_definition"<CR>', { desc = 'Type definition' })
+vim.keymap.set('n', '<leader>ls', '<Cmd>Pick lsp scope="document_symbol"<CR>', { desc = 'Symbols document' })
+vim.keymap.set('n', '<leader>lX', '<Cmd>Pick diagnostic scope="all"<CR>', { desc = 'Diagnostic workspace' })
+vim.keymap.set('n', '<leader>lx', '<Cmd>Pick diagnostic scope="current"<CR>', { desc = 'Diagnostic buffer' })
+vim.keymap.set('n', '<leader>fH', '<Cmd>Pick hl_groups<CR>', { desc = 'Highlight groups' })
+vim.keymap.set('n', '<leader>fb', '<Cmd>Pick buffers<CR>', { desc = 'Buffers' })
+vim.keymap.set('n', '<leader>ff', '<Cmd>Pick files<CR>', { desc = 'Files' })
+vim.keymap.set('n', '<leader>fg', '<Cmd>Pick grep_live<CR>', { desc = 'Grep live' })
+vim.keymap.set('n', '<leader>fh', '<Cmd>Pick help<CR>', { desc = 'Help tags' })
+vim.keymap.set('n', '<leader>fl', '<Cmd>Pick buf_lines scope="current"<CR>', { desc = 'Lines (buf)' })
+vim.keymap.set('n', '<leader>fo', '<Cmd>Pick oldfiles<CR>', { desc = 'Oldfiles' })
+vim.keymap.set('n', '<leader>fr', '<Cmd>Pick resume<CR>', { desc = 'Resume' })
+vim.keymap.set('n', '<leader>gS', '<Cmd>Pick git_hunks scope="staged"<CR>', { desc = 'Status (staged)' })
+vim.keymap.set('n', '<leader>gb', '<Cmd>Pick git_branches<CR>', { desc = 'Branches' })
+vim.keymap.set('n', '<leader>gc', '<Cmd>Pick git_commits<CR>', { desc = 'Commits' })
+vim.keymap.set('n', '<leader>gd', '<Cmd>lua MiniDiff.toggle_overlay()<CR>', { desc = 'Diff' })
+vim.keymap.set('n', '<leader>gs', '<Cmd>Pick git_hunks<CR>', { desc = 'Status' })
 vim.keymap.set('n', [[\f]], function() vim.g.autoformat = not vim.g.autoformat end, { desc = 'Toggle Autofmt' })
+vim.keymap.set({ 'n', 'x', 'o' }, 's', function() MiniJump2d.start(MiniJump2d.builtin_opts.single_character) end)
