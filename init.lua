@@ -156,6 +156,8 @@ require('mini.ai').setup {
     g = MiniExtra.gen_ai_spec.buffer(),
     f = require('mini.ai').gen_spec.treesitter { a = '@function.outer', i = '@function.inner' },
     c = require('mini.ai').gen_spec.treesitter { a = '@comment.outer', i = '@comment.inner' },
+    o = require('mini.ai').gen_spec.treesitter { a = '@conditional.outer', i = '@conditional.inner' },
+    l = require('mini.ai').gen_spec.treesitter { a = '@loop.outer', i = '@loop.inner' },
   },
   search_method = 'cover',
 }
