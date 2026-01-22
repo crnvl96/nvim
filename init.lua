@@ -26,6 +26,7 @@ vim.g.node_host_prog = node_bin .. '/node'
 vim.o.mouse = 'a'                                   -- Enable mouse in all modes
 vim.o.mousescroll = 'ver:1,hor:2'                   -- Make mouse scroll more smoothly
 vim.o.undofile = true                               -- Persistent undo
+vim.o.laststatus = 0                                -- No statusline
 vim.o.clipboard = 'unnamedplus'                     -- Sync with system clipboard
 vim.o.swapfile = false                              -- Disable swap
 vim.o.breakindent = true                            -- Keep line breaks visually indented
