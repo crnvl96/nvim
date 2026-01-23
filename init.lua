@@ -68,6 +68,7 @@ vim.diagnostic.config {
 MiniDeps.add 'sainnhe/gruvbox-material'
 MiniDeps.add 'MagicDuck/grug-far.nvim'
 MiniDeps.add 'stevearc/conform.nvim'
+MiniDeps.add 'tpope/vim-fugitive'
 MiniDeps.add 'neovim/nvim-lspconfig'
 MiniDeps.add { source = 'nvim-treesitter/nvim-treesitter-textobjects', checkout = 'main' }
 MiniDeps.add {
@@ -75,6 +76,13 @@ MiniDeps.add {
   checkout = 'main',
   hooks = { post_checkout = function() vim.cmd 'TSUpdate' end },
 }
+
+-- local build = function(args)
+--   local obj = vim.system({ 'cd', './app/', '&&', 'npm install' }, { text = true }):wait()
+--   vim.print(vim.inspect(obj))
+-- end
+
+MiniDeps.add { source = 'iamcco/markdown-preview.nvim' }
 
 vim.api.nvim_create_autocmd('TextYankPost', {
   group = vim.api.nvim_create_augroup('crnvl96-highlight-on-yank', {}),
@@ -122,12 +130,10 @@ require('mini.extra').setup()
 require('mini.comment').setup()
 require('mini.move').setup()
 require('mini.cmdline').setup()
-require('mini.git').setup()
 require('mini.align').setup()
 require('mini.keymap').setup()
 require('mini.misc').setup()
 require('mini.colors').setup()
-require('mini.diff').setup()
 require('mini.pick').setup()
 require('mini.visits').setup()
 require('grug-far').setup()
@@ -335,7 +341,6 @@ vim.keymap.set('n', '<leader>fv', '<Cmd>Pick visit_paths<CR>', { desc = 'Visits'
 vim.keymap.set('n', '<leader>gS', '<Cmd>Pick git_hunks scope="staged"<CR>', { desc = 'Status (staged)' })
 vim.keymap.set('n', '<leader>gb', '<Cmd>Pick git_branches<CR>', { desc = 'Branches' })
 vim.keymap.set('n', '<leader>gc', '<Cmd>Pick git_commits<CR>', { desc = 'Commits' })
-vim.keymap.set('n', '<leader>gd', '<Cmd>lua MiniDiff.toggle_overlay()<CR>', { desc = 'Diff' })
 vim.keymap.set('n', '<leader>gs', '<Cmd>Pick git_hunks<CR>', { desc = 'Status' })
 vim.keymap.set('n', [[\f]], function() vim.g.autoformat = not vim.g.autoformat end, { desc = 'Toggle Autofmt' })
 vim.keymap.set({ 'n', 'x', 'o' }, 's', function() MiniJump2d.start(MiniJump2d.builtin_opts.single_character) end)
