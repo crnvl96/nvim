@@ -1,12 +1,16 @@
-local mini_path = vim.fn.stdpath 'data' .. '/site/pack/deps/start/mini.nvim'
+---@diagnostic disable: undefined-global
 
+local mini_path = vim.fn.stdpath 'data' .. '/site/pack/deps/start/mini.nvim'
 if not vim.loop.fs_stat(mini_path) then
   vim.cmd 'echo "Installing `mini.nvim`" | redraw'
 
-  local origin = 'https://github.com/nvim-mini/mini.nvim'
-  local clone_cmd = { 'git', 'clone', '--filter=blob:none', origin, mini_path }
-
-  vim.fn.system(clone_cmd)
+  vim.fn.system {
+    'git',
+    'clone',
+    '--filter=blob:none',
+    'https://github.com/nvim-mini/mini.nvim',
+    mini_path,
+  }
 
   vim.cmd 'packadd mini.nvim | helptags ALL'
   vim.cmd 'echo "Installed `mini.nvim`" | redraw'
@@ -84,24 +88,17 @@ MiniDeps.now(function()
   vim.keymap.set('n', 'g*', 'g*zz')
 end)
 
-MiniDeps.later(function()
-  -- Set diagnostic configurations
-  vim.diagnostic.config {
-    signs = {
-      priority = 9999,
-      severity = { min = 'HINT', max = 'ERROR' },
-    },
-    underline = {
-      severity = { min = 'HINT', max = 'ERROR' },
-    },
-    virtual_text = {
-      current_line = true,
-      severity = { min = 'ERROR', max = 'ERROR' },
-    },
-    virtual_lines = false,
-    update_in_insert = false,
-  }
-end)
+MiniDeps.later(
+  function()
+    vim.diagnostic.config {
+      signs = { priority = 9999, severity = { min = 'HINT', max = 'ERROR' } },
+      underline = { severity = { min = 'HINT', max = 'ERROR' } },
+      virtual_text = { current_line = true, severity = { min = 'ERROR', max = 'ERROR' } },
+      virtual_lines = false,
+      update_in_insert = false,
+    }
+  end
+)
 
 MiniDeps.now(function()
   vim.api.nvim_create_autocmd('TextYankPost', {
