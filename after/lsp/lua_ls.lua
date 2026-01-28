@@ -1,3 +1,4 @@
+---@type vim.lsp.Config
 return {
   ---@diagnostic disable-next-line: unused-local
   on_attach = function(client, buf_id)
