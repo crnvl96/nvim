@@ -5,9 +5,8 @@ local add, now, ltr = MiniDeps.add, MiniDeps.now, MiniDeps.later
 now(function() require('mini.extra').setup() end)
 ltr(function() require('mini.comment').setup() end)
 ltr(function() require('mini.move').setup() end)
-ltr(function() require('mini.cmdline').setup() end)
 ltr(function() require('mini.align').setup() end)
-ltr(function() require('mini.visits').setup() end)
+ltr(function() require('mini.cmdline').setup() end)
 ltr(function() add 'tpope/vim-fugitive' end)
 
 now(function()
@@ -78,34 +77,10 @@ ltr(function()
 end)
 
 ltr(function()
-  local compe = require 'mini.completion'
-
-  compe.setup {
-    lsp_completion = {
-      source_func = 'omnifunc',
-      auto_setup = false,
-      process_items = function(items, base)
-        return MiniCompletion.default_process_items(items, base, { kind_priority = { Text = -1, Snippet = -1 } })
-      end,
-    },
-  }
-
-  vim.lsp.config('*', { capabilities = MiniCompletion.get_lsp_capabilities() })
-
-  vim.api.nvim_create_autocmd('LspAttach', {
-    group = vim.api.nvim_create_augroup('crnvl96-on-lspattach', {}),
-    callback = function(e) vim.bo[e.buf].omnifunc = 'v:lua.MiniCompletion.completefunc_lsp' end,
-  })
-end)
-
-ltr(function()
   require('mini.keymap').setup()
-
-  MiniKeymap.map_multistep('i', '<Tab>', { 'pmenu_next' })
-  MiniKeymap.map_multistep('i', '<C-n>', { 'pmenu_next' })
-  MiniKeymap.map_multistep('i', '<S-Tab>', { 'pmenu_prev' })
-  MiniKeymap.map_multistep('i', '<C-p>', { 'pmenu_prev' })
-  MiniKeymap.map_multistep('i', '<CR>', { 'pmenu_accept' })
+  local mode = { 'i', 'c', 'x', 's' }
+  require('mini.keymap').map_combo(mode, 'jk', '<BS><BS><Esc>')
+  require('mini.keymap').map_combo(mode, 'kj', '<BS><BS><Esc>')
 end)
 
 ltr(function()
@@ -122,7 +97,6 @@ ltr(function()
   set('n', '<leader>fk', '<Cmd>Pick keymaps<CR>', { desc = 'Keymaps' })
   set('n', '<leader>fo', '<Cmd>Pick oldfiles<CR>', { desc = 'Oldfiles' })
   set('n', '<leader>fr', '<Cmd>Pick resume<CR>', { desc = 'Resume' })
-  set('n', '<leader>fv', '<Cmd>Pick visit_paths<CR>', { desc = 'Visits' })
   set('n', '<leader>gS', '<Cmd>Pick git_hunks scope="staged"<CR>', { desc = 'Status (staged)' })
   set('n', '<leader>gb', '<Cmd>Pick git_branches<CR>', { desc = 'Branches' })
   set('n', '<leader>gc', '<Cmd>Pick git_commits<CR>', { desc = 'Commits' })

@@ -7,7 +7,6 @@ now(function()
 
   local modes = { 'i', 'c', 'x', 's', 'n', 'o' }
 
-  set(modes, '<C-x>', ':')
   set(modes, '<C-s>', '<Esc><Cmd>noh<CR><Cmd>w!<CR><Esc>')
   set(modes, '<Esc>', '<Esc><Cmd>noh<CR><Esc>', { noremap = true })
   set('v', 'p', 'P')
