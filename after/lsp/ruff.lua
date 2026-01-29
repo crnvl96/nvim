@@ -1,4 +1,6 @@
+---@diagnostic disable: unused-local
 ---@type vim.lsp.Config
+
 return {
   settings = {},
   init_options = {
@@ -15,7 +17,6 @@ return {
       positionEncodings = { 'utf-16' },
     },
   },
-  ---@diagnostic disable-next-line: unused-local
   on_attach = function(client, bufnr)
     client.server_capabilities.hoverProvider = false -- Use hovers from Pyright
   end,
