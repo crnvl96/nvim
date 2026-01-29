@@ -135,16 +135,16 @@ ltr(function()
   set('n', '<leader>ef', file_cmd, { desc = 'File' })
 end)
 
+-- Note: Check if I can live without this
+--
 -- ltr(function()
 --   add 'MagicDuck/grug-far.nvim'
 --   require('grug-far').setup()
 -- end)
-
+--
 -- ltr(function()
 --   require('mini.pick').setup()
---
 --   local set = vim.keymap.set
---
 --   set('n', '<leader>fH', '<Cmd>Pick hl_groups<CR>', { desc = 'Highlight groups' })
 --   set('n', '<leader>fb', '<Cmd>Pick buffers<CR>', { desc = 'Buffers' })
 --   set('n', '<leader>ff', '<Cmd>Pick files<CR>', { desc = 'Files' })

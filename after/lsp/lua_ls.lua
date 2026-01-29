@@ -13,7 +13,10 @@ return {
       },
       workspace = {
         ignoreSubmodules = true,
-        library = { vim.env.VIMRUNTIME, '${3rd}/luv/library' },
+        library = {
+          vim.env.VIMRUNTIME,
+          '${3rd}/luv/library',
+        },
       },
     },
   },

@@ -43,8 +43,7 @@ now(function()
   vim.o.virtualedit = 'block'
   vim.o.complete = '.'
   vim.o.completeopt = 'menuone,noselect,fuzzy,nosort'
-  -- vim.o.wildmode = 'noselect:lastused,full'
-  vim.o.wildoptions = 'pum,tagfile,fuzzy'
+  vim.o.wildoptions = 'fuzzy,pum,tagfile'
 
   if vim.fn.executable 'rg' then
     vim.o.grepprg = 'rg --vimgrep --no-heading --hidden --smart-case'
