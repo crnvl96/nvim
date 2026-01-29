@@ -108,6 +108,33 @@ ltr(function()
   }
 end)
 
+ltr(function()
+  local files = require 'mini.files'
+
+  files.setup {
+    mappings = {
+      go_in = '',
+      go_in_plus = '<CR>',
+      go_out = '',
+      go_out_plus = '-',
+    },
+    windows = {
+      preview = true,
+      width_focus = 50,
+      width_nofocus = 15,
+      width_preview = 80,
+    },
+  }
+
+  local set = vim.keymap.set
+
+  local dir_cmd = '<Cmd>lua MiniFiles.open()<CR>'
+  local file_cmd = '<Cmd>lua MiniFiles.open(vim.api.nvim_buf_get_name(0))<CR>'
+
+  set('n', '<leader>ed', dir_cmd, { desc = 'Directory' })
+  set('n', '<leader>ef', file_cmd, { desc = 'File' })
+end)
+
 -- ltr(function()
 --   add 'MagicDuck/grug-far.nvim'
 --   require('grug-far').setup()
@@ -131,31 +158,4 @@ end)
 --   set('n', '<leader>gb', '<Cmd>Pick git_branches<CR>', { desc = 'Branches' })
 --   set('n', '<leader>gc', '<Cmd>Pick git_commits<CR>', { desc = 'Commits' })
 --   set('n', '<leader>gs', '<Cmd>Pick git_hunks<CR>', { desc = 'Status' })
--- end)
-
--- ltr(function()
---   local files = require 'mini.files'
---
---   files.setup {
---     mappings = {
---       go_in = '',
---       go_in_plus = '<CR>',
---       go_out = '',
---       go_out_plus = '-',
---     },
---     windows = {
---       preview = true,
---       width_focus = 50,
---       width_nofocus = 15,
---       width_preview = 80,
---     },
---   }
---
---   local set = vim.keymap.set
---
---   local dir_cmd = '<Cmd>lua MiniFiles.open()<CR>'
---   local file_cmd = '<Cmd>lua MiniFiles.open(vim.api.nvim_buf_get_name(0))<CR>'
---
---   set('n', '<leader>ed', dir_cmd, { desc = 'Directory' })
---   set('n', '<leader>ef', file_cmd, { desc = 'File' })
 -- end)
