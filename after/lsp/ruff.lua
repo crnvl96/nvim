@@ -8,8 +8,12 @@ return {
       logLevel = 'debug',
       fixAll = true,
       organizeImports = true,
-      lint = { enable = true },
-      format = { backend = 'uv' },
+      lint = {
+        enable = true,
+      },
+      format = {
+        backend = 'uv',
+      },
     },
   },
   capabilities = {

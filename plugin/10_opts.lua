@@ -15,7 +15,6 @@ now(function()
   vim.o.guicursor = ''
   vim.o.mousescroll = 'ver:1,hor:2'
   vim.o.undofile = true
-
   vim.o.laststatus = 0
   vim.o.clipboard = 'unnamedplus'
   vim.o.swapfile = false
