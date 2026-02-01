@@ -19,16 +19,7 @@ ltr(function()
 end)
 
 ltr(function()
-    require('mini.cmdline').setup()
-end)
-
-ltr(function()
     add 'tpope/vim-fugitive'
-end)
-
-ltr(function()
-    add 'folke/snacks.nvim'
-    require('snacks').setup()
 end)
 
 now(function()
