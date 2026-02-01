@@ -13,7 +13,7 @@ now(function()
     vim.g.node_host_prog = node_bin .. '/node'
 
     vim.o.mouse = 'a'
-    vim.o.guicursor = ''
+    -- vim.o.guicursor = ''
     vim.o.mousescroll = 'ver:1,hor:2'
     vim.o.undofile = true
     vim.o.laststatus = 0
