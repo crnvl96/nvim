@@ -30,7 +30,7 @@ now(function()
     set('n', 'g*', 'g*zz')
     set('n', '<Leader>g', ':sil grep<space>')
     set('n', '<Leader>G', ':sil grep<space><space>%<left><left>')
-    set('n', '<leader>f', ':find<space>', { desc = 'Fuzzy find' })
+    set('n', '<leader>f', ':find<space>')
 
     set('c', '<C-f>', '<Right>')
     set('c', '<C-b>', '<Left>')
