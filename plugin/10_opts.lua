@@ -15,7 +15,7 @@ now(function()
     vim.o.mouse = 'a'
     vim.o.mousescroll = 'ver:1,hor:2'
     vim.o.undofile = true
-    vim.o.laststatus = 0
+    vim.o.laststatus = 2
     vim.o.clipboard = 'unnamedplus'
     vim.o.swapfile = false
     vim.o.ruler = false
@@ -41,13 +41,10 @@ now(function()
     vim.o.tabstop = 4
     vim.o.virtualedit = 'block'
     vim.o.complete = '.'
+    vim.o.completeopt = 'menu,menuone,popup,fuzzy,noinsert,noselect,nosort'
+    vim.o.wildoptions = 'pum,tagfile,fuzzy'
 
-    vim.cmd [[
-        set completeopt+=fuzzy
-        set wildoptions+=fuzzy
-
-        filetype plugin indent on
-    ]]
+    vim.cmd 'filetype plugin indent on'
 
     if vim.fn.executable 'rg' then
         vim.o.grepprg = 'rg --vimgrep --no-heading --hidden --smart-case'

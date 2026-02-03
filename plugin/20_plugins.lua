@@ -6,6 +6,10 @@ now(function()
     require('mini.extra').setup()
 end)
 
+now(function()
+    require('mini.statusline').setup()
+end)
+
 ltr(function()
     require('mini.comment').setup()
 end)
