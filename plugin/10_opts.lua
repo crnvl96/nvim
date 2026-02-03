@@ -1,8 +1,4 @@
----@diagnostic disable: undefined-global
-
-local now = MiniDeps.now
-
-now(function()
+MiniDeps.now(function()
     vim.g.mapleader = ' '
     vim.g.maplocalleader = ','
 

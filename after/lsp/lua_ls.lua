@@ -1,6 +1,6 @@
 ---@diagnostic disable: unused-local
----@type vim.lsp.Config
 
+---@type vim.lsp.Config
 return {
     on_attach = function(client, buf_id)
         client.server_capabilities.completionProvider.triggerCharacters = { '.', ':', '#', '(' }

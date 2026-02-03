@@ -1,5 +1,6 @@
 ---@type vim.lsp.Config
 
+---@type vim.lsp.Config
 return {
     settings = {
         pyright = {

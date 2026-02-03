@@ -1,6 +1,6 @@
 ---@diagnostic disable: unused-local
----@type vim.lsp.Config
 
+---@type vim.lsp.Config
 return {
     settings = {},
     init_options = {
