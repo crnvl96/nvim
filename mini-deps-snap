@@ -1,5 +1,6 @@
 return {
   ["conform.nvim"] = "c2526f1cde528a66e086ab1668e996d162c75f4f",
+  ["fzf-lua"] = "36d60dd59cd9bc0442352119fc0e45e1c9011e03",
   ["gruvbox-material"] = "790afe9dd085aa04eccd1da3626c5fa05c620e53",
   ["markdown-preview.nvim"] = "a923f5fc5ba36a3b17e289dc35dc17f66d0548ee",
   ["mini.nvim"] = "9b935c218ddba02e5dc75c94f90143bce1f7c646",

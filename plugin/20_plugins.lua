@@ -4,25 +4,10 @@ local add, now, ltr = MiniDeps.add, MiniDeps.now, MiniDeps.later
 
 now(function()
     require('mini.extra').setup()
-end)
-
-now(function()
     require('mini.statusline').setup()
-end)
-
-ltr(function()
     require('mini.comment').setup()
-end)
-
-ltr(function()
     require('mini.move').setup()
-end)
-
-ltr(function()
     require('mini.align').setup()
-end)
-
-ltr(function()
     add 'tpope/vim-fugitive'
 end)
 
@@ -51,11 +36,9 @@ end)
 ltr(function()
     local build = function(args)
         put 'Building dependencies of markdown-preview.nvim'
-
         local put = MiniMisc.put
         local cmd = { 'npm', 'install', '--prefix', string.format('%s/app', args.path) }
         local obj = vim.system(cmd, { text = true }):wait()
-
         if obj.code ~= 0 then
             put 'An error occurred while building dependencies of markdown-preview.nvim'
         else
@@ -93,6 +76,34 @@ ltr(function()
         },
         search_method = 'cover',
     }
+end)
+
+ltr(function()
+    add 'ibhagwan/fzf-lua'
+
+    require('fzf-lua').setup()
+    require('fzf-lua').register_ui_select()
+
+    local set = vim.keymap.set
+
+    set({ 'n', 'x' }, '<leader>fl', function()
+        if vim.startswith(vim.api.nvim_get_mode().mode, 'n') then
+            require('fzf-lua').lgrep_curbuf(opts)
+        else
+            require('fzf-lua').blines(opts)
+        end
+    end, { desc = 'Search current buffer' })
+
+    set('n', '<leader>fb', '<Cmd>FzfLua buffers<CR>', { desc = 'Buffers' })
+    set('n', '<leader>fH', '<Cmd>FzfLua highlights<CR>', { desc = 'Highlights' })
+    set('n', '<leader>fx', '<Cmd>FzfLua lsp_document_diagnostics<CR>', { desc = 'Document diagnostics' })
+    set('n', '<leader>ff', '<Cmd>FzfLua files<CR>', { desc = 'Find files' })
+    set('n', '<leader>fg', '<Cmd>FzfLua live_grep<CR>', { desc = 'Grep' })
+    set('x', '<leader>fg', '<Cmd>FzfLua grep_visual<CR>', { desc = 'Grep' })
+    set('n', '<leader>fh', '<Cmd>FzfLua help_tags<CR>', { desc = 'Help' })
+    set('n', '<leader>fo', '<Cmd>FzfLua oldfiles<CR>', { desc = 'Recently opened files' })
+    set('n', '<leader>fr', '<Cmd>FzfLua resume<CR>', { desc = 'Resume last fzf command' })
+    set('i', '<C-x><C-f>', '<Cmd>FzfLua complete_path<CR>')
 end)
 
 ltr(function()

@@ -23,6 +23,7 @@ now(function()
     vim.o.breakindent = true
     vim.o.linebreak = true
     vim.o.number = true
+    vim.o.updatetime = 1000
     vim.o.relativenumber = true
     vim.o.signcolumn = 'yes'
     vim.o.splitbelow = true
