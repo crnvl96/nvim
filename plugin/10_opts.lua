@@ -41,10 +41,13 @@ now(function()
     vim.o.tabstop = 4
     vim.o.virtualedit = 'block'
     vim.o.complete = '.'
-    vim.o.completeopt = 'menu,menuone,noinsert,noselect,nosort,fuzzy'
-    vim.o.wildoptions = 'pum,tagfile,fuzzy'
 
-    vim.cmd 'filetype plugin indent on'
+    vim.cmd [[
+        set completeopt+=fuzzy
+        set wildoptions+=fuzzy
+
+        filetype plugin indent on
+    ]]
 
     if vim.fn.executable 'rg' then
         vim.o.grepprg = 'rg --vimgrep --no-heading --hidden --smart-case'

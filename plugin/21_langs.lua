@@ -27,25 +27,21 @@ now(function()
         'javascript', 'typescript',
     }
 
-    local parsers = vim.iter(treesit_langs)
+    require('nvim-treesitter').install(vim.iter(treesit_langs)
         :filter(function(item)
             return #vim.api.nvim_get_runtime_file('parser/' .. item .. '.*', false) == 0
         end)
         :flatten()
-        :totable()
-
-    local fts = vim.iter(treesit_langs)
-        :map(function(item)
-            return vim.treesitter.language.get_filetypes(item)
-        end)
-        :flatten()
-        :totable()
-
-    require('nvim-treesitter').install(parsers)
+        :totable())
 
     vim.api.nvim_create_autocmd('FileType', {
         group = vim.api.nvim_create_augroup('crnvl96-nvim-treesitter', {}),
-        pattern = fts,
+        pattern = vim.iter(treesit_langs)
+            :map(function(item)
+                return vim.treesitter.language.get_filetypes(item)
+            end)
+            :flatten()
+            :totable(),
         callback = function(ev)
             vim.treesitter.start(ev.buf)
         end,
@@ -107,41 +103,27 @@ later(function()
 
     vim.g.autoformat = true
 
-    local fmt_on_save = function()
-        if not vim.g.autoformat then
-            return nil
-        end
-
-        return {}
-    end
-
     conf.setup {
         notify_on_error = false,
         notify_no_formatters = false,
-        default_format_opts = {
-            lsp_format = 'fallback',
-            timeout_ms = 1000,
-        },
+        default_format_opts = { lsp_format = 'fallback', timeout_ms = 1000 },
         formatters = {
-            stylua = {
-                require_cwd = true,
-            },
-            prettier = {
-                require_cwd = false,
-            },
+            stylua = { require_cwd = true },
+            prettier = { require_cwd = false },
         },
+        format_on_save = function()
+            if not vim.g.autoformat then
+                return nil
+            end
+
+            return {}
+        end,
+        -- stylua: ignore
         formatters_by_ft = {
-            ['_'] = default,
-            javascript = web,
-            typescript = web,
-            python = python,
-            lua = lua,
-            json = prettier,
-            jsonc = prettier,
-            yaml = prettier,
-            markdown = prettier,
+            ['_'] = default,  javascript = web, typescript = web,
+            python = python,  lua = lua,        json = prettier,
+            jsonc = prettier, yaml = prettier,  markdown = prettier,
         },
-        format_on_save = fmt_on_save,
     }
 
     local toggle_fmt_on_save = function()

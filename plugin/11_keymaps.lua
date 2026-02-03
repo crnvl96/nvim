@@ -6,13 +6,13 @@ now(function()
     local set = vim.keymap.set
 
     set('!', '<Esc>', '<Esc><Cmd>noh<CR><Esc>', { noremap = true })
+    set('!', '<C-S>', '<Cmd>silent! update | redraw<CR>')
 
-    set('n', '<C-S>', '<Cmd>silent! update | redraw<CR>')
     set({ 'i', 'x' }, '<C-S>', '<Esc><Cmd>silent! update | redraw<CR>')
-
-    set('v', 'p', 'P')
     set({ 'n', 'x' }, 'j', [[v:count == 0 ? 'gj' : 'j']], { expr = true })
     set({ 'n', 'x' }, 'k', [[v:count == 0 ? 'gk' : 'k']], { expr = true })
+
+    set('v', 'p', 'P')
     set('n', '<C-h>', '<C-w>h')
     set('n', '<C-j>', '<C-w>j')
     set('n', '<C-k>', '<C-w>k')
@@ -36,12 +36,25 @@ now(function()
     set('c', '<C-b>', '<Left>')
     set('c', '<C-a>', '<Home>')
     set('c', '<C-e>', '<End>')
-    set('c', '<C-p>', '<Up>')
-    set('c', '<C-n>', '<Down>')
     set('c', '<M-f>', '<C-Right>')
     set('c', '<M-b>', '<C-Left>')
     set('c', '<C-d>', '<Del>')
     set('c', '<M-d>', '<C-w>')
     set('c', '<C-k>', '<C-u>')
     set('c', '<C-g>', '<C-c>')
+
+    local function feedkeys(keys)
+        vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(keys, true, false, true), 't', true)
+    end
+
+    local function navigate_cmdline_next()
+        feedkeys '<Tab>'
+    end
+
+    local function navigate_cmdline_prev()
+        feedkeys '<S-Tab>'
+    end
+
+    set('c', '<C-n>', navigate_cmdline_next)
+    set('c', '<C-p>', navigate_cmdline_prev)
 end)
