@@ -1,8 +1,10 @@
 {
-    "diagnostics.globals": [
-        "MiniDeps",
-        "MiniColors",
-        "MiniMisc",
-        "MiniExtra"
-    ]
+  "diagnostics.globals": [
+    "MiniDeps",
+    "MiniColors",
+    "MiniMisc",
+    "MiniExtra",
+    "MiniFiles"
+  ]
 }
+

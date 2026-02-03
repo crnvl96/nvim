@@ -108,5 +108,5 @@ MiniDeps.later(function()
         vim.g.autoformat = not vim.g.autoformat
     end
 
-    vim.keymap.set('n', [[\f]], toggle_fmt_on_save, { desc = 'Toggle Autofmt' })
+    vim.keymap.set('n', [[\f]], toggle_fmt_on_save)
 end)

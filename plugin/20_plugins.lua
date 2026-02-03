@@ -262,6 +262,10 @@ MiniDeps.later(function()
         require('fzf-lua').oldfiles()
     end)
 
+    vim.keymap.set('x', '<leader>fk', function()
+        require('fzf-lua').keymaps()
+    end)
+
     vim.keymap.set('x', '<leader>fr', function()
         require('fzf-lua').resume()
     end)
@@ -295,9 +299,11 @@ MiniDeps.later(function()
         },
     }
 
-    local dir_cmd = '<Cmd>lua MiniFiles.open()<CR>'
-    local file_cmd = '<Cmd>lua MiniFiles.open(vim.api.nvim_buf_get_name(0))<CR>'
+    vim.keymap.set('n', '<leader>ed', function()
+        MiniFiles.open()
+    end)
 
-    vim.keymap.set('n', '<leader>ed', dir_cmd, { desc = 'Directory' })
-    vim.keymap.set('n', '<leader>ef', file_cmd, { desc = 'File' })
+    vim.keymap.set('n', '<leader>ef', function()
+        MiniFiles.open(vim.api.nvim_buf_get_name(0))
+    end)
 end)
