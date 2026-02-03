@@ -1,8 +1,4 @@
----@diagnostic disable: undefined-global
-
-local ltr = MiniDeps.later
-
-ltr(function()
+MiniDeps.later(function()
     vim.diagnostic.config {
         signs = {
             priority = 9999,

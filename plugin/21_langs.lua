@@ -1,9 +1,5 @@
----@diagnostic disable: undefined-global
-
-local add, now, later = MiniDeps.add, MiniDeps.now, MiniDeps.later
-
-now(function()
-    add {
+MiniDeps.now(function()
+    MiniDeps.add {
         source = 'nvim-treesitter/nvim-treesitter',
         checkout = 'main',
         hooks = {
@@ -13,7 +9,7 @@ now(function()
         },
     }
 
-    add {
+    MiniDeps.add {
         source = 'nvim-treesitter/nvim-treesitter-textobjects',
         checkout = 'main',
     }
@@ -48,31 +44,13 @@ now(function()
     })
 end)
 
-now(function()
-    add 'neovim/nvim-lspconfig'
-
+MiniDeps.now(function()
+    MiniDeps.add 'neovim/nvim-lspconfig'
     vim.lsp.enable { 'lua_ls', 'pyright', 'ruff', 'ts_ls', 'biome', 'eslint' }
-
-    local set = vim.keymap.set
-
-    set('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>')
-    set('n', 'E', '<Cmd>lua vim.diagnostic.open_float()<CR>')
-    -- set('i', '<C-k>', '<Cmd>lua vim.lsp.buf.signature_help()<CR>')
-    -- set('n', '<leader>la', '<Cmd>lua vim.lsp.buf.code_action()<CR>', { desc = 'Actions' })
-
-    -- set('n', '<leader>ld', '<Cmd>lua vim.lsp.buf.definition()<CR>', { desc = 'Definition' })
-    -- set('n', '<leader>li', '<Cmd>lua vim.lsp.buf.implementation()<CR>', { desc = 'Implementation' })
-    -- set('n', '<leader>ln', '<Cmd>lua vim.lsp.buf.rename()<CR>', { desc = 'Rename' })
-    -- set('n', '<leader>lr', '<Cmd>lua vim.lsp.buf.references()<CR>', { desc = 'References' })
-    -- set('n', '<leader>lS', '<Cmd>lua vim.lsp.buf.workspace_symbol()<CR>', { desc = 'Workspace Symbols' })
-    -- set('n', '<leader>ly', '<Cmd>lua vim.lsp.buf.type_definition()<CR>', { desc = 'Type definition' })
-    -- set('n', '<leader>ls', '<Cmd>lua vim.lsp.buf.document_symbol()<CR>', { desc = 'Document Symbols' })
-    -- set('n', '<leader>lx', '<Cmd>lua vim.diagnostic.setqflist()<CR>', { desc = 'Diagnostics' })
-    -- set('n', '<leader>lf', '<Cmd>lua require("conform").format({lsp_fallback=true})<CR>', { desc = 'Format' })
 end)
 
-later(function()
-    add 'stevearc/conform.nvim'
+MiniDeps.later(function()
+    MiniDeps.add 'stevearc/conform.nvim'
 
     local conf = require 'conform'
     local util = require 'conform.util'
