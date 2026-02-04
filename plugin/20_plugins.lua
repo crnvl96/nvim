@@ -116,20 +116,12 @@ MiniDeps.later(function()
             },
         },
         winopts = {
-            height = 0.7,
+            height = 0.85,
             width = 0.55,
             preview = {
                 scrollbar = false,
                 layout = 'vertical',
                 vertical = 'up:40%',
-            },
-        },
-        defaults = {
-            git_icons = false,
-        },
-        previewers = {
-            codeaction = {
-                toggle_behavior = 'extend',
             },
         },
         files = {
@@ -141,13 +133,12 @@ MiniDeps.later(function()
         },
         grep = {
             hidden = true,
-            rg_opts = '--column --line-number --no-heading --color=always --smart-case --max-columns=4096 -g "!.git" -e',
-            rg_glob_fn = function(query, opts)
-                local regex, flags = query:match(string.format('^(.*)%s(.*)$', opts.glob_separator))
-                return (regex or query), flags
-            end,
         },
-        helptags = { actions = { ['enter'] = actions.help_vert } },
+        helptags = {
+            actions = {
+                ['enter'] = actions.help_vert,
+            },
+        },
         lsp = {
             code_actions = {
                 winopts = {
@@ -163,23 +154,6 @@ MiniDeps.later(function()
         },
         diagnostics = {
             multiline = 1,
-            actions = {
-                ['ctrl-e'] = {
-                    fn = function(_, opts)
-                        if opts.severity_only then
-                            opts.severity_only = nil
-                        else
-                            opts.severity_only = vim.diagnostic.severity.ERROR
-                        end
-                        require('fzf-lua').resume(opts)
-                    end,
-                    noclose = true,
-                    desc = 'toggle-all-only-errors',
-                    header = function(opts)
-                        return opts.severity_only and 'show all' or 'show only errors'
-                    end,
-                },
-            },
         },
         oldfiles = {
             include_current_session = true,
@@ -219,12 +193,17 @@ MiniDeps.later(function()
     vim.keymap.set('n', '<leader>fl', function()
         local opts = {
             winopts = {
-                height = 0.6,
+                height = 0.85,
                 width = 0.5,
-                preview = { vertical = 'up:70%' },
+                preview = {
+                    hidden = true,
+                },
                 treesitter = {
                     enabled = false,
-                    fzf_colors = { ['fg'] = { 'fg', 'CursorLine' }, ['bg'] = { 'bg', 'Normal' } },
+                    fzf_colors = {
+                        ['fg'] = { 'fg', 'CursorLine' },
+                        ['bg'] = { 'bg', 'Normal' },
+                    },
                 },
             },
             fzf_opts = {
@@ -236,6 +215,7 @@ MiniDeps.later(function()
         -- searching inside visual selections.
         -- See https://github.com/ibhagwan/fzf-lua/issues/2051
         local mode = vim.api.nvim_get_mode().mode
+
         if vim.startswith(mode, 'n') then
             require('fzf-lua').lgrep_curbuf(opts)
         else
