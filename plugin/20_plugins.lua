@@ -8,6 +8,24 @@ MiniDeps.now(function()
 end)
 
 MiniDeps.now(function()
+    require('mini.keymap').setup()
+
+    require('mini.keymap').map_combo({ 'i', 'c', 'x', 's' }, 'jk', '<BS><BS><Esc>')
+    require('mini.keymap').map_combo({ 'i', 'c', 'x', 's' }, 'kj', '<BS><BS><Esc>')
+    require('mini.keymap').map_combo('t', 'jk', '<BS><BS><C-\\><C-n>')
+    require('mini.keymap').map_combo('t', 'kj', '<BS><BS><C-\\><C-n>')
+
+    require('mini.keymap').map_combo({ 'n', 'i', 'x', 'c' }, '<Esc><Esc>', function()
+        vim.cmd 'nohlsearch'
+    end)
+
+    -- require('mini.keymap').map_combo({ 'n', 'x' }, 'll', 'g$')
+    -- require('mini.keymap').map_combo({ 'n', 'x' }, 'hh', 'g^')
+    require('mini.keymap').map_combo({ 'n', 'x' }, 'mm', '}')
+    require('mini.keymap').map_combo({ 'n', 'x' }, 'tt', '{')
+end)
+
+MiniDeps.now(function()
     MiniDeps.add 'sainnhe/gruvbox-material'
 
     vim.g.gruvbox_material_background = 'hard'
