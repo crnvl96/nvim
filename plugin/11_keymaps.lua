@@ -1,8 +1,10 @@
 MiniDeps.now(function()
     vim.keymap.set('!', '<Esc>', '<Esc><Cmd>noh<CR><Esc>', { noremap = true })
-    vim.keymap.set('!', '<C-S>', '<Cmd>silent! update | redraw<CR>')
 
-    vim.keymap.set({ 'i', 'x' }, '<C-S>', '<Esc><Cmd>silent! update | redraw<CR>')
+    vim.keymap.set('!', '<C-m>', '<CR>', { remap = true })
+
+    vim.keymap.set('n', 'L', ':', { remap = true })
+    vim.keymap.set({ 'n', 'i', 'x' }, '<C-S>', '<Esc><Cmd>silent! update | redraw<CR>')
     vim.keymap.set({ 'n', 'x' }, 'j', [[v:count == 0 ? 'gj' : 'j']], { expr = true })
     vim.keymap.set({ 'n', 'x' }, 'k', [[v:count == 0 ? 'gk' : 'k']], { expr = true })
 
