@@ -18,11 +18,6 @@ MiniDeps.now(function()
     require('mini.keymap').map_combo({ 'n', 'i', 'x', 'c' }, '<Esc><Esc>', function()
         vim.cmd 'nohlsearch'
     end)
-
-    -- require('mini.keymap').map_combo({ 'n', 'x' }, 'll', 'g$')
-    -- require('mini.keymap').map_combo({ 'n', 'x' }, 'hh', 'g^')
-    require('mini.keymap').map_combo({ 'n', 'x' }, 'mm', '}')
-    require('mini.keymap').map_combo({ 'n', 'x' }, 'tt', '{')
 end)
 
 MiniDeps.now(function()
@@ -272,19 +267,19 @@ MiniDeps.later(function()
         require('fzf-lua').grep_visual()
     end)
 
-    vim.keymap.set('x', '<leader>fh', function()
+    vim.keymap.set('n', '<leader>fh', function()
         require('fzf-lua').help_tags()
     end)
 
-    vim.keymap.set('x', '<leader>fo', function()
+    vim.keymap.set('n', '<leader>fo', function()
         require('fzf-lua').oldfiles()
     end)
 
-    vim.keymap.set('x', '<leader>fk', function()
+    vim.keymap.set('n', '<leader>fk', function()
         require('fzf-lua').keymaps()
     end)
 
-    vim.keymap.set('x', '<leader>fr', function()
+    vim.keymap.set('n', '<leader>fr', function()
         require('fzf-lua').resume()
     end)
 
