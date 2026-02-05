@@ -89,8 +89,6 @@ end)
 MiniDeps.later(function()
     MiniDeps.add 'ibhagwan/fzf-lua'
 
-    local actions = require 'fzf-lua.actions'
-
     require('fzf-lua').setup {
         { 'border-fused', 'hide' },
         fzf_colors = {
@@ -106,61 +104,41 @@ MiniDeps.later(function()
         },
         keymap = {
             builtin = {
+                ['<M-Esc>'] = 'hide',
                 ['<C-/>'] = 'toggle-help',
                 ['<C-i>'] = 'toggle-preview',
+                ['<C-g>'] = 'preview-reset',
+                ['<C-f>'] = 'preview-page-down',
+                ['<C-b>'] = 'preview-page-up',
+                ['<C-d>'] = 'preview-down',
+                ['<C-u>'] = 'preview-up',
             },
             fzf = {
-                ['alt-s'] = 'toggle',
+                ['ctrl-z'] = 'abort',
+                ['ctrl-u'] = 'unix-line-discard',
+                ['ctrl-d'] = 'half-page-down',
+                ['ctrl-D'] = 'half-page-up',
+                ['ctrl-a'] = 'beginning-of-line',
+                ['ctrl-e'] = 'end-of-line',
                 ['alt-a'] = 'toggle-all',
+                ['alt-d'] = 'toggle+down',
+                ['alt-u'] = 'toggle+up',
+                ['alt-g'] = 'first',
+                ['alt-G'] = 'last',
                 ['ctrl-i'] = 'toggle-preview',
+                ['ctrl-f'] = 'preview-page-down',
+                ['ctrl-b'] = 'preview-page-up',
             },
         },
         winopts = {
             height = 0.85,
-            width = 0.55,
+            width = 0.80,
+            row = 0.50,
             preview = {
+                hidden = true,
                 scrollbar = false,
                 layout = 'vertical',
-                vertical = 'up:40%',
-            },
-        },
-        files = {
-            winopts = {
-                preview = {
-                    hidden = true,
-                },
-            },
-        },
-        grep = {
-            hidden = true,
-        },
-        helptags = {
-            actions = {
-                ['enter'] = actions.help_vert,
-            },
-        },
-        lsp = {
-            code_actions = {
-                winopts = {
-                    width = 70,
-                    height = 20,
-                    relative = 'cursor',
-                    preview = {
-                        hidden = true,
-                        vertical = 'down:50%',
-                    },
-                },
-            },
-        },
-        diagnostics = {
-            multiline = 1,
-        },
-        oldfiles = {
-            include_current_session = true,
-            winopts = {
-                preview = {
-                    hidden = true,
-                },
+                vertical = 'down:65%',
             },
         },
     }

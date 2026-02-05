@@ -47,15 +47,27 @@ MiniDeps.now(function()
                 end, { buffer = e.buf })
             end
 
+            if client:supports_method 'textDocument/codeAction' then
+                vim.keymap.set('n', 'gra', function()
+                    require('fzf-lua').lsp_code_actions {
+                        winopts = {
+                            width = 70,
+                            height = 20,
+                            relative = 'cursor',
+                        },
+                    }
+                end, { buffer = e.buf })
+            end
+
             if client:supports_method 'textDocument/typeDefinition' then
-                vim.keymap.set('n', 'gi', function()
-                    require('fzf-lua').lsp_implementations()
+                vim.keymap.set('n', 'grt', function()
+                    require('fzf-lua').lsp_typedefs()
                 end, { buffer = e.buf })
             end
 
             if client:supports_method 'textDocument/implementation' then
-                vim.keymap.set('n', 'gy', function()
-                    require('fzf-lua').lsp_typedefs()
+                vim.keymap.set('n', 'gi', function()
+                    require('fzf-lua').lsp_implementations()
                 end, { buffer = e.buf })
             end
 
