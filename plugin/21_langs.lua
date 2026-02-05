@@ -46,7 +46,7 @@ end)
 
 MiniDeps.now(function()
     MiniDeps.add 'neovim/nvim-lspconfig'
-    vim.lsp.enable { 'lua_ls', 'pyright', 'ruff', 'ts_ls', 'biome', 'eslint' }
+    vim.lsp.enable { 'lua_ls', 'pyright', 'ruff', 'ts_ls', 'biome', 'eslint', 'clangd' }
 end)
 
 MiniDeps.later(function()
@@ -69,6 +69,10 @@ MiniDeps.later(function()
 
     local python = function()
         return { 'rufff_organize_imports', 'ruff_fix', 'ruff_format' }
+    end
+
+    local c = function()
+        return { 'clang-format' }
     end
 
     local lua = function()
@@ -98,9 +102,9 @@ MiniDeps.later(function()
         end,
         -- stylua: ignore
         formatters_by_ft = {
-            ['_'] = default,  javascript = web, typescript = web,
-            python = python,  lua = lua,        json = prettier,
-            jsonc = prettier, yaml = prettier,  markdown = prettier,
+            ['_'] = default,  c = c,           javascript = web, typescript = web,
+            python = python,  lua = lua,       json = prettier,
+            jsonc = prettier, yaml = prettier, markdown = prettier,
         },
     }
 
