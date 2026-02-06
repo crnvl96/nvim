@@ -4,7 +4,9 @@
     "MiniColors",
     "MiniMisc",
     "MiniExtra",
-    "MiniFiles"
+    "MiniFiles",
+        "MiniStatusline",
+        "MiniJump2d"
   ]
 }
 

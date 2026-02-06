@@ -17,9 +17,9 @@ MiniDeps.now(function()
     -- stylua: ignore
     local treesit_langs = {
         -- note: parsers for c, lua, vim, vimdoc, query and markdown are already included in neovim
-        'bash', 'css', 'diff', 'go', 'html',
-        'javascript', 'json', 'python', 'regex',
-        'toml', 'tsx', 'typescript', 'yaml',
+        'bash',       'css',  'diff',       'go', 'html',
+        'javascript', 'json', 'python',     'regex',
+        'toml',       'tsx',  'typescript', 'yaml',
         'javascript', 'typescript',
     }
 
@@ -55,33 +55,30 @@ MiniDeps.later(function()
     local conf = require 'conform'
     local util = require 'conform.util'
 
-    local web = function()
-        if util.root_file { 'biome.json', 'biome.jsonc' } then
-            return { 'biome' }
-        else
+    local fmt = {
+        web = function()
+            if util.root_file { 'biome.json', 'biome.jsonc' } then
+                return { 'biome' }
+            else
+                return { 'prettier' }
+            end
+        end,
+        prettier = function()
             return { 'prettier' }
-        end
-    end
-
-    local prettier = function()
-        return { 'prettier' }
-    end
-
-    local python = function()
-        return { 'rufff_organize_imports', 'ruff_fix', 'ruff_format' }
-    end
-
-    local c = function()
-        return { 'clang-format' }
-    end
-
-    local lua = function()
-        return { 'stylua' }
-    end
-
-    local default = function()
-        return { 'trim_whitespace', 'trim_newline' }
-    end
+        end,
+        python = function()
+            return { 'rufff_organize_imports', 'ruff_fix', 'ruff_format' }
+        end,
+        c = function()
+            return { 'clang-format' }
+        end,
+        lua = function()
+            return { 'stylua' }
+        end,
+        default = function()
+            return { 'trim_whitespace', 'trim_newline' }
+        end,
+    }
 
     vim.g.autoformat = true
 
@@ -102,9 +99,9 @@ MiniDeps.later(function()
         end,
         -- stylua: ignore
         formatters_by_ft = {
-            ['_'] = default,  c = c,           javascript = web, typescript = web,
-            python = python,  lua = lua,       json = prettier,
-            jsonc = prettier, yaml = prettier, markdown = prettier,
+            ['_'] = fmt.default,  c = fmt.c,           javascript = fmt.web, typescript = fmt.web,
+            python = fmt.python,  lua = fmt.lua,       json = fmt.prettier,
+            jsonc = fmt.prettier, yaml = fmt.prettier, markdown = fmt.prettier,
         },
     }
 

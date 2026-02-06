@@ -1,10 +1,34 @@
 MiniDeps.now(function()
-    require('mini.extra').setup()
-    require('mini.statusline').setup()
-    require('mini.comment').setup()
-    require('mini.move').setup()
-    require('mini.align').setup()
     MiniDeps.add 'tpope/vim-fugitive'
+end)
+
+MiniDeps.now(function()
+    require('mini.icons').setup()
+end)
+
+MiniDeps.now(function()
+    MiniDeps.add 'nvim-lualine/lualine.nvim'
+    require('lualine').setup()
+end)
+
+MiniDeps.now(function()
+    require('mini.align').setup()
+end)
+
+MiniDeps.later(function()
+    local jump2d = require 'mini.jump2d'
+    jump2d.setup {
+        spotter = jump2d.gen_spotter.pattern '[^%s%p]+',
+        labels = 'asdfghjkl;',
+        view = {
+            dim = true,
+            n_steps_ahead = 2,
+        },
+    }
+
+    vim.keymap.set({ 'n', 'x', 'o' }, 'sj', function()
+        MiniJump2d.start(MiniJump2d.builtin_opts.single_character)
+    end)
 end)
 
 MiniDeps.now(function()
@@ -14,7 +38,6 @@ MiniDeps.now(function()
     require('mini.keymap').map_combo({ 'i', 'c', 'x', 's' }, 'kj', '<BS><BS><Esc>')
     require('mini.keymap').map_combo('t', 'jk', '<BS><BS><C-\\><C-n>')
     require('mini.keymap').map_combo('t', 'kj', '<BS><BS><C-\\><C-n>')
-
     require('mini.keymap').map_combo({ 'n', 'i', 'x', 'c' }, '<Esc><Esc>', function()
         vim.cmd 'nohlsearch'
     end)
@@ -33,7 +56,16 @@ end)
 
 MiniDeps.later(function()
     require('mini.colors').setup()
-    MiniColors.get_colorscheme():add_transparency():apply()
+    MiniColors.get_colorscheme()
+        :add_transparency({
+            general = true,
+            float = true,
+            statuscolumn = true,
+            statusline = true,
+            tabline = true,
+            winbar = true,
+        })
+        :apply()
 end)
 
 MiniDeps.now(function()
@@ -73,6 +105,9 @@ end)
 
 MiniDeps.later(function()
     local ai = require 'mini.ai'
+    local ex = require 'mini.extra'
+
+    ex.setup()
 
     ai.setup {
         custom_textobjects = {

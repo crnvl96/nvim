@@ -1,10 +1,11 @@
 MiniDeps.now(function()
     vim.keymap.set('!', '<Esc>', '<Esc><Cmd>noh<CR><Esc>', { noremap = true })
-
     vim.keymap.set('!', '<C-m>', '<CR>', { remap = true })
 
-    vim.keymap.set('n', 'L', ':', { remap = true })
     vim.keymap.set({ 'n', 'i', 'x' }, '<C-S>', '<Esc><Cmd>silent! update | redraw<CR>')
+
+    vim.keymap.set('n', 'L', ':', { remap = true })
+
     vim.keymap.set({ 'n', 'x' }, 'j', [[v:count == 0 ? 'gj' : 'j']], { expr = true })
     vim.keymap.set({ 'n', 'x' }, 'k', [[v:count == 0 ? 'gk' : 'k']], { expr = true })
 
@@ -36,13 +37,17 @@ MiniDeps.now(function()
     vim.keymap.set('c', '<C-k>', '<C-u>')
     vim.keymap.set('c', '<C-g>', '<C-c>')
 
-    vim.keymap.set('c', '<C-n>', function()
-        local key = vim.api.nvim_replace_termcodes('<Tab>', true, false, true)
-        vim.api.nvim_feedkeys(key, 't', true)
-    end)
+    local km = {
+        nxt_item_cmdline = function()
+            local key = vim.api.nvim_replace_termcodes('<Tab>', true, false, true)
+            vim.api.nvim_feedkeys(key, 't', true)
+        end,
+        prev_item_cmdline = function()
+            local key = vim.api.nvim_replace_termcodes('<S-Tab>', true, false, true)
+            vim.api.nvim_feedkeys(key, 't', true)
+        end,
+    }
 
-    vim.keymap.set('c', '<C-p>', function()
-        local key = vim.api.nvim_replace_termcodes('<S-Tab>', true, false, true)
-        vim.api.nvim_feedkeys(key, 't', true)
-    end)
+    vim.keymap.set('c', '<C-n>', km.nxt_item_cmdline)
+    vim.keymap.set('c', '<C-p>', km.prev_item_cmdline)
 end)
