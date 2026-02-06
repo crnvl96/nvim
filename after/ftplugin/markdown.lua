@@ -1,2 +1,2 @@
-vim.cmd 'setlocal wrap'
-vim.cmd 'setlocal shiftwidth=2'
+vim.cmd('setlocal wrap')
+vim.cmd('setlocal shiftwidth=2')
