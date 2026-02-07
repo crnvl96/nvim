@@ -1,67 +1,20 @@
-MiniDeps.now(function() MiniDeps.add('tpope/vim-fugitive') end)
-MiniDeps.now(function() require('mini.icons').setup() end)
-MiniDeps.now(function() require('mini.align').setup() end)
-
-MiniDeps.now(function()
-  local ex = require('mini.extra')
-  ex.setup()
-end)
-
-MiniDeps.now(function()
-  MiniDeps.add('nvim-lualine/lualine.nvim')
-  require('lualine').setup()
-end)
-
-MiniDeps.later(function()
-  local jump2d = require('mini.jump2d')
-  jump2d.setup({
-    spotter = jump2d.gen_spotter.pattern('[^%s%p]+'),
-    labels = 'asdfghjkl;',
-    view = {
-      dim = true,
-      n_steps_ahead = 2,
-    },
-  })
-  vim.keymap.set({ 'n', 'x', 'o' }, 'sj', function() MiniJump2d.start(MiniJump2d.builtin_opts.single_character) end)
-end)
-
-MiniDeps.now(function()
-  require('mini.keymap').setup()
-  require('mini.keymap').map_combo({ 'i', 'c', 'x', 's' }, 'jk', '<BS><BS><Esc>')
-  require('mini.keymap').map_combo({ 'i', 'c', 'x', 's' }, 'kj', '<BS><BS><Esc>')
-  require('mini.keymap').map_combo('t', 'jk', '<BS><BS><C-\\><C-n>')
-  require('mini.keymap').map_combo('t', 'kj', '<BS><BS><C-\\><C-n>')
-  require('mini.keymap').map_combo({ 'n', 'i', 'x', 'c' }, '<Esc><Esc>', function() vim.cmd('nohlsearch') end)
-end)
-
 MiniDeps.now(function()
   MiniDeps.add('sainnhe/gruvbox-material')
+
   vim.g.gruvbox_material_background = 'hard'
   vim.g.gruvbox_material_enable_bold = 1
   vim.g.gruvbox_material_enable_italic = 1
   vim.g.gruvbox_material_better_performance = 1
+
   vim.cmd.colorscheme('gruvbox-material')
 end)
 
 MiniDeps.later(function()
-  require('mini.colors').setup()
-  MiniColors.get_colorscheme()
-    :add_transparency({
-      general = true,
-      float = true,
-      statuscolumn = true,
-      statusline = true,
-      tabline = true,
-      winbar = true,
-    })
-    :apply()
+  MiniDeps.add('nvim-lualine/lualine.nvim')
+  require('lualine').setup()
 end)
 
-MiniDeps.now(function()
-  require('mini.misc').setup()
-  MiniMisc.setup_auto_root()
-  MiniMisc.setup_restore_cursor()
-end)
+MiniDeps.later(function() MiniDeps.add('tpope/vim-fugitive') end)
 
 MiniDeps.later(function()
   local build = function(args)
@@ -85,20 +38,6 @@ MiniDeps.later(function()
         MiniDeps.later(function() build(args) end)
       end,
     },
-  })
-end)
-
-MiniDeps.later(function()
-  local ai = require('mini.ai')
-  ai.setup({
-    custom_textobjects = {
-      g = MiniExtra.gen_ai_spec.buffer(),
-      f = ai.gen_spec.treesitter({ a = '@function.outer', i = '@function.inner' }),
-      c = ai.gen_spec.treesitter({ a = '@comment.outer', i = '@comment.inner' }),
-      o = ai.gen_spec.treesitter({ a = '@conditional.outer', i = '@conditional.inner' }),
-      l = ai.gen_spec.treesitter({ a = '@loop.outer', i = '@loop.inner' }),
-    },
-    search_method = 'cover',
   })
 end)
 
@@ -165,13 +104,16 @@ MiniDeps.later(function()
 
     if not ui_select.is_registered() then
       ui_select.register(function(ui_opts)
-        ui_opts.winopts = { height = 0.5, width = 0.4 }
+        ui_opts.winopts = {
+          width = 70,
+          height = 20,
+          relative = 'cursor',
+        }
         if ui_opts.kind then ui_opts.winopts.title = string.format(' %s ', ui_opts.kind) end
         if ui_opts.prompt and not vim.endswith(ui_opts.prompt, ' ') then ui_opts.prompt = ui_opts.prompt .. ' ' end
         return ui_opts
       end)
     end
-
     if #items > 0 then return vim.ui.select(items, opts, on_choice) end
   end
 
@@ -205,7 +147,6 @@ MiniDeps.later(function()
       require('fzf-lua').blines(opts)
     end
   end)
-
   vim.keymap.set('n', '<leader>fb', function() require('fzf-lua').buffers() end)
   vim.keymap.set('n', '<leader>fH', function() require('fzf-lua').highlights() end)
   vim.keymap.set('n', '<leader>fx', function() require('fzf-lua').lsp_document_diagnostics() end)
@@ -216,7 +157,6 @@ MiniDeps.later(function()
   vim.keymap.set('n', '<leader>fo', function() require('fzf-lua').oldfiles() end)
   vim.keymap.set('n', '<leader>fk', function() require('fzf-lua').keymaps() end)
   vim.keymap.set('n', '<leader>fr', function() require('fzf-lua').resume() end)
-
   vim.keymap.set(
     'i',
     '<C-x><C-f>',
@@ -230,26 +170,65 @@ MiniDeps.later(function()
       })
     end
   )
-end)
 
-MiniDeps.later(function()
-  local files = require('mini.files')
+  vim.api.nvim_create_autocmd('LspAttach', {
+    group = vim.api.nvim_create_augroup('crnvl96-on-lspattach-fzf-maps', { clear = true }),
+    callback = function(e)
+      local client = vim.lsp.get_client_by_id(e.data.client_id)
 
-  files.setup({
-    mappings = {
-      go_in = '',
-      go_in_plus = '<CR>',
-      go_out = '',
-      go_out_plus = '-',
-    },
-    windows = {
-      preview = true,
-      width_focus = 50,
-      width_nofocus = 15,
-      width_preview = 80,
-    },
+      if not client then return end
+
+      if client:supports_method('textDocument/references') then
+        vim.keymap.set('n', 'grr', function() require('fzf-lua').lsp_references() end, { buffer = e.buf })
+      end
+
+      if client:supports_method('textDocument/codeAction') then
+        vim.keymap.set(
+          'n',
+          'gra',
+          function()
+            require('fzf-lua').lsp_code_actions({
+              winopts = {
+                width = 70,
+                height = 20,
+                relative = 'cursor',
+              },
+            })
+          end,
+          { buffer = e.buf }
+        )
+      end
+
+      if client:supports_method('textDocument/typeDefinition') then
+        vim.keymap.set('n', 'grt', function() require('fzf-lua').lsp_typedefs() end, { buffer = e.buf })
+      end
+
+      if client:supports_method('textDocument/implementation') then
+        vim.keymap.set('n', 'gri', function() require('fzf-lua').lsp_implementations() end, { buffer = e.buf })
+      end
+
+      if client:supports_method('textDocument/documentSymbol') then
+        vim.keymap.set('n', 'gO', function() require('fzf-lua').lsp_document_symbols() end, { buffer = e.buf })
+      end
+
+      if client:supports_method('workspace/symbol') then
+        vim.keymap.set('n', 'grs', function() require('fzf-lua').lsp_workspace_symbols() end, { buffer = e.buf })
+      end
+
+      if client:supports_method('textDocument/definition') then
+        vim.keymap.set(
+          'n',
+          'gd',
+          function() require('fzf-lua').lsp_definitions({ jump1 = true }) end,
+          { buffer = e.buf }
+        )
+        vim.keymap.set(
+          'n',
+          'gD',
+          function() require('fzf-lua').lsp_definitions({ jump1 = false }) end,
+          { buffer = e.buf }
+        )
+      end
+    end,
   })
-
-  vim.keymap.set('n', '<leader>ed', function() MiniFiles.open() end)
-  vim.keymap.set('n', '<leader>ef', function() MiniFiles.open(vim.api.nvim_buf_get_name(0)) end)
 end)

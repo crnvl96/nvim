@@ -6,7 +6,9 @@
     "MiniExtra",
     "MiniFiles",
         "MiniStatusline",
-        "MiniJump2d"
+        "MiniJump2d",
+        "MiniIcons",
+        "MiniNotify"
   ]
 }
 

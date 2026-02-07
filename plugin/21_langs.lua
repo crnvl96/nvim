@@ -12,14 +12,24 @@ MiniDeps.now(function()
     checkout = 'main',
   })
 
-    -- stylua: ignore
-    local treesit_langs = {
-        -- note: parsers for c, lua, vim, vimdoc, query and markdown are already included in neovim
-        'bash',       'css',  'diff',       'go', 'html',
-        'javascript', 'json', 'python',     'regex',
-        'toml',       'tsx',  'typescript', 'yaml',
-        'javascript', 'typescript',
-    }
+  local treesit_langs = {
+    -- note: parsers for c, lua, vim, vimdoc, query and markdown are already included in neovim
+    'bash',
+    'css',
+    'diff',
+    'go',
+    'html',
+    'javascript',
+    'json',
+    'python',
+    'regex',
+    'toml',
+    'tsx',
+    'typescript',
+    'yaml',
+    'javascript',
+    'typescript',
+  }
 
   require('nvim-treesitter').install(
     vim
@@ -71,25 +81,31 @@ MiniDeps.later(function()
   conf.setup({
     notify_on_error = false,
     notify_no_formatters = false,
-    default_format_opts = { lsp_format = 'fallback', timeout_ms = 1000 },
+    default_format_opts = {
+      lsp_format = 'fallback',
+      timeout_ms = 1000,
+    },
     formatters = {
       stylua = { require_cwd = true },
       prettier = { require_cwd = false },
     },
     format_on_save = function()
       if not vim.g.autoformat then return nil end
-
       return {}
     end,
-        -- stylua: ignore
-        formatters_by_ft = {
-            ['_'] = fmt.default,  c = fmt.c,           javascript = fmt.web, typescript = fmt.web,
-            python = fmt.python,  lua = fmt.lua,       json = fmt.prettier,
-            jsonc = fmt.prettier, yaml = fmt.prettier, markdown = fmt.prettier,
-        },
+    formatters_by_ft = {
+      ['_'] = fmt.default,
+      c = fmt.c,
+      javascript = fmt.web,
+      typescript = fmt.web,
+      python = fmt.python,
+      lua = fmt.lua,
+      json = fmt.prettier,
+      jsonc = fmt.prettier,
+      yaml = fmt.prettier,
+      markdown = fmt.prettier,
+    },
   })
 
-  local toggle_fmt_on_save = function() vim.g.autoformat = not vim.g.autoformat end
-
-  vim.keymap.set('n', [[\f]], toggle_fmt_on_save)
+  vim.keymap.set('n', [[\f]], function() vim.g.autoformat = not vim.g.autoformat end)
 end)

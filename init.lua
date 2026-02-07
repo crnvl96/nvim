@@ -16,3 +16,42 @@ if not vim.loop.fs_stat(mini_path) then
 end
 
 require('mini.deps').setup()
+
+MiniDeps.later(function()
+  if vim.fn.executable('rg') == 1 then
+    function _G.FindFunc(cmdarg)
+      local fnames = vim.fn.systemlist('rg --files --hidden --color=never --glob="!.git"')
+      return #cmdarg == 0 and fnames or vim.fn.matchfuzzy(fnames, cmdarg)
+    end
+    vim.o.findfunc = 'v:lua.FindFunc'
+  end
+end)
+
+MiniDeps.later(
+  function()
+    vim.diagnostic.config({
+      signs = {
+        priority = 9999,
+        severity = {
+          min = vim.diagnostic.severity.HINT,
+          max = vim.diagnostic.severity.ERROR,
+        },
+      },
+      underline = {
+        severity = {
+          min = vim.diagnostic.severity.HINT,
+          max = vim.diagnostic.severity.ERROR,
+        },
+      },
+      virtual_text = {
+        current_line = true,
+        severity = {
+          min = vim.diagnostic.severity.ERROR,
+          max = vim.diagnostic.severity.ERROR,
+        },
+      },
+      virtual_lines = false,
+      update_in_insert = false,
+    })
+  end
+)
