@@ -166,11 +166,8 @@ MiniDeps.later(function()
     if not ui_select.is_registered() then
       ui_select.register(function(ui_opts)
         ui_opts.winopts = { height = 0.5, width = 0.4 }
-
         if ui_opts.kind then ui_opts.winopts.title = string.format(' %s ', ui_opts.kind) end
-
         if ui_opts.prompt and not vim.endswith(ui_opts.prompt, ' ') then ui_opts.prompt = ui_opts.prompt .. ' ' end
-
         return ui_opts
       end)
     end
@@ -198,12 +195,10 @@ MiniDeps.later(function()
         ['--layout'] = 'reverse',
       },
     }
-
     -- Use grep when in normal mode and blines in visual mode since the former doesn't support
     -- searching inside visual selections.
     -- See https://github.com/ibhagwan/fzf-lua/issues/2051
     local mode = vim.api.nvim_get_mode().mode
-
     if vim.startswith(mode, 'n') then
       require('fzf-lua').lgrep_curbuf(opts)
     else
