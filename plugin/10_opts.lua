@@ -5,6 +5,9 @@ MiniDeps.now(function()
 
   vim.g.mapleader = ' '
   vim.g.maplocalleader = ','
+  vim.g.loaded_netrw = 1
+  vim.g.loaded_netrwPlugin = 1
+
   vim.g.node_host_prog = node_bin .. '/node'
 
   vim.o.mouse = 'a'
