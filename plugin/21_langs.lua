@@ -23,6 +23,7 @@ MiniDeps.now(function()
     'json',
     'python',
     'regex',
+    'typst',
     'toml',
     'tsx',
     'typescript',
@@ -52,7 +53,16 @@ end)
 
 MiniDeps.now(function()
   MiniDeps.add('neovim/nvim-lspconfig')
-  vim.lsp.enable({ 'lua_ls', 'pyright', 'ruff', 'ts_ls', 'biome', 'eslint', 'clangd' })
+  vim.lsp.enable({
+    'lua_ls',
+    'pyright',
+    'ruff',
+    'ts_ls',
+    'biome',
+    'eslint',
+    'clangd',
+    'tinymist',
+  })
 end)
 
 MiniDeps.later(function()
@@ -72,6 +82,7 @@ MiniDeps.later(function()
     prettier = function() return { 'prettier' } end,
     python = function() return { 'rufff_organize_imports', 'ruff_fix', 'ruff_format' } end,
     c = function() return { 'clang-format' } end,
+    typst = function() return { 'typstyle' } end,
     lua = function() return { 'stylua' } end,
     default = function() return { 'trim_whitespace', 'trim_newline' } end,
   }
