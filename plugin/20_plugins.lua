@@ -1,12 +1,17 @@
+-- MiniDeps.now(function()
+--   MiniDeps.add('sainnhe/gruvbox-material')
+--
+--   vim.g.gruvbox_material_background = 'hard'
+--   vim.g.gruvbox_material_enable_bold = 1
+--   vim.g.gruvbox_material_enable_italic = 1
+--   vim.g.gruvbox_material_better_performance = 1
+--
+--   vim.cmd.colorscheme('gruvbox-material')
+-- end)
+
 MiniDeps.now(function()
-  MiniDeps.add('sainnhe/gruvbox-material')
-
-  vim.g.gruvbox_material_background = 'hard'
-  vim.g.gruvbox_material_enable_bold = 1
-  vim.g.gruvbox_material_enable_italic = 1
-  vim.g.gruvbox_material_better_performance = 1
-
-  vim.cmd.colorscheme('gruvbox-material')
+  MiniDeps.add('folke/tokyonight.nvim')
+  vim.cmd.colorscheme('tokyonight-storm')
 end)
 
 MiniDeps.later(function()
