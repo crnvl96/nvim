@@ -113,6 +113,7 @@ MiniDeps.later(function()
       lua = fmt.lua,
       json = fmt.prettier,
       jsonc = fmt.prettier,
+      typst = fmt.typst,
       yaml = fmt.prettier,
       markdown = fmt.prettier,
     },
