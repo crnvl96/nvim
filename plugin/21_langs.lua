@@ -20,16 +20,16 @@ MiniDeps.now(function()
     'go',
     'html',
     'javascript',
+    'javascript',
     'json',
     'python',
     'regex',
-    'typst',
     'toml',
     'tsx',
     'typescript',
-    'yaml',
-    'javascript',
     'typescript',
+    'typst',
+    'yaml',
   }
 
   require('nvim-treesitter').install(

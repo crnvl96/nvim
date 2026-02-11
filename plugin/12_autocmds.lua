@@ -20,6 +20,20 @@ MiniDeps.now(function()
       vim.lsp.document_color.enable(true, e.buf)
       vim.lsp.completion.enable(true, client.id, e.buf, { autotrigger = true })
 
+      local under_cursor_highlights_group = vim.api.nvim_create_augroup('crnvl96-cursor-highlight', { clear = false })
+
+      vim.api.nvim_create_autocmd({ 'CursorHold', 'InsertLeave' }, {
+        group = under_cursor_highlights_group,
+        buffer = e.buf,
+        callback = vim.lsp.buf.document_highlight,
+      })
+
+      vim.api.nvim_create_autocmd({ 'CursorMoved', 'InsertEnter', 'BufLeave' }, {
+        group = under_cursor_highlights_group,
+        buffer = e.buf,
+        callback = vim.lsp.buf.clear_references,
+      })
+
       vim.keymap.set(
         'n',
         ']e',
@@ -35,20 +49,6 @@ MiniDeps.now(function()
       vim.keymap.set('n', 'K', function() vim.lsp.buf.hover() end, { buffer = e.buf })
       vim.keymap.set('n', 'E', function() vim.diagnostic.open_float() end, { buffer = e.buf })
       vim.keymap.set('i', '<C-k>', function() vim.lsp.buf.signature_help() end, { buffer = e.buf })
-
-      local under_cursor_highlights_group = vim.api.nvim_create_augroup('crnvl96-cursor-highlight', { clear = false })
-
-      vim.api.nvim_create_autocmd({ 'CursorHold', 'InsertLeave' }, {
-        group = under_cursor_highlights_group,
-        buffer = e.buf,
-        callback = vim.lsp.buf.document_highlight,
-      })
-      vim.api.nvim_create_autocmd({ 'CursorMoved', 'InsertEnter', 'BufLeave' }, {
-        group = under_cursor_highlights_group,
-        buffer = e.buf,
-        callback = vim.lsp.buf.clear_references,
-      })
-
       vim.keymap.set('i', '<CR>', function()
         local function pumvisible() return tonumber(vim.fn.pumvisible()) ~= 0 end
         return pumvisible() and '<C-y>' or '<CR>'

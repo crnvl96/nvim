@@ -1,12 +1,5 @@
 MiniDeps.now(function()
-  -- Set up to not prefer extension-based icon for some extensions
-  local ext3_blocklist = { scm = true, txt = true, yml = true }
-  local ext4_blocklist = { json = true, yaml = true }
-
-  require('mini.icons').setup({
-    use_file_extension = function(ext, _) return not (ext3_blocklist[ext:sub(-3)] or ext4_blocklist[ext:sub(-4)]) end,
-  })
-
+  require('mini.icons').setup()
   MiniDeps.later(MiniIcons.mock_nvim_web_devicons)
   MiniDeps.later(MiniIcons.tweak_lsp_kind)
 end)
@@ -33,12 +26,14 @@ MiniDeps.now(function()
   MiniMisc.setup_termbg_sync()
 end)
 
-MiniDeps.later(function() require('mini.indentscope').setup() end)
 MiniDeps.later(function() require('mini.extra').setup() end)
 MiniDeps.later(function() require('mini.align').setup() end)
 MiniDeps.later(function() require('mini.move').setup() end)
 MiniDeps.later(function() require('mini.splitjoin').setup() end)
 MiniDeps.later(function() require('mini.trailspace').setup() end)
+MiniDeps.later(function() require('mini.indentscope').setup() end)
+MiniDeps.later(function() require('mini.comment').setup() end)
+MiniDeps.later(function() require('mini.operators').setup() end)
 
 MiniDeps.later(function()
   require('mini.colors').setup()
@@ -88,26 +83,4 @@ MiniDeps.later(function()
     },
     search_method = 'cover',
   })
-end)
-
-MiniDeps.later(function()
-  local files = require('mini.files')
-
-  files.setup({
-    mappings = {
-      go_in = '',
-      go_in_plus = '<CR>',
-      go_out = '',
-      go_out_plus = '-',
-    },
-    windows = {
-      preview = true,
-      width_focus = 50,
-      width_nofocus = 15,
-      width_preview = 80,
-    },
-  })
-
-  vim.keymap.set('n', '<leader>ed', function() MiniFiles.open() end)
-  vim.keymap.set('n', '<leader>ef', function() MiniFiles.open(vim.api.nvim_buf_get_name(0)) end)
 end)

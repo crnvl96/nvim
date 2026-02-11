@@ -1,14 +1,3 @@
--- MiniDeps.now(function()
---   MiniDeps.add('sainnhe/gruvbox-material')
---
---   vim.g.gruvbox_material_background = 'hard'
---   vim.g.gruvbox_material_enable_bold = 1
---   vim.g.gruvbox_material_enable_italic = 1
---   vim.g.gruvbox_material_better_performance = 1
---
---   vim.cmd.colorscheme('gruvbox-material')
--- end)
-
 MiniDeps.now(function()
   MiniDeps.add('folke/tokyonight.nvim')
   vim.cmd.colorscheme('tokyonight-storm')
@@ -47,7 +36,79 @@ MiniDeps.later(function()
 end)
 
 MiniDeps.later(function()
+  MiniDeps.add('stevearc/oil.nvim')
+
+  require('oil').setup({
+    default_file_explorer = true,
+    columns = {
+      'icon',
+      'permissions',
+      'size',
+      'mtime',
+    },
+    watch_for_changes = true,
+    keymaps = {
+      ['g?'] = { 'actions.show_help', mode = 'n' },
+      ['<CR>'] = 'actions.select',
+      ['<C-s>'] = { 'actions.select', opts = { vertical = true } },
+      ['<C-h>'] = { 'actions.select', opts = { horizontal = true } },
+      ['<C-t>'] = { 'actions.select', opts = { tab = true } },
+      ['<C-p>'] = 'actions.preview',
+      ['<C-c>'] = { 'actions.close', mode = 'n' },
+      ['<C-l>'] = 'actions.refresh',
+      ['-'] = { 'actions.parent', mode = 'n' },
+      ['_'] = { 'actions.open_cwd', mode = 'n' },
+      ['`'] = { 'actions.cd', mode = 'n' },
+      ['g~'] = { 'actions.cd', opts = { scope = 'tab' }, mode = 'n' },
+      ['gs'] = { 'actions.change_sort', mode = 'n' },
+      ['gx'] = 'actions.open_external',
+      ['g.'] = { 'actions.toggle_hidden', mode = 'n' },
+      ['g\\'] = { 'actions.toggle_trash', mode = 'n' },
+    },
+    view_options = {
+      show_hidden = true,
+    },
+  })
+
+  vim.keymap.set('n', '<leader>ef', '<Cmd>Oil<CR>', { desc = 'Open file explorer at current file path' })
+end)
+
+MiniDeps.later(function()
+  MiniDeps.add('folke/which-key.nvim')
+
+  require('which-key').setup({
+    preset = 'helix',
+    delay = 1000,
+    spec = {},
+    triggers = {
+      { '<auto>', mode = 'nixsotc' },
+      { 'a', mode = { 'n', 'v' } },
+    },
+    defer = function(ctx)
+      if vim.list_contains({ 'd', 'y' }, ctx.operator) then return true end
+      return vim.list_contains({ '<C-V>', 'V' }, ctx.mode)
+    end,
+    win = {
+      title = false,
+    },
+    icons = {
+      mappings = false,
+    },
+    show_help = false,
+    show_keys = false,
+  })
+end)
+
+MiniDeps.later(function()
   MiniDeps.add('ibhagwan/fzf-lua')
+
+  require('fzf-lua').register_ui_select({
+    winopts = {
+      width = 70,
+      height = 20,
+      relative = 'cursor',
+    },
+  })
 
   require('fzf-lua').setup({
     { 'border-fused', 'hide' },
@@ -62,65 +123,52 @@ MiniDeps.later(function()
       ['--info'] = 'default',
       ['--layout'] = 'reverse-list',
     },
-    keymap = {
-      builtin = {
-        ['<M-Esc>'] = 'hide',
-        ['<C-/>'] = 'toggle-help',
-        ['<C-i>'] = 'toggle-preview',
-        ['<C-g>'] = 'preview-reset',
-        ['<C-f>'] = 'preview-page-down',
-        ['<C-b>'] = 'preview-page-up',
-        ['<C-d>'] = 'preview-down',
-        ['<C-u>'] = 'preview-up',
-      },
-      fzf = {
-        ['ctrl-z'] = 'abort',
-        ['ctrl-u'] = 'unix-line-discard',
-        ['ctrl-d'] = 'half-page-down',
-        ['ctrl-D'] = 'half-page-up',
-        ['ctrl-a'] = 'beginning-of-line',
-        ['ctrl-e'] = 'end-of-line',
-        ['alt-a'] = 'toggle-all',
-        ['alt-d'] = 'toggle+down',
-        ['alt-u'] = 'toggle+up',
-        ['alt-g'] = 'first',
-        ['alt-G'] = 'last',
-        ['ctrl-i'] = 'toggle-preview',
-        ['ctrl-f'] = 'preview-page-down',
-        ['ctrl-b'] = 'preview-page-up',
-      },
-    },
     winopts = {
+      split = 'belowright new',
+      -- "belowright new"  : split below
+      -- "aboveleft new"   : split above
+      -- "belowright vnew" : split right
+      -- "aboveleft vnew   : split left
       height = 0.85,
       width = 0.80,
       row = 0.50,
       preview = {
         hidden = true,
         scrollbar = false,
-        layout = 'vertical',
-        vertical = 'down:65%',
+        layout = 'horizontal',
+        vertical = 'right:60%',
+      },
+    },
+    keymap = {
+      builtin = {
+        ['<M-Esc>'] = 'hide',
+        ['<C-/>'] = 'toggle-help',
+        ['<C-i>'] = 'toggle-preview',
+        ['<S-Left>'] = 'preview-reset',
+        ['<S-down>'] = 'preview-page-down',
+        ['<S-up>'] = 'preview-page-up',
+        ['<M-S-down>'] = 'preview-down',
+        ['<M-S-up>'] = 'preview-up',
+      },
+      fzf = {
+        ['ctrl-z'] = 'abort',
+        ['ctrl-u'] = 'unix-line-discard',
+        ['ctrl-f'] = 'half-page-down',
+        ['ctrl-b'] = 'half-page-up',
+        ['ctrl-a'] = 'beginning-of-line',
+        ['ctrl-e'] = 'end-of-line',
+        ['alt-a'] = 'toggle-all',
+        ['ctrl-space'] = 'toggle+down',
+        ['shift-tab'] = 'toggle+up',
+        ['alt-g'] = 'first',
+        ['alt-G'] = 'last',
+        ['f3'] = 'toggle-preview-wrap',
+        ['f4'] = 'toggle-preview',
+        ['shift-down'] = 'preview-page-down',
+        ['shift-up'] = 'preview-page-up',
       },
     },
   })
-
-  ---@diagnostic disable-next-line: duplicate-set-field
-  vim.ui.select = function(items, opts, on_choice)
-    local ui_select = require('fzf-lua.providers.ui_select')
-
-    if not ui_select.is_registered() then
-      ui_select.register(function(ui_opts)
-        ui_opts.winopts = {
-          width = 70,
-          height = 20,
-          relative = 'cursor',
-        }
-        if ui_opts.kind then ui_opts.winopts.title = string.format(' %s ', ui_opts.kind) end
-        if ui_opts.prompt and not vim.endswith(ui_opts.prompt, ' ') then ui_opts.prompt = ui_opts.prompt .. ' ' end
-        return ui_opts
-      end)
-    end
-    if #items > 0 then return vim.ui.select(items, opts, on_choice) end
-  end
 
   vim.keymap.set('n', '<leader>fl', function()
     local opts = {
@@ -151,10 +199,21 @@ MiniDeps.later(function()
     else
       require('fzf-lua').blines(opts)
     end
-  end)
-  vim.keymap.set('n', '<leader>fb', function() require('fzf-lua').buffers() end)
-  vim.keymap.set('n', '<leader>fH', function() require('fzf-lua').highlights() end)
-  vim.keymap.set('n', '<leader>fx', function() require('fzf-lua').lsp_document_diagnostics() end)
+  end, { desc = 'FZF search on lines' })
+
+  vim.keymap.set('n', '<leader>fb', function() require('fzf-lua').buffers() end, { desc = 'FZF search on buffer list' })
+  vim.keymap.set(
+    'n',
+    '<leader>fH',
+    function() require('fzf-lua').highlights() end,
+    { desc = 'FZF find highlight group' }
+  )
+  vim.keymap.set(
+    'n',
+    '<leader>fx',
+    function() require('fzf-lua').lsp_document_diagnostics() end,
+    { desc = 'FZF find document diagnostic' }
+  )
   vim.keymap.set('n', '<leader>ff', function() require('fzf-lua').files() end)
   vim.keymap.set('n', '<leader>fg', function() require('fzf-lua').live_grep() end)
   vim.keymap.set('x', '<leader>fg', function() require('fzf-lua').grep_visual() end)
@@ -183,57 +242,34 @@ MiniDeps.later(function()
 
       if not client then return end
 
-      if client:supports_method('textDocument/references') then
-        vim.keymap.set('n', 'grr', function() require('fzf-lua').lsp_references() end, { buffer = e.buf })
-      end
+      vim.keymap.set(
+        'n',
+        'gra',
+        function()
+          require('fzf-lua').lsp_code_actions({
+            winopts = {
+              width = 70,
+              height = 20,
+              relative = 'cursor',
+            },
+          })
+        end,
+        { buffer = e.buf }
+      )
 
-      if client:supports_method('textDocument/codeAction') then
-        vim.keymap.set(
-          'n',
-          'gra',
-          function()
-            require('fzf-lua').lsp_code_actions({
-              winopts = {
-                width = 70,
-                height = 20,
-                relative = 'cursor',
-              },
-            })
-          end,
-          { buffer = e.buf }
-        )
-      end
+      vim.keymap.set('n', 'grr', function() require('fzf-lua').lsp_references() end, { buffer = e.buf })
+      vim.keymap.set('n', 'grt', function() require('fzf-lua').lsp_typedefs() end, { buffer = e.buf, remap = true })
+      vim.keymap.set('n', 'gri', function() require('fzf-lua').lsp_implementations() end, { buffer = e.buf })
+      vim.keymap.set('n', 'gO', function() require('fzf-lua').lsp_document_symbols() end, { buffer = e.buf })
+      vim.keymap.set('n', 'grs', function() require('fzf-lua').lsp_workspace_symbols() end, { buffer = e.buf })
+      vim.keymap.set('n', 'gd', function() require('fzf-lua').lsp_definitions({ jump1 = true }) end, { buffer = e.buf })
 
-      if client:supports_method('textDocument/typeDefinition') then
-        vim.keymap.set('n', 'grt', function() require('fzf-lua').lsp_typedefs() end, { buffer = e.buf })
-      end
-
-      if client:supports_method('textDocument/implementation') then
-        vim.keymap.set('n', 'gri', function() require('fzf-lua').lsp_implementations() end, { buffer = e.buf })
-      end
-
-      if client:supports_method('textDocument/documentSymbol') then
-        vim.keymap.set('n', 'gO', function() require('fzf-lua').lsp_document_symbols() end, { buffer = e.buf })
-      end
-
-      if client:supports_method('workspace/symbol') then
-        vim.keymap.set('n', 'grs', function() require('fzf-lua').lsp_workspace_symbols() end, { buffer = e.buf })
-      end
-
-      if client:supports_method('textDocument/definition') then
-        vim.keymap.set(
-          'n',
-          'gd',
-          function() require('fzf-lua').lsp_definitions({ jump1 = true }) end,
-          { buffer = e.buf }
-        )
-        vim.keymap.set(
-          'n',
-          'gD',
-          function() require('fzf-lua').lsp_definitions({ jump1 = false }) end,
-          { buffer = e.buf }
-        )
-      end
+      vim.keymap.set(
+        'n',
+        'gD',
+        function() require('fzf-lua').lsp_definitions({ jump1 = false }) end,
+        { buffer = e.buf }
+      )
     end,
   })
 end)
