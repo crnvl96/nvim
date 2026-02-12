@@ -54,50 +54,31 @@ MiniDeps.now(function()
         return pumvisible() and '<C-y>' or '<CR>'
       end, { expr = true, buffer = e.buf })
 
-      for _, k in ipairs({ '<C-n>', '<Tab>' }) do
-        vim.keymap.set('i', k, function()
-          local function pumvisible() return tonumber(vim.fn.pumvisible()) ~= 0 end
-          local function feed(key)
-            vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, false, true), 'n', true)
-          end
+      local function pumvisible() return tonumber(vim.fn.pumvisible()) ~= 0 end
+      local function feed(key) vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, false, true), 'n', true) end
 
-          if pumvisible() then
-            feed('<C-n>')
+      local function trigger_completion_algorithm(map)
+        if pumvisible() then
+          feed(map)
+        else
+          if next(vim.lsp.get_clients({ bufnr = 0 })) then
+            vim.lsp.completion.get()
           else
-            if next(vim.lsp.get_clients({ bufnr = 0 })) then
-              vim.lsp.completion.get()
+            if vim.bo.omnifunc == '' then
+              feed('<C-x>' .. map)
             else
-              if vim.bo.omnifunc == '' then
-                feed('<C-x><C-n>')
-              else
-                feed('<C-x><C-o>')
-              end
+              feed('<C-x><C-o>')
             end
           end
-        end, { buffer = e.buf })
+        end
+      end
+
+      for _, k in ipairs({ '<C-n>', '<Tab>' }) do
+        vim.keymap.set('i', k, function() trigger_completion_algorithm('<C-n>') end, { buffer = e.buf })
       end
 
       for _, k in ipairs({ '<C-p>', '<S-Tab>' }) do
-        vim.keymap.set('i', k, function()
-          local function pumvisible() return tonumber(vim.fn.pumvisible()) ~= 0 end
-          local function feed(key)
-            vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, false, true), 'n', true)
-          end
-
-          if pumvisible() then
-            feed('<C-p>')
-          else
-            if next(vim.lsp.get_clients({ bufnr = 0 })) then
-              vim.lsp.completion.get()
-            else
-              if vim.bo.omnifunc == '' then
-                feed('<C-x><C-p>')
-              else
-                feed('<C-x><C-o>')
-              end
-            end
-          end
-        end, { buffer = e.buf })
+        vim.keymap.set('i', k, function() trigger_completion_algorithm('<C-p>') end, { buffer = e.buf })
       end
     end,
   })

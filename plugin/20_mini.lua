@@ -1,22 +1,10 @@
+MiniDeps.now(function() require('mini.notify').setup() end)
+MiniDeps.now(function() require('mini.hues').setup({ background = '#002734', foreground = '#c0c8cc' }) end)
+
 MiniDeps.now(function()
   require('mini.icons').setup()
   MiniDeps.later(MiniIcons.mock_nvim_web_devicons)
   MiniDeps.later(MiniIcons.tweak_lsp_kind)
-end)
-
-MiniDeps.now(function()
-  require('mini.notify').setup({
-    content = {
-      format = function(notif)
-        if notif.data.source == 'lsp_progress' then return notif.msg end
-        return MiniNotify.default_format(notif)
-      end,
-      sort = function(notif_arr)
-        table.sort(notif_arr, function(a, b) return a.ts_update > b.ts_update end)
-        return notif_arr
-      end,
-    },
-  })
 end)
 
 MiniDeps.now(function()
@@ -27,6 +15,7 @@ MiniDeps.now(function()
 end)
 
 MiniDeps.later(function() require('mini.extra').setup() end)
+MiniDeps.later(function() require('mini.visits').setup() end)
 MiniDeps.later(function() require('mini.align').setup() end)
 MiniDeps.later(function() require('mini.move').setup() end)
 MiniDeps.later(function() require('mini.splitjoin').setup() end)
@@ -34,6 +23,9 @@ MiniDeps.later(function() require('mini.trailspace').setup() end)
 MiniDeps.later(function() require('mini.indentscope').setup() end)
 MiniDeps.later(function() require('mini.comment').setup() end)
 MiniDeps.later(function() require('mini.operators').setup() end)
+MiniDeps.later(function() require('mini.diff').setup() end)
+MiniDeps.later(function() require('mini.git').setup() end)
+MiniDeps.later(function() require('mini.statusline').setup() end)
 
 MiniDeps.later(function()
   require('mini.colors').setup()
@@ -83,4 +75,97 @@ MiniDeps.later(function()
     },
     search_method = 'cover',
   })
+end)
+
+MiniDeps.later(function()
+  require('mini.files').setup({
+    mappings = {
+      go_in = '',
+      go_in_plus = '<CR>',
+      go_out = '',
+      go_out_plus = '-',
+    },
+    windows = {
+      max_number = 3,
+      preview = true,
+      width_focus = 50,
+      width_nofocus = 20,
+      width_preview = 80,
+    },
+  })
+  vim.keymap.set('n', '<Leader>ef', function() MiniFiles.open(vim.api.nvim_buf_get_name(0), false) end)
+end)
+
+MiniDeps.later(function()
+  require('mini.pick').setup({
+    window = {
+      prompt_prefix = '  ',
+    },
+  })
+
+  local cursor_based_display_opts = {
+    window = {
+      config = {
+        relative = 'cursor',
+        anchor = 'NW',
+        row = 0,
+        col = 0,
+        width = 80,
+        height = 20,
+      },
+    },
+  }
+
+  ---@diagnostic disable-next-line: duplicate-set-field
+  vim.ui.select = function(items, opts, on_choice)
+    return MiniPick.ui_select(items, opts, on_choice, cursor_based_display_opts)
+  end
+
+  vim.keymap.set('n', '<Leader>ff', function() MiniPick.builtin.files() end)
+  vim.keymap.set('n', '<Leader>fg', function() MiniPick.builtin.grep_live() end)
+  vim.keymap.set('n', '<Leader>fr', function() MiniPick.builtin.resume() end)
+  vim.keymap.set(
+    'n',
+    '<Leader>fl',
+    function()
+      MiniExtra.pickers.buf_lines({
+        scope = 'current',
+        preserve_order = true,
+      })
+    end
+  )
+  vim.keymap.set('n', '<Leader>fq', function() MiniExtra.pickers.list({ scope = 'quickfix' }) end)
+  vim.keymap.set('n', '<Leader>fk', function() MiniExtra.pickers.keymaps() end)
+  vim.keymap.set('n', '<Leader>fH', function() MiniExtra.pickers.hl_groups() end)
+  vim.keymap.set('n', '<Leader>fd', function() MiniExtra.pickers.diagnostic() end)
+  vim.keymap.set('n', '<Leader>fc', function() MiniExtra.pickers.commands() end)
+  vim.keymap.set(
+    'n',
+    '<Leader>fh',
+    function()
+      MiniPick.builtin.help({
+        default_split = 'vertical',
+      })
+    end
+  )
+  vim.keymap.set(
+    'n',
+    '<Leader>fb',
+    function() MiniPick.builtin.buffers({ include_current = false }, cursor_based_display_opts) end
+  )
+  vim.keymap.set('n', '<Leader>fm', function() MiniExtra.pickers.manpages() end)
+  vim.keymap.set(
+    'n',
+    '<Leader>fo',
+    function() MiniExtra.pickers.visit_paths({ preserve_order = true }, cursor_based_display_opts) end
+  )
+
+  vim.keymap.set('n', 'gD', function() MiniExtra.pickers.lsp({ scope = 'declaration' }) end)
+  vim.keymap.set('n', 'gd', function() MiniExtra.pickers.lsp({ scope = 'definition' }) end)
+  vim.keymap.set('n', 'gO', function() MiniExtra.pickers.lsp({ scope = 'document_symbol' }) end)
+  vim.keymap.set('n', 'gS', function() MiniExtra.pickers.lsp({ scope = 'workspace_symbol_live' }) end)
+  vim.keymap.set('n', 'gri', function() MiniExtra.pickers.lsp({ scope = 'implementation' }) end)
+  vim.keymap.set('n', 'grr', function() MiniExtra.pickers.lsp({ scope = 'references' }) end)
+  vim.keymap.set('n', 'gra', function() vim.lsp.buf.code_action() end)
+  vim.keymap.set('n', 'grt', function() MiniExtra.pickers.lsp({ scope = 'type_definition' }) end)
 end)

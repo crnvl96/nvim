@@ -20,14 +20,13 @@ MiniDeps.now(function()
     'go',
     'html',
     'javascript',
-    'javascript',
+    'jsx',
     'json',
     'python',
     'regex',
     'toml',
+    'typescript',
     'tsx',
-    'typescript',
-    'typescript',
     'typst',
     'yaml',
   }
@@ -71,22 +70,6 @@ MiniDeps.later(function()
   local conf = require('conform')
   local util = require('conform.util')
 
-  local fmt = {
-    web = function()
-      if util.root_file({ 'biome.json', 'biome.jsonc' }) then
-        return { 'biome' }
-      else
-        return { 'prettier' }
-      end
-    end,
-    prettier = function() return { 'prettier' } end,
-    python = function() return { 'rufff_organize_imports', 'ruff_fix', 'ruff_format' } end,
-    c = function() return { 'clang-format' } end,
-    typst = function() return { 'typstyle' } end,
-    lua = function() return { 'stylua' } end,
-    default = function() return { 'trim_whitespace', 'trim_newline' } end,
-  }
-
   vim.g.autoformat = true
 
   conf.setup({
@@ -105,17 +88,29 @@ MiniDeps.later(function()
       return {}
     end,
     formatters_by_ft = {
-      ['_'] = fmt.default,
-      c = fmt.c,
-      javascript = fmt.web,
-      typescript = fmt.web,
-      python = fmt.python,
-      lua = fmt.lua,
-      json = fmt.prettier,
-      jsonc = fmt.prettier,
-      typst = fmt.typst,
-      yaml = fmt.prettier,
-      markdown = fmt.prettier,
+      ['_'] = { 'trim_whitespace', 'trim_newline' },
+      c = { 'clang-format' },
+      javascript = function()
+        if util.root_file({ 'biome.json', 'biome.jsonc' }) then
+          return { 'biome' }
+        else
+          return { 'prettier' }
+        end
+      end,
+      typescript = function()
+        if util.root_file({ 'biome.json', 'biome.jsonc' }) then
+          return { 'biome' }
+        else
+          return { 'prettier' }
+        end
+      end,
+      python = { 'ruff_organize_imports', 'ruff_fix', 'ruff_format' },
+      lua = { 'stylua' },
+      json = { 'prettier' },
+      jsonc = { 'prettier' },
+      typst = { 'typstyle' },
+      yaml = { 'prettier' },
+      markdown = { 'prettier' },
     },
   })
 

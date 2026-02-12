@@ -24,6 +24,7 @@ MiniDeps.later(function()
       return #cmdarg == 0 and fnames or vim.fn.matchfuzzy(fnames, cmdarg)
     end
     vim.o.findfunc = 'v:lua.FindFunc'
+    local l = ''
   end
 end)
 
