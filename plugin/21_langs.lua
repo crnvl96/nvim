@@ -56,11 +56,12 @@ MiniDeps.now(function()
     'lua_ls',
     'pyright',
     'ruff',
-    'ts_ls',
     'biome',
     'eslint',
     'clangd',
     'tinymist',
+    'ts_ls',
+    'tsgo',
   })
 end)
 

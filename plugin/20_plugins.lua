@@ -1,3 +1,10 @@
+MiniDeps.later(function() MiniDeps.add('tpope/vim-fugitive') end)
+
+MiniDeps.later(function()
+  MiniDeps.add('nvim-lualine/lualine.nvim')
+  require('lualine').setup()
+end)
+
 MiniDeps.later(function()
   local build = function(args)
     MiniMisc.put('Building dependencies of markdown-preview.nvim')
