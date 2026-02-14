@@ -115,5 +115,10 @@ MiniDeps.later(function()
     },
   })
 
-  vim.keymap.set('n', [[\f]], function() vim.g.autoformat = not vim.g.autoformat end)
+  vim.keymap.set(
+    'n',
+    [[\f]],
+    function() vim.g.autoformat = not vim.g.autoformat end,
+    { desc = 'Toggle autoformatting with Conform' }
+  )
 end)
