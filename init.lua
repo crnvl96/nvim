@@ -2,9 +2,9 @@
 
 _G.Config = {}
 
-vim.cmd.colorscheme('catppuccin')
-
 vim.pack.add({ 'https://github.com/nvim-mini/mini.nvim' })
+
+vim.cmd.colorscheme('miniwinter')
 
 local misc = require('mini.misc')
 
