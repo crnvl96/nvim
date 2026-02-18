@@ -6,9 +6,7 @@ Config.now(function()
   vim.g.maplocalleader = ','
   vim.g.loaded_netrw = 1
   vim.g.loaded_netrwPlugin = 1
-end)
 
-Config.now(function()
   vim.o.clipboard = 'unnamedplus'
   vim.o.mousescroll = 'ver:1,hor:2'
   vim.o.mouse = 'a'
@@ -43,14 +41,10 @@ Config.now(function()
   vim.o.winborder = 'single'
   vim.o.pumborder = 'single'
   vim.o.pummaxwidth = 100
-end)
 
-Config.now(function()
   vim.cmd('filetype plugin indent on')
   if vim.fn.exists('syntax_on') ~= 1 then vim.cmd('syntax enable') end
-end)
 
-Config.now(function()
   if vim.fn.executable('rg') then
     function _G.FindFuncRG(cmdarg)
       local fnames = vim.fn.systemlist('rg --files --hidden --color=never --glob="!.git"')
@@ -63,14 +57,20 @@ Config.now(function()
   end
 end)
 
-Config.later(function()
-  local diagnostic_opts = {
-    signs = { priority = 9999, severity = { min = 'WARN', max = 'ERROR' } },
-    underline = { severity = { min = 'HINT', max = 'ERROR' } },
-    virtual_lines = false,
-    virtual_text = { current_line = true, severity = { min = 'ERROR', max = 'ERROR' } },
-    update_in_insert = false,
-  }
-
-  vim.diagnostic.config(diagnostic_opts)
-end)
+Config.later(
+  function()
+    vim.diagnostic.config({
+      signs = {
+        priority = 9999,
+        severity = { min = vim.diagnostic.severity.WARN, max = vim.diagnostic.severity.ERROR },
+      },
+      underline = { severity = { min = vim.diagnostic.severity.HINT, max = vim.diagnostic.severity.ERROR } },
+      virtual_lines = false,
+      virtual_text = {
+        current_line = true,
+        severity = { min = vim.diagnostic.severity.ERROR, max = vim.diagnostic.severity.ERROR },
+      },
+      update_in_insert = false,
+    })
+  end
+)

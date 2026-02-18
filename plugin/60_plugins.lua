@@ -1,6 +1,22 @@
 Config.later(function() vim.pack.add({ 'https://github.com/tpope/vim-fugitive' }) end)
 
 Config.later(function()
+  Config.on_packchanged('markdown-preview.nvim', { 'install', 'update' }, function(e)
+    MiniMisc.log_add('Building dependencies', { name = e.data.spec.name, path = e.data.path })
+
+    local obj = vim.system({ 'npm', 'install' }, { text = true, cwd = e.data.path .. '/app' }):wait()
+
+    if obj.code ~= 0 then
+      MiniMisc.log_add('Error during dependencies build', { name = e.data.spec.name, path = e.data.path })
+    else
+      MiniMisc.log_add('Dependencies built', { name = e.data.spec.name, path = e.data.path })
+    end
+  end)
+
+  vim.pack.add({ 'https://github.com/iamcco/markdown-preview.nvim' })
+end)
+
+Config.later(function()
   vim.pack.add({ 'https://github.com/nvim-lualine/lualine.nvim' })
   local lualine = require('lualine')
   lualine.setup()

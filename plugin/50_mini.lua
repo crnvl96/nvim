@@ -104,26 +104,12 @@ Config.later(function()
     source = { show = pick.default_show },
   })
 
-  local cursor_based_display_opts = {
-    window = {
-      config = { relative = 'cursor', anchor = 'NW', row = 0, col = 0, width = 40, height = 15 },
-    },
-  }
-
   ---@diagnostic disable-next-line: duplicate-set-field
   vim.ui.select = function(items, opts, on_choice)
-    return MiniPick.ui_select(items, opts, on_choice, cursor_based_display_opts)
+    return MiniPick.ui_select(items, opts, on_choice, {
+      window = { config = { relative = 'cursor', anchor = 'NW', row = 0, col = 0, width = 80, height = 15 } },
+    })
   end
-
-  local f_blines = function() MiniExtra.pickers.buf_lines({ scope = 'current', preserve_order = true }) end
-  local f_qf = function() MiniExtra.pickers.list({ scope = 'quickfix' }) end
-  local f_help = function() MiniPick.builtin.help({ default_split = 'vertical' }) end
-  local f_oldfiles = function() MiniExtra.pickers.visit_paths({ preserve_order = true }, cursor_based_display_opts) end
-  local f_km = function() MiniExtra.pickers.keymaps() end
-  local f_hl = function() MiniExtra.pickers.hl_groups() end
-  local f_diag = function() MiniExtra.pickers.diagnostic() end
-  local f_cmd = function() MiniExtra.pickers.commands() end
-  local f_man = function() MiniExtra.pickers.manpages() end
 
   local set = vim.keymap.set
   local s = function(lhs, rhs, desc) set('n', '<Leader>' .. lhs, rhs, { desc = desc }) end
@@ -143,15 +129,32 @@ Config.later(function()
   end
   s('fb', minipick_buffers, 'Buffers')
 
-  set('n', '<Leader>fl', f_blines, { desc = 'Search on buffer lines' })
-  set('n', '<Leader>fq', f_qf, { desc = 'Search on quickfix list' })
-  set('n', '<Leader>fk', f_km, { desc = 'Search keymaps' })
-  set('n', '<Leader>fH', f_hl, { desc = 'Search highlight groups' })
-  set('n', '<Leader>fd', f_diag, { desc = 'Search diagnostics' })
-  set('n', '<Leader>fc', f_cmd, { desc = 'Search commands' })
-  set('n', '<Leader>fh', f_help, { desc = 'Search help files' })
-  set('n', '<Leader>fm', f_man, { desc = 'Search manpages' })
-  set('n', '<Leader>fo', f_oldfiles, { desc = 'Search on oldfiles' })
+  local minipick_blines = "<Cmd>lua MiniExtra.pickers.buf_lines({ scope = 'current', preserve_order = true })<CR>"
+  s('fl', minipick_blines, 'Lines')
+
+  local minipick_qf = "<Cmd>lua MiniExtra.pickers.list({ scope = 'quickfix' })<CR>"
+  s('fq', minipick_qf, 'Quickfix')
+
+  local minipick_maps = '<Cmd>lua MiniExtra.pickers.keymaps()<CR>'
+  s('fk', minipick_maps, 'Keymaps')
+
+  local minipick_hls = '<Cmd>lua MiniExtra.pickers.hl_groups()<CR>'
+  s('fH', minipick_hls, 'Highlights')
+
+  local minipick_diagnostics = '<Cmd>lua MiniExtra.pickers.diagnostic()<CR>'
+  s('fd', minipick_diagnostics, 'Diagnostics')
+
+  local minipick_commands = '<Cmd>lua MiniExtra.pickers.commands()<CR>'
+  s('fc', minipick_commands, 'Commands')
+
+  local minipick_helpfiles = "<Cmd>lua MiniPick.builtin.help({ default_split = 'vertical' })<CR>"
+  s('fh', minipick_helpfiles, 'Help files')
+
+  local minipick_manpages = '<Cmd>lua MiniExtra.pickers.manpages()<CR>'
+  s('fm', minipick_manpages, 'Search manpages')
+
+  local minipick_oldfiles = '<Cmd>lua MiniExtra.pickers.visit_paths({ preserve_order = true })<CR>'
+  s('fo', minipick_oldfiles, 'Oldfiles')
 end)
 
 Config.later(function()

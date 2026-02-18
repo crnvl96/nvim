@@ -2,11 +2,13 @@
 return {
   settings = {
     pyright = {
-      disableOrganizeImports = true, -- Using linter's import organizer
+      -- Using linter's import organizer
+      disableOrganizeImports = true,
     },
     python = {
       analysis = {
-        ignore = { '*' }, -- Ignore all files for analysis to exclusively use dedicated linting
+        -- Ignore all files for analysis to exclusively use dedicated linting
+        ignore = { '*' },
         autoSearchPaths = true,
         useLibraryCodeForTypes = true,
         diagnosticMode = 'openFilesOnly',
