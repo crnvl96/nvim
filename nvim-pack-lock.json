@@ -4,6 +4,10 @@
       "rev": "c2526f1cde528a66e086ab1668e996d162c75f4f",
       "src": "https://github.com/stevearc/conform.nvim"
     },
+    "image.nvim": {
+      "rev": "c75654b37cd13df17475a53d9dc3e3d1b5e09fa1",
+      "src": "https://github.com/3rd/image.nvim"
+    },
     "img-clip.nvim": {
       "rev": "b6ddfb97b5600d99afe3452d707444afda658aca",
       "src": "https://github.com/HakonHarnes/img-clip.nvim"
@@ -16,8 +20,12 @@
       "rev": "a923f5fc5ba36a3b17e289dc35dc17f66d0548ee",
       "src": "https://github.com/iamcco/markdown-preview.nvim"
     },
+    "markview.nvim": {
+      "rev": "9e852c299351fc2110e763edc7fc899358ee112e",
+      "src": "https://github.com/OXY2DEV/markview.nvim"
+    },
     "mini.nvim": {
-      "rev": "ca9adcfc4e796b292cc9072f4952318ef5a7f6c0",
+      "rev": "dbb073bd2ed4a7bb35daafc7989567f0ff1426ee",
       "src": "https://github.com/nvim-mini/mini.nvim"
     },
     "nvim-lspconfig": {
@@ -25,12 +33,16 @@
       "src": "https://github.com/neovim/nvim-lspconfig"
     },
     "nvim-treesitter": {
-      "rev": "2bd9b9b4f12eed175fba35ca2db8e8584546a4ec",
+      "rev": "3edb01f912867603c2aef9079f208f0244c0885b",
       "src": "https://github.com/nvim-treesitter/nvim-treesitter"
     },
     "nvim-treesitter-textobjects": {
       "rev": "a0e182ae21fda68c59d1f36c9ed45600aef50311",
       "src": "https://github.com/nvim-treesitter/nvim-treesitter-textobjects"
+    },
+    "presenting.nvim": {
+      "rev": "e78245995a09233e243bf48169b2f00dc76341f7",
+      "src": "https://github.com/sotte/presenting.nvim"
     },
     "vim-fugitive": {
       "rev": "61b51c09b7c9ce04e821f6cf76ea4f6f903e3cf4",

@@ -1,5 +1,6 @@
 Config.now(function()
   vim.cmd.colorscheme('miniwinter')
+
   require('mini.colors').get_colorscheme():add_transparency({ general = false, float = true }):apply()
 end)
 
@@ -11,6 +12,7 @@ Config.later(function() require('mini.splitjoin').setup() end)
 Config.later(function() require('mini.indentscope').setup() end)
 Config.later(function() require('mini.comment').setup() end)
 Config.later(function() require('mini.cmdline').setup() end)
+Config.later(function() require('mini.bracketed').setup() end)
 
 Config.later(function()
   local lsp_process_items_func = function(items, base)
@@ -23,10 +25,10 @@ Config.later(function()
 
   vim.lsp.config('*', { capabilities = MiniCompletion.get_lsp_capabilities() })
 
-  vim.api.nvim_create_autocmd(
-    'LspAttach',
-    { group = Config.gr, callback = function(e) vim.bo[e.buf].omnifunc = 'v:lua.MiniCompletion.completefunc_lsp' end }
-  )
+  vim.api.nvim_create_autocmd('LspAttach', {
+    group = Config.gr,
+    callback = function(e) vim.bo[e.buf].omnifunc = 'v:lua.MiniCompletion.completefunc_lsp' end,
+  })
 end)
 
 Config.later(
@@ -36,6 +38,19 @@ Config.later(
     })
   end
 )
+
+Config.later(function()
+  require('mini.jump2d').setup({
+    spotter = require('mini.jump2d').gen_spotter.pattern('[^%s%p]+'),
+    labels = 'asdfghjkl;',
+    view = {
+      dim = true,
+      n_steps_ahead = 2,
+    },
+  })
+
+  vim.keymap.set({ 'n', 'x', 'o' }, 's', function() MiniJump2d.start(MiniJump2d.builtin_opts.single_character) end)
+end)
 
 Config.later(
   function()
@@ -53,10 +68,32 @@ Config.later(
 )
 
 Config.later(function()
+  require('mini.keymap').setup()
+
+  MiniKeymap.map_multistep('i', '<Tab>', { 'pmenu_next' })
+  MiniKeymap.map_multistep('i', '<S-Tab>', { 'pmenu_prev' })
+  MiniKeymap.map_multistep('i', '<CR>', { 'pmenu_accept' })
+end)
+
+Config.later(function()
   require('mini.files').setup({
-    mappings = { go_in = '', go_in_plus = '<CR>', go_out = '', go_out_plus = '-' },
-    windows = { max_number = 3, preview = true, width_focus = 50, width_nofocus = 20, width_preview = 80 },
-    content = { prefix = function() end },
+    mappings = {
+      go_in = '',
+      go_in_plus = '<CR>',
+      go_out = '',
+      go_out_plus = '-',
+      mark_goto = 'g',
+    },
+    windows = {
+      max_number = 3,
+      preview = true,
+      width_focus = 50,
+      width_nofocus = 20,
+      width_preview = 80,
+    },
+    content = {
+      prefix = function() end,
+    },
   })
 
   local show_dotfiles = true
@@ -78,58 +115,95 @@ Config.later(function()
     end,
   })
 
-  vim.keymap.set(
-    'n',
-    '<Leader>ef',
-    '<Cmd>lua MiniFiles.open(vim.api.nvim_buf_get_name(0), false)<CR>',
-    { desc = 'Explorer' }
-  )
+  vim.api.nvim_create_autocmd('User', {
+    pattern = 'MiniFilesExplorerOpen',
+    group = Config.gr,
+    callback = function()
+      MiniFiles.set_bookmark('c', vim.fn.stdpath('config'), { desc = 'Config' })
+      MiniFiles.set_bookmark('o', vim.fn.stdpath('data') .. '/site/pack/core/opt', { desc = 'Plugins' })
+      MiniFiles.set_bookmark('w', vim.fn.getcwd, { desc = 'Working directory' })
+      MiniFiles.set_bookmark('n', vim.env.HOME .. '/Developer/personal/notes', { desc = 'Notes' })
+      MiniFiles.set_bookmark('p', vim.env.HOME .. '/Developer/personal/presentations', { desc = 'Presentations' })
+    end,
+  })
+
+  -- stylua: ignore
+  vim.keymap.set('n', '<Leader>ef', '<Cmd>lua MiniFiles.open(vim.api.nvim_buf_get_name(0), false)<CR>', { desc = 'Explorer' })
 end)
 
 Config.later(function()
   require('mini.pick').setup({
-    window = { prompt_prefix = '  ' },
-    source = { show = require('mini.pick').default_show },
+    window = {
+      prompt_prefix = '  ',
+    },
+    source = {
+      show = require('mini.pick').default_show,
+    },
   })
 
   ---@diagnostic disable-next-line: duplicate-set-field
   vim.ui.select = function(items, opts, on_choice)
     return MiniPick.ui_select(items, opts, on_choice, {
       window = {
-        config = { relative = 'cursor', anchor = 'NW', row = 0, col = 0, width = 80, height = 15 },
+        config = {
+          relative = 'cursor',
+          anchor = 'NW',
+          row = 0,
+          col = 0,
+          width = 80,
+          height = 15,
+        },
       },
     })
   end
 
-  local s = function(lhs, rhs, desc) vim.keymap.set('n', '<Leader>' .. lhs, rhs, { desc = desc }) end
+  MiniPick.registry.personal = function()
+    local cwd = vim.fn.expand('~/Developer/personal')
+    local choose = function(item)
+      vim.schedule(function() MiniPick.builtin.files(nil, { source = { cwd = item.path } }) end)
+    end
+
+    return MiniExtra.pickers.explorer({ cwd = cwd }, { source = { choose = choose } })
+  end
+
+  MiniPick.registry.work = function()
+    local cwd = vim.fn.expand('~/Developer/work')
+    local choose = function(item)
+      vim.schedule(function() MiniPick.builtin.files(nil, { source = { cwd = item.path } }) end)
+    end
+
+    return MiniExtra.pickers.explorer({ cwd = cwd }, { source = { choose = choose } })
+  end
 
   -- stylua: ignore start
-  vim.keymap.set('n', 'E',     '<Cmd>lua vim.diagnostic.open_float()<CR>')
-  vim.keymap.set('n', 'K',     '<Cmd>lua vim.lsp.buf.hover()<CR>')
+  vim.keymap.set('n', 'E', '<Cmd>lua vim.diagnostic.open_float()<CR>')
+  vim.keymap.set('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>')
   vim.keymap.set('i', '<C-k>', '<Cmd>lua vim.lsp.buf.signature_help()<CR>')
-
-  s('ff', '<Cmd>lua MiniPick.builtin.files()<CR>',                                 'Files')
-  s('fg', '<Cmd>lua Minipick.builtin.grep_live()<CR>',                             'Grep live')
-  s('fr', '<Cmd>lua MiniPick.builtin.resume()<CR>',                                'Resume')
-  s('fb', '<Cmd>lua MiniPick.builtin.buffers({ include_current = false })<CR>',     'Buffers')
-  s('fl', "<Cmd>lua MiniExtra.pickers.buf_lines({ scope = 'current',               preserve_order = true })<CR>", 'Lines')
-  s('fq', "<Cmd>lua MiniExtra.pickers.list({ scope = 'quickfix' })<CR>",           'Quickfix')
-  s('fk', '<Cmd>lua MiniExtra.pickers.keymaps()<CR>',                              'Keymaps')
-  s('fH', '<Cmd>lua MiniExtra.pickers.hl_groups()<CR>',                            'Highlights')
-  s('fd', '<Cmd>lua MiniExtra.pickers.diagnostic()<CR>',                           'Diagnostics')
-  s('fc', '<Cmd>lua MiniExtra.pickers.commands()<CR>',                             'Commands')
-  s('fh', "<Cmd>lua MiniPick.builtin.help({ default_split = 'vertical' })<CR>",    'Help files')
-  s('fm', '<Cmd>lua MiniExtra.pickers.manpages()<CR>',                             'Search manpages')
-  s('fo', '<Cmd>lua MiniExtra.pickers.visit_paths({ preserve_order = true })<CR>', 'Oldfiles')
-  s('lD', "<Cmd>lua MiniExtra.pickers.lsp({scope ='declaration'})<CR>",            'Declarations')
-  s('ld', "<Cmd>lua MiniExtra.pickers.lsp({scope='definition'})<CR>",              'Definitions')
-  s('ls', "<Cmd>lua MiniExtra.pickers.lsp({scope='document_symbol'})<CR>",         'Document Symbols')
-  s('lS', "<Cmd>lua MiniExtra.pickers.lsp({scope='workspace_symbol_live'})<CR>",   'Workspace symbols')
-  s('li', "<Cmd>lua MiniExtra.pickers.lsp({scope='implementation'})<CR>",          'Implementations')
-  s('lr', "<Cmd>lua MiniExtra.pickers.lsp({scope='references'})<CR>",              'References')
-  s('lt', "<Cmd>lua MiniExtra.pickers.lsp({scope='type_definition'})<CR>",         'Typedefs')
-  s('la', '<Cmd>lua vim.lsp.buf.code_action()<CR>',                                'Code actions')
-  s('ln', '<Cmd>lua vim.lsp.buf.rename()<CR>',                                     'Rename')
+  vim.keymap.set('t', '<M-o>', '<Cmd>lua MiniPick.builtin.buffers({ include_current = false })<CR>')
+  vim.keymap.set('n', '<Leader>fp', '<Cmd>Pick personal<CR>', { desc = 'Personal projects' })
+  vim.keymap.set('n', '<Leader>fw', '<Cmd>Pick work<CR>', { desc = 'Work projects' })
+  vim.keymap.set('n', '<Leader>ff', '<Cmd>lua MiniPick.builtin.files()<CR>', { desc = 'Files' })
+  vim.keymap.set('n', '<Leader>fg', '<Cmd>lua Minipick.builtin.grep_live()<CR>', { desc = 'Grep live' })
+  vim.keymap.set('n', '<Leader>fr', '<Cmd>lua MiniPick.builtin.resume()<CR>', { desc = 'Resume' })
+  vim.keymap.set('n', '<Leader>fb', '<Cmd>lua MiniPick.builtin.buffers({ include_current = false })<CR>', { desc = 'Buffers' })
+  vim.keymap.set('n', '<Leader>fl', "<Cmd>lua MiniExtra.pickers.buf_lines({ scope = 'current', desc = preserve_order = true })<CR>", { desc = 'Lines' })
+  vim.keymap.set('n', '<Leader>fq', "<Cmd>lua MiniExtra.pickers.list({ scope = 'quickfix' })<CR>", { desc = 'Quickfix' })
+  vim.keymap.set('n', '<Leader>fk', '<Cmd>lua MiniExtra.pickers.keymaps()<CR>', { desc = 'Keymaps' })
+  vim.keymap.set('n', '<Leader>fH', '<Cmd>lua MiniExtra.pickers.hl_groups()<CR>', { desc = 'Highlights' })
+  vim.keymap.set('n', '<Leader>fd', '<Cmd>lua MiniExtra.pickers.diagnostic()<CR>', { desc = 'Diagnostics' })
+  vim.keymap.set('n', '<Leader>fc', '<Cmd>lua MiniExtra.pickers.commands()<CR>', { desc = 'Commands' })
+  vim.keymap.set('n', '<Leader>fh', "<Cmd>lua MiniPick.builtin.help({ default_split = 'vertical' })<CR>", { desc = 'Help files' })
+  vim.keymap.set('n', '<Leader>fm', '<Cmd>lua MiniExtra.pickers.manpages()<CR>', { desc = 'Search manpages' })
+  vim.keymap.set('n', '<Leader>fo', '<Cmd>lua MiniExtra.pickers.visit_paths({ preserve_order = true })<CR>', { desc = 'Oldfiles' })
+  vim.keymap.set('n', '<Leader>lD', "<Cmd>lua MiniExtra.pickers.lsp({scope ='declaration'})<CR>", { desc = 'Declarations' })
+  vim.keymap.set('n', '<Leader>ld', "<Cmd>lua MiniExtra.pickers.lsp({scope='definition'})<CR>", { desc = 'Definitions' })
+  vim.keymap.set('n', '<Leader>ls', "<Cmd>lua MiniExtra.pickers.lsp({scope='document_symbol'})<CR>", { desc = 'Document Symbols' })
+  vim.keymap.set('n', '<Leader>lS', "<Cmd>lua MiniExtra.pickers.lsp({scope='workspace_symbol_live'})<CR>", { desc = 'Workspace symbols' })
+  vim.keymap.set('n', '<Leader>li', "<Cmd>lua MiniExtra.pickers.lsp({scope='implementation'})<CR>", { desc = 'Implementations' })
+  vim.keymap.set('n', '<Leader>lr', "<Cmd>lua MiniExtra.pickers.lsp({scope='references'})<CR>", { desc = 'References' })
+  vim.keymap.set('n', '<Leader>lt', "<Cmd>lua MiniExtra.pickers.lsp({scope='type_definition'})<CR>", { desc = 'Typedefs' })
+  vim.keymap.set('n', '<Leader>la', '<Cmd>lua vim.lsp.buf.code_action()<CR>', { desc = 'Code actions' })
+  vim.keymap.set('n', '<Leader>ln', '<Cmd>lua vim.lsp.buf.rename()<CR>', { desc = 'Rename' })
   -- stylua: ignore end
 end)
 
@@ -162,7 +236,14 @@ Config.later(
         require('mini.clue').gen_clues.windows(),
         require('mini.clue').gen_clues.z(),
       },
-      window = { delay = 500, scroll_down = '<C-f>', scroll_up = '<C-b>', config = { width = 'auto' } },
+      window = {
+        delay = 500,
+        scroll_down = '<C-f>',
+        scroll_up = '<C-b>',
+        config = {
+          width = 'auto',
+        },
+      },
     })
   end
 )

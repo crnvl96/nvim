@@ -1,5 +1,6 @@
 Config.now(function()
   local node_bin = vim.env.HOME .. '/.local/share/mise/installs/node/24.12.0/bin'
+
   vim.env.PATH = node_bin .. ':' .. vim.env.PATH
   vim.g.node_host_prog = node_bin .. '/node'
   vim.g.mapleader = ' '

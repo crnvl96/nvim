@@ -12,6 +12,7 @@ MiniMisc.setup_termbg_sync()
 
 Config.now = function(f) MiniMisc.safely('now', f) end
 Config.later = function(f) MiniMisc.safely('later', f) end
+Config.now_if_args = vim.fn.argc(-1) > 0 and Config.now or Config.later
 
 Config.gr = vim.api.nvim_create_augroup('custom-config', {})
 
