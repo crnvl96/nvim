@@ -1,6 +1,6 @@
 Config.now(function()
   require('mini.colors').setup()
-  MiniColors.get_colorscheme('elflord'):add_transparency({ general = false, float = true }):apply()
+  MiniColors.get_colorscheme():add_transparency({ general = false, float = true }):apply()
   MiniColors.animate({})
 end)
 
