@@ -2,8 +2,7 @@ Config.later(function() vim.pack.add({ 'https://github.com/tpope/vim-fugitive' }
 
 Config.later(function()
   vim.pack.add({ 'https://github.com/HakonHarnes/img-clip.nvim' })
-  local imgclip = require('img-clip')
-  imgclip.setup({
+  require('img-clip').setup({
     default = {
       dir_path = 'static/img',
     },
@@ -26,8 +25,7 @@ end)
 
 Config.later(function()
   vim.pack.add({ 'https://github.com/nvim-lualine/lualine.nvim' })
-  local lualine = require('lualine')
-  lualine.setup()
+  require('lualine').setup()
 end)
 
 Config.later(function()
@@ -140,6 +138,10 @@ Config.later(function()
     },
   })
 
-  local f = function() conform_autoformat = not conform_autoformat end
-  vim.keymap.set('n', [[\f]], f, { desc = 'Toggle autoformat' })
+  vim.keymap.set(
+    'n',
+    [[\f]],
+    function() conform_autoformat = not conform_autoformat end,
+    { desc = 'Toggle autoformat' }
+  )
 end)

@@ -6,15 +6,14 @@ vim.pack.add({ 'https://github.com/nvim-mini/mini.nvim' })
 
 vim.cmd.colorscheme('miniwinter')
 
-local misc = require('mini.misc')
+require('mini.misc').setup()
 
-misc.setup()
-misc.setup_auto_root()
-misc.setup_restore_cursor()
-misc.setup_termbg_sync()
+MiniMisc.setup_auto_root()
+MiniMisc.setup_restore_cursor()
+MiniMisc.setup_termbg_sync()
 
-Config.now = function(f) misc.safely('now', f) end
-Config.later = function(f) misc.safely('later', f) end
+Config.now = function(f) MiniMisc.safely('now', f) end
+Config.later = function(f) MiniMisc.safely('later', f) end
 
 Config.gr = vim.api.nvim_create_augroup('custom-config', {})
 

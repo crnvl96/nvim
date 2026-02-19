@@ -1,5 +1,6 @@
 Config.now(function()
-  vim.keymap.set({ 'n', 'i', 'x' }, '<C-s>', '<Esc><Cmd>silent! update | redraw<CR>')
+  vim.keymap.set({ 'n', 'i', 'x' }, '<Esc>', '<Esc><Cmd>noh<CR><Esc>', { noremap = true })
+  vim.keymap.set({ 'n', 'i', 'x' }, '<C-s>', '<Esc><Cmd>noh<CR><Cmd>silent! update | redraw<CR>')
   vim.keymap.set({ 'n', 'x' }, 'j', [[v:count == 0 ? 'gj' : 'j']], { expr = true })
   vim.keymap.set({ 'n', 'x' }, 'k', [[v:count == 0 ? 'gk' : 'k']], { expr = true })
   vim.keymap.set('v', 'p', 'P')
@@ -28,12 +29,13 @@ Config.now(function()
   vim.keymap.set('c', '<M-d>', '<C-w>')
   vim.keymap.set('c', '<C-k>', '<C-u>')
   vim.keymap.set('c', '<C-g>', '<C-c>')
+  vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>')
 
-  local cmdline_next_candidate =
-    "<Cmd>lua vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<Tab>',true,false,true),'t',true)<CR>"
-  vim.keymap.set('c', '<C-n>', cmdline_next_candidate)
+  local cmdmaps = function(map)
+    local send_term = vim.api.nvim_replace_termcodes(map, true, false, true)
+    vim.api.nvim_feedkeys(send_term, 't', true)
+  end
 
-  local cmdline_prev_candidate =
-    "<Cmd>lua vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<S-Tab>',true,false,true),'t',true)<CR>"
-  vim.keymap.set('c', '<C-p>', cmdline_prev_candidate)
+  vim.keymap.set('c', '<C-n>', function() cmdmaps('<Tab>') end)
+  vim.keymap.set('c', '<C-p>', function() cmdmaps('<S-Tab>') end)
 end)

@@ -6,6 +6,7 @@
         "MiniIcons",
         "MiniPick",
         "MiniJump2d",
-        "MiniKeymap"
+        "MiniKeymap",
+        "MiniCompletion"
     ]
 }
