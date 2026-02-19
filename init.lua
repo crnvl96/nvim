@@ -4,8 +4,6 @@ _G.Config = {}
 
 vim.pack.add({ 'https://github.com/nvim-mini/mini.nvim' })
 
-vim.cmd.colorscheme('miniwinter')
-
 require('mini.misc').setup()
 
 MiniMisc.setup_auto_root()

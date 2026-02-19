@@ -43,6 +43,7 @@ Config.now(function()
   vim.o.pummaxwidth = 100
 
   vim.cmd('filetype plugin indent on')
+
   if vim.fn.exists('syntax_on') ~= 1 then vim.cmd('syntax enable') end
 
   if vim.fn.executable('rg') then
@@ -57,31 +58,22 @@ Config.now(function()
   end
 end)
 
-Config.later(
-  function()
-    vim.diagnostic.config({
-      signs = {
-        priority = 9999,
-        severity = {
-          min = vim.diagnostic.severity.WARN,
-          max = vim.diagnostic.severity.ERROR,
-        },
-      },
-      underline = {
-        severity = {
-          min = vim.diagnostic.severity.HINT,
-          max = vim.diagnostic.severity.ERROR,
-        },
-      },
-      virtual_lines = false,
-      virtual_text = {
-        current_line = true,
-        severity = {
-          min = vim.diagnostic.severity.ERROR,
-          max = vim.diagnostic.severity.ERROR,
-        },
-      },
-      update_in_insert = false,
-    })
-  end
-)
+Config.later(function()
+  local hint, warn, error = vim.diagnostic.severity.HINT, vim.diagnostic.severity.WARN, vim.diagnostic.severity.ERROR
+
+  vim.diagnostic.config({
+    virtual_lines = false,
+    update_in_insert = false,
+    signs = {
+      priority = 9999,
+      severity = { min = warn, max = error },
+    },
+    underline = {
+      severity = { min = hint, max = error },
+    },
+    virtual_text = {
+      current_line = true,
+      severity = { min = error, max = error },
+    },
+  })
+end)

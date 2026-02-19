@@ -1,7 +1,6 @@
 Config.now(function()
-  require('mini.colors').setup()
-  MiniColors.get_colorscheme():add_transparency({ general = false, float = true }):apply()
-  MiniColors.animate({})
+  vim.cmd.colorscheme('miniwinter')
+  require('mini.colors').get_colorscheme():add_transparency({ general = false, float = true }):apply()
 end)
 
 Config.later(function() require('mini.extra').setup() end)
@@ -14,32 +13,26 @@ Config.later(function() require('mini.comment').setup() end)
 Config.later(function() require('mini.cmdline').setup() end)
 
 Config.later(function()
+  local lsp_process_items_func = function(items, base)
+    return MiniCompletion.default_process_items(items, base, { kind_priority = { Text = -1, Snippet = -1 } })
+  end
+
   require('mini.completion').setup({
-    lsp_completion = {
-      source_func = 'omnifunc',
-      auto_setup = false,
-      process_items = function(items, base)
-        return MiniCompletion.default_process_items(items, base, { kind_priority = { Text = -1, Snippet = -1 } })
-      end,
-    },
+    lsp_completion = { source_func = 'omnifunc', auto_setup = false, process_items = lsp_process_items_func },
   })
+
   vim.lsp.config('*', { capabilities = MiniCompletion.get_lsp_capabilities() })
-  vim.api.nvim_create_autocmd('LspAttach', {
-    group = Config.gr,
-    callback = function(e) vim.bo[e.buf].omnifunc = 'v:lua.MiniCompletion.completefunc_lsp' end,
-  })
+
+  vim.api.nvim_create_autocmd(
+    'LspAttach',
+    { group = Config.gr, callback = function(e) vim.bo[e.buf].omnifunc = 'v:lua.MiniCompletion.completefunc_lsp' end }
+  )
 end)
 
 Config.later(
   function()
     require('mini.hipatterns').setup({
-      highlighters = {
-        fixme = MiniExtra.gen_highlighter.words({ 'FIXME', 'Fixme', 'fixme' }, 'MiniHipatternsFixme'),
-        hack = MiniExtra.gen_highlighter.words({ 'HACK', 'Hack', 'hack' }, 'MiniHipatternsHack'),
-        todo = MiniExtra.gen_highlighter.words({ 'TODO', 'Todo', 'todo' }, 'MiniHipatternsTodo'),
-        note = MiniExtra.gen_highlighter.words({ 'NOTE', 'Note', 'note' }, 'MiniHipatternsNote'),
-        hex_color = require('mini.hipatterns').gen_highlighter.hex_color(),
-      },
+      highlighters = { hex_color = require('mini.hipatterns').gen_highlighter.hex_color() },
     })
   end
 )
@@ -47,6 +40,7 @@ Config.later(
 Config.later(
   function()
     require('mini.ai').setup({
+      search_method = 'cover',
       custom_textobjects = {
         g = MiniExtra.gen_ai_spec.buffer(),
         f = require('mini.ai').gen_spec.treesitter({ a = '@function.outer', i = '@function.inner' }),
@@ -54,7 +48,6 @@ Config.later(
         o = require('mini.ai').gen_spec.treesitter({ a = '@conditional.outer', i = '@conditional.inner' }),
         l = require('mini.ai').gen_spec.treesitter({ a = '@loop.outer', i = '@loop.inner' }),
       },
-      search_method = 'cover',
     })
   end
 )
@@ -73,23 +66,24 @@ Config.later(function()
     group = Config.gr,
     callback = function(e)
       local buf = e.data.buf_id
-
       local filter_show = function() return true end
       local filter_hide = function(fs_entry) return not vim.startswith(fs_entry.name, '.') end
 
-      local f = function()
+      local toggle_dotfiles = function()
         show_dotfiles = not show_dotfiles
-        local new_filter = show_dotfiles and filter_show or filter_hide
-        MiniFiles.refresh({ content = { filter = new_filter } })
+        MiniFiles.refresh({ content = { filter = show_dotfiles and filter_show or filter_hide } })
       end
 
-      vim.keymap.set('n', 'g.', f, { buffer = buf, desc = '[Un]show Dotfiles' })
+      vim.keymap.set('n', 'g.', toggle_dotfiles, { buffer = buf, desc = '[Un]show Dotfiles' })
     end,
   })
 
-  -- stylua: ignore start
-  vim.keymap.set('n', '<Leader>ef', '<Cmd>lua MiniFiles.open(vim.api.nvim_buf_get_name(0), false)<CR>', { desc = 'Explorer' })
-  -- stylua: ignore end
+  vim.keymap.set(
+    'n',
+    '<Leader>ef',
+    '<Cmd>lua MiniFiles.open(vim.api.nvim_buf_get_name(0), false)<CR>',
+    { desc = 'Explorer' }
+  )
 end)
 
 Config.later(function()
@@ -102,14 +96,7 @@ Config.later(function()
   vim.ui.select = function(items, opts, on_choice)
     return MiniPick.ui_select(items, opts, on_choice, {
       window = {
-        config = {
-          relative = 'cursor',
-          anchor = 'NW',
-          row = 0,
-          col = 0,
-          width = 80,
-          height = 15,
-        },
+        config = { relative = 'cursor', anchor = 'NW', row = 0, col = 0, width = 80, height = 15 },
       },
     })
   end
@@ -124,7 +111,7 @@ Config.later(function()
   s('ff', '<Cmd>lua MiniPick.builtin.files()<CR>',                                 'Files')
   s('fg', '<Cmd>lua Minipick.builtin.grep_live()<CR>',                             'Grep live')
   s('fr', '<Cmd>lua MiniPick.builtin.resume()<CR>',                                'Resume')
-  s('fb', '<CR>lua MiniPick.builtin.buffers({ include_current = false })<CR>',     'Buffers')
+  s('fb', '<Cmd>lua MiniPick.builtin.buffers({ include_current = false })<CR>',     'Buffers')
   s('fl', "<Cmd>lua MiniExtra.pickers.buf_lines({ scope = 'current',               preserve_order = true })<CR>", 'Lines')
   s('fq', "<Cmd>lua MiniExtra.pickers.list({ scope = 'quickfix' })<CR>",           'Quickfix')
   s('fk', '<Cmd>lua MiniExtra.pickers.keymaps()<CR>',                              'Keymaps')
@@ -175,12 +162,7 @@ Config.later(
         require('mini.clue').gen_clues.windows(),
         require('mini.clue').gen_clues.z(),
       },
-      window = {
-        delay = 500,
-        scroll_down = '<C-f>',
-        scroll_up = '<C-b>',
-        config = { width = 'auto' },
-      },
+      window = { delay = 500, scroll_down = '<C-f>', scroll_up = '<C-b>', config = { width = 'auto' } },
     })
   end
 )

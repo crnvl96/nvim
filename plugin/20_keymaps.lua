@@ -30,12 +30,4 @@ Config.now(function()
   vim.keymap.set('c', '<C-k>', '<C-u>')
   vim.keymap.set('c', '<C-g>', '<C-c>')
   vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>')
-
-  local cmdmaps = function(map)
-    local send_term = vim.api.nvim_replace_termcodes(map, true, false, true)
-    vim.api.nvim_feedkeys(send_term, 't', true)
-  end
-
-  vim.keymap.set('c', '<C-n>', function() cmdmaps('<Tab>') end)
-  vim.keymap.set('c', '<C-p>', function() cmdmaps('<S-Tab>') end)
 end)
