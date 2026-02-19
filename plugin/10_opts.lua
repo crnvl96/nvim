@@ -60,21 +60,32 @@ Config.now(function()
 end)
 
 Config.later(function()
-  local hint, warn, error = vim.diagnostic.severity.HINT, vim.diagnostic.severity.WARN, vim.diagnostic.severity.ERROR
+  local hint = vim.diagnostic.severity.HINT
+  local warn = vim.diagnostic.severity.WARN
+  local error = vim.diagnostic.severity.ERROR
 
   vim.diagnostic.config({
     virtual_lines = false,
     update_in_insert = false,
     signs = {
       priority = 9999,
-      severity = { min = warn, max = error },
+      severity = {
+        min = warn,
+        max = error,
+      },
     },
     underline = {
-      severity = { min = hint, max = error },
+      severity = {
+        min = hint,
+        max = error,
+      },
     },
     virtual_text = {
       current_line = true,
-      severity = { min = error, max = error },
+      severity = {
+        min = error,
+        max = error,
+      },
     },
   })
 end)

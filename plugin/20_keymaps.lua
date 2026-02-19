@@ -1,9 +1,14 @@
 Config.now(function()
   vim.keymap.set({ 'n', 'i', 'x' }, '<Esc>', '<Esc><Cmd>noh<CR><Esc>', { noremap = true })
   vim.keymap.set({ 'n', 'i', 'x' }, '<C-s>', '<Esc><Cmd>noh<CR><Cmd>silent! update | redraw<CR>')
+
   vim.keymap.set({ 'n', 'x' }, 'j', [[v:count == 0 ? 'gj' : 'j']], { expr = true })
   vim.keymap.set({ 'n', 'x' }, 'k', [[v:count == 0 ? 'gk' : 'k']], { expr = true })
-  vim.keymap.set('v', 'p', 'P')
+
+  vim.keymap.set('x', 'p', 'P')
+
+  vim.keymap.set('t', '<C-g>', '<C-\\><C-n>')
+
   vim.keymap.set('n', '<C-h>', '<C-w>h')
   vim.keymap.set('n', '<C-j>', '<C-w>j')
   vim.keymap.set('n', '<C-k>', '<C-w>k')
@@ -19,7 +24,9 @@ Config.now(function()
   vim.keymap.set('n', '*', '*zz')
   vim.keymap.set('n', '#', '#zz')
   vim.keymap.set('n', 'g*', 'g*zz')
-  vim.keymap.set('c', '<C-f>', '<Right>')
+
+  vim.keymap.set('c', '<M-h>', '<C-f>')
+  vim.keymap.set('c', '<C-f>', '<Right>', { noremap = true })
   vim.keymap.set('c', '<C-b>', '<Left>')
   vim.keymap.set('c', '<C-a>', '<Home>')
   vim.keymap.set('c', '<C-e>', '<End>')
@@ -29,6 +36,4 @@ Config.now(function()
   vim.keymap.set('c', '<M-d>', '<C-w>')
   vim.keymap.set('c', '<C-k>', '<C-u>')
   vim.keymap.set('c', '<C-g>', '<C-c>')
-  vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>')
-  vim.keymap.set('t', '<C-g>', '<C-\\><C-n>')
 end)

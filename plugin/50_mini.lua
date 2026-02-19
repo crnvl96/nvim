@@ -1,9 +1,3 @@
-Config.now(function()
-  vim.cmd.colorscheme('miniwinter')
-
-  require('mini.colors').get_colorscheme():add_transparency({ general = false, float = true }):apply()
-end)
-
 Config.later(function() require('mini.extra').setup() end)
 Config.later(function() require('mini.visits').setup() end)
 Config.later(function() require('mini.align').setup() end)
@@ -14,17 +8,22 @@ Config.later(function() require('mini.comment').setup() end)
 Config.later(function() require('mini.cmdline').setup() end)
 Config.later(function() require('mini.bracketed').setup() end)
 
+Config.now(function()
+  vim.cmd.colorscheme('miniwinter')
+  require('mini.colors').get_colorscheme():add_transparency({ general = false, float = true }):apply()
+end)
+
 Config.later(function()
-  local lsp_process_items_func = function(items, base)
-    return MiniCompletion.default_process_items(items, base, { kind_priority = { Text = -1, Snippet = -1 } })
-  end
-
   require('mini.completion').setup({
-    lsp_completion = { source_func = 'omnifunc', auto_setup = false, process_items = lsp_process_items_func },
+    lsp_completion = {
+      source_func = 'omnifunc',
+      auto_setup = false,
+      process_items = function(items, base)
+        return MiniCompletion.default_process_items(items, base, { kind_priority = { Text = -1, Snippet = -1 } })
+      end,
+    },
   })
-
   vim.lsp.config('*', { capabilities = MiniCompletion.get_lsp_capabilities() })
-
   vim.api.nvim_create_autocmd('LspAttach', {
     group = Config.gr,
     callback = function(e) vim.bo[e.buf].omnifunc = 'v:lua.MiniCompletion.completefunc_lsp' end,
@@ -34,7 +33,9 @@ end)
 Config.later(
   function()
     require('mini.hipatterns').setup({
-      highlighters = { hex_color = require('mini.hipatterns').gen_highlighter.hex_color() },
+      highlighters = {
+        hex_color = require('mini.hipatterns').gen_highlighter.hex_color(),
+      },
     })
   end
 )
@@ -42,13 +43,12 @@ Config.later(
 Config.later(function()
   require('mini.jump2d').setup({
     spotter = require('mini.jump2d').gen_spotter.pattern('[^%s%p]+'),
-    labels = 'asdfghjkl;',
+    labels = 'asdfghjkl',
     view = {
       dim = true,
       n_steps_ahead = 2,
     },
   })
-
   vim.keymap.set({ 'n', 'x', 'o' }, 's', function() MiniJump2d.start(MiniJump2d.builtin_opts.single_character) end)
 end)
 
@@ -69,7 +69,6 @@ Config.later(
 
 Config.later(function()
   require('mini.keymap').setup()
-
   MiniKeymap.map_multistep('i', '<Tab>', { 'pmenu_next' })
   MiniKeymap.map_multistep('i', '<S-Tab>', { 'pmenu_prev' })
   MiniKeymap.map_multistep('i', '<CR>', { 'pmenu_accept' })
@@ -97,7 +96,6 @@ Config.later(function()
   })
 
   local show_dotfiles = true
-
   vim.api.nvim_create_autocmd('User', {
     pattern = 'MiniFilesBufferCreate',
     group = Config.gr,
@@ -162,7 +160,6 @@ Config.later(function()
     local choose = function(item)
       vim.schedule(function() MiniPick.builtin.files(nil, { source = { cwd = item.path } }) end)
     end
-
     return MiniExtra.pickers.explorer({ cwd = cwd }, { source = { choose = choose } })
   end
 
@@ -171,7 +168,6 @@ Config.later(function()
     local choose = function(item)
       vim.schedule(function() MiniPick.builtin.files(nil, { source = { cwd = item.path } }) end)
     end
-
     return MiniExtra.pickers.explorer({ cwd = cwd }, { source = { choose = choose } })
   end
 
@@ -182,26 +178,26 @@ Config.later(function()
   vim.keymap.set('t', '<M-o>', '<Cmd>lua MiniPick.builtin.buffers({ include_current = false })<CR>')
   vim.keymap.set('n', '<Leader>fp', '<Cmd>Pick personal<CR>', { desc = 'Personal projects' })
   vim.keymap.set('n', '<Leader>fw', '<Cmd>Pick work<CR>', { desc = 'Work projects' })
-  vim.keymap.set('n', '<Leader>ff', '<Cmd>lua MiniPick.builtin.files()<CR>', { desc = 'Files' })
-  vim.keymap.set('n', '<Leader>fg', '<Cmd>lua Minipick.builtin.grep_live()<CR>', { desc = 'Grep live' })
-  vim.keymap.set('n', '<Leader>fr', '<Cmd>lua MiniPick.builtin.resume()<CR>', { desc = 'Resume' })
-  vim.keymap.set('n', '<Leader>fb', '<Cmd>lua MiniPick.builtin.buffers({ include_current = false })<CR>', { desc = 'Buffers' })
-  vim.keymap.set('n', '<Leader>fl', "<Cmd>lua MiniExtra.pickers.buf_lines({ scope = 'current', desc = preserve_order = true })<CR>", { desc = 'Lines' })
-  vim.keymap.set('n', '<Leader>fq', "<Cmd>lua MiniExtra.pickers.list({ scope = 'quickfix' })<CR>", { desc = 'Quickfix' })
-  vim.keymap.set('n', '<Leader>fk', '<Cmd>lua MiniExtra.pickers.keymaps()<CR>', { desc = 'Keymaps' })
-  vim.keymap.set('n', '<Leader>fH', '<Cmd>lua MiniExtra.pickers.hl_groups()<CR>', { desc = 'Highlights' })
-  vim.keymap.set('n', '<Leader>fd', '<Cmd>lua MiniExtra.pickers.diagnostic()<CR>', { desc = 'Diagnostics' })
-  vim.keymap.set('n', '<Leader>fc', '<Cmd>lua MiniExtra.pickers.commands()<CR>', { desc = 'Commands' })
-  vim.keymap.set('n', '<Leader>fh', "<Cmd>lua MiniPick.builtin.help({ default_split = 'vertical' })<CR>", { desc = 'Help files' })
-  vim.keymap.set('n', '<Leader>fm', '<Cmd>lua MiniExtra.pickers.manpages()<CR>', { desc = 'Search manpages' })
-  vim.keymap.set('n', '<Leader>fo', '<Cmd>lua MiniExtra.pickers.visit_paths({ preserve_order = true })<CR>', { desc = 'Oldfiles' })
-  vim.keymap.set('n', '<Leader>lD', "<Cmd>lua MiniExtra.pickers.lsp({scope ='declaration'})<CR>", { desc = 'Declarations' })
-  vim.keymap.set('n', '<Leader>ld', "<Cmd>lua MiniExtra.pickers.lsp({scope='definition'})<CR>", { desc = 'Definitions' })
-  vim.keymap.set('n', '<Leader>ls', "<Cmd>lua MiniExtra.pickers.lsp({scope='document_symbol'})<CR>", { desc = 'Document Symbols' })
-  vim.keymap.set('n', '<Leader>lS', "<Cmd>lua MiniExtra.pickers.lsp({scope='workspace_symbol_live'})<CR>", { desc = 'Workspace symbols' })
-  vim.keymap.set('n', '<Leader>li', "<Cmd>lua MiniExtra.pickers.lsp({scope='implementation'})<CR>", { desc = 'Implementations' })
-  vim.keymap.set('n', '<Leader>lr', "<Cmd>lua MiniExtra.pickers.lsp({scope='references'})<CR>", { desc = 'References' })
-  vim.keymap.set('n', '<Leader>lt', "<Cmd>lua MiniExtra.pickers.lsp({scope='type_definition'})<CR>", { desc = 'Typedefs' })
+  vim.keymap.set('n', '<Leader>ff', '<Cmd>Pick files<CR>', { desc = 'Files' })
+  vim.keymap.set('n', '<Leader>fg', '<Cmd>Pick grep_live<CR>', { desc = 'Grep live' })
+  vim.keymap.set('n', '<Leader>fr', '<Cmd>Pick resume<CR>', { desc = 'Resume' })
+  vim.keymap.set('n', '<Leader>fb', '<Cmd>Pick buffers include_current=false<CR>', { desc = 'Buffers' })
+  vim.keymap.set('n', '<Leader>fl', "<Cmd>Pick buf_lines scope='current' preserve_order=true<CR>", { desc = 'Lines' })
+  vim.keymap.set('n', '<Leader>fq', "<Cmd>Pick list scope='quickfix'<CR>", { desc = 'Quickfix' })
+  vim.keymap.set('n', '<Leader>fk', '<Cmd>Pick keymaps<CR>', { desc = 'Keymaps' })
+  vim.keymap.set('n', '<Leader>fH', '<Cmd>Pick hl_groups<CR>', { desc = 'Highlights' })
+  vim.keymap.set('n', '<Leader>fd', '<Cmd>Pick diagnostic<CR>', { desc = 'Diagnostics' })
+  vim.keymap.set('n', '<Leader>fc', '<Cmd>Pick commands<CR>', { desc = 'Commands' })
+  vim.keymap.set('n', '<Leader>fh', "<Cmd>Pick help default_split='vertical'<CR>", { desc = 'Help files' })
+  vim.keymap.set('n', '<Leader>fm', '<Cmd>Pick manpages<CR>', { desc = 'Search manpages' })
+  vim.keymap.set('n', '<Leader>fo', '<Cmd>Pick visit_paths preserve_order=true<CR>', { desc = 'Oldfiles' })
+  vim.keymap.set('n', '<Leader>lD', "<Cmd>Pick lsp scope='declaration'<CR>", { desc = 'Declarations' })
+  vim.keymap.set('n', '<Leader>ld', "<Cmd>Pick lsp scope='definition'<CR>", { desc = 'Definitions' })
+  vim.keymap.set('n', '<Leader>ls', "<Cmd>Pick lsp scope='document_symbol'<CR>", { desc = 'Document Symbols' })
+  vim.keymap.set('n', '<Leader>lS', "<Cmd>Pick lsp scope='workspace_symbol_live'<CR>", { desc = 'Workspace symbols' })
+  vim.keymap.set('n', '<Leader>li', "<Cmd>Pick lsp scope='implementation'<CR>", { desc = 'Implementations' })
+  vim.keymap.set('n', '<Leader>lr', "<Cmd>Pick lsp scope='references'<CR>", { desc = 'References' })
+  vim.keymap.set('n', '<Leader>lt', "<Cmd>Pick lsp scope='type_definition'<CR>", { desc = 'Typedefs' })
   vim.keymap.set('n', '<Leader>la', '<Cmd>lua vim.lsp.buf.code_action()<CR>', { desc = 'Code actions' })
   vim.keymap.set('n', '<Leader>ln', '<Cmd>lua vim.lsp.buf.rename()<CR>', { desc = 'Rename' })
   -- stylua: ignore end

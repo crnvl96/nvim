@@ -13,23 +13,12 @@ Config.later(function()
     'https://github.com/nvim-treesitter/nvim-treesitter-textobjects',
   })
 
+  -- stylua: ignore
   local treesit_langs = {
     -- note: parsers for c, lua, vim, vimdoc, query and markdown are already included in neovim
-    'bash',
-    'css',
-    'diff',
-    'go',
-    'html',
-    'javascript',
-    'jsx',
-    'json',
-    'python',
-    'regex',
-    'toml',
-    'typescript',
-    'tsx',
-    'typst',
-    'yaml',
+    'bash', 'css', 'diff', 'go', 'html',
+    'javascript', 'jsx', 'json', 'python', 'regex',
+    'toml', 'typescript', 'tsx', 'typst', 'yaml',
   }
 
   require('nvim-treesitter').install(
@@ -53,25 +42,17 @@ end)
 
 Config.later(function()
   vim.pack.add({ 'https://github.com/neovim/nvim-lspconfig' })
-
+  -- stylua: ignore
   vim.lsp.enable({
-    'lua_ls',
-    'pyright',
-    'ruff',
-    'biome',
-    'eslint',
-    'clangd',
-    'tinymist',
-    'ts_ls',
+    'lua_ls', 'pyright', 'ruff', 'biome',
+    'eslint', 'clangd', 'tinymist', 'ts_ls',
     -- 'tsgo',
   })
 end)
 
 Config.later(function()
   vim.pack.add({ 'https://github.com/stevearc/conform.nvim' })
-
   local conform_autoformat = true
-
   require('conform').setup({
     notify_on_error = false,
     notify_no_formatters = false,
@@ -113,11 +94,6 @@ Config.later(function()
       markdown = { 'prettier', 'injected' },
     },
   })
-
-  vim.keymap.set(
-    'n',
-    [[\f]],
-    function() conform_autoformat = not conform_autoformat end,
-    { desc = 'Toggle autoformat' }
-  )
+  -- stylua: ignore
+  vim.keymap.set('n', [[\f]], function() conform_autoformat = not conform_autoformat end, { desc = 'Toggle autoformat' })
 end)
