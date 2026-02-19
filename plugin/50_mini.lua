@@ -9,6 +9,13 @@ Config.later(function() require('mini.cmdline').setup() end)
 Config.later(function() require('mini.bracketed').setup() end)
 
 Config.now(function()
+  -- We've setup this plugin at init.lua
+  MiniMisc.setup_auto_root()
+  MiniMisc.setup_restore_cursor()
+  MiniMisc.setup_termbg_sync()
+end)
+
+Config.now(function()
   vim.cmd.colorscheme('miniwinter')
   require('mini.colors').get_colorscheme():add_transparency({ general = false, float = true }):apply()
 end)
@@ -123,6 +130,12 @@ Config.later(function()
       MiniFiles.set_bookmark('n', vim.env.HOME .. '/Developer/personal/notes', { desc = 'Notes' })
       MiniFiles.set_bookmark('p', vim.env.HOME .. '/Developer/personal/presentations', { desc = 'Presentations' })
     end,
+  })
+
+  vim.api.nvim_create_autocmd('User', {
+    pattern = 'MiniFilesExplorerClose',
+    group = Config.gr,
+    callback = function() MiniMisc.put('Root: ' .. MiniMisc.find_root() or nil) end,
   })
 
   -- stylua: ignore
