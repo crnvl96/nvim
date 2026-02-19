@@ -11,6 +11,7 @@ Config.later(function() require('mini.move').setup() end)
 Config.later(function() require('mini.splitjoin').setup() end)
 Config.later(function() require('mini.indentscope').setup() end)
 Config.later(function() require('mini.comment').setup() end)
+Config.later(function() require('mini.cmdline').setup() end)
 
 Config.later(function()
   require('mini.completion').setup({
