@@ -1,3 +1,9 @@
+Config.now(function()
+  require('mini.colors').setup()
+  MiniColors.get_colorscheme('elflord'):add_transparency({ general = false, float = true }):apply()
+  MiniColors.animate({})
+end)
+
 Config.later(function() require('mini.extra').setup() end)
 Config.later(function() require('mini.visits').setup() end)
 Config.later(function() require('mini.align').setup() end)
@@ -16,9 +22,7 @@ Config.later(function()
       end,
     },
   })
-
   vim.lsp.config('*', { capabilities = MiniCompletion.get_lsp_capabilities() })
-
   vim.api.nvim_create_autocmd('LspAttach', {
     group = Config.gr,
     callback = function(e) vim.bo[e.buf].omnifunc = 'v:lua.MiniCompletion.completefunc_lsp' end,
@@ -96,7 +100,16 @@ Config.later(function()
   ---@diagnostic disable-next-line: duplicate-set-field
   vim.ui.select = function(items, opts, on_choice)
     return MiniPick.ui_select(items, opts, on_choice, {
-      window = { config = { relative = 'cursor', anchor = 'NW', row = 0, col = 0, width = 80, height = 15 } },
+      window = {
+        config = {
+          relative = 'cursor',
+          anchor = 'NW',
+          row = 0,
+          col = 0,
+          width = 80,
+          height = 15,
+        },
+      },
     })
   end
 
@@ -165,9 +178,7 @@ Config.later(
         delay = 500,
         scroll_down = '<C-f>',
         scroll_up = '<C-b>',
-        config = {
-          width = 'auto',
-        },
+        config = { width = 'auto' },
       },
     })
   end
