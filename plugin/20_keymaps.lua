@@ -9,6 +9,8 @@ Config.now(function()
 
   vim.keymap.set('t', '<C-g>', '<C-\\><C-n>')
 
+  vim.keymap.set('c', '<M-h>', '<C-f>')
+
   vim.keymap.set('n', '<C-h>', '<C-w>h')
   vim.keymap.set('n', '<C-j>', '<C-w>j')
   vim.keymap.set('n', '<C-k>', '<C-w>k')
@@ -25,7 +27,7 @@ Config.now(function()
   vim.keymap.set('n', '#', '#zz')
   vim.keymap.set('n', 'g*', 'g*zz')
 
-  vim.keymap.set('c', '<M-h>', '<C-f>')
+  -- Emacs like bindings
   vim.keymap.set('c', '<C-f>', '<Right>', { noremap = true })
   vim.keymap.set('c', '<C-b>', '<Left>')
   vim.keymap.set('c', '<C-a>', '<Home>')

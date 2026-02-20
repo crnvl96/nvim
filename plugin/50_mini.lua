@@ -50,7 +50,7 @@ Config.later(
 Config.later(function()
   require('mini.jump2d').setup({
     spotter = require('mini.jump2d').gen_spotter.pattern('[^%s%p]+'),
-    labels = 'asdfghjkl',
+    labels = 'asdfghjklweruioxcvn,.',
     view = {
       dim = true,
       n_steps_ahead = 2,
@@ -88,7 +88,7 @@ Config.later(function()
       go_in_plus = '<CR>',
       go_out = '',
       go_out_plus = '-',
-      mark_goto = 'g',
+      mark_goto = "'",
     },
     windows = {
       max_number = 3,
@@ -187,10 +187,12 @@ Config.later(function()
   end
 
   -- stylua: ignore start
+  vim.keymap.set('i', '<C-k>', '<Cmd>lua vim.lsp.buf.signature_help()<CR>')
+
+  vim.keymap.set('t', '<M-g>', '<Cmd>lua MiniPick.builtin.buffers({ include_current = false })<CR>')
+
   vim.keymap.set('n', 'E', '<Cmd>lua vim.diagnostic.open_float()<CR>')
   vim.keymap.set('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>')
-  vim.keymap.set('i', '<C-k>', '<Cmd>lua vim.lsp.buf.signature_help()<CR>')
-  vim.keymap.set('t', '<M-o>', '<Cmd>lua MiniPick.builtin.buffers({ include_current = false })<CR>')
   vim.keymap.set('n', '<Leader>fe', '<Cmd>Pick personal<CR>', { desc = 'Personal projects' })
   vim.keymap.set('n', '<Leader>fw', '<Cmd>Pick work<CR>', { desc = 'Work projects' })
   vim.keymap.set('n', '<Leader>ff', '<Cmd>Pick files<CR>', { desc = 'Files' })
