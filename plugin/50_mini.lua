@@ -13,6 +13,24 @@ Config.later(function() require('mini.comment').setup() end)
 Config.later(function() require('mini.cmdline').setup() end)
 Config.later(function() require('mini.bracketed').setup() end)
 
+Config.later(function() require('mini.statusline').setup() end)
+Config.later(function() require('mini.tabline').setup() end)
+
+Config.later(function()
+  require('mini.git').setup()
+  vim.keymap.set({ 'n', 'x' }, '<Leader>gs', '<Cmd>lua MiniGit.show_at_cursor()<CR>', { desc = 'Show at selection' })
+end)
+
+Config.later(function()
+  require('mini.diff').setup({
+    view = {
+      style = 'sign',
+    },
+  })
+
+  vim.keymap.set('n', '<Leader>go', '<Cmd>lua MiniDiff.toggle_overlay()<CR>', { desc = 'Toggle overlay' })
+end)
+
 Config.later(
   function()
     require('mini.indentscope').setup({
@@ -209,6 +227,7 @@ Config.later(function()
   vim.keymap.set('n', '<Leader>ff', '<Cmd>Pick files<CR>', { desc = 'Files' })
   vim.keymap.set('n', '<Leader>fg', '<Cmd>Pick grep_live<CR>', { desc = 'Grep live' })
   vim.keymap.set('n', '<Leader>fr', '<Cmd>Pick resume<CR>', { desc = 'Resume' })
+  vim.keymap.set('n', '<Leader>fu', '<Cmd>Pick git_hunks<CR>', { desc = 'Git hunks' })
   vim.keymap.set('n', '<Leader>fb', '<Cmd>Pick buffers include_current=false<CR>', { desc = 'Buffers' })
   vim.keymap.set('n', '<Leader>fl', "<Cmd>Pick buf_lines scope='current' preserve_order=true<CR>", { desc = 'Lines' })
   vim.keymap.set('n', '<Leader>fq', "<Cmd>Pick list scope='quickfix'<CR>", { desc = 'Quickfix' })

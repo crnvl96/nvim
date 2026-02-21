@@ -98,12 +98,12 @@ Config.later(function()
   vim.keymap.set('n', [[\f]], function() conform_autoformat = not conform_autoformat end, { desc = 'Toggle autoformat' })
 end)
 
-Config.later(function() vim.pack.add({ 'https://github.com/tpope/vim-fugitive' }) end)
+-- Config.later(function() vim.pack.add({ 'https://github.com/tpope/vim-fugitive' }) end)
 
-Config.later(function()
-  vim.pack.add({ 'https://github.com/nvim-lualine/lualine.nvim' })
-  require('lualine').setup()
-end)
+-- Config.later(function()
+--   vim.pack.add({ 'https://github.com/nvim-lualine/lualine.nvim' })
+--   require('lualine').setup()
+-- end)
 
 Config.now_if_args(function()
   vim.pack.add({ 'https://github.com/OXY2DEV/markview.nvim' })
