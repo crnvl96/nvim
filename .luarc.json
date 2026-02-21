@@ -8,6 +8,7 @@
         "MiniJump2d",
         "MiniKeymap",
         "MiniCompletion",
-        "MiniColors"
+        "MiniColors",
+        "Snacks"
     ]
 }

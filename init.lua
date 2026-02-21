@@ -1,5 +1,3 @@
--- INSTALL: https://github.com/neovim/neovim/blob/master/INSTALL.md#pre-built-archives-2
-
 _G.Config = {}
 
 vim.pack.add({ 'https://github.com/nvim-mini/mini.nvim' })
