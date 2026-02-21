@@ -8,13 +8,17 @@ Config.now(function()
 
   -- stylua: ignore start
   set('t', '<C-g>',     '<C-\\><C-n>')
+
   set('x', 'p',         'P')
+
   set('n', '<Esc>',     '<Esc><Cmd>noh<CR><Esc>', { noremap = true })
   set('i', '<Esc>',     '<Esc><Cmd>noh<CR><Esc>', { noremap = true })
   set('x', '<Esc>',     '<Esc><Cmd>noh<CR><Esc>', { noremap = true })
+
   set('n', '<C-s>',     '<Esc><Cmd>noh<CR><Cmd>silent! update | redraw<CR>')
   set('i', '<C-s>',     '<Esc><Cmd>noh<CR><Cmd>silent! update | redraw<CR>')
   set('x', '<C-s>',     '<Esc><Cmd>noh<CR><Cmd>silent! update | redraw<CR>')
+
   set('n', '<C-h>',     '<C-w>h')
   set('n', '<C-j>',     '<C-w>j')
   set('n', '<C-k>',     '<C-w>k')
@@ -30,6 +34,7 @@ Config.now(function()
   set('n', '*',         '*zz')
   set('n', '#',         '#zz')
   set('n', 'g*',        'g*zz')
+
   set('c', '<M-h>',     '<C-f>')
   set('c', '<C-f>',     '<Right>')
   set('c', '<C-b>',     '<Left>')
@@ -44,30 +49,9 @@ Config.now(function()
   -- stylua: ignore end
 end)
 
-Config.now(function()
-  local cursorPreYank
-  local set = vim.keymap.set
-
-  set({ 'n', 'x' }, 'y', function()
-    cursorPreYank = vim.api.nvim_win_get_cursor(0)
-    return 'y'
-  end, { expr = true })
-
-  set('n', 'Y', function()
-    cursorPreYank = vim.api.nvim_win_get_cursor(0)
-    return 'yg_'
-  end, { expr = true })
-
-  vim.api.nvim_create_autocmd('TextYankPost', {
-    group = Config.gr,
-    callback = function()
-      if vim.v.event.operator == 'y' and cursorPreYank then vim.api.nvim_win_set_cursor(0, cursorPreYank) end
-    end,
-  })
-end)
-
 Config.later(function()
   Config.autoformat = true
+  Config.cursor_pre_yank = nil
 
   Config.clues = {
     { mode = { 'n' }, keys = '<leader>e', desc = '+explorer' },
@@ -79,20 +63,22 @@ Config.later(function()
     { mode = { 'n', 'x' }, keys = '<leader>l', desc = '+lsp' },
   }
 
+  local set = vim.keymap.set
   local toggle_autoformat = function() Config.autoformat = not Config.autoformat end
-  local set_keymap = function(mode, lhs, rhs, desc) vim.keymap.set(mode, lhs, rhs, { desc = desc }) end
-
-  local term_goto_window = function(dir)
-    local replace_termcode = function(code) return vim.api.nvim_replace_termcodes(code, true, true, false) end
-    local feedkey = function(key) return vim.api.nvim_feedkeys(key, 'n', false) end
-
-    local esc = replace_termcode('<C-\\><C-n>')
-
-    feedkey(esc)
-    feedkey(replace_termcode(dir))
+  local set_keymap = function(mode, lhs, rhs, desc) set(mode, lhs, rhs, { desc = desc }) end
+  local yank = function()
+    Config.cursor_pre_yank = vim.api.nvim_win_get_cursor(0)
+    return 'y'
+  end
+  local yank_eol = function()
+    Config.cursor_pre_yank = vim.api.nvim_win_get_cursor(0)
+    return 'yg_'
   end
 
-  set_keymap('t', '<C-h>', function() term_goto_window('<C-w>h') end)
+  set('n', 'y', yank, { expr = true })
+  set('x', 'y', yank, { expr = true })
+
+  set('n', 'Y', yank_eol, { expr = true })
 
   set_keymap('n', 's', '<Cmd>lua MiniJump2d.start(MiniJump2d.builtin_opts.single_character)<CR>')
   set_keymap('x', 's', '<Cmd>lua MiniJump2d.start(MiniJump2d.builtin_opts.single_character)<CR>')
