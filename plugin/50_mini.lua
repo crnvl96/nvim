@@ -164,12 +164,6 @@ Config.later(function()
     end,
   })
 
-  vim.api.nvim_create_autocmd('User', {
-    pattern = 'MiniFilesExplorerClose',
-    group = Config.gr,
-    callback = function() MiniMisc.put('Root: ' .. MiniMisc.find_root() or nil) end,
-  })
-
   -- stylua: ignore
   vim.keymap.set('n', '<Leader>ef', '<Cmd>lua MiniFiles.open(vim.api.nvim_buf_get_name(0), false)<CR>', { desc = 'Explorer' })
 end)

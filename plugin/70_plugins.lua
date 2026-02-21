@@ -99,22 +99,6 @@ Config.later(function()
 end)
 
 Config.now_if_args(function()
-  vim.pack.add({ 'https://github.com/OXY2DEV/markview.nvim' })
-
-  local presets = require('markview.presets')
-
-  require('markview').setup({
-    preview = {
-      icon_provider = 'mini',
-    },
-  })
-
-  require('markview.extras.checkboxes').setup()
-  require('markview.extras.headings').setup()
-  require('markview.extras.editor').setup()
-end)
-
-Config.now_if_args(function()
   vim.pack.add({ 'https://github.com/HakonHarnes/img-clip.nvim' })
   require('img-clip').setup({
     default = {

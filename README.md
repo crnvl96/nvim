@@ -18,15 +18,23 @@ sudo tar -C /opt -xzf nvim-linux-x86_64.tar.gz
 
 ## Complementary tools
 
+```bash
+curl -LO <tool>
+sudo rm -rf ~/.local/bin/<tool>
+sudo tar -C ~/.local/bin -xzf <tool>
+```
+
 ### LazyGit
 
 > https://github.com/jesseduffield/lazygit
 
-```bash
-curl -LO https://github.com/jesseduffield/lazygit/releases/download/v0.59.0/lazygit_0.59.0_linux_x86_64.tar.gz
-sudo rm -rf ~/.local/bin/lazygit
-sudo tar -C ~/.local/bin -xzf lazygit_0.59.0_linux_x86_64.tar.gz
-```
+### Bat
+
+> https://github.com/sharkdp/bat
+
+### Eza
+
+> https://github.com/eza-community/eza
 
 ### Diff-so-fancy
 
