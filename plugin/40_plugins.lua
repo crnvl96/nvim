@@ -1,4 +1,9 @@
-Config.later(function()
+Config.now_if_args(function()
+  vim.pack.add({ 'https://github.com/folke/snacks.nvim' })
+  require('snacks').setup()
+end)
+
+Config.now_if_args(function()
   Config.on_packchanged('nvim-treesitter', { 'update' }, function(e)
     MiniMisc.log_add('Updating parsers', {
       name = e.data.spec.name,
@@ -40,7 +45,7 @@ Config.later(function()
   })
 end)
 
-Config.later(function()
+Config.now_if_args(function()
   vim.pack.add({ 'https://github.com/neovim/nvim-lspconfig' })
   -- stylua: ignore
   vim.lsp.enable({
@@ -50,9 +55,9 @@ Config.later(function()
   })
 end)
 
-Config.later(function()
+Config.now_if_args(function()
   vim.pack.add({ 'https://github.com/stevearc/conform.nvim' })
-  local conform_autoformat = true
+
   require('conform').setup({
     notify_on_error = false,
     notify_no_formatters = false,
@@ -65,7 +70,7 @@ Config.later(function()
       prettier = { require_cwd = false },
     },
     format_on_save = function()
-      if not conform_autoformat then return nil end
+      if not Config.autoformat then return nil end
       return {}
     end,
     formatters_by_ft = {
@@ -94,8 +99,6 @@ Config.later(function()
       markdown = { 'prettier', 'injected' },
     },
   })
-  -- stylua: ignore
-  vim.keymap.set('n', [[\f]], function() conform_autoformat = not conform_autoformat end, { desc = 'Toggle autoformat' })
 end)
 
 Config.now_if_args(function()

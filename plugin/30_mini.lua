@@ -105,24 +105,6 @@ Config.later(function()
     },
   })
 
-  local show_dotfiles = true
-  vim.api.nvim_create_autocmd('User', {
-    pattern = 'MiniFilesBufferCreate',
-    group = Config.gr,
-    callback = function(e)
-      local buf = e.data.buf_id
-      local filter_show = function() return true end
-      local filter_hide = function(fs_entry) return not vim.startswith(fs_entry.name, '.') end
-
-      local toggle_dotfiles = function()
-        show_dotfiles = not show_dotfiles
-        MiniFiles.refresh({ content = { filter = show_dotfiles and filter_show or filter_hide } })
-      end
-
-      vim.keymap.set('n', 'g.', toggle_dotfiles, { buffer = buf, desc = '[Un]show Dotfiles' })
-    end,
-  })
-
   vim.api.nvim_create_autocmd('User', {
     pattern = 'MiniFilesExplorerOpen',
     group = Config.gr,
@@ -141,72 +123,35 @@ end)
 Config.later(function()
   require('mini.pick').setup({ window = { prompt_prefix = ' ' } })
 
+  MiniPick.registry.projects = function()
+    local cwd = vim.fn.expand('~/Developer')
+
+    local choose = function(item)
+      local local_opts = nil
+      local opts = { source = { cwd = item.path } }
+      vim.schedule(function() MiniPick.builtin.files(local_opts, opts) end)
+    end
+
+    local choose_scope = function(item)
+      local local_opts = { cwd = item.path }
+      local opts = { source = { cwd = item.path, choose = choose } }
+      vim.schedule(function() MiniExtra.pickers.explorer(local_opts, opts) end)
+    end
+
+    local local_opts = { cwd = cwd }
+    local opts = { source = { choose = choose_scope } }
+    return MiniExtra.pickers.explorer(local_opts, opts)
+  end
+
   ---@diagnostic disable-next-line: duplicate-set-field
   vim.ui.select = function(items, opts, on_choice)
-    return MiniPick.ui_select(items, opts, on_choice, {
-      window = {
-        config = {
-          relative = 'cursor',
-          anchor = 'NW',
-          row = 0,
-          col = 0,
-          width = 80,
-          height = 15,
-        },
-      },
-    })
+    return MiniPick.ui_select(
+      items,
+      opts,
+      on_choice,
+      { window = { config = { relative = 'cursor', anchor = 'NW', row = 0, col = 0, width = 80, height = 15 } } }
+    )
   end
-
-  MiniPick.registry.personal = function()
-    local cwd = vim.fn.expand('~/Developer/personal')
-    local choose = function(item)
-      vim.schedule(function() MiniPick.builtin.files(nil, { source = { cwd = item.path } }) end)
-    end
-    return MiniExtra.pickers.explorer({ cwd = cwd }, { source = { choose = choose } })
-  end
-
-  MiniPick.registry.work = function()
-    local cwd = vim.fn.expand('~/Developer/work')
-    local choose = function(item)
-      vim.schedule(function() MiniPick.builtin.files(nil, { source = { cwd = item.path } }) end)
-    end
-    return MiniExtra.pickers.explorer({ cwd = cwd }, { source = { choose = choose } })
-  end
-
-  -- stylua: ignore start
-  vim.keymap.set('i', '<C-k>', '<Cmd>lua vim.lsp.buf.signature_help()<CR>')
-
-  vim.keymap.set('t', '<C-k>', '<Cmd>lua MiniPick.builtin.buffers({ include_current = false })<CR>')
-  vim.keymap.set('t', '<C-s>', '<Cmd>lua MiniPick.builtin.buffers({ include_current = false })<CR>')
-
-  vim.keymap.set('n', 'E', '<Cmd>lua vim.diagnostic.open_float()<CR>')
-  vim.keymap.set('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>')
-  vim.keymap.set('n', '<Leader>fe', '<Cmd>Pick personal<CR>', { desc = 'Personal projects' })
-  vim.keymap.set('n', '<Leader>fw', '<Cmd>Pick work<CR>', { desc = 'Work projects' })
-  vim.keymap.set('n', '<Leader>ff', '<Cmd>Pick files<CR>', { desc = 'Files' })
-  vim.keymap.set('n', '<Leader>fg', '<Cmd>Pick grep_live<CR>', { desc = 'Grep live' })
-  vim.keymap.set('n', '<Leader>fr', '<Cmd>Pick resume<CR>', { desc = 'Resume' })
-  vim.keymap.set('n', '<Leader>fu', '<Cmd>Pick git_hunks<CR>', { desc = 'Git hunks' })
-  vim.keymap.set('n', '<Leader>fb', '<Cmd>Pick buffers include_current=false<CR>', { desc = 'Buffers' })
-  vim.keymap.set('n', '<Leader>fl', "<Cmd>Pick buf_lines scope='current' preserve_order=true<CR>", { desc = 'Lines' })
-  vim.keymap.set('n', '<Leader>fq', "<Cmd>Pick list scope='quickfix'<CR>", { desc = 'Quickfix' })
-  vim.keymap.set('n', '<Leader>fk', '<Cmd>Pick keymaps<CR>', { desc = 'Keymaps' })
-  vim.keymap.set('n', '<Leader>fH', '<Cmd>Pick hl_groups<CR>', { desc = 'Highlights' })
-  vim.keymap.set('n', '<Leader>fd', '<Cmd>Pick diagnostic<CR>', { desc = 'Diagnostics' })
-  vim.keymap.set('n', '<Leader>fc', '<Cmd>Pick commands<CR>', { desc = 'Commands' })
-  vim.keymap.set('n', '<Leader>fh', "<Cmd>Pick help default_split='vertical'<CR>", { desc = 'Help files' })
-  vim.keymap.set('n', '<Leader>fm', '<Cmd>Pick manpages<CR>', { desc = 'Search manpages' })
-  vim.keymap.set('n', '<Leader>fo', '<Cmd>Pick visit_paths preserve_order=true<CR>', { desc = 'Oldfiles' })
-  vim.keymap.set('n', '<Leader>lD', "<Cmd>Pick lsp scope='declaration'<CR>", { desc = 'Declarations' })
-  vim.keymap.set('n', '<Leader>ld', "<Cmd>Pick lsp scope='definition'<CR>", { desc = 'Definitions' })
-  vim.keymap.set('n', '<Leader>ls', "<Cmd>Pick lsp scope='document_symbol'<CR>", { desc = 'Document Symbols' })
-  vim.keymap.set('n', '<Leader>lS', "<Cmd>Pick lsp scope='workspace_symbol_live'<CR>", { desc = 'Workspace symbols' })
-  vim.keymap.set('n', '<Leader>li', "<Cmd>Pick lsp scope='implementation'<CR>", { desc = 'Implementations' })
-  vim.keymap.set('n', '<Leader>lr', "<Cmd>Pick lsp scope='references'<CR>", { desc = 'References' })
-  vim.keymap.set('n', '<Leader>lt', "<Cmd>Pick lsp scope='type_definition'<CR>", { desc = 'Typedefs' })
-  vim.keymap.set('n', '<Leader>la', '<Cmd>lua vim.lsp.buf.code_action()<CR>', { desc = 'Code actions' })
-  vim.keymap.set('n', '<Leader>ln', '<Cmd>lua vim.lsp.buf.rename()<CR>', { desc = 'Rename' })
-  -- stylua: ignore end
 end)
 
 Config.later(

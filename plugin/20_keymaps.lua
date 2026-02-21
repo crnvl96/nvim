@@ -1,59 +1,143 @@
 Config.now(function()
-  vim.keymap.set({ 'n', 'i', 'x' }, '<Esc>', '<Esc><Cmd>noh<CR><Esc>', { noremap = true })
-  vim.keymap.set({ 'n', 'i', 'x' }, '<C-s>', '<Esc><Cmd>noh<CR><Cmd>silent! update | redraw<CR>')
+  local set = vim.keymap.set
 
-  vim.keymap.set({ 'n', 'x' }, 'j', [[v:count == 0 ? 'gj' : 'j']], { expr = true })
-  vim.keymap.set({ 'n', 'x' }, 'k', [[v:count == 0 ? 'gk' : 'k']], { expr = true })
+  set('n', 'j', [[v:count == 0 ? 'gj' : 'j']], { expr = true })
+  set('x', 'j', [[v:count == 0 ? 'gj' : 'j']], { expr = true })
+  set('n', 'k', [[v:count == 0 ? 'gk' : 'k']], { expr = true })
+  set('x', 'k', [[v:count == 0 ? 'gk' : 'k']], { expr = true })
 
-  vim.keymap.set('x', 'p', 'P')
+  -- stylua: ignore start
+  set('t', '<C-g>',     '<C-\\><C-n>')
+  set('x', 'p',         'P')
+  set('n', '<Esc>',     '<Esc><Cmd>noh<CR><Esc>', { noremap = true })
+  set('i', '<Esc>',     '<Esc><Cmd>noh<CR><Esc>', { noremap = true })
+  set('x', '<Esc>',     '<Esc><Cmd>noh<CR><Esc>', { noremap = true })
+  set('n', '<C-s>',     '<Esc><Cmd>noh<CR><Cmd>silent! update | redraw<CR>')
+  set('i', '<C-s>',     '<Esc><Cmd>noh<CR><Cmd>silent! update | redraw<CR>')
+  set('x', '<C-s>',     '<Esc><Cmd>noh<CR><Cmd>silent! update | redraw<CR>')
+  set('n', '<C-h>',     '<C-w>h')
+  set('n', '<C-j>',     '<C-w>j')
+  set('n', '<C-k>',     '<C-w>k')
+  set('n', '<C-l>',     '<C-w>l')
+  set('n', '<C-Left>',  '<Cmd>vertical resize -20<CR>')
+  set('n', '<C-Down>',  '<Cmd>resize -5<CR>')
+  set('n', '<C-Up>',    '<Cmd>resize +5<CR>')
+  set('n', '<C-Right>', '<Cmd>vertical resize +20<CR>')
+  set('n', '<C-d>',     '<C-d>zz')
+  set('n', '<C-u>',     '<C-u>zz')
+  set('n', 'n',         'nzz')
+  set('n', 'N',         'Nzz')
+  set('n', '*',         '*zz')
+  set('n', '#',         '#zz')
+  set('n', 'g*',        'g*zz')
+  set('c', '<M-h>',     '<C-f>')
+  set('c', '<C-f>',     '<Right>')
+  set('c', '<C-b>',     '<Left>')
+  set('c', '<C-a>',     '<Home>')
+  set('c', '<C-e>',     '<End>')
+  set('c', '<M-f>',     '<C-Right>')
+  set('c', '<M-b>',     '<C-Left>')
+  set('c', '<C-d>',     '<Del>')
+  set('c', '<M-d>',     '<C-w>')
+  set('c', '<C-k>',     '<C-u>')
+  set('c', '<C-g>',     '<C-c>')
+  -- stylua: ignore end
+end)
 
-  vim.keymap.set('t', '<C-g>', '<C-\\><C-n>')
+Config.now(function()
+  local cursorPreYank
+  local set = vim.keymap.set
 
-  vim.keymap.set('c', '<M-h>', '<C-f>')
+  set({ 'n', 'x' }, 'y', function()
+    cursorPreYank = vim.api.nvim_win_get_cursor(0)
+    return 'y'
+  end, { expr = true })
 
-  vim.keymap.set('n', '<C-h>', '<C-w>h')
-  vim.keymap.set('n', '<C-j>', '<C-w>j')
-  vim.keymap.set('n', '<C-k>', '<C-w>k')
-  vim.keymap.set('n', '<C-l>', '<C-w>l')
-  vim.keymap.set('n', '<C-Left>', '<Cmd>vertical resize -20<CR>')
-  vim.keymap.set('n', '<C-Down>', '<Cmd>resize -5<CR>')
-  vim.keymap.set('n', '<C-Up>', '<Cmd>resize +5<CR>')
-  vim.keymap.set('n', '<C-Right>', '<Cmd>vertical resize +20<CR>')
-  vim.keymap.set('n', '<C-d>', '<C-d>zz')
-  vim.keymap.set('n', '<C-u>', '<C-u>zz')
-  vim.keymap.set('n', 'n', 'nzz')
-  vim.keymap.set('n', 'N', 'Nzz')
-  vim.keymap.set('n', '*', '*zz')
-  vim.keymap.set('n', '#', '#zz')
-  vim.keymap.set('n', 'g*', 'g*zz')
+  set('n', 'Y', function()
+    cursorPreYank = vim.api.nvim_win_get_cursor(0)
+    return 'yg_'
+  end, { expr = true })
 
-  -- Emacs like bindings
-  vim.keymap.set('c', '<C-f>', '<Right>', { noremap = true })
-  vim.keymap.set('c', '<C-b>', '<Left>')
-  vim.keymap.set('c', '<C-a>', '<Home>')
-  vim.keymap.set('c', '<C-e>', '<End>')
-  vim.keymap.set('c', '<M-f>', '<C-Right>')
-  vim.keymap.set('c', '<M-b>', '<C-Left>')
-  vim.keymap.set('c', '<C-d>', '<Del>')
-  vim.keymap.set('c', '<M-d>', '<C-w>')
-  vim.keymap.set('c', '<C-k>', '<C-u>')
-  vim.keymap.set('c', '<C-g>', '<C-c>')
+  vim.api.nvim_create_autocmd('TextYankPost', {
+    group = Config.gr,
+    callback = function()
+      if vim.v.event.operator == 'y' and cursorPreYank then vim.api.nvim_win_set_cursor(0, cursorPreYank) end
+    end,
+  })
 end)
 
 Config.later(function()
+  Config.autoformat = true
+
   Config.clues = {
     { mode = { 'n' }, keys = '<leader>e', desc = '+explorer' },
     { mode = { 'n' }, keys = '<leader>b', desc = '+buffers' },
-    { mode = { 'n' }, keys = '<leader>g', desc = '+git' },
+    { mode = { 'n' }, keys = '<leader>t', desc = '+toggle' },
+    { mode = { 'n' }, keys = '<leader>u', desc = '+utils' },
+    { mode = { 'n', 'x' }, keys = '<leader>g', desc = '+git' },
     { mode = { 'n', 'x' }, keys = '<leader>f', desc = '+find' },
     { mode = { 'n', 'x' }, keys = '<leader>l', desc = '+lsp' },
   }
 
-  -- stylua: ignore start
-  vim.keymap.set({ 'n', 'x', 'o' }, 's', '<Cmd>lua MiniJump2d.start(MiniJump2d.builtin_opts.single_character)<CR>')
+  local toggle_autoformat = function() Config.autoformat = not Config.autoformat end
+  local set_keymap = function(mode, lhs, rhs, desc) vim.keymap.set(mode, lhs, rhs, { desc = desc }) end
 
-  vim.keymap.set('n', '<Leader>ef', '<Cmd>lua MiniFiles.open(vim.api.nvim_buf_get_name(0), false)<CR>', { desc = 'Explorer' })
-  vim.keymap.set('n', '<Leader>go', '<Cmd>lua MiniDiff.toggle_overlay()<CR>', { desc = 'Toggle overlay' })
-  vim.keymap.set('n', '<Leader>gs', '<Cmd>lua MiniGit.show_at_cursor()<CR>', { desc = 'Show at selection' })
-  vim.keymap.set('x', '<Leader>gs', '<Cmd>lua MiniGit.show_at_cursor()<CR>', { desc = 'Show at selection' })
+  local term_goto_window = function(dir)
+    local replace_termcode = function(code) return vim.api.nvim_replace_termcodes(code, true, true, false) end
+    local feedkey = function(key) return vim.api.nvim_feedkeys(key, 'n', false) end
+
+    local esc = replace_termcode('<C-\\><C-n>')
+
+    feedkey(esc)
+    feedkey(replace_termcode(dir))
+  end
+
+  set_keymap('t', '<C-h>', function() term_goto_window('<C-w>h') end)
+
+  set_keymap('n', 's', '<Cmd>lua MiniJump2d.start(MiniJump2d.builtin_opts.single_character)<CR>')
+  set_keymap('x', 's', '<Cmd>lua MiniJump2d.start(MiniJump2d.builtin_opts.single_character)<CR>')
+  set_keymap('o', 's', '<Cmd>lua MiniJump2d.start(MiniJump2d.builtin_opts.single_character)<CR>')
+
+  set_keymap('t', '<C-k>', '<Cmd>lua MiniPick.builtin.buffers()<CR>')
+  set_keymap('t', '<C-s>', '<Cmd>lua MiniPick.builtin.buffers()<CR>')
+
+  set_keymap('n', 'E', '<Cmd>lua vim.diagnostic.open_float()<CR>')
+  set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>')
+  set_keymap('i', '<C-k>', '<Cmd>lua vim.lsp.buf.signature_help()<CR>')
+
+  -- stylua: ignore start
+  set_keymap('n', '<Leader>tf', toggle_autoformat,                                             'Toggle autoformat')
+  set_keymap('n', '<Leader>bo', '<Cmd>lua Snacks.bufdelete.other()<CR>',                       'Kill other buffers')
+  set_keymap('n', '<Leader>ef', '<Cmd>lua MiniFiles.open(vim.api.nvim_buf_get_name(0),         false)<CR>', 'Explorer')
+  set_keymap('n', '<Leader>fH', '<Cmd>Pick hl_groups<CR>',                                     'Highlights')
+  set_keymap('n', '<Leader>fb', '<Cmd>Pick buffers include_current=false<CR>',                 'Buffers')
+  set_keymap('n', '<Leader>fc', '<Cmd>Pick commands<CR>',                                      'Commands')
+  set_keymap('n', '<Leader>fd', '<Cmd>Pick diagnostic<CR>',                                    'Diagnostics')
+  set_keymap('n', '<Leader>fe', '<Cmd>Pick explorer<CR>',                                      'Explorer')
+  set_keymap('n', '<Leader>ff', '<Cmd>Pick files<CR>',                                         'Files')
+  set_keymap('n', '<Leader>fg', '<Cmd>Pick grep_live<CR>',                                     'Grep live')
+  set_keymap('n', '<Leader>fh', "<Cmd>Pick help default_split='vertical'<CR>",                 'Help files')
+  set_keymap('n', '<Leader>fk', '<Cmd>Pick keymaps<CR>',                                       'Keymaps')
+  set_keymap('n', '<Leader>fl', "<Cmd>Pick buf_lines scope='current' preserve_order=true<CR>", 'Lines')
+  set_keymap('n', '<Leader>fm', '<Cmd>Pick manpages<CR>',                                      'Search manpages')
+  set_keymap('n', '<Leader>fo', '<Cmd>Pick visit_paths preserve_order=true<CR>',               'Oldfiles')
+  set_keymap('n', '<Leader>fp', '<Cmd>Pick projects<CR>',                                      'Personal projects')
+  set_keymap('n', '<Leader>fq', "<Cmd>Pick list scope='quickfix'<CR>",                         'Quickfix')
+  set_keymap('n', '<Leader>fr', '<Cmd>Pick resume<CR>',                                        'Resume')
+  set_keymap('n', '<Leader>fu', '<Cmd>Pick git_hunks<CR>',                                     'Git hunks')
+  set_keymap('n', '<Leader>gg', '<Cmd>lua Snacks.lazygit()<CR>',                               'Open LazyGit')
+  set_keymap('n', '<Leader>go', '<Cmd>lua MiniDiff.toggle_overlay()<CR>',                      'Toggle overlay')
+  set_keymap('n', '<Leader>gs', '<Cmd>lua MiniGit.show_at_cursor()<CR>',                       'Show at selection')
+  set_keymap('x', '<Leader>gs', '<Cmd>lua MiniGit.show_at_cursor()<CR>',                       'Show at selection')
+  set_keymap('n', '<Leader>lD', "<Cmd>Pick lsp scope='declaration'<CR>",                       'Declarations')
+  set_keymap('n', '<Leader>lS', "<Cmd>Pick lsp scope='workspace_symbol_live'<CR>",             'Workspace symbols')
+  set_keymap('n', '<Leader>la', '<Cmd>lua vim.lsp.buf.code_action()<CR>',                      'Code actions')
+  set_keymap('n', '<Leader>ld', "<Cmd>Pick lsp scope='definition'<CR>",                        'Definitions')
+  set_keymap('n', '<Leader>li', "<Cmd>Pick lsp scope='implementation'<CR>",                    'Implementations')
+  set_keymap('n', '<Leader>ln', '<Cmd>lua vim.lsp.buf.rename()<CR>',                           'Rename')
+  set_keymap('n', '<Leader>lr', "<Cmd>Pick lsp scope='references'<CR>",                        'References')
+  set_keymap('n', '<Leader>ls', "<Cmd>Pick lsp scope='document_symbol'<CR>",                   'Document Symbols')
+  set_keymap('n', '<Leader>lt', "<Cmd>Pick lsp scope='type_definition'<CR>",                   'Typedefs')
+  set_keymap('n', '<Leader>ur', "<Cmd>lua MiniMisc.put(MiniMisc.find_root())<CR>",             'Find current root')
+  -- stylua: ignore end
 end)
