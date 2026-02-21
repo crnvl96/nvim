@@ -39,3 +39,21 @@ Config.now(function()
   vim.keymap.set('c', '<C-k>', '<C-u>')
   vim.keymap.set('c', '<C-g>', '<C-c>')
 end)
+
+Config.later(function()
+  Config.clues = {
+    { mode = { 'n' }, keys = '<leader>e', desc = '+explorer' },
+    { mode = { 'n' }, keys = '<leader>b', desc = '+buffers' },
+    { mode = { 'n' }, keys = '<leader>g', desc = '+git' },
+    { mode = { 'n', 'x' }, keys = '<leader>f', desc = '+find' },
+    { mode = { 'n', 'x' }, keys = '<leader>l', desc = '+lsp' },
+  }
+
+  -- stylua: ignore start
+  vim.keymap.set({ 'n', 'x', 'o' }, 's', '<Cmd>lua MiniJump2d.start(MiniJump2d.builtin_opts.single_character)<CR>')
+
+  vim.keymap.set('n', '<Leader>ef', '<Cmd>lua MiniFiles.open(vim.api.nvim_buf_get_name(0), false)<CR>', { desc = 'Explorer' })
+  vim.keymap.set('n', '<Leader>go', '<Cmd>lua MiniDiff.toggle_overlay()<CR>', { desc = 'Toggle overlay' })
+  vim.keymap.set('n', '<Leader>gs', '<Cmd>lua MiniGit.show_at_cursor()<CR>', { desc = 'Show at selection' })
+  vim.keymap.set('x', '<Leader>gs', '<Cmd>lua MiniGit.show_at_cursor()<CR>', { desc = 'Show at selection' })
+end)

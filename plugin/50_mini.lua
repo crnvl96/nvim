@@ -14,32 +14,9 @@ Config.later(function() require('mini.cmdline').setup() end)
 Config.later(function() require('mini.bracketed').setup() end)
 Config.later(function() require('mini.statusline').setup() end)
 Config.later(function() require('mini.tabline').setup() end)
-
-Config.later(function()
-  require('mini.git').setup()
-  vim.keymap.set({ 'n', 'x' }, '<Leader>gs', '<Cmd>lua MiniGit.show_at_cursor()<CR>', { desc = 'Show at selection' })
-end)
-
-Config.later(function()
-  require('mini.diff').setup({
-    view = {
-      style = 'sign',
-    },
-  })
-
-  vim.keymap.set('n', '<Leader>go', '<Cmd>lua MiniDiff.toggle_overlay()<CR>', { desc = 'Toggle overlay' })
-end)
-
-Config.later(
-  function()
-    require('mini.indentscope').setup({
-      options = {
-        border = 'top',
-        try_as_border = true,
-      },
-    })
-  end
-)
+Config.later(function() require('mini.git').setup() end)
+Config.later(function() require('mini.diff').setup({ view = { style = 'sign' } }) end)
+Config.later(function() require('mini.indentscope').setup({ options = { border = 'top', try_as_border = true } }) end)
 
 Config.now(function()
   -- We've setup this plugin at init.lua
@@ -73,24 +50,20 @@ end)
 Config.later(
   function()
     require('mini.hipatterns').setup({
-      highlighters = {
-        hex_color = require('mini.hipatterns').gen_highlighter.hex_color(),
-      },
+      highlighters = { hex_color = require('mini.hipatterns').gen_highlighter.hex_color() },
     })
   end
 )
 
-Config.later(function()
-  require('mini.jump2d').setup({
-    spotter = require('mini.jump2d').gen_spotter.pattern('[^%s%p]+'),
-    labels = 'asdfghjklweruioxcvn,.',
-    view = {
-      dim = true,
-      n_steps_ahead = 2,
-    },
-  })
-  vim.keymap.set({ 'n', 'x', 'o' }, 's', function() MiniJump2d.start(MiniJump2d.builtin_opts.single_character) end)
-end)
+Config.later(
+  function()
+    require('mini.jump2d').setup({
+      spotter = require('mini.jump2d').gen_spotter.pattern('[^%s%p]+'),
+      labels = 'asdfghjklweruioxcvn,.',
+      view = { dim = true, n_steps_ahead = 2 },
+    })
+  end
+)
 
 Config.later(
   function()
@@ -163,17 +136,10 @@ Config.later(function()
       MiniFiles.set_bookmark('w', vim.env.HOME .. '/Developer/work', { desc = 'Work projects' })
     end,
   })
-
-  -- stylua: ignore
-  vim.keymap.set('n', '<Leader>ef', '<Cmd>lua MiniFiles.open(vim.api.nvim_buf_get_name(0), false)<CR>', { desc = 'Explorer' })
 end)
 
 Config.later(function()
-  require('mini.pick').setup({
-    window = {
-      prompt_prefix = ' ',
-    },
-  })
+  require('mini.pick').setup({ window = { prompt_prefix = ' ' } })
 
   ---@diagnostic disable-next-line: duplicate-set-field
   vim.ui.select = function(items, opts, on_choice)
@@ -261,11 +227,7 @@ Config.later(
         { mode = { 'n', 'x' }, keys = 'z' },
       },
       clues = {
-        { mode = { 'n' }, keys = '<leader>e', desc = '+explorer' },
-        { mode = { 'n' }, keys = '<leader>b', desc = '+buffers' },
-        { mode = { 'n' }, keys = '<leader>g', desc = '+git' },
-        { mode = { 'n', 'x' }, keys = '<leader>f', desc = '+find' },
-        { mode = { 'n', 'x' }, keys = '<leader>l', desc = '+lsp' },
+        Config.clues,
         require('mini.clue').gen_clues.builtin_completion(),
         require('mini.clue').gen_clues.g(),
         require('mini.clue').gen_clues.marks(),

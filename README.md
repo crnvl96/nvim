@@ -5,11 +5,6 @@
 > https://github.com/neovim/neovim/blob/master/INSTALL.md#pre-built-archives-2
 
 ```bash
-# Add nvim location to your path, eg:
-PATH=/opt/nvim-linux-x86_64/bin:$PATH
-```
-
-```bash
 # Nightly release
 curl -LO https://github.com/neovim/neovim/releases/download/nightly/nvim-linux-x86_64.tar.gz
 sudo rm -rf /opt/nvim-linux-x86_64
