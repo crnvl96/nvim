@@ -1,3 +1,9 @@
+Config.now(function()
+  require('mini.icons').setup()
+  Config.later(MiniIcons.tweak_lsp_kind)
+  Config.later(MiniIcons.mock_nvim_web_devicons)
+end)
+
 Config.later(function() require('mini.extra').setup() end)
 Config.later(function() require('mini.visits').setup() end)
 Config.later(function() require('mini.align').setup() end)
@@ -107,9 +113,6 @@ Config.later(function()
       width_nofocus = 20,
       width_preview = 80,
     },
-    content = {
-      prefix = function() end,
-    },
   })
 
   local show_dotfiles = true
@@ -157,10 +160,7 @@ end)
 Config.later(function()
   require('mini.pick').setup({
     window = {
-      prompt_prefix = '  ',
-    },
-    source = {
-      show = require('mini.pick').default_show,
+      prompt_prefix = ' ',
     },
   })
 
@@ -199,7 +199,8 @@ Config.later(function()
   -- stylua: ignore start
   vim.keymap.set('i', '<C-k>', '<Cmd>lua vim.lsp.buf.signature_help()<CR>')
 
-  vim.keymap.set('t', '<M-g>', '<Cmd>lua MiniPick.builtin.buffers({ include_current = false })<CR>')
+  vim.keymap.set('t', '<C-k>', '<Cmd>lua MiniPick.builtin.buffers({ include_current = false })<CR>')
+  vim.keymap.set('t', '<C-s>', '<Cmd>lua MiniPick.builtin.buffers({ include_current = false })<CR>')
 
   vim.keymap.set('n', 'E', '<Cmd>lua vim.diagnostic.open_float()<CR>')
   vim.keymap.set('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>')
