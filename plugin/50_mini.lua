@@ -3,10 +3,20 @@ Config.later(function() require('mini.visits').setup() end)
 Config.later(function() require('mini.align').setup() end)
 Config.later(function() require('mini.move').setup() end)
 Config.later(function() require('mini.splitjoin').setup() end)
-Config.later(function() require('mini.indentscope').setup() end)
 Config.later(function() require('mini.comment').setup() end)
 Config.later(function() require('mini.cmdline').setup() end)
 Config.later(function() require('mini.bracketed').setup() end)
+
+Config.later(
+  function()
+    require('mini.indentscope').setup({
+      options = {
+        border = 'top',
+        try_as_border = true,
+      },
+    })
+  end
+)
 
 Config.now(function()
   -- We've setup this plugin at init.lua

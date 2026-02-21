@@ -40,14 +40,6 @@
       "rev": "a0e182ae21fda68c59d1f36c9ed45600aef50311",
       "src": "https://github.com/nvim-treesitter/nvim-treesitter-textobjects"
     },
-    "presenting.nvim": {
-      "rev": "e78245995a09233e243bf48169b2f00dc76341f7",
-      "src": "https://github.com/sotte/presenting.nvim"
-    },
-    "summon.nvim": {
-      "rev": "e6293e0b70790065d7d69055ccf8406a59d5f247",
-      "src": "https://github.com/salkhalil/summon.nvim"
-    },
     "vim-fugitive": {
       "rev": "61b51c09b7c9ce04e821f6cf76ea4f6f903e3cf4",
       "src": "https://github.com/tpope/vim-fugitive"
