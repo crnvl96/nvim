@@ -12,7 +12,6 @@ Config.later(function() require('mini.splitjoin').setup() end)
 Config.later(function() require('mini.comment').setup() end)
 Config.later(function() require('mini.cmdline').setup() end)
 Config.later(function() require('mini.bracketed').setup() end)
-
 Config.later(function() require('mini.statusline').setup() end)
 Config.later(function() require('mini.tabline').setup() end)
 
@@ -269,6 +268,8 @@ Config.later(
       },
       clues = {
         { mode = { 'n' }, keys = '<leader>e', desc = '+explorer' },
+        { mode = { 'n' }, keys = '<leader>b', desc = '+buffers' },
+        { mode = { 'n' }, keys = '<leader>g', desc = '+git' },
         { mode = { 'n', 'x' }, keys = '<leader>f', desc = '+find' },
         { mode = { 'n', 'x' }, keys = '<leader>l', desc = '+lsp' },
         require('mini.clue').gen_clues.builtin_completion(),
