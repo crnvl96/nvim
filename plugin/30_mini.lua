@@ -40,7 +40,9 @@ Config.later(function()
       end,
     },
   })
+
   vim.lsp.config('*', { capabilities = MiniCompletion.get_lsp_capabilities() })
+
   vim.api.nvim_create_autocmd('LspAttach', {
     group = Config.gr,
     callback = function(e) vim.bo[e.buf].omnifunc = 'v:lua.MiniCompletion.completefunc_lsp' end,
@@ -94,15 +96,25 @@ Config.later(function()
       go_in_plus = '<CR>',
       go_out = '',
       go_out_plus = '-',
-      mark_goto = "'",
     },
-    windows = {
-      max_number = 3,
-      preview = true,
-      width_focus = 50,
-      width_nofocus = 20,
-      width_preview = 80,
-    },
+  })
+
+  Config.show_dotfiles = true
+
+  local filter_show = function() return true end
+  local filter_hide = function(fs_entry) return not vim.startswith(fs_entry.name, '.') end
+  local toggle_dotfiles = function()
+    Config.show_dotfiles = not Config.show_dotfiles
+    local new_filter = Config.show_dotfiles and filter_show or filter_hide
+    MiniFiles.refresh({ content = { filter = new_filter } })
+  end
+
+  vim.api.nvim_create_autocmd('User', {
+    pattern = 'MiniFilesBufferCreate',
+    callback = function(args)
+      local buf_id = args.data.buf_id
+      vim.keymap.set('n', 'g.', toggle_dotfiles, { buffer = buf_id })
+    end,
   })
 
   vim.api.nvim_create_autocmd('User', {
@@ -110,12 +122,11 @@ Config.later(function()
     group = Config.gr,
     callback = function()
       MiniFiles.set_bookmark('c', vim.fn.stdpath('config'), { desc = 'Config' })
-      MiniFiles.set_bookmark('@', vim.fn.stdpath('data') .. '/site/pack/core/opt', { desc = 'Plugins' })
-      MiniFiles.set_bookmark('_', vim.fn.getcwd, { desc = 'Working directory' })
+      MiniFiles.set_bookmark('p', vim.fn.stdpath('data') .. '/site/pack/core/opt', { desc = 'Plugins' })
+      MiniFiles.set_bookmark('w', vim.fn.getcwd, { desc = 'Working directory' })
       MiniFiles.set_bookmark('n', vim.env.HOME .. '/Developer/personal/notes', { desc = 'Notes' })
-      MiniFiles.set_bookmark('p', vim.env.HOME .. '/Developer/personal/presentations', { desc = 'Presentations' })
-      MiniFiles.set_bookmark('e', vim.env.HOME .. '/Developer/personal', { desc = 'Personal projects' })
-      MiniFiles.set_bookmark('w', vim.env.HOME .. '/Developer/work', { desc = 'Work projects' })
+      MiniFiles.set_bookmark('d', vim.env.HOME .. '/Developer', { desc = 'Projects' })
+      MiniFiles.set_bookmark('h', vim.env.HOME, { desc = 'Home' })
     end,
   })
 end)
@@ -123,34 +134,20 @@ end)
 Config.later(function()
   require('mini.pick').setup({ window = { prompt_prefix = ' ' } })
 
-  MiniPick.registry.projects = function()
-    local cwd = vim.fn.expand('~/Developer')
-
-    local choose = function(item)
-      local local_opts = nil
-      local opts = { source = { cwd = item.path } }
-      vim.schedule(function() MiniPick.builtin.files(local_opts, opts) end)
-    end
-
-    local choose_scope = function(item)
-      local local_opts = { cwd = item.path }
-      local opts = { source = { cwd = item.path, choose = choose } }
-      vim.schedule(function() MiniExtra.pickers.explorer(local_opts, opts) end)
-    end
-
-    local local_opts = { cwd = cwd }
-    local opts = { source = { choose = choose_scope } }
-    return MiniExtra.pickers.explorer(local_opts, opts)
-  end
-
   ---@diagnostic disable-next-line: duplicate-set-field
   vim.ui.select = function(items, opts, on_choice)
-    return MiniPick.ui_select(
-      items,
-      opts,
-      on_choice,
-      { window = { config = { relative = 'cursor', anchor = 'NW', row = 0, col = 0, width = 80, height = 15 } } }
-    )
+    return MiniPick.ui_select(items, opts, on_choice, {
+      window = {
+        config = {
+          relative = 'cursor',
+          anchor = 'NW',
+          row = 0,
+          col = 0,
+          width = 80,
+          height = 15,
+        },
+      },
+    })
   end
 end)
 
