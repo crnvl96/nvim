@@ -94,7 +94,7 @@ Config.now_if_args(function()
       lua = { 'stylua' },
       json = { 'prettier' },
       css = { 'prettier' },
-      html = { 'prettier' },
+      -- html = { 'prettier' },
       jsonc = { 'prettier' },
       typst = { 'typstyle' },
       yaml = { 'prettier' },
