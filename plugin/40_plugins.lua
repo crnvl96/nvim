@@ -93,6 +93,8 @@ Config.now_if_args(function()
       python = { 'ruff_organize_imports', 'ruff_fix', 'ruff_format' },
       lua = { 'stylua' },
       json = { 'prettier' },
+      css = { 'prettier' },
+      html = { 'prettier' },
       jsonc = { 'prettier' },
       typst = { 'typstyle' },
       yaml = { 'prettier' },
