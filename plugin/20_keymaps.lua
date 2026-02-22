@@ -84,9 +84,6 @@ Config.later(function()
   set_keymap('x', 's', '<Cmd>lua MiniJump2d.start(MiniJump2d.builtin_opts.single_character)<CR>')
   set_keymap('o', 's', '<Cmd>lua MiniJump2d.start(MiniJump2d.builtin_opts.single_character)<CR>')
 
-  set_keymap('t', '<C-k>', '<Cmd>lua MiniPick.builtin.buffers()<CR>')
-  set_keymap('t', '<C-s>', '<Cmd>lua MiniPick.builtin.buffers()<CR>')
-
   set_keymap('n', 'E', '<Cmd>lua vim.diagnostic.open_float()<CR>')
   set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>')
   set_keymap('i', '<C-k>', '<Cmd>lua vim.lsp.buf.signature_help()<CR>')
