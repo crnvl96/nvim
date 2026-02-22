@@ -100,8 +100,8 @@ Config.now_if_args(function()
     'eslint',
     'clangd',
     'tinymist',
-    'tsgo',
-    -- 'ts_ls',
+    -- 'tsgo',
+    'ts_ls',
     'oxfmt',
     'oxlint',
   })
