@@ -59,6 +59,23 @@ Config.now_if_args(function()
 end)
 
 Config.now_if_args(function()
+  vim.pack.add({ 'https://github.com/neovim/nvim-lspconfig' })
+  vim.lsp.enable({
+    'lua_ls',
+    'pyright',
+    'ruff',
+    'biome',
+    'eslint',
+    'clangd',
+    'tinymist',
+    -- 'ts_ls',
+    'oxfmt',
+    'oxlint',
+    'tsgo',
+  })
+end)
+
+Config.now_if_args(function()
   vim.pack.add({ 'https://github.com/stevearc/conform.nvim' })
 
   require('conform').setup({
@@ -90,23 +107,6 @@ Config.now_if_args(function()
       yaml = { 'prettier' },
       markdown = { 'prettier', 'injected' },
     },
-  })
-end)
-
-Config.now_if_args(function()
-  vim.pack.add({ 'https://github.com/neovim/nvim-lspconfig' })
-  vim.lsp.enable({
-    'lua_ls',
-    'pyright',
-    'ruff',
-    'biome',
-    'eslint',
-    'clangd',
-    'tinymist',
-    'ts_ls',
-    'oxfmt',
-    'oxlint',
-    -- 'tsgo',
   })
 end)
 
