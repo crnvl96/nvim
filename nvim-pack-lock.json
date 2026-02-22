@@ -4,25 +4,13 @@
       "rev": "c2526f1cde528a66e086ab1668e996d162c75f4f",
       "src": "https://github.com/stevearc/conform.nvim"
     },
-    "image.nvim": {
-      "rev": "c75654b37cd13df17475a53d9dc3e3d1b5e09fa1",
-      "src": "https://github.com/3rd/image.nvim"
-    },
     "img-clip.nvim": {
       "rev": "b6ddfb97b5600d99afe3452d707444afda658aca",
       "src": "https://github.com/HakonHarnes/img-clip.nvim"
     },
-    "lualine.nvim": {
-      "rev": "47f91c416daef12db467145e16bed5bbfe00add8",
-      "src": "https://github.com/nvim-lualine/lualine.nvim"
-    },
     "markdown-preview.nvim": {
       "rev": "a923f5fc5ba36a3b17e289dc35dc17f66d0548ee",
       "src": "https://github.com/iamcco/markdown-preview.nvim"
-    },
-    "markview.nvim": {
-      "rev": "9e852c299351fc2110e763edc7fc899358ee112e",
-      "src": "https://github.com/OXY2DEV/markview.nvim"
     },
     "mini.nvim": {
       "rev": "dbb073bd2ed4a7bb35daafc7989567f0ff1426ee",
@@ -43,10 +31,6 @@
     "snacks.nvim": {
       "rev": "fe7cfe9800a182274d0f868a74b7263b8c0c020b",
       "src": "https://github.com/folke/snacks.nvim"
-    },
-    "vim-fugitive": {
-      "rev": "61b51c09b7c9ce04e821f6cf76ea4f6f903e3cf4",
-      "src": "https://github.com/tpope/vim-fugitive"
     }
   }
 }

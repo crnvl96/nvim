@@ -1,6 +1,8 @@
 Config.now_if_args(function()
   vim.pack.add({ 'https://github.com/folke/snacks.nvim' })
-  require('snacks').setup()
+  require('snacks').setup({
+    image = { enabled = true },
+  })
 end)
 
 Config.now_if_args(function()
@@ -109,14 +111,6 @@ Config.now_if_args(function()
     default = {
       dir_path = 'static/img',
     },
-  })
-end)
-
-Config.now_if_args(function()
-  vim.pack.add({ 'https://github.com/3rd/image.nvim' })
-  require('image').setup({
-    backend = 'kitty', -- or "ueberzug" or "sixel"
-    processor = 'magick_cli', -- or "magick_rock"
   })
 end)
 
