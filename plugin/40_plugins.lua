@@ -64,7 +64,10 @@ Config.now_if_args(function()
   require('conform').setup({
     notify_on_error = false,
     notify_no_formatters = false,
-    default_format_opts = { lsp_format = 'fallback', timeout_ms = 1000 },
+    default_format_opts = {
+      lsp_format = 'fallback',
+      timeout_ms = 1000,
+    },
     formatters = {
       stylua = { require_cwd = true },
       prettier = { require_cwd = false },
@@ -76,8 +79,8 @@ Config.now_if_args(function()
     formatters_by_ft = {
       ['_'] = { 'trim_whitespace', 'trim_newline' },
       c = { 'clang-format' },
-      javascript = { 'prettier', lsp_format = 'prefer' },
-      typescript = { 'prettier', lsp_format = 'prefer' },
+      javascript = { 'prettier', lsp_format = 'prefer', timeout_ms = 1000 },
+      typescript = { 'prettier', lsp_format = 'prefer', timeout_ms = 1000 },
       python = { 'ruff_organize_imports', 'ruff_fix', 'ruff_format' },
       lua = { 'stylua' },
       json = { 'prettier' },
@@ -100,10 +103,10 @@ Config.now_if_args(function()
     'eslint',
     'clangd',
     'tinymist',
-    -- 'tsgo',
     'ts_ls',
     'oxfmt',
     'oxlint',
+    -- 'tsgo',
   })
 end)
 
