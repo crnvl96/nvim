@@ -20,12 +20,23 @@ Config.now_if_args(function()
     'https://github.com/nvim-treesitter/nvim-treesitter-textobjects',
   })
 
-  -- stylua: ignore
   local treesit_langs = {
     -- note: parsers for c, lua, vim, vimdoc, query and markdown are already included in neovim
-    'bash', 'css', 'diff', 'go', 'html',
-    'javascript', 'jsx', 'json', 'python', 'regex',
-    'toml', 'typescript', 'tsx', 'typst', 'yaml',
+    'bash',
+    'css',
+    'diff',
+    'go',
+    'html',
+    'javascript',
+    'jsx',
+    'json',
+    'python',
+    'regex',
+    'toml',
+    'typescript',
+    'tsx',
+    'typst',
+    'yaml',
   }
 
   require('nvim-treesitter').install(
@@ -48,25 +59,12 @@ Config.now_if_args(function()
 end)
 
 Config.now_if_args(function()
-  vim.pack.add({ 'https://github.com/neovim/nvim-lspconfig' })
-  -- stylua: ignore
-  vim.lsp.enable({
-    'lua_ls', 'pyright', 'ruff', 'biome',
-    'eslint', 'clangd', 'tinymist', 'ts_ls',
-    -- 'tsgo',
-  })
-end)
-
-Config.now_if_args(function()
   vim.pack.add({ 'https://github.com/stevearc/conform.nvim' })
 
   require('conform').setup({
     notify_on_error = false,
     notify_no_formatters = false,
-    default_format_opts = {
-      lsp_format = 'fallback',
-      timeout_ms = 1000,
-    },
+    default_format_opts = { lsp_format = 'fallback', timeout_ms = 1000 },
     formatters = {
       stylua = { require_cwd = true },
       prettier = { require_cwd = false },
@@ -78,30 +76,34 @@ Config.now_if_args(function()
     formatters_by_ft = {
       ['_'] = { 'trim_whitespace', 'trim_newline' },
       c = { 'clang-format' },
-      javascript = function()
-        if require('conform.util').root_file({ 'biome.json', 'biome.jsonc' }) then
-          return { 'biome' }
-        else
-          return { 'prettier' }
-        end
-      end,
-      typescript = function()
-        if require('conform.util').root_file({ 'biome.json', 'biome.jsonc' }) then
-          return { 'biome' }
-        else
-          return { 'prettier' }
-        end
-      end,
+      javascript = { 'prettier', lsp_format = 'prefer' },
+      typescript = { 'prettier', lsp_format = 'prefer' },
       python = { 'ruff_organize_imports', 'ruff_fix', 'ruff_format' },
       lua = { 'stylua' },
       json = { 'prettier' },
       css = { 'prettier' },
-      -- html = { 'prettier' },
       jsonc = { 'prettier' },
       typst = { 'typstyle' },
       yaml = { 'prettier' },
       markdown = { 'prettier', 'injected' },
     },
+  })
+end)
+
+Config.now_if_args(function()
+  vim.pack.add({ 'https://github.com/neovim/nvim-lspconfig' })
+  vim.lsp.enable({
+    'lua_ls',
+    'pyright',
+    'ruff',
+    'biome',
+    'eslint',
+    'clangd',
+    'tinymist',
+    'tsgo',
+    -- 'ts_ls',
+    'oxfmt',
+    'oxlint',
   })
 end)
 
