@@ -62,7 +62,8 @@ Config.now_if_args(function()
   vim.pack.add({ 'https://github.com/neovim/nvim-lspconfig' })
   vim.lsp.enable({
     'lua_ls',
-    'pyright',
+    -- 'pyright',
+    'pyrefly',
     'ruff',
     'biome',
     'eslint',

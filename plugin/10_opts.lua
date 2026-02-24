@@ -43,6 +43,7 @@ Config.now(function()
   vim.o.pumborder = 'single'
   vim.o.pummaxwidth = 100
 
+  vim.cmd('highlight ColorColumn ctermbg=lightgrey guibg=lightgrey')
   vim.cmd('filetype plugin indent on')
 
   if vim.fn.exists('syntax_on') ~= 1 then vim.cmd('syntax enable') end
