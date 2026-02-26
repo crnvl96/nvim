@@ -42,12 +42,10 @@ Config.now(function()
   vim.o.winborder = 'single'
   vim.o.pumborder = 'single'
   vim.o.pummaxwidth = 100
-
   vim.cmd('highlight ColorColumn ctermbg=lightgrey guibg=lightgrey')
   vim.cmd('filetype plugin indent on')
 
   if vim.fn.exists('syntax_on') ~= 1 then vim.cmd('syntax enable') end
-
   if vim.fn.executable('rg') then
     function _G.FindFuncRG(cmdarg)
       local fnames = vim.fn.systemlist('rg --files --hidden --color=never --glob="!.git"')

@@ -72,7 +72,6 @@ Config.now(function()
     callback = function(e)
       local client = vim.lsp.get_client_by_id(e.data.client_id)
       if not client then return end
-
       if client.name == 'gopls' then
         -- workaround for gopls not supporting semanticTokensProvider
         -- https://github.com/golang/go/issues/54531#issuecomment-1464982242

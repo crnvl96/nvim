@@ -1,9 +1,4 @@
 Config.now_if_args(function()
-  vim.pack.add({ 'https://github.com/folke/snacks.nvim' })
-  require('snacks').setup({ image = { enabled = true } })
-end)
-
-Config.now_if_args(function()
   Config.on_packchanged('nvim-treesitter', { 'update' }, function(e)
     MiniMisc.log_add('Updating parsers', { name = e.data.spec.name, path = e.data.path })
     vim.cmd('TSUpdate')
@@ -68,9 +63,6 @@ end)
 Config.now_if_args(function()
   vim.pack.add({ 'https://github.com/neovim/nvim-lspconfig' })
   vim.lsp.enable({
-    -- 'pyright',
-    -- 'ts_ls',
-    -- 'pyrefly',
     'biome',
     'eslint',
     'gopls',
@@ -82,7 +74,7 @@ Config.now_if_args(function()
     'ruff',
     'tinymist',
     'tsgo',
-    'ty',
+    'ty', -- 'pyright',
   })
 end)
 
@@ -122,6 +114,21 @@ Config.now_if_args(function()
 end)
 
 Config.now_if_args(function()
+  vim.pack.add({ 'https://github.com/folke/snacks.nvim' })
+  require('snacks').setup({ image = { enabled = true } })
+end)
+
+Config.now_if_args(function()
+  vim.pack.add({ 'https://github.com/folke/ts-comments.nvim' })
+  require('ts-comments').setup({ lang = { typst = { '// %s', '/* %s */' } } })
+end)
+
+Config.now_if_args(function()
+  vim.pack.add({ 'https://github.com/windwp/nvim-ts-autotag' })
+  require('nvim-ts-autotag').setup()
+end)
+
+Config.now_if_args(function()
   vim.pack.add({ 'https://github.com/HakonHarnes/img-clip.nvim' })
   require('img-clip').setup({ default = { dir_path = 'static/img' } })
 end)
@@ -147,20 +154,11 @@ Config.now_if_args(function()
       ['websocat'] = nil,
     },
   })
-  vim.api.nvim_create_user_command('OpenPdf', function()
+  vim.api.nvim_create_user_command('TypstOpenThisPdf', function()
     local filepath = vim.api.nvim_buf_get_name(0)
     if filepath:match('%.typ$') then
       local pdf_path = filepath:gsub('%.typ$', '.pdf')
       vim.system({ 'xdg-open', pdf_path })
     end
   end, {})
-end)
-Config.now_if_args(function()
-  vim.pack.add({ 'https://github.com/folke/ts-comments.nvim' })
-  require('ts-comments').setup({ lang = { typst = { '// %s', '/* %s */' } } })
-end)
-
-Config.now_if_args(function()
-  vim.pack.add({ 'https://github.com/windwp/nvim-ts-autotag' })
-  require('nvim-ts-autotag').setup()
 end)

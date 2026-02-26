@@ -80,9 +80,7 @@ Config.later(
 )
 
 Config.later(function()
-  require('mini.pairs').setup({
-    modes = { insert = true, command = true, terminal = false },
-  })
+  require('mini.pairs').setup({ modes = { insert = true, command = true, terminal = false } })
   local pairs = require('mini.pairs')
   local open = pairs.open
   pairs.open = function(pair, neigh_pattern)

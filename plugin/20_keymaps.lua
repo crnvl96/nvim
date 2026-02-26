@@ -1,23 +1,17 @@
 Config.now(function()
   local set = vim.keymap.set
-
   set('n', 'j', [[v:count == 0 ? 'gj' : 'j']], { expr = true })
   set('x', 'j', [[v:count == 0 ? 'gj' : 'j']], { expr = true })
   set('n', 'k', [[v:count == 0 ? 'gk' : 'k']], { expr = true })
   set('x', 'k', [[v:count == 0 ? 'gk' : 'k']], { expr = true })
-
   set('t', '<C-g>', '<C-\\><C-n>')
-
   set('x', 'p', 'P')
-
   set('n', '<Esc>', '<Esc><Cmd>noh<CR><Esc>', { noremap = true })
   set('i', '<Esc>', '<Esc><Cmd>noh<CR><Esc>', { noremap = true })
   set('x', '<Esc>', '<Esc><Cmd>noh<CR><Esc>', { noremap = true })
-
   set('n', '<C-s>', '<Esc><Cmd>noh<CR><Cmd>silent! update | redraw<CR>')
   set('i', '<C-s>', '<Esc><Cmd>noh<CR><Cmd>silent! update | redraw<CR>')
   set('x', '<C-s>', '<Esc><Cmd>noh<CR><Cmd>silent! update | redraw<CR>')
-
   set('n', '<C-h>', '<C-w>h')
   set('n', '<C-j>', '<C-w>j')
   set('n', '<C-k>', '<C-w>k')
@@ -33,7 +27,6 @@ Config.now(function()
   set('n', '*', '*zz')
   set('n', '#', '#zz')
   set('n', 'g*', 'g*zz')
-
   set('c', '<M-h>', '<C-f>')
   set('c', '<C-f>', '<Right>')
   set('c', '<C-b>', '<Left>')
@@ -55,23 +48,20 @@ Config.later(function()
     { mode = { 'n' }, keys = '<leader>b', desc = '+buffers' },
     { mode = { 'n' }, keys = '<leader>t', desc = '+toggle' },
     { mode = { 'n' }, keys = '<leader>u', desc = '+utils' },
+    { mode = { 'n' }, keys = '<leader>f', desc = '+find' },
+    { mode = { 'n' }, keys = '<leader>l', desc = '+lsp' },
     { mode = { 'n', 'x' }, keys = '<leader>g', desc = '+git' },
-    { mode = { 'n', 'x' }, keys = '<leader>f', desc = '+find' },
-    { mode = { 'n', 'x' }, keys = '<leader>l', desc = '+lsp' },
   }
 
   local set = vim.keymap.set
   local toggle_autoformat = function() Config.autoformat = not Config.autoformat end
   local set_keymap = function(mode, lhs, rhs, desc) set(mode, lhs, rhs, { desc = desc }) end
-
   set_keymap('n', 'S', '<Cmd>lua MiniJump2d.start(MiniJump2d.builtin_opts.single_character)<CR>')
   set_keymap('x', 'S', '<Cmd>lua MiniJump2d.start(MiniJump2d.builtin_opts.single_character)<CR>')
   set_keymap('o', 'S', '<Cmd>lua MiniJump2d.start(MiniJump2d.builtin_opts.single_character)<CR>')
-
   set_keymap('n', 'E', '<Cmd>lua vim.diagnostic.open_float()<CR>')
   set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>')
   set_keymap('i', '<C-k>', '<Cmd>lua vim.lsp.buf.signature_help()<CR>')
-
   set_keymap('n', '<Leader>tf', toggle_autoformat, 'Toggle autoformat')
   set_keymap('n', '<Leader>bo', '<Cmd>lua Snacks.bufdelete.other()<CR>', 'Kill other buffers')
   set_keymap('n', '<Leader>ef', '<Cmd>lua MiniFiles.open(vim.api.nvim_buf_get_name(0),         false)<CR>', 'Explorer')
