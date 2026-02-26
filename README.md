@@ -25,6 +25,6 @@ sudo tar -C /opt -xzf nvim-linux-x86_64.tar.gz
 
 > https://github.com/BurntSushi/ripgrep
 
-### FD
+### Fd
 
 > https://github.com/sharkdp/fd

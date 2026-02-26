@@ -5,10 +5,21 @@ Config.now(function()
       if vim.v.event.operator == 'y' and Config.cursor_pre_yank then
         vim.api.nvim_win_set_cursor(0, Config.cursor_pre_yank)
       end
-
       vim.highlight.on_yank()
     end,
   })
+  local set = vim.keymap.set
+  local yank = function()
+    Config.cursor_pre_yank = vim.api.nvim_win_get_cursor(0)
+    return 'y'
+  end
+  local yank_eol = function()
+    Config.cursor_pre_yank = vim.api.nvim_win_get_cursor(0)
+    return 'yg_'
+  end
+  set('n', 'y', yank, { expr = true })
+  set('x', 'y', yank, { expr = true })
+  set('n', 'Y', yank_eol, { expr = true })
 
   vim.api.nvim_create_autocmd('QuickFixCmdPost', {
     group = Config.gr,
@@ -29,19 +40,12 @@ Config.now(function()
     callback = function(e)
       local bufnr = e.buf
       local filetype = vim.bo[bufnr].ft
-      local types = { 'help', 'fugitive', 'checkhealth', 'vim', '' }
+      local types = { 'help', 'checkhealth', 'vim', '' }
       for _, b in ipairs(types) do
         if filetype == b then
           vim.keymap.set('n', 'q', function() vim.api.nvim_command('close') end, { buffer = true })
         end
       end
-    end,
-  })
-
-  vim.api.nvim_create_autocmd({ 'TermOpen', 'WinEnter' }, {
-    pattern = 'term://*',
-    callback = function()
-      if vim.opt.buftype:get() == 'terminal' then vim.cmd.startinsert() end
     end,
   })
 
@@ -59,6 +63,28 @@ Config.now(function()
           local code_dir = vim.api.nvim_replace_termcodes('<C-' .. key .. '>', true, true, true)
           vim.api.nvim_feedkeys(code_term_esc .. code_dir, 't', true)
         end, { noremap = true })
+      end
+    end,
+  })
+
+  vim.api.nvim_create_autocmd('LspAttach', {
+    group = Config.gr,
+    callback = function(e)
+      local client = vim.lsp.get_client_by_id(e.data.client_id)
+      if not client then return end
+
+      if client.name == 'gopls' then
+        -- workaround for gopls not supporting semanticTokensProvider
+        -- https://github.com/golang/go/issues/54531#issuecomment-1464982242
+        if not client.server_capabilities.semanticTokensProvider then
+          local semantic = client.config.capabilities.textDocument.semanticTokens
+          if not semantic then return end
+          client.server_capabilities.semanticTokensProvider = {
+            full = true,
+            legend = { tokenTypes = semantic.tokenTypes, tokenModifiers = semantic.tokenModifiers },
+            range = true,
+          }
+        end
       end
     end,
   })

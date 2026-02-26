@@ -53,7 +53,6 @@ Config.now(function()
       local fnames = vim.fn.systemlist('rg --files --hidden --color=never --glob="!.git"')
       return #cmdarg == 0 and fnames or vim.fn.matchfuzzy(fnames, cmdarg)
     end
-
     vim.o.grepprg = 'rg --vimgrep --no-heading --hidden --smart-case'
     vim.o.grepformat = '%f:%l:%c:%m'
     vim.o.findfunc = 'v:lua.FindFuncRG'
@@ -64,7 +63,6 @@ Config.later(function()
   local hint = vim.diagnostic.severity.HINT
   local warn = vim.diagnostic.severity.WARN
   local error = vim.diagnostic.severity.ERROR
-
   vim.diagnostic.config({
     virtual_lines = false,
     update_in_insert = false,
