@@ -1,3 +1,5 @@
+Config.now(function() vim.cmd.colorscheme('miniwinter') end)
+
 Config.now(function()
   require('mini.icons').setup({
     use_file_extension = function(ext, _)
@@ -33,16 +35,7 @@ Config.later(function() require('mini.surround').setup() end)
 Config.later(function() require('mini.splitjoin').setup() end)
 Config.later(function() require('mini.cmdline').setup() end)
 Config.later(function() require('mini.bracketed').setup() end)
-Config.later(function() require('mini.statusline').setup() end)
-Config.later(function() require('mini.tabline').setup() end)
-Config.later(function() require('mini.git').setup() end)
-Config.later(function() require('mini.diff').setup({ view = { style = 'sign' } }) end)
 Config.later(function() require('mini.indentscope').setup({ options = { border = 'top', try_as_border = true } }) end)
-
-Config.now(function()
-  vim.cmd.colorscheme('miniwinter')
-  require('mini.colors').get_colorscheme():add_transparency({ general = false, float = true }):apply()
-end)
 
 Config.later(function()
   require('mini.completion').setup({
