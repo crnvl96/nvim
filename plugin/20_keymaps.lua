@@ -1,5 +1,22 @@
 Config.now(function()
   local set = vim.keymap.set
+  local yank = function()
+    Config.cursor_pre_yank = vim.api.nvim_win_get_cursor(0)
+    return 'y'
+  end
+  local yank_eol = function()
+    Config.cursor_pre_yank = vim.api.nvim_win_get_cursor(0)
+    return 'yg_'
+  end
+  local cb = function()
+    if vim.v.event.operator == 'y' and Config.cursor_pre_yank then
+      vim.api.nvim_win_set_cursor(0, Config.cursor_pre_yank)
+    end
+  end
+  vim.api.nvim_create_autocmd('TextYankPost', { group = Config.gr, callback = cb })
+  set('n', 'y', yank, { expr = true })
+  set('x', 'y', yank, { expr = true })
+  set('n', 'Y', yank_eol, { expr = true })
   set('n', 'j', [[v:count == 0 ? 'gj' : 'j']], { expr = true })
   set('x', 'j', [[v:count == 0 ? 'gj' : 'j']], { expr = true })
   set('n', 'k', [[v:count == 0 ? 'gk' : 'k']], { expr = true })
