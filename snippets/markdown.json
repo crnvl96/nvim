@@ -1,0 +1,7 @@
+{
+  "Code Block": {
+    "description": "Create a code block"
+    "prefix": "cb",
+    "body": "```$0\n```",
+  }
+}

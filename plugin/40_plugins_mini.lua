@@ -35,7 +35,7 @@ Config.later(function() require('mini.surround').setup() end)
 Config.later(function() require('mini.splitjoin').setup() end)
 Config.later(function() require('mini.cmdline').setup() end)
 Config.later(function() require('mini.bracketed').setup() end)
-Config.later(function() require('mini.indentscope').setup({ options = { border = 'top', try_as_border = true } }) end)
+Config.later(function() require('mini.indentscope').setup({ options = { border = 'both', try_as_border = true } }) end)
 
 Config.later(function()
   require('mini.completion').setup({
@@ -129,6 +129,34 @@ Config.later(function()
   MiniKeymap.map_multistep('i', '<S-Tab>', { 'pmenu_prev' })
   MiniKeymap.map_multistep('i', '<CR>', { 'pmenu_accept', 'minipairs_cr' })
   MiniKeymap.map_multistep('i', '<BS>', { 'minipairs_bs' })
+  MiniKeymap.map_multistep(
+    'i',
+    '<Tab>',
+    { 'minisnippets_next', 'minisnippets_expand', 'pmenu_next', 'jump_after_tsnode', 'jump_after_close' }
+  )
+  MiniKeymap.map_multistep(
+    'i',
+    '<S-Tab>',
+    { 'minisnippets_prev', 'pmenu_prev', 'jump_before_tsnode', 'jump_before_open' }
+  )
+end)
+
+Config.later(function()
+  local snippets, config_path = require('mini.snippets'), vim.fn.stdpath('config')
+
+  snippets.setup({
+    snippets = {
+      snippets.gen_loader.from_file(config_path .. '/snippets/global.json'),
+      snippets.gen_loader.from_lang({
+        lang_patterns = {
+          tsx = { 'jsx.json' },
+          javascriptreact = { 'jsx.json' },
+          typescriptreact = { 'jsx.json' },
+          markdown_inline = { 'markdown.json' },
+        },
+      }),
+    },
+  })
 end)
 
 Config.later(function()
