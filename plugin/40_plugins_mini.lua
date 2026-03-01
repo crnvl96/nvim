@@ -39,7 +39,6 @@ Config.now(function()
   })
 
   Config.later(MiniIcons.tweak_lsp_kind)
-
   Config.later(MiniIcons.mock_nvim_web_devicons)
 end)
 
@@ -197,14 +196,12 @@ Config.later(function()
   local show_preview = false
 
   local toggle_dotfiles = function()
-    show_dotfiles = true
     show_dotfiles = not show_dotfiles
     local new_filter = show_dotfiles and filter_show or filter_hide
     MiniFiles.refresh({ content = { filter = new_filter } })
   end
 
   local toggle_preview = function()
-    show_preview = false
     show_preview = not show_preview
     MiniFiles.refresh({
       windows = {
@@ -225,12 +222,21 @@ Config.later(function()
   })
 
   vim.api.nvim_create_autocmd('User', {
+    pattern = 'MiniFilesExplorerClose',
+    group = Config.gr,
+    callback = function()
+      show_dotfiles = true
+      show_preview = false
+    end,
+  })
+
+  vim.api.nvim_create_autocmd('User', {
     pattern = 'MiniFilesExplorerOpen',
     group = Config.gr,
     callback = function()
       MiniFiles.set_bookmark('c', vim.fn.stdpath('config'), { desc = 'Config' })
       MiniFiles.set_bookmark('p', vim.fn.stdpath('data') .. '/site/pack/core/opt', { desc = 'Plugins' })
-      MiniFiles.set_bookmark('w', vim.fn.getcwd, { desc = 'Working directory' })
+      MiniFiles.set_bookmark('_', vim.fn.getcwd, { desc = 'Working directory' })
       MiniFiles.set_bookmark('n', vim.env.HOME .. '/Developer/personal/notes', { desc = 'Notes' })
       MiniFiles.set_bookmark('d', vim.env.HOME .. '/Developer', { desc = 'Projects' })
       MiniFiles.set_bookmark('h', vim.env.HOME, { desc = 'Home' })
