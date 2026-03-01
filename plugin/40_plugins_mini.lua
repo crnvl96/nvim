@@ -161,7 +161,22 @@ end)
 
 Config.later(function()
   Config.show_dotfiles = true
-  require('mini.files').setup({ mappings = { go_in = '', go_in_plus = '<CR>', go_out = '', go_out_plus = '-' } })
+  Config.show_preview = false
+  require('mini.files').setup({
+    mappings = {
+      go_in = '',
+      go_in_plus = '<CR>',
+      go_out = '',
+      go_out_plus = '-',
+    },
+    windows = {
+      max_number = 1,
+      preview = false,
+      width_focus = math.floor(vim.o.columns * 1),
+      width_nofocus = math.floor(vim.o.columns * 0.59),
+      width_preview = math.floor(vim.o.columns * 0.59),
+    },
+  })
   local filter_show = function() return true end
   local filter_hide = function(fs_entry) return not vim.startswith(fs_entry.name, '.') end
   local toggle_dotfiles = function()
@@ -169,11 +184,22 @@ Config.later(function()
     local new_filter = Config.show_dotfiles and filter_show or filter_hide
     MiniFiles.refresh({ content = { filter = new_filter } })
   end
+  local toggle_preview = function()
+    Config.show_preview = not Config.show_preview
+    MiniFiles.refresh({
+      windows = {
+        max_number = Config.show_preview and 2 or 1,
+        preview = Config.show_preview and true or false,
+        width_focus = math.floor(vim.o.columns * (Config.show_preview and 0.39 or 1)),
+      },
+    })
+  end
   vim.api.nvim_create_autocmd('User', {
     pattern = 'MiniFilesBufferCreate',
     callback = function(args)
       local buf_id = args.data.buf_id
       vim.keymap.set('n', 'g.', toggle_dotfiles, { buffer = buf_id })
+      vim.keymap.set('n', 'gp', toggle_preview, { buffer = buf_id })
     end,
   })
   vim.api.nvim_create_autocmd('User', {
@@ -186,6 +212,17 @@ Config.later(function()
       MiniFiles.set_bookmark('n', vim.env.HOME .. '/Developer/personal/notes', { desc = 'Notes' })
       MiniFiles.set_bookmark('d', vim.env.HOME .. '/Developer', { desc = 'Projects' })
       MiniFiles.set_bookmark('h', vim.env.HOME, { desc = 'Home' })
+    end,
+  })
+  vim.api.nvim_create_autocmd('User', {
+    pattern = 'MiniFilesWindowUpdate',
+    callback = function(e)
+      local config = vim.api.nvim_win_get_config(e.data.win_id)
+      config.height = vim.o.lines
+      local n = #config.title
+      config.title[1][1] = config.title[1][1]:gsub('^ ', '')
+      config.title[n][1] = config.title[n][1]:gsub(' $', '')
+      vim.api.nvim_win_set_config(e.data.win_id, config)
     end,
   })
 end)
@@ -230,7 +267,12 @@ Config.later(
         require('mini.clue').gen_clues.windows(),
         require('mini.clue').gen_clues.z(),
       },
-      window = { delay = 500, scroll_down = '<C-f>', scroll_up = '<C-b>', config = { width = 'auto' } },
+      window = {
+        delay = 500,
+        scroll_down = '<C-f>',
+        scroll_up = '<C-b>',
+        config = { width = 'auto' },
+      },
     })
   end
 )

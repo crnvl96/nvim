@@ -42,17 +42,48 @@ Config.now_if_args(function()
     'oxlint', 'rubocop', 'ruby_lsp', 'ruff',   'tinymist',
     'tsgo',   'ty',      -- 'pyright',
   })
+  vim.api.nvim_create_autocmd('LspAttach', {
+    group = Config.gr,
+    callback = function(e)
+      local client = vim.lsp.get_client_by_id(e.data.client_id)
+      if not client then return end
+      --
+      -- Gopls extra config
+      --
+      if client.name == 'gopls' then
+        -- workaround for gopls not supporting semanticTokensProvider
+        -- https://github.com/golang/go/issues/54531#issuecomment-1464982242
+        if not client.server_capabilities.semanticTokensProvider then
+          local semantic = client.config.capabilities.textDocument.semanticTokens
+          if not semantic then return end
+          client.server_capabilities.semanticTokensProvider = {
+            full = true,
+            legend = { tokenTypes = semantic.tokenTypes, tokenModifiers = semantic.tokenModifiers },
+            range = true,
+          }
+        end
+      end
+    end,
+  })
 end)
 
 Config.now_if_args(function()
   vim.pack.add({ 'https://github.com/stevearc/conform.nvim' })
+
   require('conform').setup({
     notify_on_error = false,
     notify_no_formatters = false,
-    default_format_opts = { lsp_format = 'fallback', timeout_ms = 1000 },
+    default_format_opts = {
+      lsp_format = 'fallback',
+      timeout_ms = 1000,
+    },
     formatters = {
-      stylua = { require_cwd = true },
-      prettier = { require_cwd = false },
+      stylua = {
+        require_cwd = true,
+      },
+      prettier = {
+        require_cwd = false,
+      },
     },
     format_on_save = function()
       if not Config.autoformat then return nil end

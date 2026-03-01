@@ -4,6 +4,20 @@ Config.now_if_args(function()
 end)
 
 Config.now_if_args(function()
+  vim.pack.add({ 'https://github.com/folke/snacks.nvim' })
+  require('snacks').setup({
+    terminal = {
+      enabled = true,
+    },
+  })
+end)
+
+Config.now_if_args(function()
+  vim.pack.add({ 'https://github.com/folke/ts-comments.nvim' })
+  require('ts-comments').setup({ lang = { typst = { '// %s', '/* %s */' } } })
+end)
+
+Config.now_if_args(function()
   vim.pack.add({ 'https://github.com/nvim-lualine/lualine.nvim' })
   require('lualine').setup()
 end)

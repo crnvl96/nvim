@@ -1,8 +1,8 @@
 Config.now(function()
   local node_bin = vim.env.HOME .. '/.local/share/mise/installs/node/24/bin'
-
   vim.env.PATH = node_bin .. ':' .. vim.env.PATH
   vim.g.node_host_prog = node_bin .. '/node'
+
   vim.g.mapleader = ' '
   vim.g.maplocalleader = ','
   vim.g.loaded_netrw = 1
@@ -42,15 +42,18 @@ Config.now(function()
   vim.o.winborder = 'single'
   vim.o.pumborder = 'single'
   vim.o.pummaxwidth = 100
+
   vim.cmd('highlight ColorColumn ctermbg=lightgrey guibg=lightgrey')
   vim.cmd('filetype plugin indent on')
 
   if vim.fn.exists('syntax_on') ~= 1 then vim.cmd('syntax enable') end
+
   if vim.fn.executable('rg') then
     function _G.FindFuncRG(cmdarg)
       local fnames = vim.fn.systemlist('rg --files --hidden --color=never --glob="!.git"')
       return #cmdarg == 0 and fnames or vim.fn.matchfuzzy(fnames, cmdarg)
     end
+
     vim.o.grepprg = 'rg --vimgrep --no-heading --hidden --smart-case'
     vim.o.grepformat = '%f:%l:%c:%m'
     vim.o.findfunc = 'v:lua.FindFuncRG'
@@ -61,6 +64,7 @@ Config.later(function()
   local hint = vim.diagnostic.severity.HINT
   local warn = vim.diagnostic.severity.WARN
   local error = vim.diagnostic.severity.ERROR
+
   vim.diagnostic.config({
     virtual_lines = false,
     update_in_insert = false,

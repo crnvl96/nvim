@@ -1,52 +1,57 @@
 Config.now(function()
   local set = vim.keymap.set
-  local yank_eol = function() return 'yg_' end
-  set('n', 'Y', yank_eol, { expr = true })
-  set('n', 'j', [[v:count == 0 ? 'gj' : 'j']], { expr = true })
-  set('x', 'j', [[v:count == 0 ? 'gj' : 'j']], { expr = true })
-  set('n', 'k', [[v:count == 0 ? 'gk' : 'k']], { expr = true })
-  set('x', 'k', [[v:count == 0 ? 'gk' : 'k']], { expr = true })
-  set('t', '<C-g>', '<C-\\><C-n>')
+
+  set('n', 'Y', 'yg_', { noremap = true })
+
   set('x', 'p', 'P')
-  set('n', '<Esc>', '<Esc><Cmd>noh<CR><Esc>', { noremap = true })
-  set('i', '<Esc>', '<Esc><Cmd>noh<CR><Esc>', { noremap = true })
-  set('x', '<Esc>', '<Esc><Cmd>noh<CR><Esc>', { noremap = true })
-  set('n', '<C-s>', '<Esc><Cmd>noh<CR><Cmd>silent! update | redraw<CR>')
-  set('i', '<C-s>', '<Esc><Cmd>noh<CR><Cmd>silent! update | redraw<CR>')
-  set('x', '<C-s>', '<Esc><Cmd>noh<CR><Cmd>silent! update | redraw<CR>')
+
+  set('t', '<C-g>', '<C-\\><C-n>')
+
+  set({ 'n', 'x' }, 'j', [[v:count == 0 ? 'gj' : 'j']], { expr = true })
+  set({ 'n', 'x' }, 'k', [[v:count == 0 ? 'gk' : 'k']], { expr = true })
+
+  set({ 'n', 'i', 'x' }, '<Esc>', '<Esc><Cmd>noh<CR><Esc>', { noremap = true })
+  set({ 'n', 'i', 'x' }, '<C-s>', '<Esc><Cmd>noh<CR><Cmd>silent! update | redraw<CR>')
+
   set('n', '<C-h>', '<C-w>h')
   set('n', '<C-j>', '<C-w>j')
   set('n', '<C-k>', '<C-w>k')
   set('n', '<C-l>', '<C-w>l')
+
   set('n', '<C-Left>', '<Cmd>vertical resize -20<CR>')
   set('n', '<C-Down>', '<Cmd>resize -5<CR>')
   set('n', '<C-Up>', '<Cmd>resize +5<CR>')
   set('n', '<C-Right>', '<Cmd>vertical resize +20<CR>')
+
   set('n', '<C-d>', '<C-d>zz')
   set('n', '<C-u>', '<C-u>zz')
+
   set('n', 'n', 'nzz')
   set('n', 'N', 'Nzz')
   set('n', '*', '*zz')
   set('n', '#', '#zz')
   set('n', 'g*', 'g*zz')
-  set('c', '<M-h>', '<C-f>')
+
   set('c', '<C-f>', '<Right>')
   set('c', '<C-b>', '<Left>')
   set('c', '<C-a>', '<Home>')
   set('c', '<C-e>', '<End>')
-  set('c', '<M-f>', '<C-Right>')
-  set('c', '<M-b>', '<C-Left>')
   set('c', '<C-d>', '<Del>')
-  set('c', '<M-d>', '<C-w>')
   set('c', '<C-k>', '<C-u>')
   set('c', '<C-g>', '<C-c>')
+
+  set('c', '<M-d>', '<C-w>')
+  set('c', '<M-h>', '<C-f>')
+  set('c', '<M-f>', '<C-Right>')
+  set('c', '<M-b>', '<C-Left>')
 end)
 
 Config.later(function()
   Config.autoformat = true
+
   Config.clues = {
     { mode = { 'n' }, keys = '<leader>e', desc = '+explorer' },
-    { mode = { 'n' }, keys = '<leader>b', desc = '+buffers' },
+    { mode = { 'n' }, keys = '<leader>t', desc = '+terms' },
     { mode = { 'n' }, keys = '<leader>t', desc = '+toggle' },
     { mode = { 'n' }, keys = '<leader>u', desc = '+utils' },
     { mode = { 'n' }, keys = '<leader>f', desc = '+find' },
@@ -55,17 +60,17 @@ Config.later(function()
   }
 
   local set = vim.keymap.set
-  local toggle_autoformat = function() Config.autoformat = not Config.autoformat end
   local set_keymap = function(mode, lhs, rhs, desc) set(mode, lhs, rhs, { desc = desc }) end
-  set_keymap('n', 'S', '<Cmd>lua MiniJump2d.start(MiniJump2d.builtin_opts.single_character)<CR>')
-  set_keymap('x', 'S', '<Cmd>lua MiniJump2d.start(MiniJump2d.builtin_opts.single_character)<CR>')
-  set_keymap('o', 'S', '<Cmd>lua MiniJump2d.start(MiniJump2d.builtin_opts.single_character)<CR>')
+
+  local toggle_autoformat = function() Config.autoformat = not Config.autoformat end
+
   set_keymap('n', 'E', '<Cmd>lua vim.diagnostic.open_float()<CR>')
   set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>')
+
   set_keymap('i', '<C-k>', '<Cmd>lua vim.lsp.buf.signature_help()<CR>')
-  set_keymap('n', '<Leader>tf', toggle_autoformat, 'Toggle autoformat')
-  set_keymap('n', '<Leader>ef', '<Cmd>lua MiniFiles.open(vim.api.nvim_buf_get_name(0),         false)<CR>', 'Explorer')
-  set_keymap('n', '<Leader>fH', '<Cmd>Pick hl_groups<CR>', 'Highlights')
+
+  set_keymap('n', '<Leader>ef', '<Cmd>lua MiniFiles.open(vim.api.nvim_buf_get_name(0), false)<CR>', 'Explorer')
+
   set_keymap('n', '<Leader>fb', '<Cmd>Pick buffers<CR>', 'Buffers')
   set_keymap('n', '<Leader>fc', '<Cmd>Pick commands<CR>', 'Commands')
   set_keymap('n', '<Leader>fd', '<Cmd>Pick diagnostic<CR>', 'Diagnostics')
@@ -73,6 +78,7 @@ Config.later(function()
   set_keymap('n', '<Leader>ff', '<Cmd>Pick files<CR>', 'Files')
   set_keymap('n', '<Leader>fg', '<Cmd>Pick grep_live<CR>', 'Grep live')
   set_keymap('n', '<Leader>fh', "<Cmd>Pick help default_split='vertical'<CR>", 'Help files')
+  set_keymap('n', '<Leader>fH', '<Cmd>Pick hl_groups<CR>', 'Highlights')
   set_keymap('n', '<Leader>fk', '<Cmd>Pick keymaps<CR>', 'Keymaps')
   set_keymap('n', '<Leader>fl', "<Cmd>Pick buf_lines scope='current' preserve_order=true<CR>", 'Lines')
   set_keymap('n', '<Leader>fm', '<Cmd>Pick manpages<CR>', 'Search manpages')
@@ -80,10 +86,9 @@ Config.later(function()
   set_keymap('n', '<Leader>fq', "<Cmd>Pick list scope='quickfix'<CR>", 'Quickfix')
   set_keymap('n', '<Leader>fr', '<Cmd>Pick resume<CR>', 'Resume')
   set_keymap('n', '<Leader>fu', '<Cmd>Pick git_hunks<CR>', 'Git hunks')
+
   set_keymap('n', '<Leader>gf', '<Cmd>Git<CR>', 'Open fugitive')
-  set_keymap('n', '<Leader>go', '<Cmd>lua MiniDiff.toggle_overlay()<CR>', 'Toggle overlay')
-  set_keymap('n', '<Leader>gs', '<Cmd>lua MiniGit.show_at_cursor()<CR>', 'Show at selection')
-  set_keymap('x', '<Leader>gs', '<Cmd>lua MiniGit.show_at_cursor()<CR>', 'Show at selection')
+
   set_keymap('n', '<Leader>lD', "<Cmd>Pick lsp scope='declaration'<CR>", 'Declarations')
   set_keymap('n', '<Leader>lS', "<Cmd>Pick lsp scope='workspace_symbol_live'<CR>", 'Workspace symbols')
   set_keymap('n', '<Leader>la', '<Cmd>lua vim.lsp.buf.code_action()<CR>', 'Code actions')
@@ -93,5 +98,11 @@ Config.later(function()
   set_keymap('n', '<Leader>lr', "<Cmd>Pick lsp scope='references'<CR>", 'References')
   set_keymap('n', '<Leader>ls', "<Cmd>Pick lsp scope='document_symbol'<CR>", 'Document Symbols')
   set_keymap('n', '<Leader>lt', "<Cmd>Pick lsp scope='type_definition'<CR>", 'Typedefs')
+
+  set_keymap('n', '<Leader>tg', '<Cmd>lua Snacks.terminal("lazygit")<CR>', 'Open LazyGit')
+  set_keymap('n', '<Leader>to', '<Cmd>lua Snacks.terminal("opencode")<CR>', 'Open OpenCode')
+  set_keymap('n', '<Leader>tt', '<Cmd>lua Snacks.terminal()<CR>', 'Open Term')
+
+  set_keymap('n', '<Leader>uf', toggle_autoformat, 'Toggle autoformat')
   set_keymap('n', '<Leader>ur', '<Cmd>lua MiniMisc.put(MiniMisc.find_root())<CR>', 'Find current root')
 end)
