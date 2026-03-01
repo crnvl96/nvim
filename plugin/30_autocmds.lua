@@ -4,6 +4,11 @@ Config.now(function()
     callback = function() vim.highlight.on_yank() end,
   })
 
+  vim.api.nvim_create_autocmd('FileType', {
+    group = Config.gr,
+    callback = function() vim.cmd('setlocal formatoptions-=c formatoptions-=o') end,
+  })
+
   vim.api.nvim_create_autocmd('QuickFixCmdPost', {
     group = Config.gr,
     pattern = '[^l]*',
