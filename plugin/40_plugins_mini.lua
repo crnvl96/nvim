@@ -1,10 +1,25 @@
 Config.now(function() vim.cmd.colorscheme('miniwinter') end)
 
+Config.later(function() require('mini.extra').setup() end)
+Config.later(function() require('mini.visits').setup() end)
+Config.later(function() require('mini.align').setup() end)
+Config.later(function() require('mini.operators').setup() end)
+Config.later(function() require('mini.move').setup() end)
+Config.later(function() require('mini.surround').setup() end)
+Config.later(function() require('mini.splitjoin').setup() end)
+Config.later(function() require('mini.cmdline').setup() end)
+Config.later(function() require('mini.bracketed').setup() end)
+
 Config.now(function()
   require('mini.icons').setup({
+    -- rely on `vim.filetype.match` for these extensions
     use_file_extension = function(ext, _)
-      local suf3, suf4 = ext:sub(-3), ext:sub(-4)
-      return suf3 ~= 'scm' and suf3 ~= 'txt' and suf3 ~= 'yml' and suf4 ~= 'json' and suf4 ~= 'yaml'
+      local last_three_letters, last_four_letters = ext:sub(-3), ext:sub(-4)
+      return last_three_letters ~= 'scm'
+        and last_three_letters ~= 'txt'
+        and last_three_letters ~= 'yml'
+        and last_four_letters ~= 'json'
+        and last_four_letters ~= 'yaml'
     end,
     file = {
       ['.eslintrc.js'] = { glyph = '󰱺', hl = 'MiniIconsYellow' },
@@ -22,20 +37,22 @@ Config.now(function()
       gotmpl = { glyph = '󰟓', hl = 'MiniIconsGrey' },
     },
   })
+
   Config.later(MiniIcons.tweak_lsp_kind)
+
   Config.later(MiniIcons.mock_nvim_web_devicons)
 end)
 
-Config.later(function() require('mini.extra').setup() end)
-Config.later(function() require('mini.visits').setup() end)
-Config.later(function() require('mini.align').setup() end)
-Config.later(function() require('mini.operators').setup() end)
-Config.later(function() require('mini.move').setup() end)
-Config.later(function() require('mini.surround').setup() end)
-Config.later(function() require('mini.splitjoin').setup() end)
-Config.later(function() require('mini.cmdline').setup() end)
-Config.later(function() require('mini.bracketed').setup() end)
-Config.later(function() require('mini.indentscope').setup({ options = { border = 'both', try_as_border = true } }) end)
+Config.later(
+  function()
+    require('mini.indentscope').setup({
+      options = {
+        border = 'both',
+        try_as_border = true,
+      },
+    })
+  end
+)
 
 Config.later(function()
   require('mini.completion').setup({
@@ -43,11 +60,16 @@ Config.later(function()
       source_func = 'omnifunc',
       auto_setup = false,
       process_items = function(items, base)
-        return MiniCompletion.default_process_items(items, base, { kind_priority = { Text = -1, Snippet = -1 } })
+        local default = MiniCompletion.default_process_items
+        return default(items, base, { kind_priority = { Text = -1, Snippet = -1 } })
       end,
     },
   })
-  vim.lsp.config('*', { capabilities = MiniCompletion.get_lsp_capabilities() })
+
+  vim.lsp.config('*', {
+    capabilities = MiniCompletion.get_lsp_capabilities(),
+  })
+
   vim.api.nvim_create_autocmd('LspAttach', {
     group = Config.gr,
     callback = function(e) vim.bo[e.buf].omnifunc = 'v:lua.MiniCompletion.completefunc_lsp' end,
@@ -57,7 +79,9 @@ end)
 Config.later(
   function()
     require('mini.hipatterns').setup({
-      highlighters = { hex_color = require('mini.hipatterns').gen_highlighter.hex_color() },
+      highlighters = {
+        hex_color = require('mini.hipatterns').gen_highlighter.hex_color(),
+      },
     })
   end
 )
@@ -72,33 +96,17 @@ Config.later(
   end
 )
 
-Config.later(function()
-  require('mini.pairs').setup({ modes = { insert = true, command = true, terminal = false } })
-  local pairs = require('mini.pairs')
-  local open = pairs.open
-  pairs.open = function(pair, neigh_pattern)
-    if vim.fn.getcmdline() ~= '' then return open(pair, neigh_pattern) end
-    local o, c = pair:sub(1, 1), pair:sub(2, 2)
-    local line = vim.api.nvim_get_current_line()
-    local cursor = vim.api.nvim_win_get_cursor(0)
-    local next = line:sub(cursor[2] + 1, cursor[2] + 1)
-    local before = line:sub(1, cursor[2])
-    if o == '`' and vim.bo.filetype == 'markdown' and before:match('^%s*``') then
-      return '`\n```' .. vim.api.nvim_replace_termcodes('<up>', true, true, true)
-    end
-    if next ~= '' and next:match([=[[%w%%%'%[%"%.%`%$]]=]) then return o end
-    local ok, captures = pcall(vim.treesitter.get_captures_at_pos, 0, cursor[1] - 1, math.max(cursor[2] - 1, 0))
-    for _, capture in ipairs(ok and captures or {}) do
-      if vim.tbl_contains({ 'string' }, capture.capture) then return o end
-    end
-    if next == c and c ~= o then
-      local _, count_open = line:gsub(vim.pesc(pair:sub(1, 1)), '')
-      local _, count_close = line:gsub(vim.pesc(pair:sub(2, 2)), '')
-      if count_close > count_open then return o end
-    end
-    return open(pair, neigh_pattern)
+Config.later(
+  function()
+    require('mini.pairs').setup({
+      modes = {
+        insert = true,
+        command = true,
+        terminal = false,
+      },
+    })
   end
-end)
+)
 
 Config.later(function()
   require('mini.ai').setup({
@@ -113,8 +121,13 @@ Config.later(function()
         a = { '@block.outer', '@conditional.outer', '@loop.outer' },
         i = { '@block.inner', '@conditional.inner', '@loop.inner' },
       }),
-      t = { '<([%p%w]-)%f[^<%w][^<>]->.-</%1>', '^<.->().*()</[^/]->$' }, -- tags
-      d = { '%f[%d]%d+' }, -- digits
+      t = { -- tags
+        '<([%p%w]-)%f[^<%w][^<>]->.-</%1>',
+        '^<.->().*()</[^/]->$',
+      },
+      d = { -- digits
+        '%f[%d]%d+',
+      },
       e = { -- Word with case
         { '%u[%l%d]+%f[^%l%d]', '%f[%S][%l%d]+%f[^%l%d]', '%f[%P][%l%d]+%f[^%l%d]', '^[%l%d]+%f[^%l%d]' },
         '^().*()$',
@@ -125,6 +138,7 @@ end)
 
 Config.later(function()
   require('mini.keymap').setup()
+
   MiniKeymap.map_multistep('i', '<Tab>', { 'pmenu_next' })
   MiniKeymap.map_multistep('i', '<S-Tab>', { 'pmenu_prev' })
   MiniKeymap.map_multistep('i', '<CR>', { 'pmenu_accept', 'minipairs_cr' })
@@ -160,8 +174,6 @@ Config.later(function()
 end)
 
 Config.later(function()
-  Config.show_dotfiles = true
-  Config.show_preview = false
   require('mini.files').setup({
     mappings = {
       go_in = '',
@@ -177,31 +189,41 @@ Config.later(function()
       width_preview = math.floor(vim.o.columns * 0.59),
     },
   })
+
   local filter_show = function() return true end
   local filter_hide = function(fs_entry) return not vim.startswith(fs_entry.name, '.') end
+
+  local show_dotfiles = true
+  local show_preview = false
+
   local toggle_dotfiles = function()
-    Config.show_dotfiles = not Config.show_dotfiles
-    local new_filter = Config.show_dotfiles and filter_show or filter_hide
+    show_dotfiles = true
+    show_dotfiles = not show_dotfiles
+    local new_filter = show_dotfiles and filter_show or filter_hide
     MiniFiles.refresh({ content = { filter = new_filter } })
   end
+
   local toggle_preview = function()
-    Config.show_preview = not Config.show_preview
+    show_preview = false
+    show_preview = not show_preview
     MiniFiles.refresh({
       windows = {
-        max_number = Config.show_preview and 2 or 1,
-        preview = Config.show_preview and true or false,
-        width_focus = math.floor(vim.o.columns * (Config.show_preview and 0.39 or 1)),
+        max_number = show_preview and 2 or 1,
+        preview = show_preview and true or false,
+        width_focus = math.floor(vim.o.columns * (show_preview and 0.39 or 1)),
       },
     })
   end
+
   vim.api.nvim_create_autocmd('User', {
     pattern = 'MiniFilesBufferCreate',
-    callback = function(args)
-      local buf_id = args.data.buf_id
+    callback = function(e)
+      local buf_id = e.data.buf_id
       vim.keymap.set('n', 'g.', toggle_dotfiles, { buffer = buf_id })
       vim.keymap.set('n', 'gp', toggle_preview, { buffer = buf_id })
     end,
   })
+
   vim.api.nvim_create_autocmd('User', {
     pattern = 'MiniFilesExplorerOpen',
     group = Config.gr,
@@ -214,6 +236,7 @@ Config.later(function()
       MiniFiles.set_bookmark('h', vim.env.HOME, { desc = 'Home' })
     end,
   })
+
   vim.api.nvim_create_autocmd('User', {
     pattern = 'MiniFilesWindowUpdate',
     callback = function(e)
@@ -225,19 +248,52 @@ Config.later(function()
       vim.api.nvim_win_set_config(e.data.win_id, config)
     end,
   })
+
+  Config.set_keymap('n', '<Leader>ef', '<Cmd>lua MiniFiles.open(vim.api.nvim_buf_get_name(0), false)<CR>', 'Explorer')
 end)
 
 Config.later(function()
   require('mini.pick').setup({ window = { prompt_prefix = ' ' } })
+
   ---@diagnostic disable-next-line: duplicate-set-field
   vim.ui.select = function(items, opts, on_choice)
-    return MiniPick.ui_select(
-      items,
-      opts,
-      on_choice,
-      { window = { config = { relative = 'cursor', anchor = 'NW', row = 0, col = 0, width = 80, height = 15 } } }
-    )
+    return MiniPick.ui_select(items, opts, on_choice, {
+      window = {
+        config = {
+          relative = 'cursor',
+          anchor = 'NW',
+          row = 0,
+          col = 0,
+          width = 80,
+          height = 15,
+        },
+      },
+    })
   end
+
+  Config.set_keymap('n', '<Leader>fb', '<Cmd>Pick buffers<CR>', 'Buffers')
+  Config.set_keymap('n', '<Leader>fc', '<Cmd>Pick commands<CR>', 'Commands')
+  Config.set_keymap('n', '<Leader>fd', '<Cmd>Pick diagnostic<CR>', 'Diagnostics')
+  Config.set_keymap('n', '<Leader>fe', '<Cmd>Pick explorer<CR>', 'Explorer')
+  Config.set_keymap('n', '<Leader>ff', '<Cmd>Pick files<CR>', 'Files')
+  Config.set_keymap('n', '<Leader>fg', '<Cmd>Pick grep_live<CR>', 'Grep live')
+  Config.set_keymap('n', '<Leader>fh', "<Cmd>Pick help default_split='vertical'<CR>", 'Help files')
+  Config.set_keymap('n', '<Leader>fH', '<Cmd>Pick hl_groups<CR>', 'Highlights')
+  Config.set_keymap('n', '<Leader>fk', '<Cmd>Pick keymaps<CR>', 'Keymaps')
+  Config.set_keymap('n', '<Leader>fl', "<Cmd>Pick buf_lines scope='current' preserve_order=true<CR>", 'Lines')
+  Config.set_keymap('n', '<Leader>fm', '<Cmd>Pick manpages<CR>', 'Search manpages')
+  Config.set_keymap('n', '<Leader>fo', '<Cmd>Pick visit_paths preserve_order=true<CR>', 'Oldfiles')
+  Config.set_keymap('n', '<Leader>fq', "<Cmd>Pick list scope='quickfix'<CR>", 'Quickfix')
+  Config.set_keymap('n', '<Leader>fr', '<Cmd>Pick resume<CR>', 'Resume')
+  Config.set_keymap('n', '<Leader>fu', '<Cmd>Pick git_hunks<CR>', 'Git hunks')
+
+  Config.set_keymap('n', '<Leader>lD', "<Cmd>Pick lsp scope='declaration'<CR>", 'Declarations')
+  Config.set_keymap('n', '<Leader>lS', "<Cmd>Pick lsp scope='workspace_symbol_live'<CR>", 'Workspace symbols')
+  Config.set_keymap('n', '<Leader>ld', "<Cmd>Pick lsp scope='definition'<CR>", 'Definitions')
+  Config.set_keymap('n', '<Leader>li', "<Cmd>Pick lsp scope='implementation'<CR>", 'Implementations')
+  Config.set_keymap('n', '<Leader>lr', "<Cmd>Pick lsp scope='references'<CR>", 'References')
+  Config.set_keymap('n', '<Leader>ls', "<Cmd>Pick lsp scope='document_symbol'<CR>", 'Document Symbols')
+  Config.set_keymap('n', '<Leader>lt', "<Cmd>Pick lsp scope='type_definition'<CR>", 'Typedefs')
 end)
 
 Config.later(

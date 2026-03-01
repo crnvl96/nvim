@@ -1,54 +1,4 @@
 Config.now(function()
-  local set = vim.keymap.set
-
-  set('n', 'Y', 'yg_', { noremap = true })
-
-  set('x', 'p', 'P')
-
-  set('t', '<C-g>', '<C-\\><C-n>')
-
-  set({ 'n', 'x' }, 'j', [[v:count == 0 ? 'gj' : 'j']], { expr = true })
-  set({ 'n', 'x' }, 'k', [[v:count == 0 ? 'gk' : 'k']], { expr = true })
-
-  set({ 'n', 'i', 'x' }, '<Esc>', '<Esc><Cmd>noh<CR><Esc>', { noremap = true })
-  set({ 'n', 'i', 'x' }, '<C-s>', '<Esc><Cmd>noh<CR><Cmd>silent! update | redraw<CR>')
-
-  set('n', '<C-h>', '<C-w>h')
-  set('n', '<C-j>', '<C-w>j')
-  set('n', '<C-k>', '<C-w>k')
-  set('n', '<C-l>', '<C-w>l')
-
-  set('n', '<C-Left>', '<Cmd>vertical resize -20<CR>')
-  set('n', '<C-Down>', '<Cmd>resize -5<CR>')
-  set('n', '<C-Up>', '<Cmd>resize +5<CR>')
-  set('n', '<C-Right>', '<Cmd>vertical resize +20<CR>')
-
-  set('n', '<C-d>', '<C-d>zz')
-  set('n', '<C-u>', '<C-u>zz')
-
-  set('n', 'n', 'nzz')
-  set('n', 'N', 'Nzz')
-  set('n', '*', '*zz')
-  set('n', '#', '#zz')
-  set('n', 'g*', 'g*zz')
-
-  set('c', '<C-f>', '<Right>')
-  set('c', '<C-b>', '<Left>')
-  set('c', '<C-a>', '<Home>')
-  set('c', '<C-e>', '<End>')
-  set('c', '<C-d>', '<Del>')
-  set('c', '<C-k>', '<C-u>')
-  set('c', '<C-g>', '<C-c>')
-
-  set('c', '<M-d>', '<C-w>')
-  set('c', '<M-h>', '<C-f>')
-  set('c', '<M-f>', '<C-Right>')
-  set('c', '<M-b>', '<C-Left>')
-end)
-
-Config.later(function()
-  Config.autoformat = true
-
   Config.clues = {
     { mode = { 'n' }, keys = '<leader>e', desc = '+explorer' },
     { mode = { 'n' }, keys = '<leader>t', desc = '+terms' },
@@ -59,50 +9,47 @@ Config.later(function()
     { mode = { 'n', 'x' }, keys = '<leader>g', desc = '+git' },
   }
 
-  local set = vim.keymap.set
-  local set_keymap = function(mode, lhs, rhs, desc) set(mode, lhs, rhs, { desc = desc }) end
+  Config.set('n', 'Y', 'yg_', { noremap = true })
 
-  local toggle_autoformat = function() Config.autoformat = not Config.autoformat end
+  Config.set('x', 'p', 'P')
 
-  set_keymap('n', 'E', '<Cmd>lua vim.diagnostic.open_float()<CR>')
-  set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>')
+  Config.set('t', '<C-g>', '<C-\\><C-n>')
 
-  set_keymap('i', '<C-k>', '<Cmd>lua vim.lsp.buf.signature_help()<CR>')
+  Config.set({ 'n', 'x' }, 'j', [[v:count == 0 ? 'gj' : 'j']], { expr = true })
+  Config.set({ 'n', 'x' }, 'k', [[v:count == 0 ? 'gk' : 'k']], { expr = true })
 
-  set_keymap('n', '<Leader>ef', '<Cmd>lua MiniFiles.open(vim.api.nvim_buf_get_name(0), false)<CR>', 'Explorer')
+  Config.set({ 'n', 'i', 'x' }, '<Esc>', '<Esc><Cmd>noh<CR><Esc>', { noremap = true })
+  Config.set({ 'n', 'i', 'x' }, '<C-s>', '<Esc><Cmd>noh<CR><Cmd>silent! update | redraw<CR>')
 
-  set_keymap('n', '<Leader>fb', '<Cmd>Pick buffers<CR>', 'Buffers')
-  set_keymap('n', '<Leader>fc', '<Cmd>Pick commands<CR>', 'Commands')
-  set_keymap('n', '<Leader>fd', '<Cmd>Pick diagnostic<CR>', 'Diagnostics')
-  set_keymap('n', '<Leader>fe', '<Cmd>Pick explorer<CR>', 'Explorer')
-  set_keymap('n', '<Leader>ff', '<Cmd>Pick files<CR>', 'Files')
-  set_keymap('n', '<Leader>fg', '<Cmd>Pick grep_live<CR>', 'Grep live')
-  set_keymap('n', '<Leader>fh', "<Cmd>Pick help default_split='vertical'<CR>", 'Help files')
-  set_keymap('n', '<Leader>fH', '<Cmd>Pick hl_groups<CR>', 'Highlights')
-  set_keymap('n', '<Leader>fk', '<Cmd>Pick keymaps<CR>', 'Keymaps')
-  set_keymap('n', '<Leader>fl', "<Cmd>Pick buf_lines scope='current' preserve_order=true<CR>", 'Lines')
-  set_keymap('n', '<Leader>fm', '<Cmd>Pick manpages<CR>', 'Search manpages')
-  set_keymap('n', '<Leader>fo', '<Cmd>Pick visit_paths preserve_order=true<CR>', 'Oldfiles')
-  set_keymap('n', '<Leader>fq', "<Cmd>Pick list scope='quickfix'<CR>", 'Quickfix')
-  set_keymap('n', '<Leader>fr', '<Cmd>Pick resume<CR>', 'Resume')
-  set_keymap('n', '<Leader>fu', '<Cmd>Pick git_hunks<CR>', 'Git hunks')
+  Config.set('n', '<C-h>', '<C-w>h')
+  Config.set('n', '<C-j>', '<C-w>j')
+  Config.set('n', '<C-k>', '<C-w>k')
+  Config.set('n', '<C-l>', '<C-w>l')
 
-  set_keymap('n', '<Leader>gf', '<Cmd>Git<CR>', 'Open fugitive')
+  Config.set('n', '<C-Left>', '<Cmd>vertical resize -20<CR>')
+  Config.set('n', '<C-Down>', '<Cmd>resize -5<CR>')
+  Config.set('n', '<C-Up>', '<Cmd>resize +5<CR>')
+  Config.set('n', '<C-Right>', '<Cmd>vertical resize +20<CR>')
 
-  set_keymap('n', '<Leader>lD', "<Cmd>Pick lsp scope='declaration'<CR>", 'Declarations')
-  set_keymap('n', '<Leader>lS', "<Cmd>Pick lsp scope='workspace_symbol_live'<CR>", 'Workspace symbols')
-  set_keymap('n', '<Leader>la', '<Cmd>lua vim.lsp.buf.code_action()<CR>', 'Code actions')
-  set_keymap('n', '<Leader>ld', "<Cmd>Pick lsp scope='definition'<CR>", 'Definitions')
-  set_keymap('n', '<Leader>li', "<Cmd>Pick lsp scope='implementation'<CR>", 'Implementations')
-  set_keymap('n', '<Leader>ln', '<Cmd>lua vim.lsp.buf.rename()<CR>', 'Rename')
-  set_keymap('n', '<Leader>lr', "<Cmd>Pick lsp scope='references'<CR>", 'References')
-  set_keymap('n', '<Leader>ls', "<Cmd>Pick lsp scope='document_symbol'<CR>", 'Document Symbols')
-  set_keymap('n', '<Leader>lt', "<Cmd>Pick lsp scope='type_definition'<CR>", 'Typedefs')
+  Config.set('n', '<C-d>', '<C-d>zz')
+  Config.set('n', '<C-u>', '<C-u>zz')
 
-  set_keymap('n', '<Leader>tg', '<Cmd>lua Snacks.terminal("lazygit")<CR>', 'Open LazyGit')
-  set_keymap('n', '<Leader>to', '<Cmd>lua Snacks.terminal("opencode")<CR>', 'Open OpenCode')
-  set_keymap('n', '<Leader>tt', '<Cmd>lua Snacks.terminal()<CR>', 'Open Term')
+  Config.set('n', 'n', 'nzz')
+  Config.set('n', 'N', 'Nzz')
+  Config.set('n', '*', '*zz')
+  Config.set('n', '#', '#zz')
+  Config.set('n', 'g*', 'g*zz')
 
-  set_keymap('n', '<Leader>uf', toggle_autoformat, 'Toggle autoformat')
-  set_keymap('n', '<Leader>ur', '<Cmd>lua MiniMisc.put(MiniMisc.find_root())<CR>', 'Find current root')
+  Config.set('c', '<C-f>', '<Right>')
+  Config.set('c', '<C-b>', '<Left>')
+  Config.set('c', '<C-a>', '<Home>')
+  Config.set('c', '<C-e>', '<End>')
+  Config.set('c', '<C-d>', '<Del>')
+  Config.set('c', '<C-k>', '<C-u>')
+  Config.set('c', '<C-g>', '<C-c>')
+
+  Config.set('c', '<M-d>', '<C-w>')
+  Config.set('c', '<M-h>', '<C-f>')
+  Config.set('c', '<M-f>', '<C-Right>')
+  Config.set('c', '<M-b>', '<C-Left>')
 end)

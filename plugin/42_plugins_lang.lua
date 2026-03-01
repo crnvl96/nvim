@@ -4,10 +4,12 @@ Config.now_if_args(function()
     vim.cmd('TSUpdate')
     MiniMisc.log_add('Parsers updates', { name = e.data.spec.name, path = e.data.path })
   end)
+
   vim.pack.add({
     'https://github.com/nvim-treesitter/nvim-treesitter',
     'https://github.com/nvim-treesitter/nvim-treesitter-textobjects',
   })
+
   -- stylua: ignore
   local treesit_langs = {
     -- NOTE: parsers for c, lua, vim, vimdoc, query and markdown are already included in neovim
@@ -15,7 +17,8 @@ Config.now_if_args(function()
     'gitignore', 'go',  'gomod',    'gosum',  'gowork',     'html',       'javascript', 'json',          'json5',
     'jsx',       'lua', 'markdown', 'python', 'regex',      'ruby',       'toml',       'tsx',           'typescript',
     'typst',     'vim', 'vimdoc',   'yaml'
-   }
+  }
+
   require('nvim-treesitter').install(
     vim
       .iter(treesit_langs)
@@ -23,6 +26,7 @@ Config.now_if_args(function()
       :flatten()
       :totable()
   )
+
   vim.api.nvim_create_autocmd('FileType', {
     group = vim.api.nvim_create_augroup('crnvl96-nvim-treesitter', {}),
     pattern = vim
@@ -36,12 +40,14 @@ end)
 
 Config.now_if_args(function()
   vim.pack.add({ 'https://github.com/neovim/nvim-lspconfig' })
+
   -- stylua: ignore
   vim.lsp.enable({
     'biome',  'eslint',  'gopls',    'lua_ls', 'oxfmt',
     'oxlint', 'rubocop', 'ruby_lsp', 'ruff',   'tinymist',
     'tsgo',   'ty',      -- 'pyright',
   })
+
   vim.api.nvim_create_autocmd('LspAttach', {
     group = Config.gr,
     callback = function(e)
@@ -65,10 +71,19 @@ Config.now_if_args(function()
       end
     end,
   })
+
+  Config.set_keymap('n', 'E', '<Cmd>lua vim.diagnostic.open_float()<CR>')
+  Config.set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>')
+  Config.set_keymap('i', '<C-k>', '<Cmd>lua vim.lsp.buf.signature_help()<CR>')
+
+  Config.set_keymap('n', '<Leader>la', '<Cmd>lua vim.lsp.buf.code_action()<CR>', 'Code actions')
+  Config.set_keymap('n', '<Leader>ln', '<Cmd>lua vim.lsp.buf.rename()<CR>', 'Rename')
 end)
 
 Config.now_if_args(function()
   vim.pack.add({ 'https://github.com/stevearc/conform.nvim' })
+
+  local autoformat = true
 
   require('conform').setup({
     notify_on_error = false,
@@ -86,7 +101,7 @@ Config.now_if_args(function()
       },
     },
     format_on_save = function()
-      if not Config.autoformat then return nil end
+      if not autoformat then return nil end
       return {}
     end,
     formatters_by_ft = {
@@ -108,4 +123,8 @@ Config.now_if_args(function()
       markdown = { 'prettier', 'injected' },
     },
   })
+
+  local toggle_autoformat = function() autoformat = not autoformat end
+  Config.set_keymap('n', '<Leader>uf', toggle_autoformat, 'Toggle autoformat')
+  Config.set_keymap('n', '<Leader>ur', '<Cmd>lua MiniMisc.put(MiniMisc.find_root())<CR>', 'Find current root')
 end)

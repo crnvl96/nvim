@@ -3,15 +3,23 @@ _G.Config = {}
 vim.pack.add({ 'https://github.com/nvim-mini/mini.nvim' })
 
 require('mini.misc').setup()
+
 MiniMisc.setup_auto_root()
 MiniMisc.setup_restore_cursor()
 MiniMisc.setup_termbg_sync()
 
 Config.gr = vim.api.nvim_create_augroup('custom-config', {})
 
+Config.set = vim.keymap.set
+
+Config.set_keymap = function(mode, lhs, rhs, desc) vim.keymap.set(mode, lhs, rhs, { desc = desc }) end
+
 Config.now = function(f) MiniMisc.safely('now', f) end
+
 Config.later = function(f) MiniMisc.safely('later', f) end
+
 Config.now_if_args = vim.fn.argc(-1) > 0 and Config.now or Config.later
+
 Config.on_packchanged = function(name, kinds, callback)
   vim.api.nvim_create_autocmd('PackChanged', {
     group = Config.gr,
