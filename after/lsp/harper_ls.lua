@@ -4,7 +4,7 @@ return {
     ['harper-ls'] = {
       linters = {
         SentenceCapitalization = false,
-        SpellCheck = true,
+        SpellCheck = false,
       },
     },
   },
