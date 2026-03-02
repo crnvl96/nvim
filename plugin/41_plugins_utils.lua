@@ -33,6 +33,7 @@ Config.now_if_args(function()
     terminal = {
       win = {
         position = 'float',
+        border = vim.o.winborder,
         width = math.floor(vim.o.columns * 0.85),
         height = math.floor(vim.o.lines * 0.85),
         bo = { filetype = 'snacks_terminal' },
