@@ -45,17 +45,4 @@ Config.now(function()
     group = Config.gr,
     callback = vim.schedule_wrap(function() vim.cmd.nohlsearch() end),
   })
-
-  vim.api.nvim_create_autocmd('TermEnter', {
-    group = Config.gr,
-    callback = function()
-      local code_term_esc = vim.api.nvim_replace_termcodes('<C-\\><C-n>', true, true, true)
-      for _, key in ipairs({ 'h', 'j', 'k', 'l' }) do
-        vim.keymap.set('t', '<C-' .. key .. '>', function()
-          local code_dir = vim.api.nvim_replace_termcodes('<C-' .. key .. '>', true, true, true)
-          vim.api.nvim_feedkeys(code_term_esc .. code_dir, 't', true)
-        end, { noremap = true })
-      end
-    end,
-  })
 end)

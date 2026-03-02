@@ -42,16 +42,20 @@ Config.now(function()
   Config.later(MiniIcons.mock_nvim_web_devicons)
 end)
 
-Config.later(
-  function()
-    require('mini.indentscope').setup({
-      options = {
-        border = 'both',
-        try_as_border = true,
-      },
-    })
-  end
-)
+Config.later(function()
+  require('mini.indentscope').setup({
+    options = {
+      border = 'both',
+      try_as_border = true,
+    },
+  })
+
+  vim.api.nvim_create_autocmd('FileType', {
+    group = Config.gr,
+    pattern = { 'snacks_terminal', 'terminal', 'term' },
+    callback = function(e) vim.b[e.buf].miniindentscope_disable = true end,
+  })
+end)
 
 Config.later(function()
   require('mini.completion').setup({
