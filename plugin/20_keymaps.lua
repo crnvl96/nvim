@@ -1,10 +1,7 @@
 Config.now(function()
   Config.clues = {
-    { mode = { 'n' }, keys = '<leader>a', desc = '+ai' },
     { mode = { 'n' }, keys = '<leader>e', desc = '+explorer' },
-    { mode = { 'n' }, keys = '<leader>t', desc = '+terms' },
-    { mode = { 'n' }, keys = '<leader>t', desc = '+toggle' },
-    { mode = { 'n' }, keys = '<leader>u', desc = '+utils' },
+    { mode = { 'n', 'x' }, keys = '<leader>u', desc = '+utils' },
     { mode = { 'n' }, keys = '<leader>f', desc = '+find' },
     { mode = { 'n' }, keys = '<leader>l', desc = '+lsp' },
     { mode = { 'n' }, keys = '<leader>g', desc = '+git' },

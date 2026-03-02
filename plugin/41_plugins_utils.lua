@@ -49,8 +49,8 @@ Config.now_if_args(function()
   })
 
   Config.set_keymap({ 'n', 't' }, '<M-1>', '<Cmd>lua Snacks.terminal()<CR>', 'Open Term')
-  Config.set_keymap({ 'n', 't' }, '<M-2>', '<Cmd>lua Snacks.terminal("lazygit")<CR>', 'Open LazyGit')
-  Config.set_keymap({ 'n', 't' }, '<M-3>', '<Cmd>lua Snacks.terminal("opencode")<CR>', 'Open OpenCode')
+  Config.set_keymap({ 'n', 't' }, '<M-2>', '<Cmd>lua Snacks.terminal("opencode")<CR>', 'Open OpenCode')
+  Config.set_keymap('n', '<Leader>gg', '<Cmd>lua Snacks.terminal("lazygit")<CR>', 'Open LazyGit')
 end)
 
 Config.now_if_args(function()
