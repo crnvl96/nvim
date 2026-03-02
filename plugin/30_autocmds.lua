@@ -6,7 +6,11 @@ Config.now(function()
 
   vim.api.nvim_create_autocmd('FileType', {
     group = Config.gr,
-    callback = function() vim.cmd('setlocal formatoptions-=c formatoptions-=o') end,
+    callback = function()
+      vim.cmd('setlocal formatoptions-=c formatoptions-=o')
+      vim.wo[0][0].foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+      vim.wo[0][0].foldmethod = 'expr'
+    end,
   })
 
   vim.api.nvim_create_autocmd('QuickFixCmdPost', {

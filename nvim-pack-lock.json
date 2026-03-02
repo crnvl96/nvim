@@ -8,6 +8,10 @@
       "rev": "e969e302bced7ffb9a0a0323629f31feb0ca35a6",
       "src": "https://github.com/stevearc/conform.nvim"
     },
+    "grug-far.nvim": {
+      "rev": "9370422e5cdd55321c0b8c4880082c5fd4e52e99",
+      "src": "https://github.com/MagicDuck/grug-far.nvim"
+    },
     "image.nvim": {
       "rev": "da2be65c153ba15a14a342b05591652a6df70d58",
       "src": "https://github.com/3rd/image.nvim"
@@ -66,4 +70,3 @@
     }
   }
 }
-

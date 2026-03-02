@@ -2,6 +2,20 @@ Config.now_if_args(function() vim.pack.add({ 'https://github.com/b0o/SchemaStore
 Config.now_if_args(function() vim.pack.add({ 'https://github.com/tpope/vim-sleuth' }) end)
 
 Config.now_if_args(function()
+  vim.pack.add({ 'https://github.com/MagicDuck/grug-far.nvim' })
+
+  require('grug-far').setup({
+    folding = { enabled = false },
+    resultLocation = { showNumberLabel = false },
+  })
+
+  Config.set_keymap({ 'n', 'x' }, '<Leader>ug', function()
+    local grug = require('grug-far')
+    grug.open({ transient = true })
+  end, 'GrugFar')
+end)
+
+Config.now_if_args(function()
   vim.pack.add({ 'https://github.com/folke/ts-comments.nvim' })
   require('ts-comments').setup({ lang = { typst = { '// %s', '/* %s */' } } })
 end)
