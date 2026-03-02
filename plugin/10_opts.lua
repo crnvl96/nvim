@@ -23,7 +23,7 @@ Config.now(function()
   vim.o.foldnestmax = 10
   vim.o.foldlevelstart = 99
   vim.o.foldtext = ''
-  vim.o.foldcolumn = '1'
+  vim.o.foldcolumn = '0'
   vim.o.laststatus = 2
   vim.o.scrolloff = 8
   vim.o.shiftwidth = 4

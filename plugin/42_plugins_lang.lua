@@ -16,7 +16,7 @@ Config.now_if_args(function()
     'bash',      'c',   'css',      'diff',   'dockerfile', 'git_config', 'git_rebase', 'gitattributes', 'gitcommit',
     'gitignore', 'go',  'gomod',    'gosum',  'gowork',     'html',       'javascript', 'json',          'json5',
     'jsx',       'lua', 'markdown', 'python', 'regex',      'ruby',       'toml',       'tsx',           'typescript',
-    'typst',     'vim', 'vimdoc',   'yaml'
+    'typst',     'vim', 'vimdoc',   'yaml',   'jsdoc'
   }
 
   require('nvim-treesitter').install(
