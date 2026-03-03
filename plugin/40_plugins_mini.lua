@@ -1,5 +1,3 @@
-Config.now(function() vim.cmd.colorscheme('miniwinter') end)
-
 Config.later(function() require('mini.extra').setup() end)
 Config.later(function() require('mini.visits').setup() end)
 Config.later(function() require('mini.align').setup() end)
@@ -48,6 +46,7 @@ Config.later(function()
       border = 'both',
       try_as_border = true,
     },
+    symbol = '│',
   })
 
   vim.api.nvim_create_autocmd('FileType', {
@@ -232,6 +231,11 @@ Config.later(function()
       show_dotfiles = true
       show_preview = false
     end,
+  })
+
+  vim.api.nvim_create_autocmd('User', {
+    pattern = 'MiniFilesActionRename',
+    callback = function(e) Snacks.rename.on_rename_file(e.data.from, e.data.to) end,
   })
 
   vim.api.nvim_create_autocmd('User', {

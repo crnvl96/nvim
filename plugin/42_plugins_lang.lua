@@ -106,13 +106,13 @@ Config.now_if_args(function()
       return {}
     end,
     formatters_by_ft = {
-      ['_'] = { 'trim_whitespace', 'trim_newline' },
       javascript = { 'prettier', lsp_format = 'prefer', timeout_ms = 1000 },
       typescript = { 'prettier', lsp_format = 'prefer', timeout_ms = 1000 },
       javascriptreact = { 'prettier', lsp_format = 'prefer', timeout_ms = 1000 },
       typescriptreact = { 'prettier', lsp_format = 'prefer', timeout_ms = 1000 },
       typst = { 'typstyle', lsp_format = 'prefer' },
       go = { lsp_format = 'prefer' },
+      ['_'] = { 'trim_whitespace', 'trim_newline' },
       python = { 'ruff_organize_imports', 'ruff_fix', 'ruff_format' },
       lua = { 'stylua' },
       json = { 'prettier' },

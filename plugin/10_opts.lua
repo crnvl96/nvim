@@ -48,6 +48,7 @@ Config.now(function()
   vim.o.winborder = 'single'
   vim.o.pumborder = 'single'
   vim.o.pummaxwidth = 100
+  vim.o.cmdheight = 0
 
   vim.cmd('highlight ColorColumn ctermbg=lightgrey guibg=lightgrey')
   vim.cmd('filetype plugin indent on')
