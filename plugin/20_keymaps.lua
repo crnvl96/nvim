@@ -7,6 +7,11 @@ Config.now(function()
     { mode = { 'n' }, keys = '<leader>g', desc = '+git' },
   }
 
+  vim.api.nvim_create_user_command('OpenPdf', function()
+    local filepath = vim.api.nvim_buf_get_name(0)
+    if filepath:match('%.pdf$') then vim.system({ 'xdg-open', filepath }) end
+  end, {})
+
   Config.set('n', 'Y', 'yg_', { noremap = true })
 
   Config.set('x', 'p', 'P')
