@@ -14,6 +14,7 @@ Config.now(function()
   vim.o.mouse = 'a'
   vim.o.virtualedit = 'block'
   vim.o.swapfile = false
+  vim.o.textwidth = 120
   vim.o.undofile = true
   vim.o.updatetime = 1000
   vim.o.splitbelow = true
