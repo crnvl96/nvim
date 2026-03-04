@@ -3,6 +3,7 @@ _G.Config = {}
 vim.pack.add({ 'https://github.com/nvim-mini/mini.nvim' })
 
 require('mini.misc').setup()
+require('mini.extra').setup()
 
 MiniMisc.setup_auto_root()
 MiniMisc.setup_restore_cursor()

@@ -1,4 +1,5 @@
 Config.now_if_args(function() vim.pack.add({ 'https://github.com/b0o/SchemaStore.nvim' }) end)
+
 Config.now_if_args(function() vim.pack.add({ 'https://github.com/tpope/vim-sleuth' }) end)
 
 Config.now_if_args(function()
@@ -42,18 +43,44 @@ Config.now_if_args(function()
   require('snacks').setup({
     terminal = {
       win = {
-        position = 'float',
+        position = 'right',
         border = vim.o.winborder,
-        width = math.floor(vim.o.columns * 0.85),
-        height = math.floor(vim.o.lines * 0.85),
+        stack = true,
+        width = math.floor(vim.o.columns * 0.5),
+        -- height = math.floor(vim.o.lines * 0.85),
         bo = { filetype = 'snacks_terminal' },
         wo = {},
-        stack = true,
         keys = {
+          q = 'hide',
           nav_h = { '<C-h>', term_nav('h'), desc = 'Go to Left Window', expr = true, mode = 't' },
           nav_j = { '<C-j>', term_nav('j'), desc = 'Go to Lower Window', expr = true, mode = 't' },
           nav_k = { '<C-k>', term_nav('k'), desc = 'Go to Upper Window', expr = true, mode = 't' },
           nav_l = { '<C-l>', term_nav('l'), desc = 'Go to Right Window', expr = true, mode = 't' },
+          term_normal = {
+            '<esc>',
+            function(self)
+              self.esc_timer = self.esc_timer or (vim.uv or vim.loop).new_timer()
+              if self.esc_timer:is_active() then
+                self.esc_timer:stop()
+                vim.cmd('stopinsert')
+              else
+                self.esc_timer:start(200, 0, function() end)
+                return '<esc>'
+              end
+            end,
+            mode = 't',
+            expr = true,
+            desc = 'Double escape to normal mode',
+          },
+          gf = function(self)
+            local f = vim.fn.findfile(vim.fn.expand('<cfile>'), '**')
+            if f == '' then
+              Snacks.notify.warn('No file under cursor')
+            else
+              self:hide()
+              vim.schedule(function() vim.cmd('e ' .. f) end)
+            end
+          end,
         },
       },
     },

@@ -1,13 +1,3 @@
-Config.later(function() require('mini.extra').setup() end)
-Config.later(function() require('mini.visits').setup() end)
-Config.later(function() require('mini.align').setup() end)
-Config.later(function() require('mini.operators').setup() end)
-Config.later(function() require('mini.move').setup() end)
-Config.later(function() require('mini.surround').setup() end)
-Config.later(function() require('mini.splitjoin').setup() end)
-Config.later(function() require('mini.cmdline').setup() end)
-Config.later(function() require('mini.bracketed').setup() end)
-
 Config.later(function()
   require('mini.colors').setup()
   MiniColors.get_colorscheme():add_transparency({ general = false, float = true }):apply()
@@ -351,3 +341,11 @@ Config.later(
     })
   end
 )
+
+Config.later(function() require('mini.align').setup() end)
+Config.later(function() require('mini.operators').setup() end)
+Config.later(function() require('mini.move').setup() end)
+Config.later(function() require('mini.surround').setup() end)
+Config.later(function() require('mini.splitjoin').setup() end)
+Config.later(function() require('mini.cmdline').setup() end)
+Config.later(function() require('mini.bracketed').setup() end)
