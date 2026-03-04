@@ -5,6 +5,7 @@ Config.now(function()
     { mode = { 'n' }, keys = '<leader>f', desc = '+find' },
     { mode = { 'n' }, keys = '<leader>l', desc = '+lsp' },
     { mode = { 'n' }, keys = '<leader>g', desc = '+git' },
+    { mode = { 'n' }, keys = '<leader>t', desc = '+term' },
   }
 
   vim.api.nvim_create_user_command('OpenPdf', function()

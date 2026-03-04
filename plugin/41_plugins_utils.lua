@@ -91,7 +91,7 @@ Config.now_if_args(function()
     },
   })
 
-  Config.set_keymap('n', '<M-1>', '<Cmd>lua Snacks.terminal()<CR>', 'Open Term')
+  Config.set_keymap('n', '<Leader>tt', '<Cmd>lua Snacks.terminal()<CR>', 'Open Term')
   Config.set_keymap('n', '<Leader>gg', '<Cmd>lua Snacks.terminal("lazygit")<CR>', 'Open LazyGit')
   Config.set_keymap('n', '<Leader>ac', '<Cmd>lua Snacks.terminal("cursor-agent")<CR>', 'Open Cursor')
   Config.set_keymap('n', '<Leader>ao', '<Cmd>lua Snacks.terminal("opencode")<CR>', 'Open OpenCode')
