@@ -18,6 +18,7 @@ Config.later(function()
       .iter(vim.api.nvim_list_bufs())
       :filter(function(bufnr)
         return bufnr ~= current_buffer
+          and not vim.bo[bufnr].filetype:find('^snacks_terminal')
       end)
       :each(function(bufnr)
         MiniBufremove.wipeout(bufnr, true)
@@ -36,12 +37,12 @@ Config.now(function()
   require('mini.icons').setup({
     -- rely on `vim.filetype.match` for these extensions
     use_file_extension = function(ext, _)
-      local last_three_letters, last_four_letters = ext:sub(-3), ext:sub(-4)
-      return last_three_letters ~= 'scm'
-        and last_three_letters ~= 'txt'
-        and last_three_letters ~= 'yml'
-        and last_four_letters ~= 'json'
-        and last_four_letters ~= 'yaml'
+      local suf_3, suf_4 = ext:sub(-3), ext:sub(-4)
+      return suf_3 ~= 'scm'
+        and suf_3 ~= 'txt'
+        and suf_3 ~= 'yml'
+        and suf_4 ~= 'json'
+        and suf_4 ~= 'yaml'
     end,
     file = {
       ['.eslintrc.js'] = { glyph = '󰱺', hl = 'MiniIconsYellow' },
@@ -583,7 +584,6 @@ Config.now_if_args(function()
     input = { enabled = true },
     notifier = { enabled = true },
     quickfile = { enabled = true },
-    scroll = { enabled = true },
     terminal = {
       win = {
         border = vim.o.winborder,

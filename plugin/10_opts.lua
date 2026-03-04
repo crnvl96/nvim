@@ -12,7 +12,7 @@ Config.now(function()
   vim.o.autoindent = true
   vim.o.breakindent = true
   vim.o.clipboard = 'unnamedplus'
-  vim.o.cmdheight = 0
+  vim.o.cmdheight = 1
   vim.o.completeopt = 'menu,menuone,popup,fuzzy,noinsert,noselect,nosort'
   vim.o.completetimeout = 100
   vim.o.expandtab = true

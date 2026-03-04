@@ -51,13 +51,13 @@ Config.now(function()
 
   require('tokyonight').setup()
 
-  require('vim._core.ui2').enable({
-    enable = true,
-    msg = {
-      target = 'msg',
-      timeout = 4000,
-    },
-  })
+  -- require('vim._core.ui2').enable({
+  --   enable = true,
+  --   msg = {
+  --     target = 'msg',
+  --     timeout = 4000,
+  --   },
+  -- })
 
   local colorschemes = {
     tokyonight = {
