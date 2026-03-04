@@ -489,3 +489,383 @@ end)
 Config.later(function()
   require('mini.bracketed').setup()
 end)
+
+Config.now_if_args(function()
+  vim.pack.add({ 'https://github.com/b0o/SchemaStore.nvim' })
+end)
+
+Config.now_if_args(function()
+  vim.pack.add({ 'https://github.com/tpope/vim-sleuth' })
+end)
+
+Config.now_if_args(function()
+  vim.pack.add({ 'https://github.com/tpope/vim-fugitive' })
+  Config.set_keymap('n', '<Leader>gf', '<Cmd>Git<CR>', 'Open fugitive')
+end)
+
+Config.now_if_args(function()
+  vim.pack.add({ 'https://github.com/nvim-lualine/lualine.nvim' })
+  require('lualine').setup()
+end)
+
+Config.now_if_args(function()
+  vim.pack.add({ 'https://github.com/windwp/nvim-ts-autotag' })
+  require('nvim-ts-autotag').setup()
+end)
+
+Config.now_if_args(function()
+  vim.pack.add({ 'https://github.com/folke/ts-comments.nvim' })
+  require('ts-comments').setup({ lang = { typst = { '// %s', '/* %s */' } } })
+end)
+
+Config.now_if_args(function()
+  vim.pack.add({ 'https://github.com/MagicDuck/grug-far.nvim' })
+
+  require('grug-far').setup({
+    folding = { enabled = false },
+    resultLocation = { showNumberLabel = false },
+  })
+
+  local function grug_search_replace()
+    require('grug-far').open({ transient = true })
+  end
+  Config.set_keymap(
+    { 'n', 'x' },
+    '<Leader>ug',
+    grug_search_replace,
+    'Search & Replace'
+  )
+end)
+
+Config.now_if_args(function()
+  vim.pack.add({ 'https://github.com/folke/snacks.nvim' })
+
+  local function term_nav(dir)
+    return function(self)
+      return self:is_floating() and '<c-' .. dir .. '>'
+        or vim.schedule(function()
+          vim.cmd.wincmd(dir)
+        end)
+    end
+  end
+
+  local function term_close()
+    vim.schedule(function()
+      vim.cmd.wincmd('c')
+    end)
+  end
+
+  local function term_normal(self)
+    self.esc_timer = self.esc_timer or (vim.uv or vim.loop).new_timer()
+    if self.esc_timer:is_active() then
+      self.esc_timer:stop()
+      vim.cmd('stopinsert')
+    else
+      self.esc_timer:start(200, 0, function() end)
+      return '<esc>'
+    end
+  end
+
+  local function visit_file_under_cursor(self)
+    local f = vim.fn.findfile(vim.fn.expand('<cfile>'), '**')
+    if f == '' then
+      Snacks.notify.warn('No file under cursor')
+    else
+      self:hide()
+      vim.schedule(function()
+        vim.cmd('e ' .. f)
+      end)
+    end
+  end
+
+  require('snacks').setup({
+    bigfile = { enabled = true },
+    input = { enabled = true },
+    notifier = { enabled = true },
+    quickfile = { enabled = true },
+    scroll = { enabled = true },
+    terminal = {
+      win = {
+        border = vim.o.winborder,
+        height = math.floor(vim.o.lines * 0.65),
+        bo = { filetype = 'snacks_terminal' },
+        -- stylua: ignore
+        keys = {
+          q = 'hide',
+          nav_h       = { '<C-h>', term_nav('h'), desc = 'Go to Left Window',            expr = true, mode = 't' },
+          nav_j       = { '<C-j>', term_nav('j'), desc = 'Go to Lower Window',           expr = true, mode = 't' },
+          nav_k       = { '<C-k>', term_nav('k'), desc = 'Go to Upper Window',           expr = true, mode = 't' },
+          nav_l       = { '<C-l>', term_nav('l'), desc = 'Go to Right Window',           expr = true, mode = 't' },
+          term_close  = { '<C-g>', term_close,    desc = 'Close Terminal',               expr = true, mode = 't' },
+          term_normal = { '<esc>', term_normal,   desc = 'Double escape to normal mode', expr = true, mode = 't' },
+          gf = visit_file_under_cursor,
+        },
+      },
+    },
+  })
+
+  Config.set_keymap(
+    'n',
+    '<Leader>gg',
+    '<Cmd>lua Snacks.lazygit()<CR>',
+    'LazyGit'
+  )
+  Config.set_keymap(
+    'n',
+    '<Leader>tt',
+    '<Cmd>lua Snacks.terminal()<CR>',
+    'Open Term'
+  )
+  Config.set_keymap(
+    'n',
+    '<Leader>ac',
+    '<Cmd>lua Snacks.terminal("cursor-agent")<CR>',
+    'Open Cursor'
+  )
+  Config.set_keymap(
+    'n',
+    '<Leader>ao',
+    '<Cmd>lua Snacks.terminal("opencode")<CR>',
+    'Open OpenCode'
+  )
+end)
+
+Config.now_if_args(function()
+  vim.pack.add({ 'https://github.com/3rd/image.nvim' })
+
+  require('image').setup()
+end)
+
+Config.now_if_args(function()
+  vim.pack.add({ 'https://github.com/HakonHarnes/img-clip.nvim' })
+
+  require('img-clip').setup({ default = { dir_path = 'static/img' } })
+end)
+
+Config.now_if_args(function()
+  Config.on_packchanged(
+    'markdown-preview.nvim',
+    { 'install', 'update' },
+    function(e)
+      MiniMisc.log_add(
+        'Building dependencies',
+        { name = e.data.spec.name, path = e.data.path }
+      )
+
+      local stdout = vim
+        .system({ 'npm', 'install' }, { text = true, cwd = e.data.path .. '/app' })
+        :wait()
+
+      if stdout.code ~= 0 then
+        MiniMisc.log_add(
+          'Error during dependencies build',
+          { name = e.data.spec.name, path = e.data.path }
+        )
+      else
+        MiniMisc.log_add(
+          'Dependencies built',
+          { name = e.data.spec.name, path = e.data.path }
+        )
+      end
+    end
+  )
+
+  vim.pack.add({ 'https://github.com/iamcco/markdown-preview.nvim' })
+end)
+
+Config.now_if_args(function()
+  vim.pack.add({ 'https://github.com/chomosuke/typst-preview.nvim' })
+
+  require('typst-preview').setup({
+    dependencies_bin = {
+      ['tinymist'] = 'tinymist',
+      ['websocat'] = nil,
+    },
+  })
+
+  vim.api.nvim_create_user_command('TypstOpenThisPdf', function()
+    local filepath = vim.api.nvim_buf_get_name(0)
+
+    if filepath:match('%.typ$') then
+      local pdf_path = filepath:gsub('%.typ$', '.pdf')
+      vim.system({ 'xdg-open', pdf_path })
+    end
+  end, {})
+end)
+
+Config.now_if_args(function()
+  Config.on_packchanged('nvim-treesitter', { 'update' }, function(e)
+    MiniMisc.log_add(
+      'Updating parsers',
+      { name = e.data.spec.name, path = e.data.path }
+    )
+    vim.cmd('TSUpdate')
+    MiniMisc.log_add(
+      'Parsers updates',
+      { name = e.data.spec.name, path = e.data.path }
+    )
+  end)
+
+  vim.pack.add({
+    'https://github.com/nvim-treesitter/nvim-treesitter',
+    'https://github.com/nvim-treesitter/nvim-treesitter-textobjects',
+  })
+
+  -- stylua: ignore
+  local treesit_langs = {
+    -- NOTE: parsers for c, lua, vim, vimdoc, query and markdown are already included in neovim
+    'bash',      'c',   'css',      'diff',   'dockerfile', 'git_config', 'git_rebase', 'gitattributes', 'gitcommit',
+    'gitignore', 'go',  'gomod',    'gosum',  'gowork',     'html',       'javascript', 'json',          'json5',
+    'jsx',       'lua', 'markdown', 'python', 'regex',      'ruby',       'toml',       'tsx',           'typescript',
+    'typst',     'vim', 'vimdoc',   'yaml',   'jsdoc'
+  }
+
+  require('nvim-treesitter').install(vim
+    .iter(treesit_langs)
+    :filter(function(item)
+      return #vim.api.nvim_get_runtime_file('parser/' .. item .. '.*', false)
+        == 0
+    end)
+    :flatten()
+    :totable())
+
+  vim.api.nvim_create_autocmd('FileType', {
+    group = vim.api.nvim_create_augroup('crnvl96-nvim-treesitter', {}),
+    pattern = vim
+      .iter(treesit_langs)
+      :map(function(item)
+        return vim.treesitter.language.get_filetypes(item)
+      end)
+      :flatten()
+      :totable(),
+    callback = function(ev)
+      vim.treesitter.start(ev.buf)
+    end,
+  })
+end)
+
+Config.now_if_args(function()
+  vim.pack.add({ 'https://github.com/neovim/nvim-lspconfig' })
+
+  -- stylua: ignore
+  vim.lsp.enable({
+    'biome',  'eslint',  'gopls',    'lua_ls', 'oxfmt',
+    'oxlint', 'rubocop', 'ruby_lsp', 'ruff',   'tinymist',
+    'tsgo',   'ty',      'jsonls',   'yamlls',
+    -- 'harper_ls', 'pyright',
+  })
+
+  vim.api.nvim_create_autocmd('LspAttach', {
+    group = Config.gr,
+    callback = function(e)
+      local client = vim.lsp.get_client_by_id(e.data.client_id)
+      if not client then
+        return
+      end
+      --
+      -- Gopls extra config
+      --
+      if client.name == 'gopls' then
+        -- workaround for gopls not supporting semanticTokensProvider
+        -- https://github.com/golang/go/issues/54531#issuecomment-1464982242
+        if not client.server_capabilities.semanticTokensProvider then
+          local semantic =
+            client.config.capabilities.textDocument.semanticTokens
+          if not semantic then
+            return
+          end
+          client.server_capabilities.semanticTokensProvider = {
+            full = true,
+            legend = {
+              tokenTypes = semantic.tokenTypes,
+              tokenModifiers = semantic.tokenModifiers,
+            },
+            range = true,
+          }
+        end
+      end
+    end,
+  })
+
+  -- stylua: ignore start
+  Config.set_keymap('n', 'E',          '<Cmd>lua vim.diagnostic.open_float()<CR>',  'Open Current Diagnostic')
+  Config.set_keymap('n', 'K',          '<Cmd>lua vim.lsp.buf.hover()<CR>',          'Inspect Current Symbol')
+  Config.set_keymap('i', '<C-k>',      '<Cmd>lua vim.lsp.buf.signature_help()<CR>', 'Show Signature Help')
+  Config.set_keymap('n', '<Leader>la', '<Cmd>lua vim.lsp.buf.code_action()<CR>',    'LSP Code actions')
+  Config.set_keymap('n', '<Leader>ln', '<Cmd>lua vim.lsp.buf.rename()<CR>',         'LSP Rename')
+  -- stylua: ignore end
+end)
+
+Config.now_if_args(function()
+  vim.pack.add({ 'https://github.com/stevearc/conform.nvim' })
+
+  local autoformat = true
+
+  require('conform').setup({
+    notify_on_error = false,
+    notify_no_formatters = false,
+    default_format_opts = {
+      lsp_format = 'fallback',
+      timeout_ms = 1000,
+    },
+    formatters = {
+      stylua = {
+        require_cwd = true,
+      },
+      prettier = {
+        require_cwd = false,
+      },
+    },
+    format_on_save = function()
+      if not autoformat then
+        return nil
+      end
+      return {}
+    end,
+    formatters_by_ft = {
+      javascript = {
+        'prettier',
+        lsp_format = 'prefer',
+        timeout_ms = 1000,
+      },
+      typescript = {
+        'prettier',
+        lsp_format = 'prefer',
+        timeout_ms = 1000,
+      },
+      javascriptreact = {
+        'prettier',
+        lsp_format = 'prefer',
+        timeout_ms = 1000,
+      },
+      typescriptreact = {
+        'prettier',
+        lsp_format = 'prefer',
+        timeout_ms = 1000,
+      },
+      typst = { 'typstyle', lsp_format = 'prefer' },
+      go = { lsp_format = 'prefer' },
+      ['_'] = { 'trim_whitespace', 'trim_newline' },
+      python = { 'ruff_organize_imports', 'ruff_fix', 'ruff_format' },
+      lua = { 'stylua' },
+      json = { 'prettier' },
+      css = { 'prettier' },
+      jsonc = { 'prettier' },
+      json5 = { 'prettier' },
+      ruby = { 'rubocop' },
+      yaml = { 'prettier' },
+      markdown = { 'prettier', 'injected' },
+    },
+  })
+
+  local toggle_autoformat = function()
+    autoformat = not autoformat
+  end
+  Config.set_keymap('n', '<Leader>uf', toggle_autoformat, 'Toggle autoformat')
+  Config.set_keymap(
+    'n',
+    '<Leader>ur',
+    '<Cmd>lua MiniMisc.put(MiniMisc.find_root())<CR>',
+    'Find current root'
+  )
+end)
