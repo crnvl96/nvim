@@ -1,6 +1,35 @@
 Config.later(function()
   require('mini.colors').setup()
-  MiniColors.get_colorscheme():add_transparency({ general = false, float = true }):apply()
+
+  MiniColors.get_colorscheme()
+    :add_transparency({
+      general = false,
+      float = true,
+    })
+    :apply()
+end)
+
+Config.later(function()
+  require('mini.bufremove').setup()
+
+  local function wipeout_all_buffers()
+    local current_buffer = vim.api.nvim_get_current_buf()
+    vim
+      .iter(vim.api.nvim_list_bufs())
+      :filter(function(bufnr)
+        return bufnr ~= current_buffer
+      end)
+      :each(function(bufnr)
+        MiniBufremove.wipeout(bufnr, true)
+      end)
+  end
+
+  Config.set_keymap(
+    'n',
+    '<Leader>bo',
+    wipeout_all_buffers,
+    'Wipeout Other Buffers'
+  )
 end)
 
 Config.now(function()
@@ -47,7 +76,9 @@ Config.later(function()
   vim.api.nvim_create_autocmd('FileType', {
     group = Config.gr,
     pattern = { 'snacks_terminal', 'terminal', 'term' },
-    callback = function(e) vim.b[e.buf].miniindentscope_disable = true end,
+    callback = function(e)
+      vim.b[e.buf].miniindentscope_disable = true
+    end,
   })
 end)
 
@@ -58,7 +89,11 @@ Config.later(function()
       auto_setup = false,
       process_items = function(items, base)
         local default = MiniCompletion.default_process_items
-        return default(items, base, { kind_priority = { Text = -1, Snippet = -1 } })
+        return default(
+          items,
+          base,
+          { kind_priority = { Text = -1, Snippet = -1 } }
+        )
       end,
     },
   })
@@ -69,41 +104,37 @@ Config.later(function()
 
   vim.api.nvim_create_autocmd('LspAttach', {
     group = Config.gr,
-    callback = function(e) vim.bo[e.buf].omnifunc = 'v:lua.MiniCompletion.completefunc_lsp' end,
+    callback = function(e)
+      vim.bo[e.buf].omnifunc = 'v:lua.MiniCompletion.completefunc_lsp'
+    end,
   })
 end)
 
-Config.later(
-  function()
-    require('mini.hipatterns').setup({
-      highlighters = {
-        hex_color = require('mini.hipatterns').gen_highlighter.hex_color(),
-      },
-    })
-  end
-)
+Config.later(function()
+  require('mini.hipatterns').setup({
+    highlighters = {
+      hex_color = require('mini.hipatterns').gen_highlighter.hex_color(),
+    },
+  })
+end)
 
-Config.later(
-  function()
-    require('mini.jump2d').setup({
-      spotter = require('mini.jump2d').gen_spotter.pattern('[^%s%p]+'),
-      labels = 'asdfghjklweruioxcvn,.',
-      view = { dim = true, n_steps_ahead = 2 },
-    })
-  end
-)
+Config.later(function()
+  require('mini.jump2d').setup({
+    spotter = require('mini.jump2d').gen_spotter.pattern('[^%s%p]+'),
+    labels = 'asdfghjklweruioxcvn,.',
+    view = { dim = true, n_steps_ahead = 2 },
+  })
+end)
 
-Config.later(
-  function()
-    require('mini.pairs').setup({
-      modes = {
-        insert = true,
-        command = true,
-        terminal = false,
-      },
-    })
-  end
-)
+Config.later(function()
+  require('mini.pairs').setup({
+    modes = {
+      insert = true,
+      command = true,
+      terminal = false,
+    },
+  })
+end)
 
 Config.later(function()
   require('mini.ai').setup({
@@ -126,7 +157,12 @@ Config.later(function()
         '%f[%d]%d+',
       },
       e = { -- Word with case
-        { '%u[%l%d]+%f[^%l%d]', '%f[%S][%l%d]+%f[^%l%d]', '%f[%P][%l%d]+%f[^%l%d]', '^[%l%d]+%f[^%l%d]' },
+        {
+          '%u[%l%d]+%f[^%l%d]',
+          '%f[%S][%l%d]+%f[^%l%d]',
+          '%f[%P][%l%d]+%f[^%l%d]',
+          '^[%l%d]+%f[^%l%d]',
+        },
         '^().*()$',
       },
     },
@@ -140,20 +176,24 @@ Config.later(function()
   MiniKeymap.map_multistep('i', '<S-Tab>', { 'pmenu_prev' })
   MiniKeymap.map_multistep('i', '<CR>', { 'pmenu_accept', 'minipairs_cr' })
   MiniKeymap.map_multistep('i', '<BS>', { 'minipairs_bs' })
-  MiniKeymap.map_multistep(
-    'i',
-    '<Tab>',
-    { 'minisnippets_next', 'minisnippets_expand', 'pmenu_next', 'jump_after_tsnode', 'jump_after_close' }
-  )
-  MiniKeymap.map_multistep(
-    'i',
-    '<S-Tab>',
-    { 'minisnippets_prev', 'pmenu_prev', 'jump_before_tsnode', 'jump_before_open' }
-  )
+  MiniKeymap.map_multistep('i', '<Tab>', {
+    'minisnippets_next',
+    'minisnippets_expand',
+    'pmenu_next',
+    'jump_after_tsnode',
+    'jump_after_close',
+  })
+  MiniKeymap.map_multistep('i', '<S-Tab>', {
+    'minisnippets_prev',
+    'pmenu_prev',
+    'jump_before_tsnode',
+    'jump_before_open',
+  })
 end)
 
 Config.later(function()
-  local snippets, config_path = require('mini.snippets'), vim.fn.stdpath('config')
+  local snippets, config_path =
+    require('mini.snippets'), vim.fn.stdpath('config')
 
   snippets.setup({
     snippets = {
@@ -187,8 +227,12 @@ Config.later(function()
     },
   })
 
-  local filter_show = function() return true end
-  local filter_hide = function(fs_entry) return not vim.startswith(fs_entry.name, '.') end
+  local filter_show = function()
+    return true
+  end
+  local filter_hide = function(fs_entry)
+    return not vim.startswith(fs_entry.name, '.')
+  end
 
   local show_dotfiles = true
   local show_preview = false
@@ -230,7 +274,9 @@ Config.later(function()
 
   vim.api.nvim_create_autocmd('User', {
     pattern = 'MiniFilesActionRename',
-    callback = function(e) Snacks.rename.on_rename_file(e.data.from, e.data.to) end,
+    callback = function(e)
+      Snacks.rename.on_rename_file(e.data.from, e.data.to)
+    end,
   })
 
   vim.api.nvim_create_autocmd('User', {
@@ -238,10 +284,22 @@ Config.later(function()
     group = Config.gr,
     callback = function()
       MiniFiles.set_bookmark('c', vim.fn.stdpath('config'), { desc = 'Config' })
-      MiniFiles.set_bookmark('p', vim.fn.stdpath('data') .. '/site/pack/core/opt', { desc = 'Plugins' })
+      MiniFiles.set_bookmark(
+        'p',
+        vim.fn.stdpath('data') .. '/site/pack/core/opt',
+        { desc = 'Plugins' }
+      )
       MiniFiles.set_bookmark('_', vim.fn.getcwd, { desc = 'Working directory' })
-      MiniFiles.set_bookmark('n', vim.env.HOME .. '/Developer/personal/notes', { desc = 'Notes' })
-      MiniFiles.set_bookmark('d', vim.env.HOME .. '/Developer', { desc = 'Projects' })
+      MiniFiles.set_bookmark(
+        'n',
+        vim.env.HOME .. '/Developer/personal/notes',
+        { desc = 'Notes' }
+      )
+      MiniFiles.set_bookmark(
+        'd',
+        vim.env.HOME .. '/Developer',
+        { desc = 'Projects' }
+      )
       MiniFiles.set_bookmark('h', vim.env.HOME, { desc = 'Home' })
     end,
   })
@@ -258,7 +316,12 @@ Config.later(function()
     end,
   })
 
-  Config.set_keymap('n', '<Leader>ef', '<Cmd>lua MiniFiles.open(vim.api.nvim_buf_get_name(0), false)<CR>', 'Explorer')
+  Config.set_keymap(
+    'n',
+    '<Leader>ef',
+    '<Cmd>lua MiniFiles.open(vim.api.nvim_buf_get_name(0), false)<CR>',
+    'Explorer'
+  )
 end)
 
 Config.later(function()
@@ -282,70 +345,147 @@ Config.later(function()
 
   Config.set_keymap('n', '<Leader>fb', '<Cmd>Pick buffers<CR>', 'Buffers')
   Config.set_keymap('n', '<Leader>fc', '<Cmd>Pick commands<CR>', 'Commands')
-  Config.set_keymap('n', '<Leader>fd', '<Cmd>Pick diagnostic<CR>', 'Diagnostics')
+  Config.set_keymap(
+    'n',
+    '<Leader>fd',
+    '<Cmd>Pick diagnostic<CR>',
+    'Diagnostics'
+  )
   Config.set_keymap('n', '<Leader>fe', '<Cmd>Pick explorer<CR>', 'Explorer')
   Config.set_keymap('n', '<Leader>ff', '<Cmd>Pick files<CR>', 'Files')
   Config.set_keymap('n', '<Leader>fg', '<Cmd>Pick grep_live<CR>', 'Grep live')
-  Config.set_keymap('n', '<Leader>fh', "<Cmd>Pick help default_split='vertical'<CR>", 'Help files')
+  Config.set_keymap(
+    'n',
+    '<Leader>fh',
+    "<Cmd>Pick help default_split='vertical'<CR>",
+    'Help files'
+  )
   Config.set_keymap('n', '<Leader>fH', '<Cmd>Pick hl_groups<CR>', 'Highlights')
   Config.set_keymap('n', '<Leader>fk', '<Cmd>Pick keymaps<CR>', 'Keymaps')
-  Config.set_keymap('n', '<Leader>fl', "<Cmd>Pick buf_lines scope='current' preserve_order=true<CR>", 'Lines')
-  Config.set_keymap('n', '<Leader>fm', '<Cmd>Pick manpages<CR>', 'Search manpages')
-  Config.set_keymap('n', '<Leader>fo', '<Cmd>Pick visit_paths preserve_order=true<CR>', 'Oldfiles')
-  Config.set_keymap('n', '<Leader>fq', "<Cmd>Pick list scope='quickfix'<CR>", 'Quickfix')
+  Config.set_keymap(
+    'n',
+    '<Leader>fl',
+    "<Cmd>Pick buf_lines scope='current' preserve_order=true<CR>",
+    'Lines'
+  )
+  Config.set_keymap(
+    'n',
+    '<Leader>fm',
+    '<Cmd>Pick manpages<CR>',
+    'Search manpages'
+  )
+  Config.set_keymap(
+    'n',
+    '<Leader>fo',
+    '<Cmd>Pick visit_paths preserve_order=true<CR>',
+    'Oldfiles'
+  )
+  Config.set_keymap(
+    'n',
+    '<Leader>fq',
+    "<Cmd>Pick list scope='quickfix'<CR>",
+    'Quickfix'
+  )
   Config.set_keymap('n', '<Leader>fr', '<Cmd>Pick resume<CR>', 'Resume')
   Config.set_keymap('n', '<Leader>fu', '<Cmd>Pick git_hunks<CR>', 'Git hunks')
 
-  Config.set_keymap('n', '<Leader>lD', "<Cmd>Pick lsp scope='declaration'<CR>", 'Declarations')
-  Config.set_keymap('n', '<Leader>lS', "<Cmd>Pick lsp scope='workspace_symbol_live'<CR>", 'Workspace symbols')
-  Config.set_keymap('n', '<Leader>ld', "<Cmd>Pick lsp scope='definition'<CR>", 'Definitions')
-  Config.set_keymap('n', '<Leader>li', "<Cmd>Pick lsp scope='implementation'<CR>", 'Implementations')
-  Config.set_keymap('n', '<Leader>lr', "<Cmd>Pick lsp scope='references'<CR>", 'References')
-  Config.set_keymap('n', '<Leader>ls', "<Cmd>Pick lsp scope='document_symbol'<CR>", 'Document Symbols')
-  Config.set_keymap('n', '<Leader>lt', "<Cmd>Pick lsp scope='type_definition'<CR>", 'Typedefs')
+  Config.set_keymap(
+    'n',
+    '<Leader>lD',
+    "<Cmd>Pick lsp scope='declaration'<CR>",
+    'Declarations'
+  )
+  Config.set_keymap(
+    'n',
+    '<Leader>lS',
+    "<Cmd>Pick lsp scope='workspace_symbol_live'<CR>",
+    'Workspace symbols'
+  )
+  Config.set_keymap(
+    'n',
+    '<Leader>ld',
+    "<Cmd>Pick lsp scope='definition'<CR>",
+    'Definitions'
+  )
+  Config.set_keymap(
+    'n',
+    '<Leader>li',
+    "<Cmd>Pick lsp scope='implementation'<CR>",
+    'Implementations'
+  )
+  Config.set_keymap(
+    'n',
+    '<Leader>lr',
+    "<Cmd>Pick lsp scope='references'<CR>",
+    'References'
+  )
+  Config.set_keymap(
+    'n',
+    '<Leader>ls',
+    "<Cmd>Pick lsp scope='document_symbol'<CR>",
+    'Document Symbols'
+  )
+  Config.set_keymap(
+    'n',
+    '<Leader>lt',
+    "<Cmd>Pick lsp scope='type_definition'<CR>",
+    'Typedefs'
+  )
 end)
 
-Config.later(
-  function()
-    require('mini.clue').setup({
-      triggers = {
-        { mode = 'n', keys = '\\' },
-        { mode = 'i', keys = '<C-x>' },
-        { mode = 'n', keys = '<C-w>' },
-        { mode = { 'n', 'x' }, keys = '<Leader>' },
-        { mode = { 'n', 'x' }, keys = '[' },
-        { mode = { 'n', 'x' }, keys = ']' },
-        { mode = { 'n', 'x' }, keys = 'g' },
-        { mode = { 'n', 'x' }, keys = "'" },
-        { mode = { 'n', 'x' }, keys = '`' },
-        { mode = { 'n', 'x' }, keys = '"' },
-        { mode = { 'i', 'c' }, keys = '<C-r>' },
-        { mode = { 'n', 'x' }, keys = 'z' },
-      },
-      clues = {
-        Config.clues,
-        require('mini.clue').gen_clues.builtin_completion(),
-        require('mini.clue').gen_clues.g(),
-        require('mini.clue').gen_clues.marks(),
-        require('mini.clue').gen_clues.registers(),
-        require('mini.clue').gen_clues.square_brackets(),
-        require('mini.clue').gen_clues.windows(),
-        require('mini.clue').gen_clues.z(),
-      },
-      window = {
-        delay = 500,
-        scroll_down = '<C-f>',
-        scroll_up = '<C-b>',
-        config = { width = 'auto' },
-      },
-    })
-  end
-)
+Config.later(function()
+  require('mini.clue').setup({
+    triggers = {
+      { mode = 'n', keys = '\\' },
+      { mode = 'i', keys = '<C-x>' },
+      { mode = 'n', keys = '<C-w>' },
+      { mode = { 'n', 'x' }, keys = '<Leader>' },
+      { mode = { 'n', 'x' }, keys = '[' },
+      { mode = { 'n', 'x' }, keys = ']' },
+      { mode = { 'n', 'x' }, keys = 'g' },
+      { mode = { 'n', 'x' }, keys = "'" },
+      { mode = { 'n', 'x' }, keys = '`' },
+      { mode = { 'n', 'x' }, keys = '"' },
+      { mode = { 'i', 'c' }, keys = '<C-r>' },
+      { mode = { 'n', 'x' }, keys = 'z' },
+    },
+    clues = {
+      Config.clues,
+      require('mini.clue').gen_clues.builtin_completion(),
+      require('mini.clue').gen_clues.g(),
+      require('mini.clue').gen_clues.marks(),
+      require('mini.clue').gen_clues.registers(),
+      require('mini.clue').gen_clues.square_brackets(),
+      require('mini.clue').gen_clues.windows(),
+      require('mini.clue').gen_clues.z(),
+    },
+    window = {
+      delay = 500,
+      scroll_down = '<C-f>',
+      scroll_up = '<C-b>',
+      config = { width = 'auto' },
+    },
+  })
+end)
 
-Config.later(function() require('mini.align').setup() end)
-Config.later(function() require('mini.operators').setup() end)
-Config.later(function() require('mini.move').setup() end)
-Config.later(function() require('mini.surround').setup() end)
-Config.later(function() require('mini.splitjoin').setup() end)
-Config.later(function() require('mini.cmdline').setup() end)
-Config.later(function() require('mini.bracketed').setup() end)
+Config.later(function()
+  require('mini.align').setup()
+end)
+Config.later(function()
+  require('mini.operators').setup()
+end)
+Config.later(function()
+  require('mini.move').setup()
+end)
+Config.later(function()
+  require('mini.surround').setup()
+end)
+Config.later(function()
+  require('mini.splitjoin').setup()
+end)
+Config.later(function()
+  require('mini.cmdline').setup()
+end)
+Config.later(function()
+  require('mini.bracketed').setup()
+end)

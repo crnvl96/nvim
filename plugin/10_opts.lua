@@ -4,10 +4,10 @@ Config.now(function()
   vim.env.PATH = node_bin .. ':' .. vim.env.PATH
   vim.g.node_host_prog = node_bin .. '/node'
 
-  vim.g.mapleader = ' '
-  vim.g.maplocalleader = ','
   vim.g.loaded_netrw = 1
   vim.g.loaded_netrwPlugin = 1
+  vim.g.mapleader = ' '
+  vim.g.maplocalleader = ','
 
   vim.o.autoindent = true
   vim.o.breakindent = true
@@ -54,11 +54,14 @@ Config.now(function()
   vim.cmd('highlight ColorColumn ctermbg=lightgrey guibg=lightgrey')
   vim.cmd('filetype plugin indent on')
 
-  if vim.fn.exists('syntax_on') ~= 1 then vim.cmd('syntax enable') end
+  if vim.fn.exists('syntax_on') ~= 1 then
+    vim.cmd('syntax enable')
+  end
 
   if vim.fn.executable('rg') then
     function _G.FindFuncRG(cmdarg)
-      local fnames = vim.fn.systemlist('rg --files --hidden --color=never --glob="!.git"')
+      local fnames =
+        vim.fn.systemlist('rg --files --hidden --color=never --glob="!.git"')
       return #cmdarg == 0 and fnames or vim.fn.matchfuzzy(fnames, cmdarg)
     end
 
@@ -78,6 +81,9 @@ Config.later(function()
     update_in_insert = false,
     signs = { priority = 9999, severity = { min = warn, max = error } },
     underline = { severity = { min = hint, max = error } },
-    virtual_text = { current_line = true, severity = { min = error, max = error } },
+    virtual_text = {
+      current_line = true,
+      severity = { min = error, max = error },
+    },
   })
 end)

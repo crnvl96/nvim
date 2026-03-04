@@ -12,5 +12,7 @@ return {
   },
   capabilities = { general = { positionEncodings = { 'utf-16' } } },
   ---@diagnostic disable-next-line: unused-local
-  on_attach = function(client, bufnr) client.server_capabilities.hoverProvider = false end,
+  on_attach = function(client, bufnr)
+    client.server_capabilities.hoverProvider = false
+  end,
 }

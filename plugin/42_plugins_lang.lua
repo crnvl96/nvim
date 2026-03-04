@@ -1,8 +1,14 @@
 Config.now_if_args(function()
   Config.on_packchanged('nvim-treesitter', { 'update' }, function(e)
-    MiniMisc.log_add('Updating parsers', { name = e.data.spec.name, path = e.data.path })
+    MiniMisc.log_add(
+      'Updating parsers',
+      { name = e.data.spec.name, path = e.data.path }
+    )
     vim.cmd('TSUpdate')
-    MiniMisc.log_add('Parsers updates', { name = e.data.spec.name, path = e.data.path })
+    MiniMisc.log_add(
+      'Parsers updates',
+      { name = e.data.spec.name, path = e.data.path }
+    )
   end)
 
   vim.pack.add({
@@ -19,22 +25,27 @@ Config.now_if_args(function()
     'typst',     'vim', 'vimdoc',   'yaml',   'jsdoc'
   }
 
-  require('nvim-treesitter').install(
-    vim
-      .iter(treesit_langs)
-      :filter(function(item) return #vim.api.nvim_get_runtime_file('parser/' .. item .. '.*', false) == 0 end)
-      :flatten()
-      :totable()
-  )
+  require('nvim-treesitter').install(vim
+    .iter(treesit_langs)
+    :filter(function(item)
+      return #vim.api.nvim_get_runtime_file('parser/' .. item .. '.*', false)
+        == 0
+    end)
+    :flatten()
+    :totable())
 
   vim.api.nvim_create_autocmd('FileType', {
     group = vim.api.nvim_create_augroup('crnvl96-nvim-treesitter', {}),
     pattern = vim
       .iter(treesit_langs)
-      :map(function(item) return vim.treesitter.language.get_filetypes(item) end)
+      :map(function(item)
+        return vim.treesitter.language.get_filetypes(item)
+      end)
       :flatten()
       :totable(),
-    callback = function(ev) vim.treesitter.start(ev.buf) end,
+    callback = function(ev)
+      vim.treesitter.start(ev.buf)
+    end,
   })
 end)
 
@@ -53,7 +64,9 @@ Config.now_if_args(function()
     group = Config.gr,
     callback = function(e)
       local client = vim.lsp.get_client_by_id(e.data.client_id)
-      if not client then return end
+      if not client then
+        return
+      end
       --
       -- Gopls extra config
       --
@@ -61,11 +74,17 @@ Config.now_if_args(function()
         -- workaround for gopls not supporting semanticTokensProvider
         -- https://github.com/golang/go/issues/54531#issuecomment-1464982242
         if not client.server_capabilities.semanticTokensProvider then
-          local semantic = client.config.capabilities.textDocument.semanticTokens
-          if not semantic then return end
+          local semantic =
+            client.config.capabilities.textDocument.semanticTokens
+          if not semantic then
+            return
+          end
           client.server_capabilities.semanticTokensProvider = {
             full = true,
-            legend = { tokenTypes = semantic.tokenTypes, tokenModifiers = semantic.tokenModifiers },
+            legend = {
+              tokenTypes = semantic.tokenTypes,
+              tokenModifiers = semantic.tokenModifiers,
+            },
             range = true,
           }
         end
@@ -103,14 +122,32 @@ Config.now_if_args(function()
       },
     },
     format_on_save = function()
-      if not autoformat then return nil end
+      if not autoformat then
+        return nil
+      end
       return {}
     end,
     formatters_by_ft = {
-      javascript = { 'prettier', lsp_format = 'prefer', timeout_ms = 1000 },
-      typescript = { 'prettier', lsp_format = 'prefer', timeout_ms = 1000 },
-      javascriptreact = { 'prettier', lsp_format = 'prefer', timeout_ms = 1000 },
-      typescriptreact = { 'prettier', lsp_format = 'prefer', timeout_ms = 1000 },
+      javascript = {
+        'prettier',
+        lsp_format = 'prefer',
+        timeout_ms = 1000,
+      },
+      typescript = {
+        'prettier',
+        lsp_format = 'prefer',
+        timeout_ms = 1000,
+      },
+      javascriptreact = {
+        'prettier',
+        lsp_format = 'prefer',
+        timeout_ms = 1000,
+      },
+      typescriptreact = {
+        'prettier',
+        lsp_format = 'prefer',
+        timeout_ms = 1000,
+      },
       typst = { 'typstyle', lsp_format = 'prefer' },
       go = { lsp_format = 'prefer' },
       ['_'] = { 'trim_whitespace', 'trim_newline' },
@@ -126,7 +163,14 @@ Config.now_if_args(function()
     },
   })
 
-  local toggle_autoformat = function() autoformat = not autoformat end
+  local toggle_autoformat = function()
+    autoformat = not autoformat
+  end
   Config.set_keymap('n', '<Leader>uf', toggle_autoformat, 'Toggle autoformat')
-  Config.set_keymap('n', '<Leader>ur', '<Cmd>lua MiniMisc.put(MiniMisc.find_root())<CR>', 'Find current root')
+  Config.set_keymap(
+    'n',
+    '<Leader>ur',
+    '<Cmd>lua MiniMisc.put(MiniMisc.find_root())<CR>',
+    'Find current root'
+  )
 end)

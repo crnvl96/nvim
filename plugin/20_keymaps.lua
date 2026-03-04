@@ -1,5 +1,6 @@
 Config.now(function()
   Config.clues = {
+    { mode = { 'n' }, keys = '<leader>b', desc = '+buffers' },
     { mode = { 'n' }, keys = '<leader>e', desc = '+explorer' },
     { mode = { 'n', 'x' }, keys = '<leader>u', desc = '+utils' },
     { mode = { 'n' }, keys = '<leader>f', desc = '+find' },
@@ -8,22 +9,25 @@ Config.now(function()
     { mode = { 'n' }, keys = '<leader>t', desc = '+term' },
   }
 
-  vim.api.nvim_create_user_command('OpenPdf', function()
-    local filepath = vim.api.nvim_buf_get_name(0)
-    if filepath:match('%.pdf$') then vim.system({ 'xdg-open', filepath }) end
-  end, {})
-
   Config.set('n', 'Y', 'yg_', { noremap = true })
 
   Config.set('x', 'p', 'P')
 
-  Config.set('t', '<C-g>', '<C-\\><C-n>')
-
   Config.set({ 'n', 'x' }, 'j', [[v:count == 0 ? 'gj' : 'j']], { expr = true })
   Config.set({ 'n', 'x' }, 'k', [[v:count == 0 ? 'gk' : 'k']], { expr = true })
 
-  Config.set({ 'n', 'i', 'x' }, '<Esc>', '<Esc><Cmd>noh<CR><Esc>', { noremap = true })
-  Config.set({ 'n', 'i', 'x' }, '<C-s>', '<Esc><Cmd>noh<CR><Cmd>silent! update | redraw<CR>')
+  Config.set(
+    { 'n', 'i', 'x' },
+    '<Esc>',
+    '<Esc><Cmd>noh<CR><Esc>',
+    { noremap = true }
+  )
+
+  Config.set(
+    { 'n', 'i', 'x' },
+    '<C-s>',
+    '<Esc><Cmd>noh<CR><Cmd>silent! update | redraw<CR>'
+  )
 
   Config.set('n', '<C-h>', '<C-w>h')
   Config.set('n', '<C-j>', '<C-w>j')

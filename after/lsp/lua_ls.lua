@@ -2,11 +2,15 @@
 return {
   ---@diagnostic disable-next-line: unused-local
   on_attach = function(client, buf_id)
-    client.server_capabilities.completionProvider.triggerCharacters = { '.', ':', '#', '(' }
+    client.server_capabilities.completionProvider.triggerCharacters =
+      { '.', ':', '#', '(' }
   end,
   settings = {
     Lua = {
-      runtime = { version = 'LuaJIT', path = vim.split(package.path, ';') },
+      runtime = {
+        version = 'LuaJIT',
+        path = vim.split(package.path, ';'),
+      },
       workspace = {
         ignoreSubmodules = true,
         library = { vim.env.VIMRUNTIME, '${3rd}/luv/library' },

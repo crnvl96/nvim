@@ -9,6 +9,7 @@
         "MiniKeymap",
         "MiniCompletion",
         "MiniColors",
-        "Snacks"
+        "Snacks",
+        "MiniBufremove"
     ]
 }
