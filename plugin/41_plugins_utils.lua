@@ -8,6 +8,11 @@ Config.now_if_args(function()
 end)
 
 Config.now_if_args(function()
+  vim.pack.add({ 'https://github.com/nvim-lualine/lualine.nvim' })
+  require('lualine').setup()
+end)
+
+Config.now_if_args(function()
   vim.pack.add({ 'https://github.com/windwp/nvim-ts-autotag' })
   require('nvim-ts-autotag').setup()
 end)
@@ -86,14 +91,8 @@ Config.now_if_args(function()
     },
   })
 
+  Config.set_keymap('n', '<M-1>', '<Cmd>lua Snacks.terminal()<CR>', 'Open Term')
   Config.set_keymap('n', '<Leader>gg', '<Cmd>lua Snacks.terminal("lazygit")<CR>', 'Open LazyGit')
-
-  Config.set_keymap({ 'n', 't' }, '<M-1>', '<Cmd>lua Snacks.terminal()<CR>', 'Open Term')
-  Config.set_keymap({ 'n', 't' }, '<M-2>', '<Cmd>lua Snacks.terminal("cursor-agent")<CR>', 'Open Cursor')
-  Config.set_keymap({ 'n', 't' }, '<M-3>', '<Cmd>lua Snacks.terminal("opencode")<CR>', 'Open OpenCode')
-end)
-
-Config.now_if_args(function()
-  vim.pack.add({ 'https://github.com/nvim-lualine/lualine.nvim' })
-  require('lualine').setup()
+  Config.set_keymap('n', '<Leader>ac', '<Cmd>lua Snacks.terminal("cursor-agent")<CR>', 'Open Cursor')
+  Config.set_keymap('n', '<Leader>ao', '<Cmd>lua Snacks.terminal("opencode")<CR>', 'Open OpenCode')
 end)

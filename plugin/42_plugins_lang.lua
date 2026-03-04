@@ -73,12 +73,13 @@ Config.now_if_args(function()
     end,
   })
 
-  Config.set_keymap('n', 'E', '<Cmd>lua vim.diagnostic.open_float()<CR>')
-  Config.set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>')
-  Config.set_keymap('i', '<C-k>', '<Cmd>lua vim.lsp.buf.signature_help()<CR>')
-
-  Config.set_keymap('n', '<Leader>la', '<Cmd>lua vim.lsp.buf.code_action()<CR>', 'Code actions')
-  Config.set_keymap('n', '<Leader>ln', '<Cmd>lua vim.lsp.buf.rename()<CR>', 'Rename')
+  -- stylua: ignore start
+  Config.set_keymap('n', 'E',          '<Cmd>lua vim.diagnostic.open_float()<CR>',  'Open Current Diagnostic')
+  Config.set_keymap('n', 'K',          '<Cmd>lua vim.lsp.buf.hover()<CR>',          'Inspect Current Symbol')
+  Config.set_keymap('i', '<C-k>',      '<Cmd>lua vim.lsp.buf.signature_help()<CR>', 'Show Signature Help')
+  Config.set_keymap('n', '<Leader>la', '<Cmd>lua vim.lsp.buf.code_action()<CR>',    'LSP Code actions')
+  Config.set_keymap('n', '<Leader>ln', '<Cmd>lua vim.lsp.buf.rename()<CR>',         'LSP Rename')
+  -- stylua: ignore end
 end)
 
 Config.now_if_args(function()
