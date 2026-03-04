@@ -48,11 +48,11 @@ Config.now_if_args(function()
   require('snacks').setup({
     terminal = {
       win = {
-        position = 'right',
+        -- position = 'right',
         border = vim.o.winborder,
-        stack = true,
-        width = math.floor(vim.o.columns * 0.5),
-        -- height = math.floor(vim.o.lines * 0.85),
+        -- stack = true,
+        -- width = math.floor(vim.o.columns * 0.5),
+        height = math.floor(vim.o.lines * 0.65),
         bo = { filetype = 'snacks_terminal' },
         wo = {},
         keys = {
