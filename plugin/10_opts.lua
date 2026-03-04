@@ -47,7 +47,7 @@ Config.now(function()
   vim.o.showcmd = false
   vim.o.signcolumn = 'yes'
   vim.o.winborder = 'single'
-  vim.o.pumborder = 'single'
+  vim.o.pumborder = 'none'
   vim.o.pummaxwidth = 100
   vim.o.cmdheight = 0
 

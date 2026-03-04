@@ -8,6 +8,11 @@ Config.later(function() require('mini.splitjoin').setup() end)
 Config.later(function() require('mini.cmdline').setup() end)
 Config.later(function() require('mini.bracketed').setup() end)
 
+Config.later(function()
+  require('mini.colors').setup()
+  MiniColors.get_colorscheme():add_transparency({ general = false, float = true }):apply()
+end)
+
 Config.now(function()
   require('mini.icons').setup({
     -- rely on `vim.filetype.match` for these extensions
