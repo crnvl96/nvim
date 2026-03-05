@@ -585,9 +585,9 @@ Config.now_if_args(function()
     quickfile = { enabled = true },
     terminal = {
       win = {
-        border = vim.o.winborder,
-        width = math.floor(vim.o.columns * 0.8),
-        height = math.floor(vim.o.lines * 0.95),
+        -- border = vim.o.winborder,
+        -- width = math.floor(vim.o.columns * 0.8),
+        -- height = math.floor(vim.o.lines * 0.95),
         bo = { filetype = 'snacks_terminal' },
         -- stylua: ignore
         keys = {
