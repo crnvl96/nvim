@@ -3,8 +3,8 @@ return {
   settings = {
     ['harper-ls'] = {
       linters = {
-        SentenceCapitalization = false,
-        SpellCheck = false,
+        SentenceCapitalization = true,
+        SpellCheck = true,
       },
     },
   },
