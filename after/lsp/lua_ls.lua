@@ -2,8 +2,9 @@
 return {
   ---@diagnostic disable-next-line: unused-local
   on_attach = function(client, buf_id)
-    client.server_capabilities.completionProvider.triggerCharacters =
-      { '.', ':', '#', '(' }
+    local cmp_provider = client.server_capabilities.completionProvider
+    local triggers = { '.', ':', '#', '(' }
+    cmp_provider.triggerCharacters = triggers
   end,
   settings = {
     Lua = {

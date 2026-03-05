@@ -587,7 +587,8 @@ Config.now_if_args(function()
     terminal = {
       win = {
         border = vim.o.winborder,
-        height = math.floor(vim.o.lines * 0.65),
+        width = math.floor(vim.o.columns * 0.8),
+        height = math.floor(vim.o.lines * 0.95),
         bo = { filetype = 'snacks_terminal' },
         -- stylua: ignore
         keys = {
