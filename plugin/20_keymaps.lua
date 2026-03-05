@@ -13,13 +13,29 @@ Config.now(function()
     'n',
     'Y',
     'yg_',
-    { noremap = true, desc = 'Yank Till End of Line' }
+    { noremap = true, desc = 'Yank till end of current line' }
   )
 
-  Config.set('x', 'p', 'P', { desc = 'Paste in Visual Mode' })
+  Config.set(
+    'x',
+    'p',
+    'P',
+    { desc = 'Paste in visual mode without overriding register' }
+  )
 
-  Config.set({ 'n', 'x' }, 'j', [[v:count == 0 ? 'gj' : 'j']], { expr = true })
-  Config.set({ 'n', 'x' }, 'k', [[v:count == 0 ? 'gk' : 'k']], { expr = true })
+  Config.set(
+    { 'n', 'x' },
+    'j',
+    [[v:count == 0 ? 'gj' : 'j']],
+    { expr = true, desc = 'Go down one visual line' }
+  )
+
+  Config.set(
+    { 'n', 'x' },
+    'k',
+    [[v:count == 0 ? 'gk' : 'k']],
+    { expr = true, desc = 'Go up one visual line' }
+  )
 
   Config.set(
     { 'n', 'i', 'x' },
