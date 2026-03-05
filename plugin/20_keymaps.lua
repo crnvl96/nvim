@@ -2,11 +2,12 @@ Config.now(function()
   Config.clues = {
     { mode = { 'n' }, keys = '<leader>b', desc = '+Buffers' },
     { mode = { 'n' }, keys = '<leader>e', desc = '+Explorer' },
-    { mode = { 'n', 'x' }, keys = '<leader>u', desc = '+Utils' },
     { mode = { 'n' }, keys = '<leader>f', desc = '+Find' },
     { mode = { 'n' }, keys = '<leader>l', desc = '+Lsp' },
     { mode = { 'n' }, keys = '<leader>g', desc = '+Git' },
     { mode = { 'n' }, keys = '<leader>t', desc = '+Term' },
+    { mode = { 'n' }, keys = '<leader>u', desc = '+Utils' },
+    { mode = { 'x' }, keys = '<leader>u', desc = '+Utils' },
   }
 
   vim.keymap.set(
@@ -16,12 +17,10 @@ Config.now(function()
     { noremap = true, desc = 'Yank till end of current line' }
   )
 
-  vim.keymap.set(
-    'x',
-    'p',
-    'P',
-    { desc = 'Paste in visual mode without overriding register' }
-  )
+  vim.keymap.set('x', 'p', 'P', {
+    noremap = true,
+    desc = 'Paste in visual mode without overriding register',
+  })
 
   vim.keymap.set(
     { 'n', 'x' },
@@ -44,41 +43,133 @@ Config.now(function()
     { noremap = true, desc = 'Clear hlsearch on <Esc>' }
   )
 
-  Config.set(
+  vim.keymap.set(
     { 'n', 'i', 'x' },
     '<C-s>',
-    '<Esc><Cmd>noh<CR><Cmd>silent! update | redraw<CR>'
+    '<Esc><Cmd>noh<CR><Cmd>silent! update | redraw<CR>',
+    { noremap = true, desc = 'Clear hlsearch & save file' }
   )
 
-  Config.set('n', '<C-h>', '<C-w>h')
-  Config.set('n', '<C-j>', '<C-w>j')
-  Config.set('n', '<C-k>', '<C-w>k')
-  Config.set('n', '<C-l>', '<C-w>l')
+  vim.keymap.set(
+    'n',
+    '<C-h>',
+    '<C-w>h',
+    { noremap = true, desc = 'Go to left window' }
+  )
+  vim.keymap.set(
+    'n',
+    '<C-j>',
+    '<C-w>j',
+    { noremap = true, desc = 'Go to window below' }
+  )
+  vim.keymap.set(
+    'n',
+    '<C-k>',
+    '<C-w>k',
+    { noremap = true, desc = 'Go to window above' }
+  )
+  vim.keymap.set(
+    'n',
+    '<C-l>',
+    '<C-w>l',
+    { noremap = true, desc = 'Go to right window' }
+  )
 
-  Config.set({ 'n', 't' }, '<C-Left>', '<Cmd>vertical resize -20<CR>')
-  Config.set({ 'n', 't' }, '<C-Down>', '<Cmd>resize -5<CR>')
-  Config.set({ 'n', 't' }, '<C-Up>', '<Cmd>resize +5<CR>')
-  Config.set({ 'n', 't' }, '<C-Right>', '<Cmd>vertical resize +20<CR>')
+  vim.keymap.set(
+    { 'n', 't' },
+    '<C-Left>',
+    '<Cmd>vertical resize -20<CR>',
+    { noremap = true, desc = 'Decrease window width' }
+  )
 
-  Config.set('n', '<C-d>', '<C-d>zz')
-  Config.set('n', '<C-u>', '<C-u>zz')
+  vim.keymap.set(
+    { 'n', 't' },
+    '<C-Down>',
+    '<Cmd>resize -5<CR>',
+    { noremap = true, desc = 'Decrease window height' }
+  )
 
-  Config.set('n', 'n', 'nzz')
-  Config.set('n', 'N', 'Nzz')
-  Config.set('n', '*', '*zz')
-  Config.set('n', '#', '#zz')
-  Config.set('n', 'g*', 'g*zz')
+  vim.keymap.set(
+    { 'n', 't' },
+    '<C-Up>',
+    '<Cmd>resize +5<CR>',
+    { noremap = true, desc = 'Increase window height' }
+  )
 
-  Config.set('c', '<C-f>', '<Right>')
-  Config.set('c', '<C-b>', '<Left>')
-  Config.set('c', '<C-a>', '<Home>')
-  Config.set('c', '<C-e>', '<End>')
-  Config.set('c', '<C-d>', '<Del>')
-  Config.set('c', '<C-k>', '<C-u>')
-  Config.set('c', '<C-g>', '<C-c>')
+  vim.keymap.set(
+    { 'n', 't' },
+    '<C-Right>',
+    '<Cmd>vertical resize +20<CR>',
+    { noremap = true, desc = 'Increase window width' }
+  )
 
-  Config.set('c', '<M-d>', '<C-w>')
-  Config.set('c', '<M-h>', '<C-f>')
-  Config.set('c', '<M-f>', '<C-Right>')
-  Config.set('c', '<M-b>', '<C-Left>')
+  vim.keymap.set(
+    'n',
+    '<C-d>',
+    '<C-d>zz',
+    { noremap = true, desc = 'Scroll down' }
+  )
+
+  vim.keymap.set(
+    'n',
+    '<C-u>',
+    '<C-u>zz',
+    { noremap = true, desc = 'Scroll up' }
+  )
+
+  vim.keymap.set(
+    'c',
+    '<C-f>',
+    '<Right>',
+    { noremap = true, desc = 'Move cursor to the right char' }
+  )
+
+  vim.keymap.set(
+    'c',
+    '<C-b>',
+    '<Left>',
+    { noremap = true, desc = 'Move cursor to the left char' }
+  )
+
+  vim.keymap.set(
+    'c',
+    '<C-a>',
+    '<Home>',
+    { noremap = true, desc = 'Move cursor to start of line' }
+  )
+
+  vim.keymap.set(
+    'c',
+    '<C-e>',
+    '<End>',
+    { noremap = true, desc = 'Move cursor to end of line' }
+  )
+
+  vim.keymap.set(
+    'c',
+    '<C-g>',
+    '<C-c>',
+    { noremap = true, desc = 'Quit/Exit from cmdline' }
+  )
+
+  vim.keymap.set(
+    'c',
+    '<M-h>',
+    '<C-f>',
+    { noremap = true, desc = 'Access cmdline history' }
+  )
+
+  vim.keymap.set(
+    'c',
+    '<M-f>',
+    '<C-Right>',
+    { noremap = true, desc = 'Move cursor to left word' }
+  )
+
+  vim.keymap.set(
+    'c',
+    '<M-b>',
+    '<C-Left>',
+    { noremap = true, desc = 'Move cursor to right word' }
+  )
 end)
