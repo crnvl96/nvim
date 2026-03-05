@@ -1,17 +1,22 @@
 Config.now(function()
   Config.clues = {
-    { mode = { 'n' }, keys = '<leader>b', desc = '+buffers' },
-    { mode = { 'n' }, keys = '<leader>e', desc = '+explorer' },
-    { mode = { 'n', 'x' }, keys = '<leader>u', desc = '+utils' },
-    { mode = { 'n' }, keys = '<leader>f', desc = '+find' },
-    { mode = { 'n' }, keys = '<leader>l', desc = '+lsp' },
-    { mode = { 'n' }, keys = '<leader>g', desc = '+git' },
-    { mode = { 'n' }, keys = '<leader>t', desc = '+term' },
+    { mode = { 'n' }, keys = '<leader>b', desc = '+Buffers' },
+    { mode = { 'n' }, keys = '<leader>e', desc = '+Explorer' },
+    { mode = { 'n', 'x' }, keys = '<leader>u', desc = '+Utils' },
+    { mode = { 'n' }, keys = '<leader>f', desc = '+Find' },
+    { mode = { 'n' }, keys = '<leader>l', desc = '+Lsp' },
+    { mode = { 'n' }, keys = '<leader>g', desc = '+Git' },
+    { mode = { 'n' }, keys = '<leader>t', desc = '+Term' },
   }
 
-  Config.set('n', 'Y', 'yg_', { noremap = true })
+  Config.set(
+    'n',
+    'Y',
+    'yg_',
+    { noremap = true, desc = 'Yank Till End of Line' }
+  )
 
-  Config.set('x', 'p', 'P')
+  Config.set('x', 'p', 'P', { desc = 'Paste in Visual Mode' })
 
   Config.set({ 'n', 'x' }, 'j', [[v:count == 0 ? 'gj' : 'j']], { expr = true })
   Config.set({ 'n', 'x' }, 'k', [[v:count == 0 ? 'gk' : 'k']], { expr = true })
