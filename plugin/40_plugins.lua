@@ -290,18 +290,17 @@ Config.later(function()
         vim.fn.stdpath('data') .. '/site/pack/core/opt',
         { desc = 'Plugins' }
       )
-      MiniFiles.set_bookmark('_', vim.fn.getcwd, { desc = 'Working directory' })
       MiniFiles.set_bookmark(
-        'n',
-        vim.env.HOME .. '/Developer/personal/notes',
-        { desc = 'Notes' }
+        '_',
+        vim.fn.getcwd(),
+        { desc = 'Working directory' }
       )
       MiniFiles.set_bookmark(
         'd',
         vim.env.HOME .. '/Developer',
         { desc = 'Projects' }
       )
-      MiniFiles.set_bookmark('h', vim.env.HOME, { desc = 'Home' })
+      MiniFiles.set_bookmark('h', vim.env.HOME, { desc = 'Home directory' })
     end,
   })
 
