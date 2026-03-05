@@ -1,13 +1,14 @@
 Config.now(function()
   Config.clues = {
-    { mode = { 'n' }, keys = '<leader>b', desc = '+Buffers' },
-    { mode = { 'n' }, keys = '<leader>e', desc = '+Explorer' },
-    { mode = { 'n' }, keys = '<leader>f', desc = '+Find' },
-    { mode = { 'n' }, keys = '<leader>l', desc = '+Lsp' },
-    { mode = { 'n' }, keys = '<leader>g', desc = '+Git' },
-    { mode = { 'n' }, keys = '<leader>t', desc = '+Term' },
-    { mode = { 'n' }, keys = '<leader>u', desc = '+Utils' },
-    { mode = { 'x' }, keys = '<leader>u', desc = '+Utils' },
+    { mode = 'n', keys = '<leader>a', desc = '+AI' },
+    { mode = 'n', keys = '<leader>b', desc = '+Buffers' },
+    { mode = 'n', keys = '<leader>e', desc = '+Explorer' },
+    { mode = 'n', keys = '<leader>f', desc = '+Find' },
+    { mode = 'n', keys = '<leader>l', desc = '+Lsp' },
+    { mode = 'n', keys = '<leader>g', desc = '+Git' },
+    { mode = 'n', keys = '<leader>t', desc = '+Term' },
+    { mode = 'n', keys = '<leader>u', desc = '+Utils' },
+    { mode = 'x', keys = '<leader>u', desc = '+Utils' },
   }
 
   vim.keymap.set(
