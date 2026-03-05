@@ -6,6 +6,42 @@ Config.now(function()
     end,
   })
 
+  vim.api.nvim_create_autocmd({ 'FocusGained', 'TermClose', 'TermLeave' }, {
+    group = Config.gr,
+    callback = function()
+      if vim.o.buftype ~= 'nofile' then
+        vim.cmd('checktime')
+      end
+    end,
+  })
+
+  vim.api.nvim_create_autocmd('FileType', {
+    group = Config.gr,
+    pattern = { 'man' },
+    callback = function(event)
+      vim.bo[event.buf].buflisted = false
+    end,
+  })
+
+  vim.api.nvim_create_autocmd({ 'FileType' }, {
+    group = Config.gr,
+    pattern = { 'json', 'jsonc', 'json5' },
+    callback = function()
+      vim.opt_local.conceallevel = 0
+    end,
+  })
+
+  vim.api.nvim_create_autocmd({ 'BufWritePre' }, {
+    group = Config.gr,
+    callback = function(event)
+      if event.match:match('^%w%w+:[\\/][\\/]') then
+        return
+      end
+      local file = vim.uv.fs_realpath(event.match) or event.match
+      vim.fn.mkdir(vim.fn.fnamemodify(file, ':p:h'), 'p')
+    end,
+  })
+
   vim.api.nvim_create_autocmd('FileType', {
     group = Config.gr,
     callback = function()

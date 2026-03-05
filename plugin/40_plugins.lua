@@ -752,8 +752,8 @@ Config.now_if_args(function()
   vim.lsp.enable({
     'biome',  'eslint',  'gopls',    'lua_ls', 'oxfmt',
     'oxlint', 'rubocop', 'ruby_lsp', 'ruff',   'tinymist',
-    'tsgo',   'ty',      'jsonls',   'yamlls',
-    -- 'harper_ls', 'pyright',
+    'tsgo',   'ty',      'jsonls',   'yamlls', 'pyright'
+    -- 'harper_ls'
   })
 
   vim.api.nvim_create_autocmd('LspAttach', {
