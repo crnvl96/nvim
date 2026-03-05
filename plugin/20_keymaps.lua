@@ -9,39 +9,39 @@ Config.now(function()
     { mode = { 'n' }, keys = '<leader>t', desc = '+Term' },
   }
 
-  Config.set(
+  vim.keymap.set(
     'n',
     'Y',
     'yg_',
     { noremap = true, desc = 'Yank till end of current line' }
   )
 
-  Config.set(
+  vim.keymap.set(
     'x',
     'p',
     'P',
     { desc = 'Paste in visual mode without overriding register' }
   )
 
-  Config.set(
+  vim.keymap.set(
     { 'n', 'x' },
     'j',
     [[v:count == 0 ? 'gj' : 'j']],
     { expr = true, desc = 'Go down one visual line' }
   )
 
-  Config.set(
+  vim.keymap.set(
     { 'n', 'x' },
     'k',
     [[v:count == 0 ? 'gk' : 'k']],
     { expr = true, desc = 'Go up one visual line' }
   )
 
-  Config.set(
+  vim.keymap.set(
     { 'n', 'i', 'x' },
     '<Esc>',
     '<Esc><Cmd>noh<CR><Esc>',
-    { noremap = true }
+    { noremap = true, desc = 'Clear hlsearch on <Esc>' }
   )
 
   Config.set(

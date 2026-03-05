@@ -9,8 +9,9 @@ MiniMisc.setup_auto_root()
 MiniMisc.setup_restore_cursor()
 MiniMisc.setup_termbg_sync()
 
-Config.set = vim.keymap.set
 Config.gr = vim.api.nvim_create_augroup('custom-config', {})
+
+Config.set = vim.keymap.set
 
 function Config.set_keymap(mode, lhs, rhs, desc)
   vim.keymap.set(mode, lhs, rhs, { desc = desc })
