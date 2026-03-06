@@ -852,13 +852,40 @@ Config.now_if_args(function()
     end,
   })
 
-  -- stylua: ignore start
-  Config.set_keymap('n', 'E',          '<Cmd>lua vim.diagnostic.open_float()<CR>',  'Open Current Diagnostic')
-  Config.set_keymap('n', 'K',          '<Cmd>lua vim.lsp.buf.hover()<CR>',          'Inspect Current Symbol')
-  Config.set_keymap('i', '<C-k>',      '<Cmd>lua vim.lsp.buf.signature_help()<CR>', 'Show Signature Help')
-  Config.set_keymap('n', '<Leader>la', '<Cmd>lua vim.lsp.buf.code_action()<CR>',    'LSP Code actions')
-  Config.set_keymap('n', '<Leader>ln', '<Cmd>lua vim.lsp.buf.rename()<CR>',         'LSP Rename')
-  -- stylua: ignore end
+  vim.keymap.set(
+    'n',
+    'E',
+    '<Cmd>lua vim.diagnostic.open_float()<CR>',
+    { desc = 'Open Current Diagnostic' }
+  )
+
+  vim.keymap.set(
+    'n',
+    'K',
+    '<Cmd>lua vim.lsp.buf.hover()<CR>',
+    { desc = 'Inspect Current Symbol' }
+  )
+
+  vim.keymap.set(
+    'i',
+    '<C-k>',
+    '<Cmd>lua vim.lsp.buf.signature_help()<CR>',
+    { desc = 'Show Signature Help' }
+  )
+
+  vim.keymap.set(
+    'n',
+    '<Leader>la',
+    '<Cmd>lua vim.lsp.buf.code_action()<CR>',
+    { desc = 'LSP Code actions' }
+  )
+
+  vim.keymap.set(
+    'n',
+    '<Leader>ln',
+    '<Cmd>lua vim.lsp.buf.rename()<CR>',
+    { desc = 'LSP Rename' }
+  )
 end)
 
 Config.now_if_args(function()
@@ -926,11 +953,18 @@ Config.now_if_args(function()
   local toggle_autoformat = function()
     autoformat = not autoformat
   end
-  Config.set_keymap('n', '<Leader>uf', toggle_autoformat, 'Toggle autoformat')
-  Config.set_keymap(
+
+  vim.keymap.set(
+    'n',
+    '<Leader>uf',
+    toggle_autoformat,
+    { desc = 'Toggle autoformat' }
+  )
+
+  vim.keymap.set(
     'n',
     '<Leader>ur',
     '<Cmd>lua MiniMisc.put(MiniMisc.find_root())<CR>',
-    'Find current root'
+    { desc = 'Find current root' }
   )
 end)

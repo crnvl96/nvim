@@ -11,12 +11,6 @@ MiniMisc.setup_termbg_sync()
 
 Config.gr = vim.api.nvim_create_augroup('custom-config', {})
 
-Config.set = vim.keymap.set
-
-function Config.set_keymap(mode, lhs, rhs, desc)
-  vim.keymap.set(mode, lhs, rhs, { desc = desc })
-end
-
 function Config.now(f)
   MiniMisc.safely('now', f)
 end
