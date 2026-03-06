@@ -23,7 +23,7 @@ Config.now(function()
     end,
   })
 
-  vim.api.nvim_create_autocmd({ 'FileType' }, {
+  vim.api.nvim_create_autocmd('FileType', {
     group = Config.gr,
     pattern = { 'json', 'jsonc', 'json5' },
     callback = function()
@@ -31,7 +31,7 @@ Config.now(function()
     end,
   })
 
-  vim.api.nvim_create_autocmd({ 'BufWritePre' }, {
+  vim.api.nvim_create_autocmd('BufWritePre', {
     group = Config.gr,
     callback = function(event)
       if event.match:match('^%w%w+:[\\/][\\/]') then

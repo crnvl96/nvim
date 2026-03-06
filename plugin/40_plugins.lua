@@ -25,11 +25,11 @@ Config.later(function()
       end)
   end
 
-  Config.set_keymap(
+  vim.keymap.set(
     'n',
     '<Leader>bo',
     wipeout_all_buffers,
-    'Wipeout Other Buffers'
+    { desc = 'Wipeout Other Buffers' }
   )
 end)
 
@@ -316,12 +316,12 @@ Config.later(function()
     end,
   })
 
-  Config.set_keymap(
-    'n',
-    '<Leader>ef',
-    '<Cmd>lua MiniFiles.open(vim.api.nvim_buf_get_name(0), false)<CR>',
-    'Explorer'
-  )
+  local function open_explorer_here()
+    local file = vim.api.nvim_buf_get_name(0)
+    MiniFiles.open(file, false)
+  end
+
+  vim.keymap.set('n', '<Leader>ef', open_explorer_here, { desc = 'Explorer' })
 end)
 
 Config.later(function()
@@ -585,10 +585,6 @@ Config.now_if_args(function()
     quickfile = { enabled = true },
     terminal = {
       win = {
-        -- border = vim.o.winborder,
-        -- width = math.floor(vim.o.columns * 0.8),
-        -- height = math.floor(vim.o.lines * 0.95),
-        bo = { filetype = 'snacks_terminal' },
         -- stylua: ignore
         keys = {
           q = 'hide',
