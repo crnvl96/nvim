@@ -1,3 +1,7 @@
+Config.now(function()
+  vim.pack.add({ 'https://github.com/nvim-lua/plenary.nvim' })
+end)
+
 Config.later(function()
   require('mini.colors').setup()
 
@@ -66,13 +70,7 @@ Config.now(function()
 end)
 
 Config.later(function()
-  require('mini.indentscope').setup({
-    options = {
-      border = 'both',
-      try_as_border = true,
-    },
-    symbol = '│',
-  })
+  require('mini.indentscope').setup()
 
   vim.api.nvim_create_autocmd('FileType', {
     group = Config.gr,
@@ -686,12 +684,33 @@ Config.now_if_args(function()
     '<Cmd>lua Snacks.terminal("cursor-agent")<CR>',
     { desc = 'Open Cursor' }
   )
+end)
+
+Config.later(function()
+  vim.pack.add({ 'https://github.com/greggh/claude-code.nvim' })
+
+  require('claude-code').setup({
+    window = {
+      split_ratio = 0.5,
+      -- Position of the window: "botright", "topleft", "vertical", "float", etc.
+      position = 'botright',
+      float = {
+        border = vim.o.winborder,
+      },
+    },
+    keymaps = {
+      toggle = {
+        normal = '<M-c>',
+        terminal = '<M-c>',
+      },
+    },
+  })
 
   vim.keymap.set(
     'n',
-    '<Leader>au',
-    '<Cmd>lua Snacks.terminal("claude")<CR>',
-    { desc = 'Open Claude Code' }
+    '<Leader>cc',
+    '<cmd>ClaudeCode<CR>',
+    { desc = 'Toggle Claude Code' }
   )
 end)
 
