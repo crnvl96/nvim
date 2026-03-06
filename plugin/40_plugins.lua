@@ -343,93 +343,158 @@ Config.later(function()
     })
   end
 
-  Config.set_keymap('n', '<Leader>fb', '<Cmd>Pick buffers<CR>', 'Buffers')
-  Config.set_keymap('n', '<Leader>fc', '<Cmd>Pick commands<CR>', 'Commands')
-  Config.set_keymap(
+  vim.keymap.set(
+    'n',
+    '<Leader>fb',
+    '<Cmd>Pick buffers<CR>',
+    { desc = 'Buffers' }
+  )
+
+  vim.keymap.set(
+    'n',
+    '<Leader>fc',
+    '<Cmd>Pick commands<CR>',
+    { desc = 'Commands' }
+  )
+
+  vim.keymap.set(
     'n',
     '<Leader>fd',
     '<Cmd>Pick diagnostic<CR>',
-    'Diagnostics'
+    { desc = 'Diagnostics' }
   )
-  Config.set_keymap('n', '<Leader>fe', '<Cmd>Pick explorer<CR>', 'Explorer')
-  Config.set_keymap('n', '<Leader>ff', '<Cmd>Pick files<CR>', 'Files')
-  Config.set_keymap('n', '<Leader>fg', '<Cmd>Pick grep_live<CR>', 'Grep live')
-  Config.set_keymap(
+
+  vim.keymap.set(
+    'n',
+    '<Leader>fe',
+    '<Cmd>Pick explorer<CR>',
+    { desc = 'Explorer' }
+  )
+
+  vim.keymap.set(
+    'n',
+    '<Leader>ff',
+    '<Cmd>Pick files<CR>',
+    { desc = 'Find Files' }
+  )
+
+  vim.keymap.set(
+    'n',
+    '<Leader>fg',
+    '<Cmd>Pick grep_live<CR>',
+    { desc = 'Grep live' }
+  )
+
+  vim.keymap.set(
     'n',
     '<Leader>fh',
     "<Cmd>Pick help default_split='vertical'<CR>",
-    'Help files'
+    { desc = 'Help files' }
   )
-  Config.set_keymap('n', '<Leader>fH', '<Cmd>Pick hl_groups<CR>', 'Highlights')
-  Config.set_keymap('n', '<Leader>fk', '<Cmd>Pick keymaps<CR>', 'Keymaps')
-  Config.set_keymap(
+
+  vim.keymap.set(
+    'n',
+    '<Leader>fH',
+    '<Cmd>Pick hl_groups<CR>',
+    { desc = 'Highlights' }
+  )
+
+  vim.keymap.set(
+    'n',
+    '<Leader>fk',
+    '<Cmd>Pick keymaps<CR>',
+    { desc = 'Keymaps' }
+  )
+
+  vim.keymap.set(
     'n',
     '<Leader>fl',
     "<Cmd>Pick buf_lines scope='current' preserve_order=true<CR>",
-    'Lines'
+    { desc = 'Lines' }
   )
-  Config.set_keymap(
+
+  vim.keymap.set(
     'n',
     '<Leader>fm',
     '<Cmd>Pick manpages<CR>',
-    'Search manpages'
+    { desc = 'Search manpages' }
   )
-  Config.set_keymap(
+
+  vim.keymap.set(
     'n',
     '<Leader>fo',
     '<Cmd>Pick visit_paths preserve_order=true<CR>',
-    'Oldfiles'
+    { desc = 'Oldfiles' }
   )
-  Config.set_keymap(
+
+  vim.keymap.set(
     'n',
     '<Leader>fq',
     "<Cmd>Pick list scope='quickfix'<CR>",
-    'Quickfix'
+    { desc = 'Quickfix' }
   )
-  Config.set_keymap('n', '<Leader>fr', '<Cmd>Pick resume<CR>', 'Resume')
-  Config.set_keymap('n', '<Leader>fu', '<Cmd>Pick git_hunks<CR>', 'Git hunks')
 
-  Config.set_keymap(
+  vim.keymap.set(
+    'n',
+    '<Leader>fr',
+    '<Cmd>Pick resume<CR>',
+    { desc = 'Resume last picker' }
+  )
+
+  vim.keymap.set(
+    'n',
+    '<Leader>fu',
+    '<Cmd>Pick git_hunks<CR>',
+    { desc = 'Git hunks' }
+  )
+
+  vim.keymap.set(
     'n',
     '<Leader>lD',
     "<Cmd>Pick lsp scope='declaration'<CR>",
-    'Declarations'
+    { desc = 'Declarations' }
   )
-  Config.set_keymap(
+
+  vim.keymap.set(
     'n',
     '<Leader>lS',
     "<Cmd>Pick lsp scope='workspace_symbol_live'<CR>",
-    'Workspace symbols'
+    { desc = 'Workspace symbols' }
   )
-  Config.set_keymap(
+
+  vim.keymap.set(
     'n',
     '<Leader>ld',
     "<Cmd>Pick lsp scope='definition'<CR>",
-    'Definitions'
+    { desc = 'Definitions' }
   )
-  Config.set_keymap(
+
+  vim.keymap.set(
     'n',
     '<Leader>li',
     "<Cmd>Pick lsp scope='implementation'<CR>",
-    'Implementations'
+    { desc = 'Implementations' }
   )
-  Config.set_keymap(
+
+  vim.keymap.set(
     'n',
     '<Leader>lr',
     "<Cmd>Pick lsp scope='references'<CR>",
-    'References'
+    { desc = 'References' }
   )
-  Config.set_keymap(
+
+  vim.keymap.set(
     'n',
     '<Leader>ls',
     "<Cmd>Pick lsp scope='document_symbol'<CR>",
-    'Document Symbols'
+    { desc = 'Document Symbols' }
   )
-  Config.set_keymap(
+
+  vim.keymap.set(
     'n',
     '<Leader>lt',
     "<Cmd>Pick lsp scope='type_definition'<CR>",
-    'Typedefs'
+    { desc = 'Typedefs' }
   )
 end)
 
@@ -500,7 +565,7 @@ end)
 
 Config.now_if_args(function()
   vim.pack.add({ 'https://github.com/tpope/vim-fugitive' })
-  Config.set_keymap('n', '<Leader>gf', '<Cmd>Git<CR>', 'Open fugitive')
+  vim.keymap.set('n', '<Leader>gf', '<Cmd>Git<CR>', { desc = 'Open fugitive' })
 end)
 
 Config.now_if_args(function()
@@ -529,11 +594,12 @@ Config.now_if_args(function()
   local function grug_search_replace()
     require('grug-far').open({ transient = true })
   end
-  Config.set_keymap(
+
+  vim.keymap.set(
     { 'n', 'x' },
     '<Leader>ug',
     grug_search_replace,
-    'Search & Replace'
+    { desc = 'Search & Replace' }
   )
 end)
 
@@ -600,29 +666,32 @@ Config.now_if_args(function()
     },
   })
 
-  Config.set_keymap(
+  vim.keymap.set(
     'n',
     '<Leader>gg',
     '<Cmd>lua Snacks.lazygit()<CR>',
-    'LazyGit'
+    { desc = 'LazyGit' }
   )
-  Config.set_keymap(
+
+  vim.keymap.set(
     'n',
     '<Leader>tt',
     '<Cmd>lua Snacks.terminal()<CR>',
-    'Open Term'
+    { desc = 'Open Term' }
   )
-  Config.set_keymap(
+
+  vim.keymap.set(
     'n',
     '<Leader>ac',
     '<Cmd>lua Snacks.terminal("cursor-agent")<CR>',
-    'Open Cursor'
+    { desc = 'Open Cursor' }
   )
-  Config.set_keymap(
+
+  vim.keymap.set(
     'n',
     '<Leader>ao',
     '<Cmd>lua Snacks.terminal("opencode")<CR>',
-    'Open OpenCode'
+    { desc = 'Open OpenCode' }
   )
 end)
 
