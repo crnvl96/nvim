@@ -43,7 +43,6 @@ Config.now(function()
   vim.o.splitright = true
   vim.o.swapfile = false
   vim.o.tabstop = 4
-  vim.o.textwidth = 120
   vim.o.undofile = true
   vim.o.updatetime = 1000
   vim.o.virtualedit = 'block'
