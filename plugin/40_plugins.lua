@@ -677,7 +677,7 @@ Config.now_if_args(function()
     'n',
     '<Leader>tt',
     '<Cmd>lua Snacks.terminal()<CR>',
-    { desc = 'Open Term' }
+    { desc = 'Open Default Terminal' }
   )
 
   vim.keymap.set(
@@ -689,9 +689,9 @@ Config.now_if_args(function()
 
   vim.keymap.set(
     'n',
-    '<Leader>ao',
-    '<Cmd>lua Snacks.terminal("opencode")<CR>',
-    { desc = 'Open OpenCode' }
+    '<Leader>au',
+    '<Cmd>lua Snacks.terminal("claude")<CR>',
+    { desc = 'Open Claude Code' }
   )
 end)
 
