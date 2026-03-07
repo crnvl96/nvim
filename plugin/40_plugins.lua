@@ -10,7 +10,6 @@ Config.now(function()
   vim.cmd.colorscheme(variants[1])
 end)
 
-Config.now_if_args(function() vim.pack.add({ 'https://github.com/nvim-lua/plenary.nvim' }) end)
 Config.now_if_args(function() vim.pack.add({ 'https://github.com/b0o/SchemaStore.nvim' }) end)
 Config.now_if_args(function() vim.pack.add({ 'https://github.com/tpope/vim-sleuth' }) end)
 Config.now_if_args(function() vim.pack.add({ 'https://github.com/tpope/vim-fugitive' }) end)
@@ -34,11 +33,6 @@ Config.now(function()
   require('mini.icons').setup()
   Config.later(MiniIcons.tweak_lsp_kind)
   Config.later(MiniIcons.mock_nvim_web_devicons)
-end)
-
-Config.later(function()
-  vim.pack.add({ 'https://github.com/esmuellert/codediff.nvim' })
-  require('codediff').setup()
 end)
 
 Config.later(function()
@@ -357,13 +351,11 @@ Config.now_if_args(function()
       MiniMisc.log_add('Dependencies built', { name = e.data.spec.name, path = e.data.path })
     end
   end)
-
   vim.pack.add({ 'https://github.com/iamcco/markdown-preview.nvim' })
 end)
 
 Config.now_if_args(function()
   vim.pack.add({ 'https://github.com/chomosuke/typst-preview.nvim' })
-
   require('typst-preview').setup({
     dependencies_bin = {
       ['tinymist'] = 'tinymist',
