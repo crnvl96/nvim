@@ -10,6 +10,13 @@ Config.now(function()
   vim.cmd.colorscheme(variants[1])
 end)
 
+Config.later(function() require('mini.align').setup() end)
+Config.later(function() require('mini.operators').setup() end)
+Config.later(function() require('mini.move').setup() end)
+Config.later(function() require('mini.surround').setup() end)
+Config.later(function() require('mini.splitjoin').setup() end)
+Config.later(function() require('mini.cmdline').setup() end)
+
 Config.now_if_args(function() vim.pack.add({ 'https://github.com/b0o/SchemaStore.nvim' }) end)
 Config.now_if_args(function() vim.pack.add({ 'https://github.com/tpope/vim-sleuth' }) end)
 Config.now_if_args(function() vim.pack.add({ 'https://github.com/tpope/vim-fugitive' }) end)
@@ -208,11 +215,9 @@ Config.later(function()
     pattern = 'MiniFilesExplorerOpen',
     group = Config.gr,
     callback = function()
-      MiniFiles.set_bookmark('c', vim.fn.stdpath('config'), { desc = 'Config' })
-      MiniFiles.set_bookmark('p', vim.fn.stdpath('data') .. '/site/pack/core/opt', { desc = 'Plugins' })
       MiniFiles.set_bookmark('_', vim.fn.getcwd(), { desc = 'Working directory' })
-      MiniFiles.set_bookmark('d', vim.env.HOME .. '/Developer', { desc = 'Projects' })
-      MiniFiles.set_bookmark('h', vim.env.HOME, { desc = 'Home directory' })
+      MiniFiles.set_bookmark('@', vim.env.HOME .. '/Developer', { desc = 'Projects' })
+      MiniFiles.set_bookmark('.', vim.env.HOME, { desc = 'Home directory' })
     end,
   })
 
@@ -221,10 +226,6 @@ Config.later(function()
     callback = function(e)
       local config = vim.api.nvim_win_get_config(e.data.win_id)
       config.height = vim.o.lines
-      local n = #config.title
-      config.title[1][1] = config.title[1][1]:gsub('^ ', '')
-      config.title[n][1] = config.title[n][1]:gsub(' $', '')
-      vim.api.nvim_win_set_config(e.data.win_id, config)
     end,
   })
 
@@ -480,10 +481,3 @@ Config.now_if_args(function()
   vim.keymap.set('n', '<Leader>uf', toggle_autoformat, { desc = 'Toggle autoformat' })
   vim.keymap.set('n', '<Leader>ur', '<Cmd>lua MiniMisc.put(MiniMisc.find_root())<CR>', { desc = 'Find current root' })
 end)
-
-Config.later(function() require('mini.align').setup() end)
-Config.later(function() require('mini.operators').setup() end)
-Config.later(function() require('mini.move').setup() end)
-Config.later(function() require('mini.surround').setup() end)
-Config.later(function() require('mini.splitjoin').setup() end)
-Config.later(function() require('mini.cmdline').setup() end)
