@@ -1,16 +1,16 @@
 {
-    "diagnostics.globals": [
-        "MiniExtra",
-        "MiniFiles",
-        "MiniMisc",
-        "MiniIcons",
-        "MiniPick",
-        "MiniJump2d",
-        "MiniKeymap",
-        "MiniCompletion",
-        "MiniColors",
-        "Snacks",
-        "MiniBufremove",
-        "MiniDiff"
-    ]
+  "diagnostics.globals": [
+    "MiniExtra",
+    "MiniFiles",
+    "MiniMisc",
+    "MiniIcons",
+    "MiniPick",
+    "MiniJump2d",
+    "MiniKeymap",
+    "MiniCompletion",
+    "MiniColors",
+    "MiniBufremove",
+    "MiniDiff"
+  ]
 }
+

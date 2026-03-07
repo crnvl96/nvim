@@ -11,13 +11,9 @@ MiniMisc.setup_termbg_sync()
 
 Config.gr = vim.api.nvim_create_augroup('custom-config', {})
 
-function Config.now(f)
-  MiniMisc.safely('now', f)
-end
+function Config.now(f) MiniMisc.safely('now', f) end
 
-function Config.later(f)
-  MiniMisc.safely('later', f)
-end
+function Config.later(f) MiniMisc.safely('later', f) end
 
 Config.now_if_args = vim.fn.argc(-1) > 0 and Config.now or Config.later
 
@@ -25,16 +21,11 @@ function Config.on_packchanged(name, kinds, callback)
   vim.api.nvim_create_autocmd('PackChanged', {
     group = Config.gr,
     callback = function(e)
-      local is_target = e.data.spec.name == name
-        and vim.tbl_contains(kinds, e.data.kind)
+      local is_target = e.data.spec.name == name and vim.tbl_contains(kinds, e.data.kind)
 
-      if not is_target then
-        return
-      end
+      if not is_target then return end
 
-      if not e.data.active then
-        vim.cmd.packadd(name)
-      end
+      if not e.data.active then vim.cmd.packadd(name) end
 
       callback(e)
     end,
