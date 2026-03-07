@@ -1,4 +1,32 @@
-Config.now(function() vim.pack.add({ 'https://github.com/nvim-lua/plenary.nvim' }) end)
+Config.now_if_args(function() vim.pack.add({ 'https://github.com/nvim-lua/plenary.nvim' }) end)
+Config.now_if_args(function() vim.pack.add({ 'https://github.com/b0o/SchemaStore.nvim' }) end)
+Config.now_if_args(function() vim.pack.add({ 'https://github.com/tpope/vim-sleuth' }) end)
+
+Config.now_if_args(function()
+  vim.pack.add({ 'https://github.com/tpope/vim-fugitive' })
+  vim.keymap.set('n', '<Leader>gf', '<Cmd>Git<CR>', { desc = 'Open fugitive' })
+end)
+
+Config.now_if_args(function()
+  vim.pack.add({ 'https://github.com/nvim-lualine/lualine.nvim' })
+  require('lualine').setup()
+end)
+
+Config.now_if_args(function()
+  vim.pack.add({ 'https://github.com/windwp/nvim-ts-autotag' })
+  require('nvim-ts-autotag').setup()
+end)
+
+Config.now_if_args(function()
+  vim.pack.add({ 'https://github.com/folke/ts-comments.nvim' })
+  require('ts-comments').setup({ lang = { typst = { '// %s', '/* %s */' } } })
+end)
+
+Config.now(function()
+  require('mini.icons').setup()
+  Config.later(MiniIcons.tweak_lsp_kind)
+  Config.later(MiniIcons.mock_nvim_web_devicons)
+end)
 
 Config.later(function()
   vim.pack.add({ 'https://github.com/esmuellert/codediff.nvim' })
@@ -17,18 +45,6 @@ Config.later(function()
   end
 
   vim.keymap.set('n', '<Leader>bo', wipeout_all_buffers, { desc = 'Wipeout Other Buffers' })
-end)
-
-Config.later(function()
-  require('mini.diff').setup()
-  local function toggle_overlay() MiniDiff.toggle_overlay() end
-  vim.keymap.set('n', '<Leader>go', toggle_overlay, { desc = 'Toggle git diff overlay' })
-end)
-
-Config.now(function()
-  require('mini.icons').setup()
-  Config.later(MiniIcons.tweak_lsp_kind)
-  Config.later(MiniIcons.mock_nvim_web_devicons)
 end)
 
 Config.later(function()
@@ -310,42 +326,6 @@ Config.later(
   end
 )
 
-Config.later(function() require('mini.align').setup() end)
-
-Config.later(function() require('mini.operators').setup() end)
-
-Config.later(function() require('mini.move').setup() end)
-
-Config.later(function() require('mini.surround').setup() end)
-
-Config.later(function() require('mini.splitjoin').setup() end)
-
-Config.later(function() require('mini.cmdline').setup() end)
-
-Config.now_if_args(function() vim.pack.add({ 'https://github.com/b0o/SchemaStore.nvim' }) end)
-
-Config.now_if_args(function() vim.pack.add({ 'https://github.com/tpope/vim-sleuth' }) end)
-
-Config.now_if_args(function()
-  vim.pack.add({ 'https://github.com/tpope/vim-fugitive' })
-  vim.keymap.set('n', '<Leader>gf', '<Cmd>Git<CR>', { desc = 'Open fugitive' })
-end)
-
-Config.now_if_args(function()
-  vim.pack.add({ 'https://github.com/nvim-lualine/lualine.nvim' })
-  require('lualine').setup()
-end)
-
-Config.now_if_args(function()
-  vim.pack.add({ 'https://github.com/windwp/nvim-ts-autotag' })
-  require('nvim-ts-autotag').setup()
-end)
-
-Config.now_if_args(function()
-  vim.pack.add({ 'https://github.com/folke/ts-comments.nvim' })
-  require('ts-comments').setup({ lang = { typst = { '// %s', '/* %s */' } } })
-end)
-
 Config.now_if_args(function()
   vim.pack.add({ 'https://github.com/MagicDuck/grug-far.nvim' })
 
@@ -355,7 +335,6 @@ Config.now_if_args(function()
   })
 
   local function grug_search_replace() require('grug-far').open({ transient = true }) end
-
   vim.keymap.set({ 'n', 'x' }, '<Leader>ug', grug_search_replace, { desc = 'Search & Replace' })
 end)
 
@@ -376,9 +355,7 @@ end)
 Config.now_if_args(function()
   Config.on_packchanged('markdown-preview.nvim', { 'install', 'update' }, function(e)
     MiniMisc.log_add('Building dependencies', { name = e.data.spec.name, path = e.data.path })
-
     local stdout = vim.system({ 'npm', 'install' }, { text = true, cwd = e.data.path .. '/app' }):wait()
-
     if stdout.code ~= 0 then
       MiniMisc.log_add('Error during dependencies build', { name = e.data.spec.name, path = e.data.path })
     else
@@ -530,13 +507,9 @@ Config.now_if_args(function()
   })
 
   vim.keymap.set('n', 'E', '<Cmd>lua vim.diagnostic.open_float()<CR>', { desc = 'Open Current Diagnostic' })
-
   vim.keymap.set('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', { desc = 'Inspect Current Symbol' })
-
   vim.keymap.set('i', '<C-k>', '<Cmd>lua vim.lsp.buf.signature_help()<CR>', { desc = 'Show Signature Help' })
-
   vim.keymap.set('n', '<Leader>la', '<Cmd>lua vim.lsp.buf.code_action()<CR>', { desc = 'LSP Code actions' })
-
   vim.keymap.set('n', '<Leader>ln', '<Cmd>lua vim.lsp.buf.rename()<CR>', { desc = 'LSP Rename' })
 end)
 
@@ -553,12 +526,8 @@ Config.now_if_args(function()
       timeout_ms = 1000,
     },
     formatters = {
-      stylua = {
-        require_cwd = true,
-      },
-      prettier = {
-        require_cwd = false,
-      },
+      stylua = { require_cwd = true },
+      prettier = { require_cwd = false },
     },
     format_on_save = function()
       if not autoformat then return nil end
@@ -589,3 +558,10 @@ Config.now_if_args(function()
   vim.keymap.set('n', '<Leader>uf', toggle_autoformat, { desc = 'Toggle autoformat' })
   vim.keymap.set('n', '<Leader>ur', '<Cmd>lua MiniMisc.put(MiniMisc.find_root())<CR>', { desc = 'Find current root' })
 end)
+
+Config.later(function() require('mini.align').setup() end)
+Config.later(function() require('mini.operators').setup() end)
+Config.later(function() require('mini.move').setup() end)
+Config.later(function() require('mini.surround').setup() end)
+Config.later(function() require('mini.splitjoin').setup() end)
+Config.later(function() require('mini.cmdline').setup() end)

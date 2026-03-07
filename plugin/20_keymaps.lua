@@ -17,12 +17,8 @@ Config.now(function()
   vim.keymap.set({ 'n', 't' }, '<C-Right>', '<Cmd>vertical resize +20<CR>', { noremap = true, desc = 'Increase window width' })
 
   vim.keymap.set({ 'n', 'i', 'x' }, '<Esc>', '<Esc><Cmd>noh<CR><Esc>', { noremap = true, desc = 'Clear hlsearch on <Esc>' })
-  vim.keymap.set(
-    { 'n', 'i', 'x' },
-    '<C-s>',
-    '<Esc><Cmd>noh<CR><Cmd>silent! update | redraw<CR>',
-    { noremap = true, desc = 'Clear hlsearch & save file' }
-  )
+  local save = '<Esc><Cmd>noh<CR><Cmd>silent! update | redraw<CR>'
+  vim.keymap.set({ 'n', 'i', 'x' }, '<C-s>', save, { noremap = true, desc = 'Clear hlsearch & save file' })
 
   vim.keymap.set('n', 'Y', 'yg_', { noremap = true, desc = 'Yank till end of current line' })
   vim.keymap.set('x', 'p', 'P', { noremap = true, desc = 'Paste in visual mode without overriding register' })
