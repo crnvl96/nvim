@@ -10,6 +10,7 @@
         "MiniCompletion",
         "MiniColors",
         "Snacks",
-        "MiniBufremove"
+        "MiniBufremove",
+        "MiniDiff"
     ]
 }

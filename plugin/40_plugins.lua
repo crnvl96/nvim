@@ -37,6 +37,21 @@ Config.later(function()
   )
 end)
 
+Config.later(function()
+  require('mini.diff').setup()
+
+  local function toggle_overlay()
+    MiniDiff.toggle_overlay()
+  end
+
+  vim.keymap.set(
+    'n',
+    '<Leader>go',
+    toggle_overlay,
+    { desc = 'Toggle git diff overlay' }
+  )
+end)
+
 Config.now(function()
   require('mini.icons').setup({
     -- rely on `vim.filetype.match` for these extensions
@@ -443,6 +458,13 @@ Config.later(function()
     'n',
     '<Leader>fu',
     '<Cmd>Pick git_hunks<CR>',
+    { desc = 'Git hunks' }
+  )
+
+  vim.keymap.set(
+    'n',
+    '<Leader>fU',
+    '<Cmd>Pick git_hunks scope="staged"<CR>',
     { desc = 'Git hunks' }
   )
 
