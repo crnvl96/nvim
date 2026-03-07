@@ -1,11 +1,7 @@
 Config.now_if_args(function() vim.pack.add({ 'https://github.com/nvim-lua/plenary.nvim' }) end)
 Config.now_if_args(function() vim.pack.add({ 'https://github.com/b0o/SchemaStore.nvim' }) end)
 Config.now_if_args(function() vim.pack.add({ 'https://github.com/tpope/vim-sleuth' }) end)
-
-Config.now_if_args(function()
-  vim.pack.add({ 'https://github.com/tpope/vim-fugitive' })
-  vim.keymap.set('n', '<Leader>gf', '<Cmd>Git<CR>', { desc = 'Open fugitive' })
-end)
+Config.now_if_args(function() vim.pack.add({ 'https://github.com/tpope/vim-fugitive' }) end)
 
 Config.now_if_args(function()
   vim.pack.add({ 'https://github.com/nvim-lualine/lualine.nvim' })
@@ -35,7 +31,6 @@ end)
 
 Config.later(function()
   require('mini.bufremove').setup()
-
   local function wipeout_all_buffers()
     local current_buffer = vim.api.nvim_get_current_buf()
     vim
@@ -43,17 +38,11 @@ Config.later(function()
       :filter(function(bufnr) return bufnr ~= current_buffer end)
       :each(function(bufnr) MiniBufremove.wipeout(bufnr, true) end)
   end
-
   vim.keymap.set('n', '<Leader>bo', wipeout_all_buffers, { desc = 'Wipeout Other Buffers' })
 end)
 
 Config.later(function()
-  require('mini.indentscope').setup({
-    options = {
-      try_as_border = true,
-    },
-  })
-
+  require('mini.indentscope').setup({ options = { try_as_border = true } })
   vim.api.nvim_create_autocmd('FileType', {
     group = Config.gr,
     pattern = { 'terminal' },
@@ -72,11 +61,9 @@ Config.later(function()
       end,
     },
   })
-
   vim.lsp.config('*', {
     capabilities = MiniCompletion.get_lsp_capabilities(),
   })
-
   vim.api.nvim_create_autocmd('LspAttach', {
     group = Config.gr,
     callback = function(e) vim.bo[e.buf].omnifunc = 'v:lua.MiniCompletion.completefunc_lsp' end,
