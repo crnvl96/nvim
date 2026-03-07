@@ -453,28 +453,32 @@ Config.now_if_args(function()
     formatters = {
       stylua = { require_cwd = true },
       prettier = { require_cwd = false },
+      oxfmt = { require_cwd = false },
     },
     format_on_save = function()
       if not autoformat then return nil end
       return {}
     end,
     formatters_by_ft = {
-      javascript = { 'prettier', lsp_format = 'prefer', timeout_ms = 1000 },
-      typescript = { 'prettier', lsp_format = 'prefer', timeout_ms = 1000 },
-      javascriptreact = { 'prettier', lsp_format = 'prefer', timeout_ms = 1000 },
-      typescriptreact = { 'prettier', lsp_format = 'prefer', timeout_ms = 1000 },
+      javascript = { 'oxfmt', lsp_format = 'prefer', timeout_ms = 1000 },
+      typescript = { 'oxfmt', lsp_format = 'prefer', timeout_ms = 1000 },
+      javascriptreact = { 'oxfmt', lsp_format = 'prefer', timeout_ms = 1000 },
+      typescriptreact = { 'oxfmt', lsp_format = 'prefer', timeout_ms = 1000 },
       typst = { 'typstyle', lsp_format = 'prefer', timeout_ms = 1000 },
-      go = { lsp_format = 'prefer' },
-      ['_'] = { 'trim_whitespace', 'trim_newline' },
+      go = { 'gofumpt', lsp_format = 'prefer', timeout_ms = 1000 },
+
+      json = { 'oxfmr' },
+      css = { 'oxfmt' },
+      jsonc = { 'oxfmt' },
+      json5 = { 'oxfmt' },
+      yaml = { 'oxfmt' },
+      markdown = { 'oxfmt', 'injected' },
+
       python = { 'ruff_organize_imports', 'ruff_fix', 'ruff_format' },
       lua = { 'stylua' },
-      json = { 'prettier' },
-      css = { 'prettier' },
-      jsonc = { 'prettier' },
-      json5 = { 'prettier' },
       ruby = { 'rubocop' },
-      yaml = { 'prettier' },
-      markdown = { 'prettier', 'injected' },
+
+      ['_'] = { 'trim_whitespace', 'trim_newline' },
     },
   })
   local toggle_autoformat = function() autoformat = not autoformat end
