@@ -1,3 +1,15 @@
+Config.now(function()
+  vim.pack.add({ 'https://github.com/folke/tokyonight.nvim' })
+  require('tokyonight').setup()
+  local variants = {
+    'tokyonight-night',
+    'tokyonight-storm',
+    'tokyonight-day',
+    'tokyonight-moon',
+  }
+  vim.cmd.colorscheme(variants[1])
+end)
+
 Config.now_if_args(function() vim.pack.add({ 'https://github.com/nvim-lua/plenary.nvim' }) end)
 Config.now_if_args(function() vim.pack.add({ 'https://github.com/b0o/SchemaStore.nvim' }) end)
 Config.now_if_args(function() vim.pack.add({ 'https://github.com/tpope/vim-sleuth' }) end)
@@ -38,7 +50,7 @@ Config.later(function()
       :filter(function(bufnr) return bufnr ~= current_buffer end)
       :each(function(bufnr) MiniBufremove.wipeout(bufnr, true) end)
   end
-  vim.keymap.set('n', '<Leader>bo', wipeout_all_buffers, { desc = 'Wipeout Other Buffers' })
+  vim.keymap.set('n', '<Leader>uo', wipeout_all_buffers, { desc = 'Wipeout Other Buffers' })
 end)
 
 Config.later(function()
@@ -61,9 +73,7 @@ Config.later(function()
       end,
     },
   })
-  vim.lsp.config('*', {
-    capabilities = MiniCompletion.get_lsp_capabilities(),
-  })
+  vim.lsp.config('*', { capabilities = MiniCompletion.get_lsp_capabilities() })
   vim.api.nvim_create_autocmd('LspAttach', {
     group = Config.gr,
     callback = function(e) vim.bo[e.buf].omnifunc = 'v:lua.MiniCompletion.completefunc_lsp' end,
@@ -315,12 +325,10 @@ Config.later(
 
 Config.now_if_args(function()
   vim.pack.add({ 'https://github.com/MagicDuck/grug-far.nvim' })
-
   require('grug-far').setup({
     folding = { enabled = false },
     resultLocation = { showNumberLabel = false },
   })
-
   local function grug_search_replace() require('grug-far').open({ transient = true }) end
   vim.keymap.set({ 'n', 'x' }, '<Leader>ug', grug_search_replace, { desc = 'Search & Replace' })
 end)
@@ -362,10 +370,8 @@ Config.now_if_args(function()
       ['websocat'] = nil,
     },
   })
-
   vim.api.nvim_create_user_command('TypstOpenThisPdf', function()
     local filepath = vim.api.nvim_buf_get_name(0)
-
     if filepath:match('%.typ$') then
       local pdf_path = filepath:gsub('%.typ$', '.pdf')
       vim.system({ 'xdg-open', pdf_path })
@@ -379,62 +385,22 @@ Config.now_if_args(function()
     vim.cmd('TSUpdate')
     MiniMisc.log_add('Parsers updates', { name = e.data.spec.name, path = e.data.path })
   end)
-
   vim.pack.add({
     'https://github.com/nvim-treesitter/nvim-treesitter',
     'https://github.com/nvim-treesitter/nvim-treesitter-textobjects',
   })
-
-  local treesit_langs = {
-    -- NOTE: parsers for c, lua, vim, vimdoc, query and markdown are already included in neovim
-    'bash',
-    'c',
-    'css',
-    'diff',
-    'dockerfile',
-    'git_config',
-    'git_rebase',
-    'gitattributes',
-    'gitcommit',
-    'gitignore',
-    'go',
-    'gomod',
-    'gosum',
-    'gowork',
-    'html',
-    'javascript',
-    'json',
-    'json5',
-    'jsx',
-    'lua',
-    'markdown',
-    'python',
-    'regex',
-    'ruby',
-    'toml',
-    'tsx',
-    'typescript',
-    'typst',
-    'vim',
-    'vimdoc',
-    'yaml',
-    'jsdoc',
-  }
-
   require('nvim-treesitter').install(
     vim
-      .iter(treesit_langs)
+      .iter(Config.parsers)
       :filter(function(item) return #vim.api.nvim_get_runtime_file('parser/' .. item .. '.*', false) == 0 end)
       :flatten()
       :totable()
   )
-
   vim.api.nvim_create_autocmd('FileType', {
     group = vim.api.nvim_create_augroup('crnvl96-nvim-treesitter', {}),
-    pattern = vim.iter(treesit_langs):map(function(item) return vim.treesitter.language.get_filetypes(item) end):flatten():totable(),
+    pattern = vim.iter(Config.parsers):map(function(item) return vim.treesitter.language.get_filetypes(item) end):flatten():totable(),
     callback = function(ev) vim.treesitter.start(ev.buf) end,
   })
-
   vim.api.nvim_create_autocmd('FileType', {
     group = Config.gr,
     callback = function()
@@ -447,25 +413,7 @@ end)
 
 Config.now_if_args(function()
   vim.pack.add({ 'https://github.com/neovim/nvim-lspconfig' })
-
-  vim.lsp.enable({
-    'biome',
-    'eslint',
-    'gopls',
-    'lua_ls',
-    'oxfmt',
-    'oxlint',
-    'rubocop',
-    'ruby_lsp',
-    'ruff',
-    'tinymist',
-    'tsgo',
-    'ty',
-    'jsonls',
-    'yamlls',
-    -- 'pyright', 'harper_ls'
-  })
-
+  vim.lsp.enable(Config.servers)
   vim.api.nvim_create_autocmd('LspAttach', {
     group = Config.gr,
     callback = function(e)
@@ -492,7 +440,6 @@ Config.now_if_args(function()
       end
     end,
   })
-
   vim.keymap.set('n', 'E', '<Cmd>lua vim.diagnostic.open_float()<CR>', { desc = 'Open Current Diagnostic' })
   vim.keymap.set('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', { desc = 'Inspect Current Symbol' })
   vim.keymap.set('i', '<C-k>', '<Cmd>lua vim.lsp.buf.signature_help()<CR>', { desc = 'Show Signature Help' })
@@ -502,9 +449,7 @@ end)
 
 Config.now_if_args(function()
   vim.pack.add({ 'https://github.com/stevearc/conform.nvim' })
-
   local autoformat = true
-
   require('conform').setup({
     notify_on_error = false,
     notify_no_formatters = false,
@@ -539,9 +484,7 @@ Config.now_if_args(function()
       markdown = { 'prettier', 'injected' },
     },
   })
-
   local toggle_autoformat = function() autoformat = not autoformat end
-
   vim.keymap.set('n', '<Leader>uf', toggle_autoformat, { desc = 'Toggle autoformat' })
   vim.keymap.set('n', '<Leader>ur', '<Cmd>lua MiniMisc.put(MiniMisc.find_root())<CR>', { desc = 'Find current root' })
 end)

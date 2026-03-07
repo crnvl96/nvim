@@ -12,7 +12,6 @@ MiniMisc.setup_termbg_sync()
 Config.gr = vim.api.nvim_create_augroup('custom-config', {})
 
 function Config.now(f) MiniMisc.safely('now', f) end
-
 function Config.later(f) MiniMisc.safely('later', f) end
 
 Config.now_if_args = vim.fn.argc(-1) > 0 and Config.now or Config.later
@@ -32,19 +31,58 @@ function Config.on_packchanged(name, kinds, callback)
   })
 end
 
-Config.now(function()
-  vim.pack.add({ 'https://github.com/folke/tokyonight.nvim' })
+Config.servers = {
+  'biome',
+  'eslint',
+  'gopls',
+  'lua_ls',
+  'oxfmt',
+  'oxlint',
+  'rubocop',
+  'ruby_lsp',
+  'ruff',
+  'tinymist',
+  'tailwindcss',
+  'tsgo',
+  'ty',
+  'jsonls',
+  'yamlls',
+  -- 'pyright',
+  -- 'harper_ls'
+}
 
-  require('tokyonight').setup()
-
-  local colorschemes = {
-    tokyonight = {
-      'tokyonight-night',
-      'tokyonight-storm',
-      'tokyonight-day',
-      'tokyonight-moon',
-    },
-  }
-
-  vim.cmd.colorscheme(colorschemes.tokyonight[1])
-end)
+Config.parsers = {
+  -- NOTE: parsers for c, lua, vim, vimdoc, query and markdown are already included in neovim
+  'bash',
+  'c',
+  'css',
+  'diff',
+  'dockerfile',
+  'git_config',
+  'git_rebase',
+  'gitattributes',
+  'gitcommit',
+  'gitignore',
+  'go',
+  'gomod',
+  'gosum',
+  'gowork',
+  'html',
+  'javascript',
+  'json',
+  'json5',
+  'jsx',
+  'lua',
+  'markdown',
+  'python',
+  'regex',
+  'ruby',
+  'toml',
+  'tsx',
+  'typescript',
+  'typst',
+  'vim',
+  'vimdoc',
+  'yaml',
+  'jsdoc',
+}
