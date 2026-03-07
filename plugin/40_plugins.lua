@@ -14,6 +14,11 @@ Config.later(function()
 end)
 
 Config.later(function()
+  vim.pack.add({ 'https://github.com/esmuellert/codediff.nvim' })
+  require('codediff').setup()
+end)
+
+Config.later(function()
   require('mini.bufremove').setup()
 
   local function wipeout_all_buffers()
@@ -85,7 +90,11 @@ Config.now(function()
 end)
 
 Config.later(function()
-  require('mini.indentscope').setup()
+  require('mini.indentscope').setup({
+    options = {
+      try_as_border = true,
+    },
+  })
 
   vim.api.nvim_create_autocmd('FileType', {
     group = Config.gr,
@@ -556,23 +565,25 @@ end)
 Config.later(function()
   require('mini.align').setup()
 end)
+
 Config.later(function()
   require('mini.operators').setup()
 end)
+
 Config.later(function()
   require('mini.move').setup()
 end)
+
 Config.later(function()
   require('mini.surround').setup()
 end)
+
 Config.later(function()
   require('mini.splitjoin').setup()
 end)
+
 Config.later(function()
   require('mini.cmdline').setup()
-end)
-Config.later(function()
-  require('mini.bracketed').setup()
 end)
 
 Config.now_if_args(function()
@@ -846,6 +857,15 @@ Config.now_if_args(function()
       :totable(),
     callback = function(ev)
       vim.treesitter.start(ev.buf)
+    end,
+  })
+
+  vim.api.nvim_create_autocmd('FileType', {
+    group = Config.gr,
+    callback = function()
+      vim.cmd('setlocal formatoptions-=c formatoptions-=o')
+      vim.wo[0][0].foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+      vim.wo[0][0].foldmethod = 'expr'
     end,
   })
 end)

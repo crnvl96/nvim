@@ -8,6 +8,10 @@
       "rev": "55c0cb59828fbc3bec744288286a46f5d5750b83",
       "src": "https://github.com/greggh/claude-code.nvim"
     },
+    "codediff.nvim": {
+      "rev": "3891eeb60a3e511c016f3aa9611442f27021dbb1",
+      "src": "https://github.com/esmuellert/codediff.nvim"
+    },
     "conform.nvim": {
       "rev": "e969e302bced7ffb9a0a0323629f31feb0ca35a6",
       "src": "https://github.com/stevearc/conform.nvim"
