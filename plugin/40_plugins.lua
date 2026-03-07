@@ -715,7 +715,7 @@ Config.later(function()
     window = {
       split_ratio = 0.5,
       -- Position of the window: "botright", "topleft", "vertical", "float", etc.
-      position = 'botright',
+      position = 'float',
       float = {
         border = vim.o.winborder,
       },
