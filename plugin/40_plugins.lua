@@ -719,34 +719,6 @@ Config.now_if_args(function()
   )
 end)
 
-Config.later(function()
-  vim.pack.add({ 'https://github.com/greggh/claude-code.nvim' })
-
-  require('claude-code').setup({
-    window = {
-      split_ratio = 0.5,
-      -- Position of the window: "botright", "topleft", "vertical", "float", etc.
-      position = 'float',
-      float = {
-        border = vim.o.winborder,
-      },
-    },
-    keymaps = {
-      toggle = {
-        normal = '<M-c>',
-        terminal = '<M-c>',
-      },
-    },
-  })
-
-  vim.keymap.set(
-    'n',
-    '<Leader>cc',
-    '<cmd>ClaudeCode<CR>',
-    { desc = 'Toggle Claude Code' }
-  )
-end)
-
 Config.now_if_args(function()
   vim.pack.add({ 'https://github.com/3rd/image.nvim' })
 
@@ -975,28 +947,13 @@ Config.now_if_args(function()
       end
       return {}
     end,
+    -- stylua: ignore
     formatters_by_ft = {
-      javascript = {
-        'prettier',
-        lsp_format = 'prefer',
-        timeout_ms = 1000,
-      },
-      typescript = {
-        'prettier',
-        lsp_format = 'prefer',
-        timeout_ms = 1000,
-      },
-      javascriptreact = {
-        'prettier',
-        lsp_format = 'prefer',
-        timeout_ms = 1000,
-      },
-      typescriptreact = {
-        'prettier',
-        lsp_format = 'prefer',
-        timeout_ms = 1000,
-      },
-      typst = { 'typstyle', lsp_format = 'prefer' },
+      javascript      = {'prettier',  lsp_format = 'prefer', timeout_ms = 1000, },
+      typescript      = {'prettier',  lsp_format = 'prefer', timeout_ms = 1000, },
+      javascriptreact = {'prettier',  lsp_format = 'prefer', timeout_ms = 1000, },
+      typescriptreact = {'prettier',  lsp_format = 'prefer', timeout_ms = 1000, },
+      typst           = { 'typstyle', lsp_format = 'prefer', timeout_ms = 1000  },
       go = { lsp_format = 'prefer' },
       ['_'] = { 'trim_whitespace', 'trim_newline' },
       python = { 'ruff_organize_imports', 'ruff_fix', 'ruff_format' },
