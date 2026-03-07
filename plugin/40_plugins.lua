@@ -89,7 +89,7 @@ Config.later(function()
 
   vim.api.nvim_create_autocmd('FileType', {
     group = Config.gr,
-    pattern = { 'snacks_terminal', 'terminal', 'term' },
+    pattern = { 'snacks_terminal', 'terminal' },
     callback = function(e)
       vim.b[e.buf].miniindentscope_disable = true
     end,
