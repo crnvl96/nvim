@@ -16,6 +16,7 @@ Config.now_if_args(function() require('crnvl.plug.treesitter') end)
 Config.now_if_args(function() require('crnvl.plug.lspconfig') end)
 Config.now_if_args(function() require('crnvl.plug.conform') end)
 Config.now_if_args(function() require('crnvl.plug.vim-tmux-navigator') end)
+Config.now_if_args(function() require('crnvl.plug.codediff') end)
 
 Config.later(function() require('crnvl.plug.mini-bufremove') end)
 Config.later(function() require('crnvl.plug.mini-indentscope') end)
