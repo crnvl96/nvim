@@ -1,0 +1,32 @@
+require('mini.clue').setup({
+  triggers = {
+    { mode = 'n', keys = '\\' },
+    { mode = 'i', keys = '<C-x>' },
+    { mode = 'n', keys = '<C-w>' },
+    { mode = { 'n', 'x' }, keys = '<Leader>' },
+    { mode = { 'n', 'x' }, keys = '[' },
+    { mode = { 'n', 'x' }, keys = ']' },
+    { mode = { 'n', 'x' }, keys = 'g' },
+    { mode = { 'n', 'x' }, keys = "'" },
+    { mode = { 'n', 'x' }, keys = '`' },
+    { mode = { 'n', 'x' }, keys = '"' },
+    { mode = { 'i', 'c' }, keys = '<C-r>' },
+    { mode = { 'n', 'x' }, keys = 'z' },
+  },
+  clues = {
+    Config.clues,
+    require('mini.clue').gen_clues.builtin_completion(),
+    require('mini.clue').gen_clues.g(),
+    require('mini.clue').gen_clues.marks(),
+    require('mini.clue').gen_clues.registers(),
+    require('mini.clue').gen_clues.square_brackets(),
+    require('mini.clue').gen_clues.windows(),
+    require('mini.clue').gen_clues.z(),
+  },
+  window = {
+    delay = 500,
+    scroll_down = '<C-f>',
+    scroll_up = '<C-b>',
+    config = { width = 'auto' },
+  },
+})
