@@ -28,7 +28,7 @@ require('conform').setup({
     typst = { 'typstyle', lsp_format = 'prefer', timeout_ms = 1000 },
     go = { 'gofumpt', lsp_format = 'prefer', timeout_ms = 1000 },
 
-    json = { 'oxfmr' },
+    json = { 'oxfmt' },
     css = { 'oxfmt' },
     jsonc = { 'oxfmt' },
     json5 = { 'oxfmt' },
