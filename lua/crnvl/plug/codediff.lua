@@ -1,3 +1,7 @@
 vim.pack.add({ 'https://github.com/esmuellert/codediff.nvim' })
 
-require('codediff').setup()
+require('codediff').setup({
+  diff = {
+    layout = 'inline',
+  },
+})
