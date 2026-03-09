@@ -31,6 +31,23 @@ function Config.on_packchanged(name, kinds, callback)
   })
 end
 
+Config.later(function()
+  local hint = vim.diagnostic.severity.HINT
+  local warn = vim.diagnostic.severity.WARN
+  local error = vim.diagnostic.severity.ERROR
+
+  vim.diagnostic.config({
+    virtual_lines = false,
+    update_in_insert = false,
+    signs = { priority = 9999, severity = { min = warn, max = error } },
+    underline = { severity = { min = hint, max = error } },
+    virtual_text = {
+      current_line = true,
+      severity = { min = error, max = error },
+    },
+  })
+end)
+
 Config.servers = {
   'biome',
   'eslint',
