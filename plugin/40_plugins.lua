@@ -1,4 +1,3 @@
-Config.now(function() require('crnvl.plug.tokyonight') end)
 Config.now(function() require('crnvl.plug.mini-icons') end)
 
 Config.now_if_args(function() require('crnvl.plug.schemastores') end)

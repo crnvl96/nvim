@@ -38,6 +38,7 @@ local toggle_preview = function()
 end
 
 vim.api.nvim_create_autocmd('User', {
+  group = Config.gr,
   pattern = 'MiniFilesBufferCreate',
   callback = function(e)
     local buf_id = e.data.buf_id
@@ -67,9 +68,11 @@ vim.api.nvim_create_autocmd('User', {
 
 vim.api.nvim_create_autocmd('User', {
   pattern = 'MiniFilesWindowUpdate',
+  group = Config.gr,
   callback = function(e)
     local config = vim.api.nvim_win_get_config(e.data.win_id)
     config.height = vim.o.lines
+    vim.api.nvim_win_set_config(e.data.win_id, config)
   end,
 })
 

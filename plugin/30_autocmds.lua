@@ -47,6 +47,7 @@ vim.api.nvim_create_autocmd('VimResized', {
 })
 
 vim.api.nvim_create_autocmd('BufEnter', {
+  group = Config.gr,
   callback = function(e)
     local bufnr = e.buf
     local filetype = vim.bo[bufnr].ft

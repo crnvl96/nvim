@@ -14,7 +14,7 @@ require('nvim-treesitter').install(
 )
 
 vim.api.nvim_create_autocmd('FileType', {
-  group = vim.api.nvim_create_augroup('crnvl96-nvim-treesitter', {}),
+  group = Config.gr,
   pattern = vim.iter(Config.parsers):map(function(item) return vim.treesitter.language.get_filetypes(item) end):flatten():totable(),
   callback = function(ev) vim.treesitter.start(ev.buf) end,
 })
