@@ -2,7 +2,6 @@ Config.now(function() require('crnvl.plug.mini-icons') end)
 
 Config.now_if_args(function() require('crnvl.plug.schemastores') end)
 Config.now_if_args(function() require('crnvl.plug.sleuth') end)
-Config.now_if_args(function() require('crnvl.plug.lualine') end)
 Config.now_if_args(function() require('crnvl.plug.ts-autotag') end)
 Config.now_if_args(function() require('crnvl.plug.ts-comments') end)
 Config.now_if_args(function() require('crnvl.plug.vim-tmux-navigator') end)
@@ -35,6 +34,7 @@ Config.now_if_args(function() require('crnvl.plug.mini-clue') end)
 
 -- mini pt. 2
 Config.now_if_args(function() require('mini.align').setup() end)
+Config.now_if_args(function() require('mini.statusline').setup() end)
 Config.now_if_args(function() require('mini.operators').setup() end)
 Config.now_if_args(function() require('mini.move').setup() end)
 Config.now_if_args(function() require('mini.surround').setup() end)
