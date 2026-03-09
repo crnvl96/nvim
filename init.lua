@@ -22,7 +22,8 @@ function Config.on_packchanged(name, kinds, callback)
   vim.api.nvim_create_autocmd('PackChanged', {
     group = Config.gr,
     callback = function(e)
-      local is_target = e.data.spec.name == name and vim.tbl_contains(kinds, e.data.kind)
+      local is_target = e.data.spec.name == name
+        and vim.tbl_contains(kinds, e.data.kind)
 
       if not is_target then return end
 

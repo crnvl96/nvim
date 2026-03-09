@@ -46,4 +46,9 @@ require('conform').setup({
 local toggle_autoformat = function() autoformat = not autoformat end
 
 vim.keymap.set('n', '<Leader>uf', toggle_autoformat, { desc = 'Toggle autoformat' })
-vim.keymap.set('n', '<Leader>ur', '<Cmd>lua MiniMisc.put(MiniMisc.find_root())<CR>', { desc = 'Find current root' })
+vim.keymap.set(
+  'n',
+  '<Leader>ur',
+  '<Cmd>lua MiniMisc.put(MiniMisc.find_root())<CR>',
+  { desc = 'Find current root' }
+)

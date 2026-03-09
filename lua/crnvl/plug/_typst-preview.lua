@@ -1,4 +1,7 @@
-vim.pack.add({ 'https://github.com/chomosuke/typst-preview.nvim' })
+vim.pack.add({
+  'https://github.com/chomosuke/typst-preview.nvim',
+})
+
 require('typst-preview').setup({
   dependencies_bin = {
     ['tinymist'] = 'tinymist',
@@ -6,7 +9,7 @@ require('typst-preview').setup({
   },
 })
 
-vim.api.nvim_create_user_command('TypstOpenThisPdf', function()
+vim.api.nvim_create_user_command('TypstPreviewOpenThisPdf', function()
   local filepath = vim.api.nvim_buf_get_name(0)
   if filepath:match('%.typ$') then
     local pdf_path = filepath:gsub('%.typ$', '.pdf')

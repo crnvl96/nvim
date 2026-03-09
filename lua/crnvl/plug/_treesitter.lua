@@ -9,13 +9,25 @@ vim.pack.add({
   'https://github.com/nvim-treesitter/nvim-treesitter-textobjects',
 })
 
+local function exists(parser)
+  local result = vim.api.nvim_get_runtime_file('parser/' .. parser .. '.*', false)
+  return #result == 0
+end
+
 require('nvim-treesitter').install(
-  vim.iter(Config.parsers):filter(function(item) return #vim.api.nvim_get_runtime_file('parser/' .. item .. '.*', false) == 0 end):flatten():totable()
+  vim.iter(Config.parsers):filter(exists):flatten():totable()
 )
+
+local function lang_fts(lang)
+  local fts = vim.treesitter.language.get_filetypes(lang)
+  return fts
+end
+
+local pattern = vim.iter(Config.parsers):map(lang_fts):flatten():totable()
 
 vim.api.nvim_create_autocmd('FileType', {
   group = Config.gr,
-  pattern = vim.iter(Config.parsers):map(function(item) return vim.treesitter.language.get_filetypes(item) end):flatten():totable(),
+  pattern = pattern,
   callback = function(ev) vim.treesitter.start(ev.buf) end,
 })
 

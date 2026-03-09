@@ -8,4 +8,9 @@ local function wipeout_all_buffers()
     :each(function(bufnr) MiniBufremove.wipeout(bufnr, true) end)
 end
 
-vim.keymap.set('n', '<Leader>uo', wipeout_all_buffers, { desc = 'Wipeout Other Buffers' })
+vim.keymap.set(
+  'n',
+  '<Leader>uo',
+  wipeout_all_buffers,
+  { desc = 'Wipeout Other Buffers' }
+)

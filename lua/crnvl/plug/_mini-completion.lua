@@ -13,5 +13,7 @@ vim.lsp.config('*', { capabilities = MiniCompletion.get_lsp_capabilities() })
 
 vim.api.nvim_create_autocmd('LspAttach', {
   group = Config.gr,
-  callback = function(e) vim.bo[e.buf].omnifunc = 'v:lua.MiniCompletion.completefunc_lsp' end,
+  callback = function(e)
+    vim.bo[e.buf].omnifunc = 'v:lua.MiniCompletion.completefunc_lsp'
+  end,
 })
