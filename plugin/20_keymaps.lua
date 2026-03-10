@@ -1,6 +1,7 @@
 Config.clues = {
   { mode = 'n', keys = '<leader>e', desc = '+Explorer' },
   { mode = 'n', keys = '<leader>f', desc = '+Find' },
+  { mode = 'n', keys = '<leader>g', desc = '+Git' },
   { mode = 'n', keys = '<leader>l', desc = '+Lsp' },
   { mode = 'n', keys = '<leader>u', desc = '+Utils' },
   { mode = 'x', keys = '<leader>u', desc = '+Utils' },
@@ -66,11 +67,36 @@ vim.keymap.set(
   'P',
   { noremap = true, desc = 'Paste in visual mode without overriding register' }
 )
-vim.keymap.set('n', '<C-h>', '<C-w>h', { noremap = true, desc = 'Go to left window' })
-vim.keymap.set('n', '<C-j>', '<C-w>j', { noremap = true, desc = 'Go to window below' })
-vim.keymap.set('n', '<C-k>', '<C-w>k', { noremap = true, desc = 'Go to window above' })
-vim.keymap.set('n', '<C-l>', '<C-w>l', { noremap = true, desc = 'Go to right window' })
-vim.keymap.set('n', '<C-d>', '<C-d>zz', { noremap = true, desc = 'Scroll down' })
+vim.keymap.set(
+  'n',
+  '<C-h>',
+  '<C-w>h',
+  { noremap = true, desc = 'Go to left window' }
+)
+vim.keymap.set(
+  'n',
+  '<C-j>',
+  '<C-w>j',
+  { noremap = true, desc = 'Go to window below' }
+)
+vim.keymap.set(
+  'n',
+  '<C-k>',
+  '<C-w>k',
+  { noremap = true, desc = 'Go to window above' }
+)
+vim.keymap.set(
+  'n',
+  '<C-l>',
+  '<C-w>l',
+  { noremap = true, desc = 'Go to right window' }
+)
+vim.keymap.set(
+  'n',
+  '<C-d>',
+  '<C-d>zz',
+  { noremap = true, desc = 'Scroll down' }
+)
 vim.keymap.set('n', '<C-u>', '<C-u>zz', { noremap = true, desc = 'Scroll up' })
 vim.keymap.set(
   'c',
@@ -120,3 +146,7 @@ vim.keymap.set(
   '<C-Left>',
   { noremap = true, desc = 'Move cursor to right word' }
 )
+vim.keymap.set('n', 'gf', function()
+  local f = vim.fn.findfile(vim.fn.expand('<cfile>'), '**')
+  vim.schedule(function() vim.cmd('vs ' .. f) end)
+end, { noremap = true, desc = 'Open file under cursor' })

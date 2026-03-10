@@ -31,80 +31,50 @@ Config.now_if_args(function() require('crnvl.plug._mini-snippets') end)
 Config.now_if_args(function() require('crnvl.plug._mini-splitjoin') end)
 Config.now_if_args(function() require('crnvl.plug._mini-surround') end)
 
+-- Organize this later
+
+Config.now_if_args(function() require('mini.statusline').setup() end)
+
 Config.now_if_args(
-  function() vim.pack.add({ 'https://github.com/tpope/vim-fugitive' }) end
+  function()
+    require('mini.git').setup({
+      command = {
+        split = 'vertical',
+      },
+    })
+  end
 )
 
--- Config.now_if_args(function() require('mini.git').setup() end)
+vim.keymap.set(
+  'n',
+  '<Leader>gs',
+  '<Cmd>Git status<CR>',
+  { desc = 'Git status' }
+)
 
-Config.now_if_args(function()
-  vim.pack.add({ 'https://github.com/lewis6991/gitsigns.nvim' })
+vim.keymap.set(
+  'n',
+  '<Leader>gc',
+  '<Cmd>Git commit<CR>',
+  { desc = 'Git commit' }
+)
 
-  require('gitsigns').setup({
-    signs = {
-      add = { text = '▎' },
-      change = { text = '▎' },
-      delete = { text = '' },
-      topdelete = { text = '' },
-      changedelete = { text = '▎' },
-      untracked = { text = '▎' },
-    },
-    signs_staged = {
-      add = { text = '▎' },
-      change = { text = '▎' },
-      delete = { text = '' },
-      topdelete = { text = '' },
-      changedelete = { text = '▎' },
-    },
-    attach_to_untracked = true,
-    on_attach = function(buffer)
-      local gs = package.loaded.gitsigns
-      local function map(mode, l, r, desc)
-        vim.keymap.set(
-          mode,
-          l,
-          r,
-          { buffer = buffer, desc = desc, silent = true }
-        )
-      end
-      map('n', ']h', function()
-        if vim.wo.diff then
-          vim.cmd.normal({ ']c', bang = true })
-        else
-          gs.nav_hunk('next')
-        end
-      end, 'Next Hunk')
-      map('n', '[h', function()
-        if vim.wo.diff then
-          vim.cmd.normal({ '[c', bang = true })
-        else
-          gs.nav_hunk('prev')
-        end
-      end, 'Prev Hunk')
-      map('n', ']H', function() gs.nav_hunk('last') end, 'Last Hunk')
-      map('n', '[H', function() gs.nav_hunk('first') end, 'First Hunk')
-      map({ 'n', 'x' }, '<leader>hs', ':Gitsigns stage_hunk<CR>', 'Stage Hunk')
-      map({ 'n', 'x' }, '<leader>hr', ':Gitsigns reset_hunk<CR>', 'Reset Hunk')
-      map('n', '<leader>hS', gs.stage_buffer, 'Stage Buffer')
-      map('n', '<leader>hu', gs.undo_stage_hunk, 'Undo Stage Hunk')
-      map('n', '<leader>hx', gs.setqflist, 'Set qflist')
-      map('n', '<leader>hR', gs.reset_buffer, 'Reset Buffer')
-      map('n', '<leader>hp', gs.preview_hunk_inline, 'Preview Hunk Inline')
-      map(
-        'n',
-        '<leader>hb',
-        function() gs.blame_line({ full = true }) end,
-        'Blame Line'
-      )
-      map('n', '<leader>hB', function() gs.blame() end, 'Blame Buffer')
-      map('n', '<leader>hd', gs.diffthis, 'Diff This')
-      map('n', '<leader>hD', function() gs.diffthis('~') end, 'Diff This ~')
-      map(
-        { 'o', 'x' },
-        'ih',
-        ':<C-U>Gitsigns select_hunk<CR>',
-        'GitSigns Select Hunk'
-      )
-    end,
-  })
-end)
+Config.now_if_args(
+  function()
+    require('mini.diff').setup({
+      view = { style = 'sign' },
+    })
+  end
+)
+
+vim.keymap.set(
+  'n',
+  '<Leader>go',
+  function() MiniDiff.toggle_overlay() end,
+  { desc = 'Toggle git overlay' }
+)
+
+vim.keymap.set('n', '<Leader>ge', function()
+  vim.fn.setqflist(MiniDiff.export('qf'))
+  vim.cmd('copen')
+end, { desc = 'Export to Quickfix' })
