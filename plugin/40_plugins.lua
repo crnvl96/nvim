@@ -35,46 +35,69 @@ Config.now_if_args(function() require('crnvl.plug._mini-surround') end)
 
 Config.now_if_args(function() require('mini.statusline').setup() end)
 
-Config.now_if_args(
-  function()
-    require('mini.git').setup({
-      command = {
-        split = 'vertical',
-      },
-    })
-  end
-)
+Config.now_if_args(function()
+  require('mini.bracketed').setup({
+    indent = { suffix = '', options = {} },
+  })
 
-vim.keymap.set(
-  'n',
-  '<Leader>gs',
-  '<Cmd>Git status<CR>',
-  { desc = 'Git status' }
-)
+  vim.keymap.set(
+    'n',
+    '<Leader>xH',
+    "<Cmd>lua MiniBracketed.quickfix('first')<CR>"
+  )
+  vim.keymap.set(
+    'n',
+    '<Leader>xh',
+    "<Cmd>lua MiniBracketed.quickfix('backward')<CR>"
+  )
+  vim.keymap.set(
+    'n',
+    '<Leader>xl',
+    "<Cmd>lua MiniBracketed.quickfix('forward')<CR>"
+  )
+  vim.keymap.set(
+    'n',
+    '<Leader>xL',
+    "<Cmd>lua MiniBracketed.quickfix('last')<CR>"
+  )
+end)
 
-vim.keymap.set(
-  'n',
-  '<Leader>gc',
-  '<Cmd>Git commit<CR>',
-  { desc = 'Git commit' }
-)
+Config.now_if_args(function()
+  require('mini.git').setup({
+    command = {
+      split = 'vertical',
+    },
+  })
 
-Config.now_if_args(
-  function()
-    require('mini.diff').setup({
-      view = { style = 'sign' },
-    })
-  end
-)
+  vim.keymap.set(
+    'n',
+    '<Leader>gs',
+    '<Cmd>Git status<CR>',
+    { desc = 'Git status' }
+  )
 
-vim.keymap.set(
-  'n',
-  '<Leader>go',
-  function() MiniDiff.toggle_overlay() end,
-  { desc = 'Toggle git overlay' }
-)
+  vim.keymap.set(
+    'n',
+    '<Leader>gc',
+    '<Cmd>Git commit<CR>',
+    { desc = 'Git commit' }
+  )
+end)
 
-vim.keymap.set('n', '<Leader>ge', function()
-  vim.fn.setqflist(MiniDiff.export('qf'))
-  vim.cmd('copen')
-end, { desc = 'Export to Quickfix' })
+Config.now_if_args(function()
+  require('mini.diff').setup({
+    view = { style = 'sign' },
+  })
+
+  vim.keymap.set(
+    'n',
+    '<Leader>go',
+    function() MiniDiff.toggle_overlay() end,
+    { desc = 'Toggle git overlay' }
+  )
+
+  vim.keymap.set('n', '<Leader>ge', function()
+    vim.fn.setqflist(MiniDiff.export('qf'))
+    vim.cmd('copen')
+  end, { desc = 'Export to Quickfix' })
+end)

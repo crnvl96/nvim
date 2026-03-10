@@ -5,6 +5,7 @@ Config.clues = {
   { mode = 'n', keys = '<leader>l', desc = '+Lsp' },
   { mode = 'n', keys = '<leader>u', desc = '+Utils' },
   { mode = 'x', keys = '<leader>u', desc = '+Utils' },
+  { mode = 'n', keys = '<leader>x', desc = '+Quickfix' },
 }
 
 vim.keymap.set(
