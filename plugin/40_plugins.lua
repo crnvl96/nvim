@@ -63,28 +63,6 @@ Config.now_if_args(function()
 end)
 
 Config.now_if_args(function()
-  require('mini.git').setup({
-    command = {
-      split = 'vertical',
-    },
-  })
-
-  vim.keymap.set(
-    'n',
-    '<Leader>gs',
-    '<Cmd>Git status<CR>',
-    { desc = 'Git status' }
-  )
-
-  vim.keymap.set(
-    'n',
-    '<Leader>gc',
-    '<Cmd>Git commit<CR>',
-    { desc = 'Git commit' }
-  )
-end)
-
-Config.now_if_args(function()
   require('mini.diff').setup({
     view = { style = 'sign' },
   })
@@ -100,4 +78,35 @@ Config.now_if_args(function()
     vim.fn.setqflist(MiniDiff.export('qf'))
     vim.cmd('copen')
   end, { desc = 'Export to Quickfix' })
+end)
+
+Config.now_if_args(function()
+  require('mini.git').setup()
+
+  vim.api.nvim_create_autocmd('User', {
+    pattern = 'MiniGitCommandSplit',
+    group = Config.gr,
+    callback = function(e)
+      if e.data.git_subcommand ~= 'status' then return end
+      vim.api.nvim_set_option_value(
+        'filetype',
+        'gitstatus',
+        { scope = 'local', buf = vim.api.nvim_win_get_buf(e.data.win_stdout) }
+      )
+    end,
+  })
+
+  vim.keymap.set(
+    'n',
+    '<Leader>gs',
+    '<Cmd>Git status<CR>',
+    { desc = 'Git status' }
+  )
+
+  vim.keymap.set(
+    'n',
+    '<Leader>gc',
+    '<Cmd>Git commit<CR>',
+    { desc = 'Git commit' }
+  )
 end)
