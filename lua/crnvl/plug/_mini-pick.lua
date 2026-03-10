@@ -1,4 +1,7 @@
 require('mini.pick').setup({
+  source = {
+    show = require('mini.pick').default_show,
+  },
   window = {
     prompt_prefix = ' ',
   },

@@ -2,7 +2,6 @@ Config.clues = {
   { mode = 'n', keys = '<leader>e', desc = '+Explorer' },
   { mode = 'n', keys = '<leader>f', desc = '+Find' },
   { mode = 'n', keys = '<leader>l', desc = '+Lsp' },
-  { mode = 'n', keys = '<leader>g', desc = '+Git' },
   { mode = 'n', keys = '<leader>u', desc = '+Utils' },
   { mode = 'x', keys = '<leader>u', desc = '+Utils' },
 }
@@ -43,21 +42,18 @@ vim.keymap.set(
   '<Cmd>vertical resize +20<CR>',
   { noremap = true, desc = 'Increase window width' }
 )
-
 vim.keymap.set(
   { 'n', 'i', 'x' },
   '<Esc>',
   '<Esc><Cmd>noh<CR><Esc>',
   { noremap = true, desc = 'Clear hlsearch on <Esc>' }
 )
-local save = '<Esc><Cmd>noh<CR><Cmd>silent! update | redraw<CR>'
 vim.keymap.set(
   { 'n', 'i', 'x' },
   '<C-s>',
-  save,
+  '<Esc><Cmd>noh<CR><Cmd>silent! update | redraw<CR>',
   { noremap = true, desc = 'Clear hlsearch & save file' }
 )
-
 vim.keymap.set(
   'n',
   'Y',
