@@ -9,7 +9,7 @@ MiniMisc.setup_auto_root()
 MiniMisc.setup_restore_cursor()
 MiniMisc.setup_termbg_sync()
 
-vim.cmd.colorscheme([[miniwinter]])
+vim.cmd.colorscheme([[catppuccin]])
 
 Config.gr = vim.api.nvim_create_augroup('custom-config', {})
 
