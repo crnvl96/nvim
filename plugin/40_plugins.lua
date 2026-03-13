@@ -33,6 +33,11 @@ Config.now_if_args(function() require('crnvl.plug._mini-surround') end)
 
 -- Organize this later
 
+Config.now(function()
+  vim.pack.add({ 'https://github.com/rose-pine/neovim' })
+  vim.cmd('colorscheme rose-pine')
+end)
+
 Config.now_if_args(function() require('mini.statusline').setup() end)
 
 Config.now_if_args(function()
