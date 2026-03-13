@@ -34,8 +34,8 @@ Config.now_if_args(function() require('crnvl.plug._mini-surround') end)
 -- Organize this later
 
 Config.now(function()
-  vim.pack.add({ 'https://github.com/rose-pine/neovim' })
-  vim.cmd('colorscheme rose-pine')
+  vim.pack.add({ 'https://github.com/rebelot/kanagawa.nvim' })
+  vim.cmd('colorscheme kanagawa')
 end)
 
 Config.now_if_args(function() require('mini.statusline').setup() end)
