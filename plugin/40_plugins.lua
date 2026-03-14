@@ -80,7 +80,7 @@ end)
 
 Config.now_if_args(function()
   require('mini.git').setup({
-    command = { split = 'vertical' },
+    command = { split = 'horizontal' },
   })
 
   vim.api.nvim_create_autocmd('User', {
