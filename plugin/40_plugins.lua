@@ -1,3 +1,5 @@
+Config.now(function() require('crnvl.plug._kanagawa') end)
+
 Config.now_if_args(function() require('crnvl.plug._schemastore') end)
 Config.now_if_args(function() require('crnvl.plug._sleuth') end)
 Config.now_if_args(function() require('crnvl.plug._ts-autotag') end)
@@ -11,6 +13,8 @@ Config.now_if_args(function() require('crnvl.plug._typst-preview') end)
 Config.now_if_args(function() require('crnvl.plug._conform') end)
 Config.now_if_args(function() require('crnvl.plug._lspconfig') end)
 Config.now_if_args(function() require('crnvl.plug._treesitter') end)
+Config.now_if_args(function() require('crnvl.plug._codediff') end)
+Config.now_if_args(function() require('crnvl.plug._grug-far') end)
 
 Config.now_if_args(function() require('crnvl.plug._mini-ai') end)
 Config.now_if_args(function() require('crnvl.plug._mini-align') end)
@@ -30,83 +34,7 @@ Config.now_if_args(function() require('crnvl.plug._mini-pick') end)
 Config.now_if_args(function() require('crnvl.plug._mini-snippets') end)
 Config.now_if_args(function() require('crnvl.plug._mini-splitjoin') end)
 Config.now_if_args(function() require('crnvl.plug._mini-surround') end)
-
--- Organize this later
-
-Config.now(function()
-  vim.pack.add({ 'https://github.com/rebelot/kanagawa.nvim' })
-  vim.cmd('colorscheme kanagawa')
-end)
-
-Config.now(function()
-  vim.pack.add({ 'https://github.com/esmuellert/codediff.nvim' })
-  require('codediff').setup()
-
-  vim.keymap.set(
-    'n',
-    '<Leader>gd',
-    '<Cmd>CodeDiff<CR>',
-    { desc = 'Toggle git diff' }
-  )
-end)
-
-Config.now_if_args(function() require('mini.statusline').setup() end)
-
-Config.now_if_args(
-  function()
-    require('mini.bracketed').setup({
-      indent = { suffix = '', options = {} },
-    })
-  end
-)
-
-Config.now_if_args(function()
-  require('mini.diff').setup({
-    view = { style = 'sign' },
-  })
-
-  vim.keymap.set(
-    'n',
-    '<Leader>go',
-    function() MiniDiff.toggle_overlay() end,
-    { desc = 'Toggle git overlay' }
-  )
-
-  vim.keymap.set('n', '<Leader>ge', function()
-    vim.fn.setqflist(MiniDiff.export('qf'))
-    vim.cmd('copen')
-  end, { desc = 'Export to Quickfix' })
-end)
-
-Config.now_if_args(function()
-  require('mini.git').setup({
-    command = { split = 'horizontal' },
-  })
-
-  vim.api.nvim_create_autocmd('User', {
-    pattern = 'MiniGitCommandSplit',
-    group = Config.gr,
-    callback = function(e)
-      if e.data.git_subcommand ~= 'status' then return end
-      vim.api.nvim_set_option_value(
-        'filetype',
-        'gitstatus',
-        { scope = 'local', buf = vim.api.nvim_win_get_buf(e.data.win_stdout) }
-      )
-    end,
-  })
-
-  vim.keymap.set(
-    'n',
-    '<Leader>gs',
-    '<Cmd>Git status<CR>',
-    { desc = 'Git status' }
-  )
-
-  vim.keymap.set(
-    'n',
-    '<Leader>gc',
-    '<Cmd>Git commit<CR>',
-    { desc = 'Git commit' }
-  )
-end)
+Config.now_if_args(function() require('crnvl.plug._mini-statusline') end)
+Config.now_if_args(function() require('crnvl.plug._mini-bracketed') end)
+Config.now_if_args(function() require('crnvl.plug._mini-git') end)
+Config.now_if_args(function() require('crnvl.plug._mini-diff') end)
