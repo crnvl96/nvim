@@ -28,10 +28,11 @@ require('conform').setup({
     typst = { 'typstyle', lsp_format = 'prefer', timeout_ms = 1000 },
     go = { 'gofumpt', lsp_format = 'prefer', timeout_ms = 1000 },
 
-    json = { 'oxfmt' },
+    json = { 'oxfmt', lsp_format = 'prefer', name = 'oxfmt', timeout_ms = 1000 },
+    jsonc = { 'oxfmt', lsp_format = 'prefer', name = 'oxfmt', timeout_ms = 1000 },
+    jsonc5 = { 'oxfmt', lsp_format = 'prefer', name = 'oxfmt', timeout_ms = 1000 },
+
     css = { 'oxfmt' },
-    jsonc = { 'oxfmt' },
-    json5 = { 'oxfmt' },
     yaml = { 'oxfmt' },
     markdown = { 'oxfmt', 'injected' },
 
@@ -45,7 +46,12 @@ require('conform').setup({
 
 local toggle_autoformat = function() autoformat = not autoformat end
 
-vim.keymap.set('n', '<Leader>uf', toggle_autoformat, { desc = 'Toggle autoformat' })
+vim.keymap.set(
+  'n',
+  '<Leader>uf',
+  toggle_autoformat,
+  { desc = 'Toggle autoformat' }
+)
 vim.keymap.set(
   'n',
   '<Leader>ur',
