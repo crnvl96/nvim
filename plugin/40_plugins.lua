@@ -38,86 +38,75 @@ Config.now(function()
   vim.cmd('colorscheme kanagawa')
 end)
 
-Config.now(
-  function() vim.pack.add({ 'https://github.com/tpope/vim-fugitive' }) end
-)
+Config.now(function()
+  vim.pack.add({ 'https://github.com/esmuellert/codediff.nvim' })
+  require('codediff').setup()
+
+  vim.keymap.set(
+    'n',
+    '<Leader>gd',
+    '<Cmd>CodeDiff<CR>',
+    { desc = 'Toggle git diff' }
+  )
+end)
 
 Config.now_if_args(function() require('mini.statusline').setup() end)
 
--- Config.now_if_args(function()
---   require('mini.bracketed').setup({
---     indent = { suffix = '', options = {} },
---   })
---
---   vim.keymap.set(
---     'n',
---     '<Leader>xH',
---     "<Cmd>lua MiniBracketed.quickfix('first')<CR>"
---   )
---   vim.keymap.set(
---     'n',
---     '<Leader>xh',
---     "<Cmd>lua MiniBracketed.quickfix('backward')<CR>"
---   )
---   vim.keymap.set(
---     'n',
---     '<Leader>xl',
---     "<Cmd>lua MiniBracketed.quickfix('forward')<CR>"
---   )
---   vim.keymap.set(
---     'n',
---     '<Leader>xL',
---     "<Cmd>lua MiniBracketed.quickfix('last')<CR>"
---   )
--- end)
---
--- Config.now_if_args(function()
---   require('mini.diff').setup({
---     view = { style = 'sign' },
---   })
---
---   vim.keymap.set(
---     'n',
---     '<Leader>go',
---     function() MiniDiff.toggle_overlay() end,
---     { desc = 'Toggle git overlay' }
---   )
---
---   vim.keymap.set('n', '<Leader>ge', function()
---     vim.fn.setqflist(MiniDiff.export('qf'))
---     vim.cmd('copen')
---   end, { desc = 'Export to Quickfix' })
--- end)
---
--- Config.now_if_args(function()
---   require('mini.git').setup({
---     command = { split = 'vertical' },
---   })
---
---   vim.api.nvim_create_autocmd('User', {
---     pattern = 'MiniGitCommandSplit',
---     group = Config.gr,
---     callback = function(e)
---       if e.data.git_subcommand ~= 'status' then return end
---       vim.api.nvim_set_option_value(
---         'filetype',
---         'gitstatus',
---         { scope = 'local', buf = vim.api.nvim_win_get_buf(e.data.win_stdout) }
---       )
---     end,
---   })
---
---   vim.keymap.set(
---     'n',
---     '<Leader>gs',
---     '<Cmd>Git status<CR>',
---     { desc = 'Git status' }
---   )
---
---   vim.keymap.set(
---     'n',
---     '<Leader>gc',
---     '<Cmd>Git commit<CR>',
---     { desc = 'Git commit' }
---   )
--- end)
+Config.now_if_args(
+  function()
+    require('mini.bracketed').setup({
+      indent = { suffix = '', options = {} },
+    })
+  end
+)
+
+Config.now_if_args(function()
+  require('mini.diff').setup({
+    view = { style = 'sign' },
+  })
+
+  vim.keymap.set(
+    'n',
+    '<Leader>go',
+    function() MiniDiff.toggle_overlay() end,
+    { desc = 'Toggle git overlay' }
+  )
+
+  vim.keymap.set('n', '<Leader>ge', function()
+    vim.fn.setqflist(MiniDiff.export('qf'))
+    vim.cmd('copen')
+  end, { desc = 'Export to Quickfix' })
+end)
+
+Config.now_if_args(function()
+  require('mini.git').setup({
+    command = { split = 'vertical' },
+  })
+
+  vim.api.nvim_create_autocmd('User', {
+    pattern = 'MiniGitCommandSplit',
+    group = Config.gr,
+    callback = function(e)
+      if e.data.git_subcommand ~= 'status' then return end
+      vim.api.nvim_set_option_value(
+        'filetype',
+        'gitstatus',
+        { scope = 'local', buf = vim.api.nvim_win_get_buf(e.data.win_stdout) }
+      )
+    end,
+  })
+
+  vim.keymap.set(
+    'n',
+    '<Leader>gs',
+    '<Cmd>Git status<CR>',
+    { desc = 'Git status' }
+  )
+
+  vim.keymap.set(
+    'n',
+    '<Leader>gc',
+    '<Cmd>Git commit<CR>',
+    { desc = 'Git commit' }
+  )
+end)
