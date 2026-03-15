@@ -14,3 +14,10 @@ vim.keymap.set(
   wipeout_all_buffers,
   { desc = 'Wipeout Other Buffers' }
 )
+
+vim.keymap.set(
+  'n',
+  '<Leader>uO',
+  '<Cmd>tabonly<CR>',
+  { desc = 'Close other tabs' }
+)

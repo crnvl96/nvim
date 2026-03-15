@@ -146,7 +146,3 @@ vim.keymap.set(
   '<C-Left>',
   { noremap = true, desc = 'Move cursor to right word' }
 )
-vim.keymap.set('n', 'gf', function()
-  local f = vim.fn.findfile(vim.fn.expand('<cfile>'), '**')
-  vim.schedule(function() vim.cmd('vs ' .. f) end)
-end, { noremap = true, desc = 'Open file under cursor' })

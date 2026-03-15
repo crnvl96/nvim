@@ -60,7 +60,7 @@ Config.servers = {
   'ruby_lsp',
   'ruff',
   'tinymist',
-  'tailwindcss',
+  -- 'tailwindcss',
   'tsgo',
   'ty',
   'jsonls',
