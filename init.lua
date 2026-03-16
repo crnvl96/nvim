@@ -104,3 +104,37 @@ Config.parsers = {
   'yaml',
   'jsdoc',
 }
+
+Config.formatters_by_ft = {
+  javascript = { 'oxfmt', lsp_format = 'prefer', timeout_ms = 1000 },
+  typescript = { 'oxfmt', lsp_format = 'prefer', timeout_ms = 1000 },
+  javascriptreact = { 'oxfmt', lsp_format = 'prefer', timeout_ms = 1000 },
+  typescriptreact = { 'oxfmt', lsp_format = 'prefer', timeout_ms = 1000 },
+  typst = { 'typstyle', lsp_format = 'prefer', timeout_ms = 1000 },
+  go = { 'gofumpt', lsp_format = 'prefer', timeout_ms = 1000 },
+  json = {
+    'oxfmt',
+    lsp_format = 'prefer',
+    name = 'oxfmt',
+    timeout_ms = 1000,
+  },
+  jsonc = {
+    'oxfmt',
+    lsp_format = 'prefer',
+    name = 'oxfmt',
+    timeout_ms = 1000,
+  },
+  jsonc5 = {
+    'oxfmt',
+    lsp_format = 'prefer',
+    name = 'oxfmt',
+    timeout_ms = 1000,
+  },
+  css = { 'oxfmt' },
+  yaml = { 'oxfmt' },
+  markdown = { 'oxfmt', 'injected' },
+  python = { 'ruff_organize_imports', 'ruff_fix', 'ruff_format' },
+  lua = { 'stylua' },
+  ruby = { 'rubocop' },
+  ['_'] = { 'trim_whitespace', 'trim_newline' },
+}
