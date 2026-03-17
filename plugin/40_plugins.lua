@@ -1,8 +1,3 @@
-Config.now(function()
-  vim.pack.add({ 'https://github.com/rebelot/kanagawa.nvim' })
-  vim.cmd('colorscheme kanagawa')
-end)
-
 Config.now_if_args(
   function() vim.pack.add({ 'https://github.com/b0o/SchemaStore.nvim' }) end
 )
@@ -19,9 +14,7 @@ end)
 Config.now_if_args(function()
   vim.pack.add({ 'https://github.com/folke/ts-comments.nvim' })
   require('ts-comments').setup({
-    lang = {
-      typst = { '// %s', '/* %s */' },
-    },
+    lang = { typst = { '// %s', '/* %s */' } },
   })
 end)
 
@@ -66,7 +59,6 @@ Config.now_if_args(function()
       end
     end
   )
-
   vim.pack.add({ 'https://github.com/iamcco/markdown-preview.nvim' })
 end)
 
@@ -78,14 +70,6 @@ Config.now_if_args(function()
       ['websocat'] = nil,
     },
   })
-
-  vim.api.nvim_create_user_command('TypstPreviewOpenThisPdf', function()
-    local filepath = vim.api.nvim_buf_get_name(0)
-    if filepath:match('%.typ$') then
-      local pdf_path = filepath:gsub('%.typ$', '.pdf')
-      vim.system({ 'xdg-open', pdf_path })
-    end
-  end, {})
 end)
 
 Config.now_if_args(function()
