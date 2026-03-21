@@ -56,8 +56,7 @@ if vim.fn.exists('syntax_on') ~= 1 then vim.cmd('syntax enable') end
 
 if vim.fn.executable('rg') then
   function _G.FindFuncRG(cmdarg)
-    local fnames =
-      vim.fn.systemlist('rg --files --hidden --color=never --glob="!.git"')
+    local fnames = vim.fn.systemlist('rg --files --hidden --color=never --glob="!.git"')
     return #cmdarg == 0 and fnames or vim.fn.matchfuzzy(fnames, cmdarg)
   end
 

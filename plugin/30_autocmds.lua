@@ -54,12 +54,7 @@ vim.api.nvim_create_autocmd('BufEnter', {
     local types = { 'help', 'checkhealth', 'vim', '' }
     for _, b in ipairs(types) do
       if filetype == b then
-        vim.keymap.set(
-          'n',
-          'q',
-          function() vim.api.nvim_command('close') end,
-          { buffer = true }
-        )
+        vim.keymap.set('n', 'q', function() vim.api.nvim_command('close') end, { buffer = true })
       end
     end
   end,

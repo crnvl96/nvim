@@ -1,42 +1,59 @@
 Config.now_if_args(function()
   Config.on_packchanged('nvim-treesitter', { 'update' }, function(e)
-    MiniMisc.log_add(
-      'Updating parsers',
-      { name = e.data.spec.name, path = e.data.path }
-    )
+    MiniMisc.log_add('Updating parsers', { name = e.data.spec.name, path = e.data.path })
     vim.cmd('TSUpdate')
-    MiniMisc.log_add(
-      'Parsers updates',
-      { name = e.data.spec.name, path = e.data.path }
-    )
+    MiniMisc.log_add('Parsers updates', { name = e.data.spec.name, path = e.data.path })
   end)
 
-  Config.on_packchanged(
-    'markdown-preview.nvim',
-    { 'install', 'update' },
-    function(e)
-      MiniMisc.log_add(
-        'Building dependencies',
-        { name = e.data.spec.name, path = e.data.path }
-      )
+  vim.pack.add({
+    'https://github.com/nvim-treesitter/nvim-treesitter',
+    'https://github.com/nvim-treesitter/nvim-treesitter-textobjects',
+  })
 
-      local stdout = vim
-        .system({ 'npm', 'install' }, { text = true, cwd = e.data.path .. '/app' })
-        :wait()
+  require('nvim-treesitter').install(vim
+    .iter(Config.parsers)
+    :filter(function(parser)
+      local result = vim.api.nvim_get_runtime_file('parser/' .. parser .. '.*', false)
+      return #result == 0
+    end)
+    :flatten()
+    :totable())
 
-      if stdout.code ~= 0 then
-        MiniMisc.log_add(
-          'Error during dependencies build',
-          { name = e.data.spec.name, path = e.data.path }
-        )
-      else
-        MiniMisc.log_add(
-          'Dependencies built',
-          { name = e.data.spec.name, path = e.data.path }
-        )
-      end
+  vim.api.nvim_create_autocmd('FileType', {
+    group = Config.gr,
+    pattern = vim
+      .iter(Config.parsers)
+      :map(function(lang)
+        local fts = vim.treesitter.language.get_filetypes(lang)
+        return fts
+      end)
+      :flatten()
+      :totable(),
+    callback = function(ev) vim.treesitter.start(ev.buf) end,
+  })
+
+  vim.api.nvim_create_autocmd('FileType', {
+    group = Config.gr,
+    callback = function()
+      vim.cmd('setlocal formatoptions-=c formatoptions-=o')
+      vim.wo[0][0].foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+      vim.wo[0][0].foldmethod = 'expr'
+    end,
+  })
+end)
+
+Config.now_if_args(function()
+  Config.on_packchanged('markdown-preview.nvim', { 'install', 'update' }, function(e)
+    MiniMisc.log_add('Building dependencies', { name = e.data.spec.name, path = e.data.path })
+
+    local stdout = vim.system({ 'npm', 'install' }, { text = true, cwd = e.data.path .. '/app' }):wait()
+
+    if stdout.code ~= 0 then
+      MiniMisc.log_add('Error during dependencies build', { name = e.data.spec.name, path = e.data.path })
+    else
+      MiniMisc.log_add('Dependencies built', { name = e.data.spec.name, path = e.data.path })
     end
-  )
+  end)
 
   vim.pack.add({
     'https://github.com/b0o/SchemaStore.nvim',
@@ -51,8 +68,6 @@ Config.now_if_args(function()
     'https://github.com/chomosuke/typst-preview.nvim',
     'https://github.com/stevearc/conform.nvim',
     'https://github.com/neovim/nvim-lspconfig',
-    'https://github.com/nvim-treesitter/nvim-treesitter',
-    'https://github.com/nvim-treesitter/nvim-treesitter-textobjects',
     'https://github.com/esmuellert/codediff.nvim',
     'https://github.com/MagicDuck/grug-far.nvim',
   })
@@ -80,16 +95,6 @@ Config.now_if_args(function()
       },
     },
   })
-
-  require('nvim-treesitter').install(vim
-    .iter(Config.parsers)
-    :filter(function(parser)
-      local result =
-        vim.api.nvim_get_runtime_file('parser/' .. parser .. '.*', false)
-      return #result == 0
-    end)
-    :flatten()
-    :totable())
 
   Config.autoformat = true
 
@@ -203,11 +208,7 @@ Config.now_if_args(function()
       auto_setup = false,
       process_items = function(items, base)
         local default = MiniCompletion.default_process_items
-        return default(
-          items,
-          base,
-          { kind_priority = { Text = -1, Snippet = -1 } }
-        )
+        return default(items, base, { kind_priority = { Text = -1, Snippet = -1 } })
       end,
     },
   })
@@ -277,8 +278,7 @@ Config.later(function()
         -- workaround for gopls not supporting semanticTokensProvider
         -- https://github.com/golang/go/issues/54531#issuecomment-1464982242
         if not client.server_capabilities.semanticTokensProvider then
-          local semantic =
-            client.config.capabilities.textDocument.semanticTokens
+          local semantic = client.config.capabilities.textDocument.semanticTokens
           if not semantic then return end
           client.server_capabilities.semanticTokensProvider = {
             full = true,
@@ -297,47 +297,13 @@ Config.later(function()
     pattern = 'mermaid',
     callback = function()
       local buf = vim.api.nvim_get_current_buf()
-      vim.keymap.set(
-        'n',
-        '<leader>mp',
-        '<cmd>MermaidPreview<CR>',
-        { buffer = buf, desc = 'Mermaid Preview' }
-      )
-      vim.keymap.set(
-        'n',
-        '<leader>mf',
-        '<cmd>MermaidFormat<CR>',
-        { buffer = buf, desc = 'Mermaid Format' }
-      )
-    end,
-  })
-
-  vim.api.nvim_create_autocmd('FileType', {
-    group = Config.gr,
-    pattern = vim
-      .iter(Config.parsers)
-      :map(function(lang)
-        local fts = vim.treesitter.language.get_filetypes(lang)
-        return fts
-      end)
-      :flatten()
-      :totable(),
-    callback = function(ev) vim.treesitter.start(ev.buf) end,
-  })
-
-  vim.api.nvim_create_autocmd('FileType', {
-    group = Config.gr,
-    callback = function()
-      vim.cmd('setlocal formatoptions-=c formatoptions-=o')
-      vim.wo[0][0].foldexpr = 'v:lua.vim.treesitter.foldexpr()'
-      vim.wo[0][0].foldmethod = 'expr'
+      vim.keymap.set('n', '<leader>mp', '<cmd>MermaidPreview<CR>', { buffer = buf, desc = 'Mermaid Preview' })
+      vim.keymap.set('n', '<leader>mf', '<cmd>MermaidFormat<CR>', { buffer = buf, desc = 'Mermaid Format' })
     end,
   })
 
   local filter_show = function() return true end
-  local filter_hide = function(fs_entry)
-    return not vim.startswith(fs_entry.name, '.')
-  end
+  local filter_hide = function(fs_entry) return not vim.startswith(fs_entry.name, '.') end
 
   local show_dotfiles = true
   local show_preview = false
@@ -382,16 +348,8 @@ Config.later(function()
     pattern = 'MiniFilesExplorerOpen',
     group = Config.gr,
     callback = function()
-      MiniFiles.set_bookmark(
-        '_',
-        vim.fn.getcwd(),
-        { desc = 'Working directory' }
-      )
-      MiniFiles.set_bookmark(
-        '@',
-        vim.env.HOME .. '/Developer',
-        { desc = 'Projects' }
-      )
+      MiniFiles.set_bookmark('_', vim.fn.getcwd(), { desc = 'Working directory' })
+      MiniFiles.set_bookmark('@', vim.env.HOME .. '/Developer', { desc = 'Projects' })
       MiniFiles.set_bookmark('.', vim.env.HOME, { desc = 'Home directory' })
     end,
   })
