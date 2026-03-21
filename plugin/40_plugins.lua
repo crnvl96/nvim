@@ -44,6 +44,8 @@ Config.now_if_args(function()
     'https://github.com/windwp/nvim-ts-autotag',
     'https://github.com/folke/ts-comments.nvim',
     'https://github.com/3rd/image.nvim',
+    'https://github.com/3rd/diagram.nvim',
+    'https://github.com/kevalin/mermaid.nvim',
     'https://github.com/HakonHarnes/img-clip.nvim',
     'https://github.com/iamcco/markdown-preview.nvim',
     'https://github.com/chomosuke/typst-preview.nvim',
@@ -65,6 +67,18 @@ Config.now_if_args(function()
   require('img-clip').setup({ default = { dir_path = 'static/img' } })
   require('typst-preview').setup({
     dependencies_bin = { ['tinymist'] = 'tinymist', ['websocat'] = nil },
+  })
+
+  require('diagram').setup({
+    integrations = {
+      require('diagram.integrations.markdown'),
+      require('diagram.integrations.neorg'),
+    },
+    renderer_options = {
+      mermaid = {
+        theme = 'forest',
+      },
+    },
   })
 
   require('nvim-treesitter').install(vim
@@ -96,6 +110,12 @@ Config.now_if_args(function()
       if not Config.autoformat then return nil end
       return {}
     end,
+  })
+
+  require('mermaid').setup({
+    preview = {
+      renderer = 'mermaid.js', -- "mermaid.js" (default) or "beautiful-mermaid"
+    },
   })
 
   require('codediff').setup({
@@ -134,6 +154,7 @@ Config.now_if_args(function()
   require('mini.splitjoin').setup()
   require('mini.surround').setup()
   require('mini.statusline').setup()
+  require('mini.keymap').setup()
   require('mini.bracketed').setup({ indent = { suffix = '', options = {} } })
   require('mini.git').setup()
   require('mini.diff').setup({ view = { style = 'sign' } })
@@ -175,16 +196,6 @@ Config.now_if_args(function()
     spotter = require('mini.jump2d').gen_spotter.pattern('[^%s%p]+'),
     view = { dim = true, n_steps_ahead = 2 },
   })
-
-  -- stylua: ignore start
-  require('mini.keymap').setup()
-  MiniKeymap.map_multistep('i', '<Tab>', { 'pmenu_next' })
-  MiniKeymap.map_multistep('i', '<S-Tab>', { 'pmenu_prev' })
-  MiniKeymap.map_multistep('i', '<CR>', { 'pmenu_accept', 'minipairs_cr' })
-  MiniKeymap.map_multistep('i', '<BS>', { 'minipairs_bs' })
-  MiniKeymap.map_multistep('i', '<Tab>', { 'minisnippets_next', 'minisnippets_expand', 'pmenu_next' })
-  MiniKeymap.map_multistep('i', '<S-Tab>', { 'minisnippets_prev', 'pmenu_prev' })
-  -- stylua: ignore end
 
   require('mini.completion').setup({
     lsp_completion = {
@@ -279,6 +290,25 @@ Config.later(function()
           }
         end
       end
+    end,
+  })
+
+  vim.api.nvim_create_autocmd('FileType', {
+    pattern = 'mermaid',
+    callback = function()
+      local buf = vim.api.nvim_get_current_buf()
+      vim.keymap.set(
+        'n',
+        '<leader>mp',
+        '<cmd>MermaidPreview<CR>',
+        { buffer = buf, desc = 'Mermaid Preview' }
+      )
+      vim.keymap.set(
+        'n',
+        '<leader>mf',
+        '<cmd>MermaidFormat<CR>',
+        { buffer = buf, desc = 'Mermaid Format' }
+      )
     end,
   })
 
@@ -398,6 +428,14 @@ end)
 
 -- stylua: ignore
 Config.later(function()
+
+  MiniKeymap.map_multistep('i', '<Tab>', { 'pmenu_next' })
+  MiniKeymap.map_multistep('i', '<S-Tab>', { 'pmenu_prev' })
+  MiniKeymap.map_multistep('i', '<CR>', { 'pmenu_accept', 'minipairs_cr' })
+  MiniKeymap.map_multistep('i', '<BS>', { 'minipairs_bs' })
+  MiniKeymap.map_multistep('i', '<Tab>', { 'minisnippets_next', 'minisnippets_expand', 'pmenu_next' })
+  MiniKeymap.map_multistep('i', '<S-Tab>', { 'minisnippets_prev', 'pmenu_prev' })
+
   vim.keymap.set('n', '<Leader>uf', function() Config.autoformat = not Config.autoformat end, { desc = 'Toggle autoformat' })
   vim.keymap.set('n', '<Leader>ur', '<Cmd>lua MiniMisc.put(MiniMisc.find_root())<CR>', { desc = 'Find current root' })
   vim.keymap.set('n', 'E', '<Cmd>lua vim.diagnostic.open_float()<CR>', { desc = 'Open Current Diagnostic' })

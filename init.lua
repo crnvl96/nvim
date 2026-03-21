@@ -90,6 +90,7 @@ Config.parsers = {
   'json',
   'json5',
   'jsx',
+  'mermaid',
   'lua',
   'markdown',
   'python',
