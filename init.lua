@@ -202,16 +202,17 @@ vim.api.nvim_create_autocmd({ 'InsertEnter', 'CmdlineEnter' }, {
 
 -- Plugins =====
 
--- Colorscheme =====
-vim.pack.add({ 'https://github.com/rose-pine/neovim' })
-vim.cmd.colorscheme('rose-pine')
-
--- Plenary =====
-vim.pack.add({ 'https://github.com/nvim-lua/plenary.nvim' })
-
 -- Mini =====
 
 vim.pack.add({ 'https://github.com/nvim-mini/mini.nvim' })
+
+-- Colorscheme =====
+vim.pack.add({ 'https://github.com/rose-pine/neovim' })
+-- vim.cmd.colorscheme('rose-pine')
+-- vim.cmd.colorscheme('miniwinter')
+
+-- Plenary =====
+vim.pack.add({ 'https://github.com/nvim-lua/plenary.nvim' })
 
 -- Mini.Misc =====
 require('mini.misc').setup()
@@ -290,10 +291,16 @@ MiniKeymap.map_multistep('i', '<S-Tab>', { 'minisnippets_prev', 'pmenu_prev' })
 -- })
 
 vim.pack.add({ 'https://github.com/alexpasmantier/tv.nvim' })
-require('tv').setup()
+require('tv').setup({
+  window = {
+    width = 1,
+    height = 1,
+  },
+})
 
 set('n', '<Leader>ff', '<Cmd>Tv files<CR>', { desc = 'Files' })
 set('n', '<Leader>fg', '<Cmd>Tv text<CR>', { desc = 'Text' })
+set('n', '<Leader>fl', function() vim.cmd('Tv text ' .. vim.fn.expand('%') .. ':') end, { desc = 'Lines' })
 
 -- stylua: ignore start
 -- set('n', '<Leader>fb', '<Cmd>Pick buffers<CR>',                                       { desc = 'Buffers' })
@@ -380,14 +387,29 @@ vim.api.nvim_create_autocmd('LspAttach', {
 -- Claude Code =====
 vim.pack.add({ 'https://github.com/greggh/claude-code.nvim' })
 
-require('claude-code').setup()
+require('claude-code').setup({
+  keymaps = {
+    toggle = {
+      normal = '<M-c>',
+      terminal = '<M-c>',
+      variants = {
+        continue = '<leader>cC',
+        verbose = '<leader>cV',
+      },
+    },
+    window_navigation = true,
+    scrolling = true,
+  },
+})
+
 set('n', '<leader>cc', '<cmd>ClaudeCode<CR>', { desc = 'Toggle Claude Code' })
 
 -- Mini.Files =====
 vim.pack.add({ 'https://github.com/mikavilpas/yazi.nvim' })
 
 require('yazi').setup({
-  open_for_directories = false,
+  floating_window_scaling_factor = 1,
+  open_for_directories = true,
   keymaps = { show_help = '<f1>' },
 })
 
@@ -510,6 +532,7 @@ require('mini.clue').setup({
 
 -- Lazygit =====
 vim.pack.add({ 'https://github.com/kdheepak/lazygit.nvim' })
+vim.g.lazygit_floating_window_scaling_factor = 1
 set('n', '<Leader>gg', '<Cmd>LazyGit<CR>', { desc = 'LazyGit' })
 
 -- SchemaStore =====
@@ -713,7 +736,7 @@ vim.lsp.enable({
 set('n', 'E',     '<Cmd>lua vim.diagnostic.open_float()<CR>',  { desc = 'Open Current Diagnostic' })
 set('n', 'K',     '<Cmd>lua vim.lsp.buf.hover()<CR>',          { desc = 'Inspect Current Symbol' })
 set('i', '<C-k>', '<Cmd>lua vim.lsp.buf.signature_help()<CR>', { desc = 'Show Signature Help' })
-set('n', 'g.',    "<Cmd>lua vim.diagnostic.setqflist()<CR>",   { desc = 'Diagnostics' })
+set('n', 'ge',    "<Cmd>lua vim.diagnostic.setqflist()<CR>",   { desc = 'Diagnostics' })
 set('n', 'gd',    "<Cmd>lua vim.lsp.buf.definition()<CR>",     { desc = 'Definitions' })
 -- stylua: ignore end
 
