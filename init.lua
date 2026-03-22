@@ -43,7 +43,7 @@ vim.o.foldtext           = ''
 vim.o.ignorecase         = true
 vim.o.incsearch          = true
 vim.o.infercase          = true
-vim.o.laststatus         = 2
+vim.o.laststatus         = 0
 vim.o.linebreak          = true
 vim.o.mouse              = 'a'
 vim.o.mousescroll        = 'ver:1,hor:2'
@@ -200,16 +200,21 @@ vim.api.nvim_create_autocmd({ 'InsertEnter', 'CmdlineEnter' }, {
   callback = vim.schedule_wrap(function() vim.cmd.nohlsearch() end),
 })
 
+-- Plugins =====
+
 -- Colorscheme =====
 vim.pack.add({ 'https://github.com/rose-pine/neovim' })
 vim.cmd.colorscheme('rose-pine')
+
+-- Plenary =====
+vim.pack.add({ 'https://github.com/nvim-lua/plenary.nvim' })
 
 -- Mini =====
 
 vim.pack.add({ 'https://github.com/nvim-mini/mini.nvim' })
 
+-- Mini.Misc =====
 require('mini.misc').setup()
-require('mini.extra').setup()
 
 MiniMisc.setup_auto_root()
 MiniMisc.setup_restore_cursor()
@@ -217,6 +222,10 @@ MiniMisc.setup_termbg_sync()
 
 set('n', '<Leader>ur', '<Cmd>lua MiniMisc.put(MiniMisc.find_root())<CR>', { desc = 'Find current root' })
 
+-- Mini.Extra =====
+require('mini.extra').setup()
+
+-- Mini.Ai =====
 require('mini.ai').setup({
   search_method = 'cover',
   custom_textobjects = {
@@ -232,30 +241,39 @@ require('mini.ai').setup({
   },
 })
 
+-- Mini.Align =====
 require('mini.align').setup()
+
+-- Mini.Cmdline =====
 require('mini.cmdline').setup()
+
+-- Mini.Move =====
 require('mini.move').setup()
-require('mini.operators').setup()
+
+-- Mini.SplitJoin =====
 require('mini.splitjoin').setup()
+
+-- Mini.Surround =====
 require('mini.surround').setup()
-require('mini.statusline').setup()
+
+-- Mini.Bracketed =====
 require('mini.bracketed').setup({ indent = { suffix = '', options = {} } })
 
-require('mini.diff').setup({ view = { style = 'sign' } })
-set('n', '<Leader>go', function() MiniDiff.toggle_overlay() end, { desc = 'Toggle git overlay' })
-
+-- Mini.Hipatterns =====
 require('mini.hipatterns').setup({
   highlighters = {
     hex_color = require('mini.hipatterns').gen_highlighter.hex_color(),
   },
 })
 
+-- Mini.Indentscope =====
 require('mini.indentscope').setup({
   options = {
     try_as_border = true,
   },
 })
 
+-- Mini.Keymap =====
 require('mini.keymap').setup()
 
 MiniKeymap.map_multistep('i', '<Tab>', { 'pmenu_next' })
@@ -265,23 +283,7 @@ MiniKeymap.map_multistep('i', '<BS>', { 'minipairs_bs' })
 MiniKeymap.map_multistep('i', '<Tab>', { 'minisnippets_next', 'minisnippets_expand', 'pmenu_next' })
 MiniKeymap.map_multistep('i', '<S-Tab>', { 'minisnippets_prev', 'pmenu_prev' })
 
-require('mini.git').setup()
-set('n', '<Leader>gs', '<Cmd>Git status<CR>', { desc = 'Git status' })
-set('n', '<Leader>gc', '<Cmd>Git commit<CR>', { desc = 'Git commit' })
-
-vim.api.nvim_create_autocmd('User', {
-  pattern = 'MiniGitCommandSplit',
-  group = gr,
-  callback = function(e)
-    if e.data.git_subcommand ~= 'status' then return end
-    vim.api.nvim_set_option_value(
-      'filetype',
-      'gitstatus',
-      { scope = 'local', buf = vim.api.nvim_win_get_buf(e.data.win_stdout) }
-    )
-  end,
-})
-
+-- Mini.Pick =====
 require('mini.pick').setup({
   source = { show = require('mini.pick').default_show },
   window = { prompt_prefix = ' ' },
@@ -304,13 +306,6 @@ set('n', '<Leader>fq', "<Cmd>Pick list scope='quickfix'<CR>",                   
 set('n', '<Leader>fr', '<Cmd>Pick resume<CR>',                                        { desc = 'Resume last picker' })
 set('n', '<Leader>fu', '<Cmd>Pick git_hunks<CR>',                                     { desc = 'Git hunks' })
 set('n', '<Leader>fU', '<Cmd>Pick git_hunks scope="staged"<CR>',                      { desc = 'Git hunks' })
-set('n', '<Leader>lD', "<Cmd>Pick lsp scope='declaration'<CR>",                       { desc = 'Declarations' })
-set('n', '<Leader>lS', "<Cmd>Pick lsp scope='workspace_symbol_live'<CR>",             { desc = 'Workspace symbols' })
-set('n', '<Leader>ld', "<Cmd>Pick lsp scope='definition'<CR>",                        { desc = 'Definitions' })
-set('n', '<Leader>li', "<Cmd>Pick lsp scope='implementation'<CR>",                    { desc = 'Implementations' })
-set('n', '<Leader>lr', "<Cmd>Pick lsp scope='references'<CR>",                        { desc = 'References' })
-set('n', '<Leader>ls', "<Cmd>Pick lsp scope='document_symbol'<CR>",                   { desc = 'Document Symbols' })
-set('n', '<Leader>lt', "<Cmd>Pick lsp scope='type_definition'<CR>",                   { desc = 'Typedefs' })
 -- stylua: ignore end
 
 ---@diagnostic disable-next-line: duplicate-set-field
@@ -329,11 +324,13 @@ vim.ui.select = function(items, opts, on_choice)
   })
 end
 
+-- Mini.Jump2d =====
 require('mini.jump2d').setup({
   spotter = require('mini.jump2d').gen_spotter.pattern('[^%s%p]+'),
   view = { dim = true, n_steps_ahead = 2 },
 })
 
+-- Mini.Completion =====
 require('mini.completion').setup({
   lsp_completion = {
     source_func = 'omnifunc',
@@ -374,6 +371,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
   end,
 })
 
+-- Mini.Files =====
 require('mini.files').setup({
   content = { prefix = function() end },
   mappings = {
@@ -455,6 +453,7 @@ vim.api.nvim_create_autocmd('User', {
   end,
 })
 
+-- Mini.Clue =====
 require('mini.clue').setup({
   triggers = {
     { mode = 'n', keys = '\\' },
@@ -487,6 +486,10 @@ require('mini.clue').setup({
     config = { width = 'auto' },
   },
 })
+
+-- Lazygit =====
+vim.pack.add({ 'https://github.com/kdheepak/lazygit.nvim' })
+set('n', '<Leader>gg', '<Cmd>LazyGit<CR>', { desc = 'LazyGit' })
 
 -- SchemaStore =====
 vim.pack.add({ 'https://github.com/b0o/SchemaStore.nvim' })
@@ -584,7 +587,6 @@ vim.api.nvim_create_autocmd('FileType', {
 })
 
 -- Markdown-Preview =====
-
 on_packchanged('markdown-preview.nvim', { 'install', 'update' }, function(e)
   MiniMisc.log_add('Building dependencies', { name = e.data.spec.name, path = e.data.path })
   local stdout = vim.system({ 'npm', 'install' }, { text = true, cwd = e.data.path .. '/app' }):wait()
@@ -598,7 +600,6 @@ end)
 vim.pack.add({ 'https://github.com/iamcco/markdown-preview.nvim' })
 
 -- Mermaid =====
-
 vim.pack.add({ 'https://github.com/kevalin/mermaid.nvim' })
 
 require('mermaid').setup({
@@ -608,7 +609,6 @@ require('mermaid').setup({
 })
 
 -- Typst =====
-
 vim.pack.add({ 'https://github.com/chomosuke/typst-preview.nvim' })
 
 require('typst-preview').setup({
@@ -616,12 +616,10 @@ require('typst-preview').setup({
 })
 
 -- Img-Clip =====
-
 vim.pack.add({ 'https://github.com/HakonHarnes/img-clip.nvim' })
 require('img-clip').setup({ default = { dir_path = 'static/img' } })
 
 -- Conform =====
-
 vim.pack.add({ 'https://github.com/stevearc/conform.nvim' })
 
 local autoformat = true
@@ -680,7 +678,6 @@ require('conform').setup({
 set('n', '<Leader>uf', function() autoformat = not autoformat end, { desc = 'Toggle autoformat' })
 
 -- LspConfig =====
-
 vim.pack.add({ 'https://github.com/neovim/nvim-lspconfig' })
 
 -- stylua: ignore
@@ -691,14 +688,15 @@ vim.lsp.enable({
   -- 'pyright', 'harper_ls' 'tailwindcss',
 })
 
-set('n', 'E', '<Cmd>lua vim.diagnostic.open_float()<CR>', { desc = 'Open Current Diagnostic' })
-set('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', { desc = 'Inspect Current Symbol' })
+-- stylua: ignore start
+set('n', 'E',     '<Cmd>lua vim.diagnostic.open_float()<CR>',  { desc = 'Open Current Diagnostic' })
+set('n', 'K',     '<Cmd>lua vim.lsp.buf.hover()<CR>',          { desc = 'Inspect Current Symbol' })
 set('i', '<C-k>', '<Cmd>lua vim.lsp.buf.signature_help()<CR>', { desc = 'Show Signature Help' })
-set('n', '<Leader>la', '<Cmd>lua vim.lsp.buf.code_action()<CR>', { desc = 'LSP Code actions' })
-set('n', '<Leader>ln', '<Cmd>lua vim.lsp.buf.rename()<CR>', { desc = 'LSP Rename' })
+set('n', 'g.',    "<Cmd>lua vim.diagnostic.setqflist()<CR>",   { desc = 'Diagnostics' })
+set('n', 'gd',    "<Cmd>lua vim.lsp.buf.definition()<CR>",     { desc = 'Definitions' })
+-- stylua: ignore end
 
 -- Code-Diff =====
-
 vim.pack.add({ 'https://github.com/esmuellert/codediff.nvim' })
 
 require('codediff').setup({
@@ -713,7 +711,6 @@ require('codediff').setup({
 set('n', '<Leader>gd', '<Cmd>CodeDiff<CR>', { desc = 'Toggle git diff' })
 
 -- Grug-far =====
-
 vim.pack.add({ 'https://github.com/MagicDuck/grug-far.nvim' })
 
 require('grug-far').setup({
