@@ -284,45 +284,51 @@ MiniKeymap.map_multistep('i', '<Tab>', { 'minisnippets_next', 'minisnippets_expa
 MiniKeymap.map_multistep('i', '<S-Tab>', { 'minisnippets_prev', 'pmenu_prev' })
 
 -- Mini.Pick =====
-require('mini.pick').setup({
-  source = { show = require('mini.pick').default_show },
-  window = { prompt_prefix = ' ' },
-})
+-- require('mini.pick').setup({
+--   source = { show = require('mini.pick').default_show },
+--   window = { prompt_prefix = ' ' },
+-- })
+
+vim.pack.add({ 'https://github.com/alexpasmantier/tv.nvim' })
+require('tv').setup()
+
+set('n', '<Leader>ff', '<Cmd>Tv files<CR>', { desc = 'Files' })
+set('n', '<Leader>fg', '<Cmd>Tv text<CR>', { desc = 'Text' })
 
 -- stylua: ignore start
-set('n', '<Leader>fb', '<Cmd>Pick buffers<CR>',                                       { desc = 'Buffers' })
-set('n', '<Leader>fc', '<Cmd>Pick commands<CR>',                                      { desc = 'Commands' })
-set('n', '<Leader>fd', '<Cmd>Pick diagnostic<CR>',                                    { desc = 'Diagnostics' })
-set('n', '<Leader>fe', '<Cmd>Pick explorer<CR>',                                      { desc = 'Explorer' })
-set('n', '<Leader>ff', '<Cmd>Pick files<CR>',                                         { desc = 'Find Files' })
-set('n', '<Leader>fg', '<Cmd>Pick grep_live<CR>',                                     { desc = 'Grep live' })
-set('n', '<Leader>fh', "<Cmd>Pick help default_split='vertical'<CR>",                 { desc = 'Help files' })
-set('n', '<Leader>fH', '<Cmd>Pick hl_groups<CR>',                                     { desc = 'Highlights' })
-set('n', '<Leader>fk', '<Cmd>Pick keymaps<CR>',                                       { desc = 'Keymaps' })
-set('n', '<Leader>fl', "<Cmd>Pick buf_lines scope='current' preserve_order=true<CR>", { desc = 'Lines' })
-set('n', '<Leader>fm', '<Cmd>Pick manpages<CR>',                                      { desc = 'Search manpages' })
-set('n', '<Leader>fo', '<Cmd>Pick visit_paths preserve_order=true<CR>',               { desc = 'Oldfiles' })
-set('n', '<Leader>fq', "<Cmd>Pick list scope='quickfix'<CR>",                         { desc = 'Quickfix' })
-set('n', '<Leader>fr', '<Cmd>Pick resume<CR>',                                        { desc = 'Resume last picker' })
-set('n', '<Leader>fu', '<Cmd>Pick git_hunks<CR>',                                     { desc = 'Git hunks' })
-set('n', '<Leader>fU', '<Cmd>Pick git_hunks scope="staged"<CR>',                      { desc = 'Git hunks' })
+-- set('n', '<Leader>fb', '<Cmd>Pick buffers<CR>',                                       { desc = 'Buffers' })
+-- set('n', '<Leader>fc', '<Cmd>Pick commands<CR>',                                      { desc = 'Commands' })
+-- set('n', '<Leader>fd', '<Cmd>Pick diagnostic<CR>',                                    { desc = 'Diagnostics' })
+-- set('n', '<Leader>fe', '<Cmd>Pick explorer<CR>',                                      { desc = 'Explorer' })
+-- set('n', '<Leader>ff', '<Cmd>Pick files<CR>',                                         { desc = 'Find Files' })
+-- set('n', '<Leader>fg', '<Cmd>Pick grep_live<CR>',                                     { desc = 'Grep live' })
+-- set('n', '<Leader>fh', "<Cmd>Pick help default_split='vertical'<CR>",                 { desc = 'Help files' })
+-- set('n', '<Leader>fH', '<Cmd>Pick hl_groups<CR>',                                     { desc = 'Highlights' })
+-- set('n', '<Leader>fk', '<Cmd>Pick keymaps<CR>',                                       { desc = 'Keymaps' })
+-- set('n', '<Leader>fl', "<Cmd>Pick buf_lines scope='current' preserve_order=true<CR>", { desc = 'Lines' })
+-- set('n', '<Leader>fm', '<Cmd>Pick manpages<CR>',                                      { desc = 'Search manpages' })
+-- set('n', '<Leader>fo', '<Cmd>Pick visit_paths preserve_order=true<CR>',               { desc = 'Oldfiles' })
+-- set('n', '<Leader>fq', "<Cmd>Pick list scope='quickfix'<CR>",                         { desc = 'Quickfix' })
+-- set('n', '<Leader>fr', '<Cmd>Pick resume<CR>',                                        { desc = 'Resume last picker' })
+-- set('n', '<Leader>fu', '<Cmd>Pick git_hunks<CR>',                                     { desc = 'Git hunks' })
+-- set('n', '<Leader>fU', '<Cmd>Pick git_hunks scope="staged"<CR>',                      { desc = 'Git hunks' })
 -- stylua: ignore end
 
----@diagnostic disable-next-line: duplicate-set-field
-vim.ui.select = function(items, opts, on_choice)
-  return MiniPick.ui_select(items, opts, on_choice, {
-    window = {
-      config = {
-        relative = 'cursor',
-        anchor = 'NW',
-        row = 0,
-        col = 0,
-        width = 80,
-        height = 15,
-      },
-    },
-  })
-end
+-- ---@diagnostic disable-next-line: duplicate-set-field
+-- vim.ui.select = function(items, opts, on_choice)
+--   return MiniPick.ui_select(items, opts, on_choice, {
+--     window = {
+--       config = {
+--         relative = 'cursor',
+--         anchor = 'NW',
+--         row = 0,
+--         col = 0,
+--         width = 80,
+--         height = 15,
+--       },
+--     },
+--   })
+-- end
 
 -- Mini.Jump2d =====
 require('mini.jump2d').setup({
@@ -371,87 +377,102 @@ vim.api.nvim_create_autocmd('LspAttach', {
   end,
 })
 
+-- Claude Code =====
+vim.pack.add({ 'https://github.com/greggh/claude-code.nvim' })
+
+require('claude-code').setup()
+set('n', '<leader>cc', '<cmd>ClaudeCode<CR>', { desc = 'Toggle Claude Code' })
+
 -- Mini.Files =====
-require('mini.files').setup({
-  content = { prefix = function() end },
-  mappings = {
-    go_in = '',
-    go_in_plus = '<CR>',
-    go_out = '',
-    go_out_plus = '-',
-  },
-  windows = {
-    max_number = 1,
-    preview = false,
-    width_focus = math.floor(vim.o.columns * 1),
-    width_nofocus = math.floor(vim.o.columns * 0.59),
-    width_preview = math.floor(vim.o.columns * 0.59),
-  },
+vim.pack.add({ 'https://github.com/mikavilpas/yazi.nvim' })
+
+require('yazi').setup({
+  open_for_directories = false,
+  keymaps = { show_help = '<f1>' },
 })
 
-set('n', '<Leader>ef', function() MiniFiles.open(vim.api.nvim_buf_get_name(0), false) end, { desc = 'Explorer' })
+set('n', '<Leader>ef', '<Cmd>Yazi<CR>', { desc = 'Yazi' })
 
-local filter_show = function() return true end
-local filter_hide = function(fs_entry) return not vim.startswith(fs_entry.name, '.') end
-
-local show_dotfiles = true
-local show_preview = false
-
-local toggle_dotfiles = function()
-  show_dotfiles = not show_dotfiles
-  local new_filter = show_dotfiles and filter_show or filter_hide
-  MiniFiles.refresh({ content = { filter = new_filter } })
-end
-
-local toggle_preview = function()
-  show_preview = not show_preview
-  MiniFiles.refresh({
-    windows = {
-      max_number = show_preview and 2 or 1,
-      preview = show_preview and true or false,
-      width_focus = math.floor(vim.o.columns * (show_preview and 0.39 or 1)),
-    },
-  })
-end
-
-vim.api.nvim_create_autocmd('User', {
-  group = gr,
-  pattern = 'MiniFilesBufferCreate',
-  callback = function(e)
-    local buf_id = e.data.buf_id
-    vim.keymap.set('n', 'g.', toggle_dotfiles, { buffer = buf_id })
-    vim.keymap.set('n', 'gp', toggle_preview, { buffer = buf_id })
-  end,
-})
-
-vim.api.nvim_create_autocmd('User', {
-  pattern = 'MiniFilesExplorerClose',
-  group = gr,
-  callback = function()
-    show_dotfiles = true
-    show_preview = false
-  end,
-})
-
-vim.api.nvim_create_autocmd('User', {
-  pattern = 'MiniFilesExplorerOpen',
-  group = gr,
-  callback = function()
-    MiniFiles.set_bookmark('_', vim.fn.getcwd(), { desc = 'Working directory' })
-    MiniFiles.set_bookmark('@', vim.env.HOME .. '/Developer', { desc = 'Projects' })
-    MiniFiles.set_bookmark('.', vim.env.HOME, { desc = 'Home directory' })
-  end,
-})
-
-vim.api.nvim_create_autocmd('User', {
-  pattern = 'MiniFilesWindowUpdate',
-  group = gr,
-  callback = function(e)
-    local config = vim.api.nvim_win_get_config(e.data.win_id)
-    config.height = vim.o.lines
-    vim.api.nvim_win_set_config(e.data.win_id, config)
-  end,
-})
+-- require('mini.files').setup({
+--   content = { prefix = function() end },
+--   mappings = {
+--     go_in = '',
+--     go_in_plus = '<CR>',
+--     go_out = '',
+--     go_out_plus = '-',
+--   },
+--   windows = {
+--     max_number = 1,
+--     preview = false,
+--     width_focus = math.floor(vim.o.columns * 1),
+--     width_nofocus = math.floor(vim.o.columns * 0.59),
+--     width_preview = math.floor(vim.o.columns * 0.59),
+--   },
+-- })
+--
+-- set('n', '<Leader>ef', function() MiniFiles.open(vim.api.nvim_buf_get_name(0), false) end, { desc = 'Explorer' })
+--
+-- local filter_show = function() return true end
+-- local filter_hide = function(fs_entry) return not vim.startswith(fs_entry.name, '.') end
+--
+-- local show_dotfiles = true
+-- local show_preview = false
+--
+-- local toggle_dotfiles = function()
+--   show_dotfiles = not show_dotfiles
+--   local new_filter = show_dotfiles and filter_show or filter_hide
+--   MiniFiles.refresh({ content = { filter = new_filter } })
+-- end
+--
+-- local toggle_preview = function()
+--   show_preview = not show_preview
+--   MiniFiles.refresh({
+--     windows = {
+--       max_number = show_preview and 2 or 1,
+--       preview = show_preview and true or false,
+--       width_focus = math.floor(vim.o.columns * (show_preview and 0.39 or 1)),
+--     },
+--   })
+-- end
+--
+-- vim.api.nvim_create_autocmd('User', {
+--   group = gr,
+--   pattern = 'MiniFilesBufferCreate',
+--   callback = function(e)
+--     local buf_id = e.data.buf_id
+--     vim.keymap.set('n', 'g.', toggle_dotfiles, { buffer = buf_id })
+--     vim.keymap.set('n', 'gp', toggle_preview, { buffer = buf_id })
+--   end,
+-- })
+--
+-- vim.api.nvim_create_autocmd('User', {
+--   pattern = 'MiniFilesExplorerClose',
+--   group = gr,
+--   callback = function()
+--     show_dotfiles = true
+--     show_preview = false
+--   end,
+-- })
+--
+-- vim.api.nvim_create_autocmd('User', {
+--   pattern = 'MiniFilesExplorerOpen',
+--   group = gr,
+--   callback = function()
+--     MiniFiles.set_bookmark('_', vim.fn.getcwd(), { desc = 'Working directory' })
+--     MiniFiles.set_bookmark('@', vim.env.HOME .. '/Developer', { desc = 'Projects' })
+--     MiniFiles.set_bookmark('.', vim.env.HOME, { desc = 'Home directory' })
+--   end,
+-- })
+--
+-- vim.api.nvim_create_autocmd('User', {
+--   pattern = 'MiniFilesWindowUpdate',
+--   group = gr,
+--   callback = function(e)
+--     local config = vim.api.nvim_win_get_config(e.data.win_id)
+--     config.height = vim.o.lines
+--     vim.api.nvim_win_set_config(e.data.win_id, config)
+--   end,
+-- })
 
 -- Mini.Clue =====
 require('mini.clue').setup({
