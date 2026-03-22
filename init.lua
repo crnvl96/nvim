@@ -213,6 +213,33 @@ M.now(function()
     group = M.gr,
     callback = vim.schedule_wrap(function() vim.cmd.nohlsearch() end),
   })
+
+  vim.api.nvim_create_autocmd('LspAttach', {
+    group = M.gr,
+    callback = function(e)
+      vim.bo[e.buf].omnifunc = 'v:lua.MiniCompletion.completefunc_lsp'
+
+      local client = vim.lsp.get_client_by_id(e.data.client_id)
+      if not client then return end
+
+      if client.name == 'gopls' then
+        -- workaround for gopls not supporting semanticTokensProvider
+        -- https://github.com/golang/go/issues/54531#issuecomment-1464982242
+        if not client.server_capabilities.semanticTokensProvider then
+          local semantic = client.config.capabilities.textDocument.semanticTokens
+          if not semantic then return end
+          client.server_capabilities.semanticTokensProvider = {
+            full = true,
+            legend = {
+              tokenTypes = semantic.tokenTypes,
+              tokenModifiers = semantic.tokenModifiers,
+            },
+            range = true,
+          }
+        end
+      end
+    end,
+  })
 end)
 
 M.now_if_args(function() vim.pack.add({ 'https://github.com/nvim-lua/plenary.nvim' }) end)
@@ -265,7 +292,7 @@ M.now_if_args(
   end
 )
 
-M.now_if_args(function()
+M.on_event('InsertEnter', function()
   require('mini.keymap').setup()
 
   MiniKeymap.map_multistep('i', '<Tab>', { 'pmenu_next' })
@@ -278,14 +305,12 @@ end)
 
 M.now_if_args(function()
   vim.pack.add({ 'https://github.com/alexpasmantier/tv.nvim' })
-
   require('tv').setup({
     window = {
       width = 1,
       height = 1,
     },
   })
-
   M.set('n', '<Leader>ff', '<Cmd>Tv files<CR>', { desc = 'Files' })
   M.set('n', '<Leader>fg', '<Cmd>Tv text<CR>', { desc = 'Text' })
   M.set('n', '<Leader>fl', function() vim.cmd('Tv text ' .. vim.fn.expand('%') .. ':') end, { desc = 'Lines' })
@@ -300,7 +325,7 @@ M.now_if_args(
   end
 )
 
-M.now_if_args(function()
+M.on_event('InsertEnter', function()
   require('mini.completion').setup({
     lsp_completion = {
       source_func = 'omnifunc',
@@ -313,33 +338,6 @@ M.now_if_args(function()
   })
 
   vim.lsp.config('*', { capabilities = MiniCompletion.get_lsp_capabilities() })
-
-  vim.api.nvim_create_autocmd('LspAttach', {
-    group = M.gr,
-    callback = function(e)
-      vim.bo[e.buf].omnifunc = 'v:lua.MiniCompletion.completefunc_lsp'
-
-      local client = vim.lsp.get_client_by_id(e.data.client_id)
-      if not client then return end
-
-      if client.name == 'gopls' then
-        -- workaround for gopls not supporting semanticTokensProvider
-        -- https://github.com/golang/go/issues/54531#issuecomment-1464982242
-        if not client.server_capabilities.semanticTokensProvider then
-          local semantic = client.config.capabilities.textDocument.semanticTokens
-          if not semantic then return end
-          client.server_capabilities.semanticTokensProvider = {
-            full = true,
-            legend = {
-              tokenTypes = semantic.tokenTypes,
-              tokenModifiers = semantic.tokenModifiers,
-            },
-            range = true,
-          }
-        end
-      end
-    end,
-  })
 end)
 
 M.now_if_args(function()
@@ -372,7 +370,7 @@ M.now_if_args(function()
     keymaps = { show_help = '<f1>' },
   })
 
-  M.set('n', '<Leader>ef', '<Cmd>Yazi<CR>', { desc = 'Yazi' })
+  M.set('n', '<Leader>ef', '<Cmd>Yazi toggle<CR>', { desc = 'Yazi' })
 end)
 
 M.now_if_args(
@@ -435,7 +433,7 @@ M.now_if_args(function()
   })
 end)
 
-M.now_if_args(function()
+M.on_filetype('typst,markdown', function()
   vim.pack.add({
     'https://github.com/3rd/image.nvim',
     'https://github.com/3rd/diagram.nvim',
@@ -513,7 +511,7 @@ M.now_if_args(function()
   })
 end)
 
-M.now_if_args(function()
+M.on_filetype('markdown', function()
   M.on_packchanged('markdown-preview.nvim', { 'install', 'update' }, function(e)
     MiniMisc.log_add('Building dependencies', { name = e.data.spec.name, path = e.data.path })
     local stdout = vim.system({ 'npm', 'install' }, { text = true, cwd = e.data.path .. '/app' }):wait()
@@ -527,7 +525,7 @@ M.now_if_args(function()
   vim.pack.add({ 'https://github.com/iamcco/markdown-preview.nvim' })
 end)
 
-M.now_if_args(function()
+M.on_filetype('mermaid', function()
   vim.pack.add({ 'https://github.com/kevalin/mermaid.nvim' })
 
   require('mermaid').setup({
@@ -537,24 +535,22 @@ M.now_if_args(function()
   })
 end)
 
-M.now_if_args(function()
+M.on_filetype('typst', function()
   vim.pack.add({ 'https://github.com/chomosuke/typst-preview.nvim' })
-
   require('typst-preview').setup({
     dependencies_bin = { ['tinymist'] = 'tinymist', ['websocat'] = nil },
   })
 end)
 
-M.now_if_args(function()
+M.on_filetype('markdown,typst', function()
   vim.pack.add({ 'https://github.com/HakonHarnes/img-clip.nvim' })
-
   require('img-clip').setup({ default = { dir_path = 'static/img' } })
 end)
 
 M.now_if_args(function()
-  vim.pack.add({ 'https://github.com/stevearc/conform.nvim' })
-
   local autoformat = true
+
+  vim.pack.add({ 'https://github.com/stevearc/conform.nvim' })
 
   require('conform').setup({
     notify_on_error = false,
