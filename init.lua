@@ -290,6 +290,7 @@ MiniKeymap.map_multistep('i', '<S-Tab>', { 'minisnippets_prev', 'pmenu_prev' })
 --   window = { prompt_prefix = ' ' },
 -- })
 
+-- Television =====
 vim.pack.add({ 'https://github.com/alexpasmantier/tv.nvim' })
 require('tv').setup({
   window = {
@@ -404,9 +405,9 @@ require('claude-code').setup({
 
 set('n', '<leader>cc', '<cmd>ClaudeCode<CR>', { desc = 'Toggle Claude Code' })
 
--- Mini.Files =====
 vim.pack.add({ 'https://github.com/mikavilpas/yazi.nvim' })
 
+-- Yazi =====
 require('yazi').setup({
   floating_window_scaling_factor = 1,
   open_for_directories = true,
@@ -415,6 +416,7 @@ require('yazi').setup({
 
 set('n', '<Leader>ef', '<Cmd>Yazi<CR>', { desc = 'Yazi' })
 
+-- Mini.Files =====
 -- require('mini.files').setup({
 --   content = { prefix = function() end },
 --   mappings = {
