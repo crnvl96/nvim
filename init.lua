@@ -120,12 +120,12 @@ end)
 
 M.now(function()
   M.clues = {
+    { mode = 'n', keys = '<leader>c', desc = '+Claude' },
     { mode = 'n', keys = '<leader>e', desc = '+Explorer' },
-    { mode = 'n', keys = '<leader>f', desc = '+Find' },
-    { mode = 'n', keys = '<leader>g', desc = '+Git' },
-    { mode = 'n', keys = '<leader>l', desc = '+Lsp' },
-    { mode = 'n', keys = '<leader>u', desc = '+Utils' },
-    { mode = 'x', keys = '<leader>u', desc = '+Utils' },
+    { mode = 'n', keys = '<leader>f', desc = '+find' },
+    { mode = 'n', keys = '<leader>g', desc = '+git' },
+    { mode = 'n', keys = '<leader>u', desc = '+utils' },
+    { mode = 'n', keys = '<leader>t', desc = '+TV' },
   }
 
   local nx = { 'n', 'x' }
