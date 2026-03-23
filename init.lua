@@ -346,7 +346,7 @@ M.now_if_args(function()
   require('claude-code').setup({
     window = {
       split_ratio = 0.5,
-      position = 'float',
+      position = 'botright',
       float = {
         width = '100%',
         height = '100%',
