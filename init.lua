@@ -344,6 +344,14 @@ M.now_if_args(function()
   vim.pack.add({ 'https://github.com/greggh/claude-code.nvim' })
 
   require('claude-code').setup({
+    window = {
+      split_ratio = 0.5,
+      position = 'float',
+      float = {
+        width = '100%',
+        height = '100%',
+      },
+    },
     keymaps = {
       toggle = {
         normal = '<M-c>',
