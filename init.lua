@@ -375,10 +375,12 @@ M.now_if_args(function()
   require('yazi').setup({
     floating_window_scaling_factor = 1,
     open_for_directories = true,
-    keymaps = { show_help = '<f1>' },
+    keymaps = { show_help = '`' },
   })
 
-  M.set('n', '<Leader>ef', '<Cmd>Yazi toggle<CR>', { desc = 'Yazi' })
+  M.set('n', '<Leader>er', '<Cmd>Yazi toggle<CR>', { desc = 'Yazi (Resume)' })
+  M.set('n', '<Leader>ef', '<Cmd>Yazi<CR>', { desc = 'Yazi' })
+  M.set('n', '<Leader>ew', '<Cmd>Yazi cwd<CR>', { desc = 'Yazi (CWD)' })
 end)
 
 M.now_if_args(
