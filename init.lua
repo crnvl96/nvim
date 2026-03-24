@@ -246,6 +246,15 @@ M.now(function()
   MiniColors.get_colorscheme():add_transparency({ float = true }):apply()
 end)
 
+M.now(function()
+  vim.pack.add({ 'https://github.com/christoomey/vim-tmux-navigator' })
+
+  M.set('n', '<C-h>', '<Cmd>TmuxNavigateLeft<CR>', { noremap = true, desc = 'Go to left window' })
+  M.set('n', '<C-j>', '<Cmd>TmuxNavigateDown<CR>', { noremap = true, desc = 'Go to window below' })
+  M.set('n', '<C-k>', '<Cmd>TmuxNavigateUp<CR>', { noremap = true, desc = 'Go to window above' })
+  M.set('n', '<C-l>', '<Cmd>TmuxNavigateRight<CR>', { noremap = true, desc = 'Go to right window' })
+end)
+
 M.now_if_args(function() vim.pack.add({ 'https://github.com/nvim-lua/plenary.nvim' }) end)
 M.now_if_args(function() require('mini.extra').setup() end)
 M.now_if_args(function() require('mini.pick').setup() end)

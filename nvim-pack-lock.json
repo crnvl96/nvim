@@ -88,6 +88,10 @@
       "rev": "be69bff86754b1aa5adcbb527d7fcd1635a84080",
       "src": "https://github.com/tpope/vim-sleuth"
     },
+    "vim-tmux-navigator": {
+      "rev": "e41c431a0c7b7388ae7ba341f01a0d217eb3a432",
+      "src": "https://github.com/christoomey/vim-tmux-navigator"
+    },
     "yazi.nvim": {
       "rev": "06629b9b15d4294128bd0131e2680f3316177528",
       "src": "https://github.com/mikavilpas/yazi.nvim"
