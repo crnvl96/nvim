@@ -597,11 +597,10 @@ M.now_if_args(function()
     -- 'pyright', 'harper_ls' 'tailwindcss',
   })
 
-  M.set('n', 'E', '<Cmd>lua vim.diagnostic.open_float()<CR>', { desc = 'Open Current Diagnostic' })
-  M.set('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', { desc = 'Inspect Current Symbol' })
   M.set('i', '<C-k>', '<Cmd>lua vim.lsp.buf.signature_help()<CR>', { desc = 'Show Signature Help' })
-  M.set('n', 'ge', '<Cmd>lua vim.diagnostic.setqflist()<CR>', { desc = 'Diagnostics' })
-  M.set('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', { desc = 'Definitions' })
+  M.set('n', 'gre', '<Cmd>lua vim.diagnostic.open_float()<CR>', { desc = 'Open Current Diagnostic' })
+  M.set('n', 'grx', '<Cmd>lua vim.diagnostic.setqflist()<CR>', { desc = 'Diagnostics' })
+  M.set('n', 'grd', '<Cmd>lua vim.lsp.buf.definition()<CR>', { desc = 'Definitions' })
 end)
 
 M.now_if_args(function()
