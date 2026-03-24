@@ -22,7 +22,7 @@ end
 vim.pack.add({ 'https://github.com/nvim-mini/mini.nvim' })
 
 local misc = require('mini.misc')
-
+misc.setup()
 M.now = function(f) misc.safely('now', f) end
 M.later = function(f) misc.safely('later', f) end
 M.now_if_args = vim.fn.argc(-1) > 0 and M.now or M.later
