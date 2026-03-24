@@ -241,8 +241,14 @@ M.now(function()
   })
 end)
 
+M.now(function()
+  require('mini.colors').setup()
+  MiniColors.get_colorscheme():add_transparency({ float = true }):apply()
+end)
+
 M.now_if_args(function() vim.pack.add({ 'https://github.com/nvim-lua/plenary.nvim' }) end)
 M.now_if_args(function() require('mini.extra').setup() end)
+M.now_if_args(function() require('mini.pick').setup() end)
 M.now_if_args(function() require('mini.align').setup() end)
 M.now_if_args(function() require('mini.cmdline').setup() end)
 M.now_if_args(function() require('mini.move').setup() end)
@@ -630,10 +636,6 @@ M.now_if_args(function()
 end)
 
 -- Mini.Pick =====
--- require('mini.pick').setup({
---   source = { show = require('mini.pick').default_show },
---   window = { prompt_prefix = ' ' },
--- })
 -- set('n', '<Leader>fb', '<Cmd>Pick buffers<CR>',                                       { desc = 'Buffers' })
 -- set('n', '<Leader>fc', '<Cmd>Pick commands<CR>',                                      { desc = 'Commands' })
 -- set('n', '<Leader>fd', '<Cmd>Pick diagnostic<CR>',                                    { desc = 'Diagnostics' })
