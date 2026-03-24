@@ -120,7 +120,6 @@ end)
 
 M.now(function()
   M.clues = {
-    { mode = 'n', keys = '<leader>c', desc = '+Claude' },
     { mode = 'n', keys = '<leader>e', desc = '+Explorer' },
     { mode = 'n', keys = '<leader>f', desc = '+find' },
     { mode = 'n', keys = '<leader>g', desc = '+git' },
@@ -338,35 +337,6 @@ M.on_event('InsertEnter', function()
   })
 
   vim.lsp.config('*', { capabilities = MiniCompletion.get_lsp_capabilities() })
-end)
-
-M.now_if_args(function()
-  vim.pack.add({ 'https://github.com/greggh/claude-code.nvim' })
-
-  require('claude-code').setup({
-    window = {
-      split_ratio = 0.5,
-      position = 'botright',
-      float = {
-        width = '100%',
-        height = '100%',
-      },
-    },
-    keymaps = {
-      toggle = {
-        normal = '<M-c>',
-        terminal = '<M-c>',
-        variants = {
-          continue = '<leader>cC',
-          verbose = '<leader>cV',
-        },
-      },
-      window_navigation = true,
-      scrolling = true,
-    },
-  })
-
-  M.set('n', '<leader>cc', '<cmd>ClaudeCode<CR>', { desc = 'Toggle Claude Code' })
 end)
 
 M.now_if_args(function()
@@ -779,3 +749,32 @@ end)
 --     vim.api.nvim_win_set_config(e.data.win_id, config)
 --   end,
 -- })
+
+-- M.now_if_args(function()
+--   vim.pack.add({ 'https://github.com/greggh/claude-code.nvim' })
+--
+--   require('claude-code').setup({
+--     window = {
+--       split_ratio = 0.5,
+--       position = 'botright',
+--       float = {
+--         width = '100%',
+--         height = '100%',
+--       },
+--     },
+--     keymaps = {
+--       toggle = {
+--         normal = '<M-c>',
+--         terminal = '<M-c>',
+--         variants = {
+--           continue = '<leader>cC',
+--           verbose = '<leader>cV',
+--         },
+--       },
+--       window_navigation = true,
+--       scrolling = true,
+--     },
+--   })
+--
+--   M.set('n', '<leader>cc', '<cmd>ClaudeCode<CR>', { desc = 'Toggle Claude Code' })
+-- end)
