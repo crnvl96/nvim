@@ -263,9 +263,9 @@ M.now_if_args(function() require('mini.cmdline').setup() end)
 M.now_if_args(function() require('mini.move').setup() end)
 M.now_if_args(function() require('mini.splitjoin').setup() end)
 M.now_if_args(function() require('mini.surround').setup() end)
-M.now_if_args(function() require('mini.bracketed').setup({ indent = { suffix = '', options = {} } }) end)
 M.now_if_args(function() vim.pack.add({ 'https://github.com/b0o/SchemaStore.nvim' }) end)
 M.now_if_args(function() vim.pack.add({ 'https://github.com/tpope/vim-sleuth' }) end)
+M.now_if_args(function() vim.pack.add({ 'https://github.com/tpope/vim-fugitive' }) end)
 
 M.now_if_args(
   function()
