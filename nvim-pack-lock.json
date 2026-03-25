@@ -72,6 +72,10 @@
       "rev": "c0603ca8f31299c83deaa9a24a63d67116db25cd",
       "src": "https://github.com/alexpasmantier/tv.nvim"
     },
+    "typst-preview.nvim": {
+      "rev": "a42c86ef1875100c2be92e90a637064efb0eab06",
+      "src": "https://github.com/chomosuke/typst-preview.nvim"
+    },
     "vim-fugitive": {
       "rev": "3b753cf8c6a4dcde6edee8827d464ba9b8c4a6f0",
       "src": "https://github.com/tpope/vim-fugitive"

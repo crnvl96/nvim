@@ -458,14 +458,8 @@ M.now_if_args(function()
     'https://github.com/3rd/diagram.nvim',
   })
 
-  require('image').setup({
-    integrations = {
-      markdown = {
-        only_render_image_at_cursor = true,
-        only_render_image_at_cursor_mode = 'popup',
-      },
-    },
-  })
+  require('image').setup()
+  require('image').disable()
 
   require('diagram').setup({
     integrations = {
