@@ -453,28 +453,6 @@ M.now_if_args(function()
 end)
 
 M.now_if_args(function()
-  vim.pack.add({
-    'https://github.com/3rd/image.nvim',
-    'https://github.com/3rd/diagram.nvim',
-  })
-
-  require('image').setup()
-  require('image').disable()
-
-  require('diagram').setup({
-    integrations = {
-      require('diagram.integrations.markdown'),
-      require('diagram.integrations.neorg'),
-    },
-    renderer_options = {
-      mermaid = {
-        theme = 'forest',
-      },
-    },
-  })
-end)
-
-M.now_if_args(function()
   M.on_packchanged('nvim-treesitter', { 'update' }, function(e)
     MiniMisc.log_add('Updating parsers', { name = e.data.spec.name, path = e.data.path })
     vim.cmd('TSUpdate')
@@ -638,6 +616,7 @@ M.now_if_args(function()
   })
 
   M.set('i', '<C-k>', '<Cmd>lua vim.lsp.buf.signature_help()<CR>', { desc = 'Show Signature Help' })
+  M.set('n', 'E', '<Cmd>lua vim.diagnostic.open_float()<CR>', { desc = 'Open Current Diagnostic' })
   M.set('n', 'gre', '<Cmd>lua vim.diagnostic.open_float()<CR>', { desc = 'Open Current Diagnostic' })
   M.set('n', 'grx', '<Cmd>lua vim.diagnostic.setqflist()<CR>', { desc = 'Diagnostics' })
   M.set('n', 'grd', '<Cmd>lua vim.lsp.buf.definition()<CR>', { desc = 'Definitions' })
