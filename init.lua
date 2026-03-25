@@ -26,8 +26,6 @@ misc.setup()
 M.now = function(f) misc.safely('now', f) end
 M.later = function(f) misc.safely('later', f) end
 M.now_if_args = vim.fn.argc(-1) > 0 and M.now or M.later
-M.on_event = function(ev, f) misc.safely('event:' .. ev, f) end
-M.on_filetype = function(ft, f) misc.safely('filetype:' .. ft, f) end
 
 M.now_if_args(function()
   misc.setup_auto_root()
@@ -306,7 +304,7 @@ M.now_if_args(
   end
 )
 
-M.on_event('InsertEnter', function()
+M.now_if_args(function()
   require('mini.keymap').setup()
 
   MiniKeymap.map_multistep('i', '<Tab>', { 'pmenu_next' })
@@ -365,7 +363,7 @@ M.now_if_args(
   end
 )
 
-M.on_event('InsertEnter', function()
+M.now_if_args(function()
   require('mini.completion').setup({
     lsp_completion = {
       source_func = 'omnifunc',
@@ -454,13 +452,20 @@ M.now_if_args(function()
   })
 end)
 
-M.on_filetype('typst,markdown', function()
+M.now_if_args(function()
   vim.pack.add({
     'https://github.com/3rd/image.nvim',
     'https://github.com/3rd/diagram.nvim',
   })
 
-  require('image').setup()
+  require('image').setup({
+    integrations = {
+      markdown = {
+        only_render_image_at_cursor = true,
+        only_render_image_at_cursor_mode = 'popup',
+      },
+    },
+  })
 
   require('diagram').setup({
     integrations = {
@@ -532,7 +537,7 @@ M.now_if_args(function()
   })
 end)
 
-M.on_filetype('markdown', function()
+M.now_if_args(function()
   M.on_packchanged('markdown-preview.nvim', { 'install', 'update' }, function(e)
     MiniMisc.log_add('Building dependencies', { name = e.data.spec.name, path = e.data.path })
     local stdout = vim.system({ 'npm', 'install' }, { text = true, cwd = e.data.path .. '/app' }):wait()
@@ -546,7 +551,7 @@ M.on_filetype('markdown', function()
   vim.pack.add({ 'https://github.com/iamcco/markdown-preview.nvim' })
 end)
 
-M.on_filetype('mermaid', function()
+M.now_if_args(function()
   vim.pack.add({ 'https://github.com/kevalin/mermaid.nvim' })
 
   require('mermaid').setup({
@@ -556,14 +561,14 @@ M.on_filetype('mermaid', function()
   })
 end)
 
-M.on_filetype('typst', function()
+M.now_if_args(function()
   vim.pack.add({ 'https://github.com/chomosuke/typst-preview.nvim' })
   require('typst-preview').setup({
     dependencies_bin = { ['tinymist'] = 'tinymist', ['websocat'] = nil },
   })
 end)
 
-M.on_filetype('markdown,typst', function()
+M.now_if_args(function()
   vim.pack.add({ 'https://github.com/HakonHarnes/img-clip.nvim' })
   require('img-clip').setup({ default = { dir_path = 'static/img' } })
 end)
