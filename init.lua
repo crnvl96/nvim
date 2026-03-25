@@ -319,10 +319,36 @@ end)
 
 M.now_if_args(function()
   vim.pack.add({ 'https://github.com/alexpasmantier/tv.nvim' })
+
+  local h = require('tv').handlers
+
   require('tv').setup({
     window = {
-      width = 1,
-      height = 1,
+      width = 0.8,
+      height = 0.8,
+    },
+    channels = {
+      ['git-log'] = {
+        keybinding = '<leader>gl',
+        handlers = {
+          ['<CR>'] = function(entries)
+            if #entries > 0 then
+              vim.cmd('enew | setlocal buftype=nofile bufhidden=wipe')
+              vim.cmd('silent 0read !git show ' .. vim.fn.shellescape(entries[1]))
+              vim.cmd('1delete _ | setlocal filetype=git nomodifiable')
+              vim.cmd('normal! gg')
+            end
+          end,
+          ['<C-y>'] = h.copy_to_clipboard,
+        },
+      },
+      ['git-branch'] = {
+        keybinding = '<leader>gb',
+        handlers = {
+          ['<CR>'] = h.execute_shell_command('git checkout {}'),
+          ['<C-y>'] = h.copy_to_clipboard,
+        },
+      },
     },
   })
   M.set('n', '<Leader>ff', '<Cmd>Tv files<CR>', { desc = 'Files' })
@@ -358,7 +384,7 @@ M.now_if_args(function()
   vim.pack.add({ 'https://github.com/mikavilpas/yazi.nvim' })
 
   require('yazi').setup({
-    floating_window_scaling_factor = 1,
+    floating_window_scaling_factor = 0.8,
     open_for_directories = true,
     keymaps = { show_help = '`' },
   })
@@ -408,7 +434,7 @@ M.now_if_args(
 M.now_if_args(function()
   vim.pack.add({ 'https://github.com/kdheepak/lazygit.nvim' })
 
-  vim.g.lazygit_floating_window_scaling_factor = 1
+  vim.g.lazygit_floating_window_scaling_factor = 0.8
   M.set('n', '<Leader>gg', '<Cmd>LazyGit<CR>', { desc = 'LazyGit' })
 end)
 
