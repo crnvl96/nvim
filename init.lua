@@ -327,6 +327,7 @@ M.now_if_args(function()
   })
   M.set('n', '<Leader>ff', '<Cmd>Tv files<CR>', { desc = 'Files' })
   M.set('n', '<Leader>fg', '<Cmd>Tv text<CR>', { desc = 'Text' })
+  M.set('n', '<Leader>fo', '<Cmd>Tv recent-files<CR>', { desc = 'recent' })
   M.set('n', '<Leader>fl', function() vim.cmd('Tv text ' .. vim.fn.expand('%') .. ':') end, { desc = 'Lines' })
 end)
 
