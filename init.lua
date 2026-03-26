@@ -67,6 +67,7 @@ M.now(function()
   vim.o.ruler = false
   vim.o.scrolloff = 8
   vim.o.shiftwidth = 4
+  vim.o.switchbuf = 'usetab'
   vim.o.showcmd = false
   vim.o.signcolumn = 'yes'
   vim.o.smartcase = true
@@ -330,6 +331,10 @@ M.now_if_args(function()
   M.set('n', '<Leader>ff', '<Cmd>Tv files<CR>', { desc = 'Files' })
   M.set('n', '<Leader>fg', '<Cmd>Tv text<CR>', { desc = 'Text' })
   M.set('n', '<Leader>fl', function() vim.cmd('Tv text ' .. vim.fn.expand('%') .. ':') end, { desc = 'Lines' })
+end)
+
+M.now_if_args(function()
+  vim.pack.add({ 'https://github.com/wincent/ferret' })
 end)
 
 M.now_if_args(
