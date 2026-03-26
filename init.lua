@@ -333,9 +333,7 @@ M.now_if_args(function()
   M.set('n', '<Leader>fl', function() vim.cmd('Tv text ' .. vim.fn.expand('%') .. ':') end, { desc = 'Lines' })
 end)
 
-M.now_if_args(function()
-  vim.pack.add({ 'https://github.com/wincent/ferret' })
-end)
+M.now_if_args(function() vim.pack.add({ 'https://github.com/wincent/ferret' }) end)
 
 M.now_if_args(
   function()
@@ -619,6 +617,13 @@ M.now_if_args(function()
   require('grug-far').setup({
     folding = { enabled = false },
     resultLocation = { showNumberLabel = false },
+    windowCreationCommand = 'botright split',
+    -- windowCreationCommand = 'vsplit',
+    helpLine = { enabled = false },
+    showCompactInputs = true,
+    showInputsTopPadding = false,
+    showInputsBottomPadding = false,
+    disableBufferLineNumbers = false,
   })
 
   M.set('n', '<Leader>us', function() require('grug-far').open({ transient = true }) end, { desc = 'Grugfar' })
