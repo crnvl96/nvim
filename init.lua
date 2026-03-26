@@ -240,8 +240,9 @@ M.now(function()
 end)
 
 M.now(function()
+  vim.cmd([[colorscheme miniwinter]])
   require('mini.colors').setup()
-  MiniColors.get_colorscheme():add_transparency({ float = true }):apply()
+  MiniColors.get_colorscheme():add_transparency({ float = true, statuscolumn = true }):apply()
 end)
 
 M.now(function()
