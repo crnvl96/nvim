@@ -2,6 +2,8 @@ local M = {}
 
 M.set = vim.keymap.set
 
+vim.cmd.packadd([[nvim.difftool]])
+
 M.gr = vim.api.nvim_create_augroup('custom-config', {})
 
 function M.on_packchanged(name, kinds, callback)
