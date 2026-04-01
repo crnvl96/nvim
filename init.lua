@@ -11,11 +11,8 @@ function M.on_packchanged(name, kinds, callback)
     group = M.gr,
     callback = function(e)
       local is_target = e.data.spec.name == name and vim.tbl_contains(kinds, e.data.kind)
-
       if not is_target then return end
-
       if not e.data.active then vim.cmd.packadd(name) end
-
       callback(e)
     end,
   })
@@ -25,10 +22,10 @@ vim.pack.add({ 'https://github.com/nvim-mini/mini.nvim' })
 
 local misc = require('mini.misc')
 misc.setup()
+
 M.now = function(f) misc.safely('now', f) end
 M.later = function(f) misc.safely('later', f) end
 M.now_if_args = vim.fn.argc(-1) > 0 and M.now or M.later
-
 M.now_if_args(function()
   misc.setup_auto_root()
   misc.setup_restore_cursor()
@@ -84,10 +81,8 @@ M.now(function()
   vim.o.wildoptions = 'pum,tagfile,fuzzy'
   vim.o.winborder = 'single'
   vim.o.wrap = false
-
   vim.cmd('highlight ColorColumn ctermbg=lightgrey guibg=lightgrey')
   vim.cmd('filetype plugin indent on')
-
   if vim.fn.exists('syntax_on') ~= 1 then vim.cmd('syntax enable') end
 end)
 
@@ -250,7 +245,6 @@ end)
 
 M.now(function()
   vim.pack.add({ 'https://github.com/christoomey/vim-tmux-navigator' })
-
   M.set('n', '<C-h>', '<Cmd>TmuxNavigateLeft<CR>', { noremap = true, desc = 'Go to left window' })
   M.set('n', '<C-j>', '<Cmd>TmuxNavigateDown<CR>', { noremap = true, desc = 'Go to window below' })
   M.set('n', '<C-k>', '<Cmd>TmuxNavigateUp<CR>', { noremap = true, desc = 'Go to window above' })
@@ -258,59 +252,22 @@ M.now(function()
 end)
 
 M.now_if_args(function() vim.pack.add({ 'https://github.com/nvim-lua/plenary.nvim' }) end)
+M.now_if_args(function()
+  require('mini.icons').setup()
+  M.later(MiniIcons.tweak_lsp_kind)
+  M.later(MiniIcons.mock_nvim_web_devicons)
+end)
 M.now_if_args(function() require('mini.extra').setup() end)
-M.now_if_args(function() require('mini.pick').setup() end)
 M.now_if_args(function() require('mini.align').setup() end)
 M.now_if_args(function() require('mini.cmdline').setup() end)
 M.now_if_args(function() require('mini.move').setup() end)
 M.now_if_args(function() require('mini.splitjoin').setup() end)
-M.now_if_args(function() require('mini.surround').setup() end)
 M.now_if_args(function() vim.pack.add({ 'https://github.com/b0o/SchemaStore.nvim' }) end)
 M.now_if_args(function() vim.pack.add({ 'https://github.com/tpope/vim-sleuth' }) end)
 M.now_if_args(function() vim.pack.add({ 'https://github.com/tpope/vim-fugitive' }) end)
 
-M.now_if_args(
-  function()
-    require('mini.ai').setup({
-      search_method = 'cover',
-      custom_textobjects = {
-        g = MiniExtra.gen_ai_spec.buffer(),
-        f = require('mini.ai').gen_spec.treesitter({
-          a = '@function.outer',
-          i = '@function.inner',
-        }),
-        t = {
-          '<([%p%w]-)%f[^<%w][^<>]->.-</%1>',
-          '^<.->().*()</[^/]->$',
-        },
-      },
-    })
-  end
-)
-
-M.now_if_args(
-  function()
-    require('mini.hipatterns').setup({
-      highlighters = {
-        hex_color = require('mini.hipatterns').gen_highlighter.hex_color(),
-      },
-    })
-  end
-)
-
-M.now_if_args(
-  function()
-    require('mini.indentscope').setup({
-      options = {
-        try_as_border = true,
-      },
-    })
-  end
-)
-
 M.now_if_args(function()
   require('mini.keymap').setup()
-
   MiniKeymap.map_multistep('i', '<Tab>', { 'pmenu_next' })
   MiniKeymap.map_multistep('i', '<S-Tab>', { 'pmenu_prev' })
   MiniKeymap.map_multistep('i', '<CR>', { 'pmenu_accept', 'minipairs_cr' })
@@ -320,31 +277,12 @@ M.now_if_args(function()
 end)
 
 M.now_if_args(function()
-  vim.pack.add({ 'https://github.com/alexpasmantier/tv.nvim' })
-
-  local h = require('tv').handlers
-
-  require('tv').setup({
-    window = {
-      width = 0.8,
-      height = 0.8,
-    },
+  local jump2d = require('mini.jump2d')
+  jump2d.setup({
+    spotter = jump2d.gen_spotter.pattern('[^%s%p]+'),
+    view = { dim = true, n_steps_ahead = 2 },
   })
-  M.set('n', '<Leader>ff', '<Cmd>Tv files<CR>', { desc = 'Files' })
-  M.set('n', '<Leader>fg', '<Cmd>Tv text<CR>', { desc = 'Text' })
-  M.set('n', '<Leader>fl', function() vim.cmd('Tv text ' .. vim.fn.expand('%') .. ':') end, { desc = 'Lines' })
 end)
-
-M.now_if_args(function() vim.pack.add({ 'https://github.com/wincent/ferret' }) end)
-
-M.now_if_args(
-  function()
-    require('mini.jump2d').setup({
-      spotter = require('mini.jump2d').gen_spotter.pattern('[^%s%p]+'),
-      view = { dim = true, n_steps_ahead = 2 },
-    })
-  end
-)
 
 M.now_if_args(function()
   require('mini.completion').setup({
@@ -357,70 +295,64 @@ M.now_if_args(function()
       end,
     },
   })
-
   vim.lsp.config('*', { capabilities = MiniCompletion.get_lsp_capabilities() })
 end)
 
 M.now_if_args(function()
   vim.pack.add({ 'https://github.com/mikavilpas/yazi.nvim' })
-
   require('yazi').setup({
     floating_window_scaling_factor = 0.8,
     open_for_directories = true,
     keymaps = { show_help = '`' },
   })
-
   M.set('n', '<Leader>er', '<Cmd>Yazi toggle<CR>', { desc = 'Yazi (Resume)' })
   M.set('n', '<Leader>ef', '<Cmd>Yazi<CR>', { desc = 'Yazi' })
   M.set('n', '<Leader>ew', '<Cmd>Yazi cwd<CR>', { desc = 'Yazi (CWD)' })
 end)
 
-M.now_if_args(
-  function()
-    require('mini.clue').setup({
-      triggers = {
-        { mode = 'n', keys = '\\' },
-        { mode = 'i', keys = '<C-x>' },
-        { mode = 'n', keys = '<C-w>' },
-        { mode = { 'n', 'x' }, keys = '<Leader>' },
-        { mode = { 'n', 'x' }, keys = '[' },
-        { mode = { 'n', 'x' }, keys = ']' },
-        { mode = { 'n', 'x' }, keys = 'g' },
-        { mode = { 'n', 'x' }, keys = "'" },
-        { mode = { 'n', 'x' }, keys = '`' },
-        { mode = { 'n', 'x' }, keys = '"' },
-        { mode = { 'i', 'c' }, keys = '<C-r>' },
-        { mode = { 'n', 'x' }, keys = 'z' },
-      },
-      clues = {
-        M.clues,
-        require('mini.clue').gen_clues.builtin_completion(),
-        require('mini.clue').gen_clues.g(),
-        require('mini.clue').gen_clues.marks(),
-        require('mini.clue').gen_clues.registers(),
-        require('mini.clue').gen_clues.square_brackets(),
-        require('mini.clue').gen_clues.windows(),
-        require('mini.clue').gen_clues.z(),
-      },
-      window = {
-        delay = 500,
-        scroll_down = '<C-f>',
-        scroll_up = '<C-b>',
-        config = { width = 'auto' },
-      },
-    })
-  end
-)
+M.now_if_args(function()
+  local clue = require('mini.clue')
+  clue.setup({
+    triggers = {
+      { mode = 'n', keys = '\\' },
+      { mode = 'i', keys = '<C-x>' },
+      { mode = 'n', keys = '<C-w>' },
+      { mode = { 'n', 'x' }, keys = '<Leader>' },
+      { mode = { 'n', 'x' }, keys = '[' },
+      { mode = { 'n', 'x' }, keys = ']' },
+      { mode = { 'n', 'x' }, keys = 'g' },
+      { mode = { 'n', 'x' }, keys = "'" },
+      { mode = { 'n', 'x' }, keys = '`' },
+      { mode = { 'n', 'x' }, keys = '"' },
+      { mode = { 'i', 'c' }, keys = '<C-r>' },
+      { mode = { 'n', 'x' }, keys = 'z' },
+    },
+    clues = {
+      M.clues,
+      clue.gen_clues.builtin_completion(),
+      clue.gen_clues.g(),
+      clue.gen_clues.marks(),
+      clue.gen_clues.registers(),
+      clue.gen_clues.square_brackets(),
+      clue.gen_clues.windows(),
+      clue.gen_clues.z(),
+    },
+    window = {
+      delay = 500,
+      scroll_down = '<C-f>',
+      scroll_up = '<C-b>',
+      config = { width = 'auto' },
+    },
+  })
+end)
 
 M.now_if_args(function()
   vim.pack.add({ 'https://github.com/windwp/nvim-ts-autotag' })
-
   require('nvim-ts-autotag').setup()
 end)
 
 M.now_if_args(function()
   vim.pack.add({ 'https://github.com/folke/ts-comments.nvim' })
-
   require('ts-comments').setup({
     lang = {
       typst = { '// %s', '/* %s */' },
@@ -434,7 +366,6 @@ M.now_if_args(function()
     vim.cmd('TSUpdate')
     MiniMisc.log_add('Parsers updates', { name = e.data.spec.name, path = e.data.path })
   end)
-
   vim.pack.add({
     'https://github.com/nvim-treesitter/nvim-treesitter',
     'https://github.com/nvim-treesitter/nvim-treesitter-textobjects',
@@ -478,11 +409,47 @@ M.now_if_args(function()
     pattern = pat,
     callback = function()
       vim.cmd('setlocal formatoptions-=c formatoptions-=o')
-
       vim.wo[0][0].foldexpr = 'v:lua.vim.treesitter.foldexpr()'
       vim.wo[0][0].foldmethod = 'expr'
     end,
   })
+end)
+
+M.now_if_args(function()
+  require('mini.pick').setup()
+
+  M.set('n', '<Leader>fb', '<Cmd>Pick buffers<CR>', { desc = 'Buffers' })
+  M.set('n', '<Leader>fc', '<Cmd>Pick commands<CR>', { desc = 'Commands' })
+  M.set('n', '<Leader>fd', '<Cmd>Pick diagnostic<CR>', { desc = 'Diagnostics' })
+  M.set('n', '<Leader>fe', '<Cmd>Pick explorer<CR>', { desc = 'Explorer' })
+  M.set('n', '<Leader>ff', '<Cmd>Pick files<CR>', { desc = 'Find Files' })
+  M.set('n', '<Leader>fg', '<Cmd>Pick grep_live<CR>', { desc = 'Grep live' })
+  M.set('n', '<Leader>fh', "<Cmd>Pick help default_split='vertical'<CR>", { desc = 'Help files' })
+  M.set('n', '<Leader>fH', '<Cmd>Pick hl_groups<CR>', { desc = 'Highlights' })
+  M.set('n', '<Leader>fk', '<Cmd>Pick keymaps<CR>', { desc = 'Keymaps' })
+  M.set('n', '<Leader>fl', "<Cmd>Pick buf_lines scope='current' preserve_order=true<CR>", { desc = 'Lines' })
+  M.set('n', '<Leader>fm', '<Cmd>Pick manpages<CR>', { desc = 'Search manpages' })
+  M.set('n', '<Leader>fo', '<Cmd>Pick visit_paths preserve_order=true<CR>', { desc = 'Oldfiles' })
+  M.set('n', '<Leader>fq', "<Cmd>Pick list scope='quickfix'<CR>", { desc = 'Quickfix' })
+  M.set('n', '<Leader>fr', '<Cmd>Pick resume<CR>', { desc = 'Resume last picker' })
+  M.set('n', '<Leader>fu', '<Cmd>Pick git_hunks<CR>', { desc = 'Git hunks' })
+  M.set('n', '<Leader>fU', '<Cmd>Pick git_hunks scope="staged"<CR>', { desc = 'Git hunks' })
+
+  ---@diagnostic disable-next-line: duplicate-set-field
+  vim.ui.select = function(items, opts, on_choice)
+    return MiniPick.ui_select(items, opts, on_choice, {
+      window = {
+        config = {
+          relative = 'cursor',
+          anchor = 'NW',
+          row = 0,
+          col = 0,
+          width = 80,
+          height = 15,
+        },
+      },
+    })
+  end
 end)
 
 M.now_if_args(function()
@@ -501,7 +468,6 @@ end)
 
 M.now_if_args(function()
   vim.pack.add({ 'https://github.com/kevalin/mermaid.nvim' })
-
   require('mermaid').setup({
     preview = {
       renderer = 'mermaid.js',
@@ -523,9 +489,7 @@ end)
 
 M.now_if_args(function()
   local autoformat = true
-
   vim.pack.add({ 'https://github.com/stevearc/conform.nvim' })
-
   require('conform').setup({
     notify_on_error = false,
     notify_no_formatters = false,
@@ -582,7 +546,6 @@ end)
 
 M.now_if_args(function()
   vim.pack.add({ 'https://github.com/neovim/nvim-lspconfig' })
-
   -- stylua: ignore
   vim.lsp.enable({
     'biome',   'eslint',   'gopls',  'lua_ls', 'oxfmt', 'oxlint',
@@ -590,7 +553,6 @@ M.now_if_args(function()
     'tsgo',    'ty',       'jsonls', 'yamlls',
     -- 'pyright', 'harper_ls' 'tailwindcss',
   })
-
   M.set('i', '<C-k>', '<Cmd>lua vim.lsp.buf.signature_help()<CR>', { desc = 'Show Signature Help' })
   M.set('n', 'E', '<Cmd>lua vim.diagnostic.open_float()<CR>', { desc = 'Open Current Diagnostic' })
   M.set('n', 'gre', '<Cmd>lua vim.diagnostic.open_float()<CR>', { desc = 'Open Current Diagnostic' })
@@ -599,28 +561,11 @@ M.now_if_args(function()
 end)
 
 M.now_if_args(function()
-  vim.pack.add({ 'https://github.com/esmuellert/codediff.nvim' })
-
-  require('codediff').setup({
-    diff = {
-      layout = 'inline',
-      compute_moves = true,
-      jump_to_first_change = true,
-    },
-    explorer = { width = 30 },
-  })
-
-  M.set('n', '<Leader>gd', '<Cmd>CodeDiff<CR>', { desc = 'Toggle git diff' })
-end)
-
-M.now_if_args(function()
   vim.pack.add({ 'https://github.com/MagicDuck/grug-far.nvim' })
-
   require('grug-far').setup({
     folding = { enabled = false },
     resultLocation = { showNumberLabel = false },
-    windowCreationCommand = 'botright split',
-    -- windowCreationCommand = 'vsplit',
+    windowCreationCommand = 'vsplit',
     helpLine = { enabled = false },
     showCompactInputs = true,
     showInputsTopPadding = false,
@@ -628,42 +573,8 @@ M.now_if_args(function()
     disableBufferLineNumbers = false,
   })
 
-  M.set('n', '<Leader>us', function() require('grug-far').open({ transient = true }) end, { desc = 'Grugfar' })
+  M.set('n', '<Leader>us', function() require('grug-far').open({ transient = true }) end, { desc = 'GrugFar' })
 end)
-
--- Mini.Pick =====
--- set('n', '<Leader>fb', '<Cmd>Pick buffers<CR>',                                       { desc = 'Buffers' })
--- set('n', '<Leader>fc', '<Cmd>Pick commands<CR>',                                      { desc = 'Commands' })
--- set('n', '<Leader>fd', '<Cmd>Pick diagnostic<CR>',                                    { desc = 'Diagnostics' })
--- set('n', '<Leader>fe', '<Cmd>Pick explorer<CR>',                                      { desc = 'Explorer' })
--- set('n', '<Leader>ff', '<Cmd>Pick files<CR>',                                         { desc = 'Find Files' })
--- set('n', '<Leader>fg', '<Cmd>Pick grep_live<CR>',                                     { desc = 'Grep live' })
--- set('n', '<Leader>fh', "<Cmd>Pick help default_split='vertical'<CR>",                 { desc = 'Help files' })
--- set('n', '<Leader>fH', '<Cmd>Pick hl_groups<CR>',                                     { desc = 'Highlights' })
--- set('n', '<Leader>fk', '<Cmd>Pick keymaps<CR>',                                       { desc = 'Keymaps' })
--- set('n', '<Leader>fl', "<Cmd>Pick buf_lines scope='current' preserve_order=true<CR>", { desc = 'Lines' })
--- set('n', '<Leader>fm', '<Cmd>Pick manpages<CR>',                                      { desc = 'Search manpages' })
--- set('n', '<Leader>fo', '<Cmd>Pick visit_paths preserve_order=true<CR>',               { desc = 'Oldfiles' })
--- set('n', '<Leader>fq', "<Cmd>Pick list scope='quickfix'<CR>",                         { desc = 'Quickfix' })
--- set('n', '<Leader>fr', '<Cmd>Pick resume<CR>',                                        { desc = 'Resume last picker' })
--- set('n', '<Leader>fu', '<Cmd>Pick git_hunks<CR>',                                     { desc = 'Git hunks' })
--- set('n', '<Leader>fU', '<Cmd>Pick git_hunks scope="staged"<CR>',                      { desc = 'Git hunks' })
---
--- ---@diagnostic disable-next-line: duplicate-set-field
--- vim.ui.select = function(items, opts, on_choice)
---   return MiniPick.ui_select(items, opts, on_choice, {
---     window = {
---       config = {
---         relative = 'cursor',
---         anchor = 'NW',
---         row = 0,
---         col = 0,
---         width = 80,
---         height = 15,
---       },
---     },
---   })
--- end
 
 -- Mini.Files =====
 -- require('mini.files').setup({
@@ -746,32 +657,3 @@ end)
 --     vim.api.nvim_win_set_config(e.data.win_id, config)
 --   end,
 -- })
-
--- M.now_if_args(function()
---   vim.pack.add({ 'https://github.com/greggh/claude-code.nvim' })
---
---   require('claude-code').setup({
---     window = {
---       split_ratio = 0.5,
---       position = 'botright',
---       float = {
---         width = '100%',
---         height = '100%',
---       },
---     },
---     keymaps = {
---       toggle = {
---         normal = '<M-c>',
---         terminal = '<M-c>',
---         variants = {
---           continue = '<leader>cC',
---           verbose = '<leader>cV',
---         },
---       },
---       window_navigation = true,
---       scrolling = true,
---     },
---   })
---
---   M.set('n', '<leader>cc', '<cmd>ClaudeCode<CR>', { desc = 'Toggle Claude Code' })
--- end)
