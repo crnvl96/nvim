@@ -26,11 +26,6 @@ misc.setup()
 M.now = function(f) misc.safely('now', f) end
 M.later = function(f) misc.safely('later', f) end
 M.now_if_args = vim.fn.argc(-1) > 0 and M.now or M.later
-M.now_if_args(function()
-  misc.setup_auto_root()
-  misc.setup_restore_cursor()
-  misc.setup_termbg_sync()
-end)
 
 M.now(function()
   local node_bin = vim.env.HOME .. '/.local/share/mise/installs/node/24/bin'
@@ -81,40 +76,39 @@ M.now(function()
   vim.o.wildoptions = 'pum,tagfile,fuzzy'
   vim.o.winborder = 'single'
   vim.o.wrap = false
+
   vim.cmd('highlight ColorColumn ctermbg=lightgrey guibg=lightgrey')
   vim.cmd('filetype plugin indent on')
   if vim.fn.exists('syntax_on') ~= 1 then vim.cmd('syntax enable') end
-end)
 
-M.later(function()
-  local config = vim.diagnostic.config
-  config({
-    virtual_lines = false,
-    update_in_insert = false,
-    signs = {
-      priority = 9999,
-      severity = {
-        min = vim.diagnostic.severity.WARN,
-        max = vim.diagnostic.severity.ERROR,
+  M.later(function()
+    local config = vim.diagnostic.config
+    config({
+      virtual_lines = false,
+      update_in_insert = false,
+      signs = {
+        priority = 9999,
+        severity = {
+          min = vim.diagnostic.severity.WARN,
+          max = vim.diagnostic.severity.ERROR,
+        },
       },
-    },
-    underline = {
-      severity = {
-        min = vim.diagnostic.severity.HINT,
-        max = vim.diagnostic.severity.ERROR,
+      underline = {
+        severity = {
+          min = vim.diagnostic.severity.HINT,
+          max = vim.diagnostic.severity.ERROR,
+        },
       },
-    },
-    virtual_text = {
-      current_line = true,
-      severity = {
-        min = vim.diagnostic.severity.ERROR,
-        max = vim.diagnostic.severity.ERROR,
+      virtual_text = {
+        current_line = true,
+        severity = {
+          min = vim.diagnostic.severity.ERROR,
+          max = vim.diagnostic.severity.ERROR,
+        },
       },
-    },
-  })
-end)
+    })
+  end)
 
-M.now(function()
   M.clues = {
     { mode = 'n', keys = '<leader>e', desc = '+Explorer' },
     { mode = 'n', keys = '<leader>f', desc = '+find' },
@@ -151,9 +145,7 @@ M.now(function()
   M.set('c', '<M-h>', '<C-f>', { noremap = true, desc = 'Access cmdline history' })
   M.set('c', '<M-f>', '<C-Right>', { noremap = true, desc = 'Move cursor to left word' })
   M.set('c', '<M-b>', '<C-Left>', { noremap = true, desc = 'Move cursor to right word' })
-end)
 
-M.now(function()
   vim.api.nvim_create_autocmd('TextYankPost', {
     group = M.gr,
     callback = function() vim.highlight.on_yank() end,
@@ -235,20 +227,24 @@ M.now(function()
       end
     end,
   })
-end)
 
-M.now(function()
   vim.cmd([[colorscheme miniwinter]])
   require('mini.colors').setup()
   MiniColors.get_colorscheme():add_transparency({ float = true, statuscolumn = true }):apply()
 end)
 
-M.now(function()
+M.now_if_args(function()
   vim.pack.add({ 'https://github.com/christoomey/vim-tmux-navigator' })
   M.set('n', '<C-h>', '<Cmd>TmuxNavigateLeft<CR>', { noremap = true, desc = 'Go to left window' })
   M.set('n', '<C-j>', '<Cmd>TmuxNavigateDown<CR>', { noremap = true, desc = 'Go to window below' })
   M.set('n', '<C-k>', '<Cmd>TmuxNavigateUp<CR>', { noremap = true, desc = 'Go to window above' })
   M.set('n', '<C-l>', '<Cmd>TmuxNavigateRight<CR>', { noremap = true, desc = 'Go to right window' })
+end)
+
+M.now_if_args(function()
+  misc.setup_auto_root()
+  misc.setup_restore_cursor()
+  misc.setup_termbg_sync()
 end)
 
 M.now_if_args(function() vim.pack.add({ 'https://github.com/nvim-lua/plenary.nvim' }) end)
