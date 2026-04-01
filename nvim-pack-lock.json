@@ -4,17 +4,9 @@
       "rev": "4f1c58a59d3a4da095743dd6f04b73caa0cefc3d",
       "src": "https://github.com/b0o/SchemaStore.nvim"
     },
-    "codediff.nvim": {
-      "rev": "832f1ecc5f8b15a44cf7537e31d3266d657775b1",
-      "src": "https://github.com/esmuellert/codediff.nvim"
-    },
     "conform.nvim": {
       "rev": "086a40dc7ed8242c03be9f47fbcee68699cc2395",
       "src": "https://github.com/stevearc/conform.nvim"
-    },
-    "ferret": {
-      "rev": "80a1c6f2f6e18952fa6eb85000446650216987fd",
-      "src": "https://github.com/wincent/ferret"
     },
     "grug-far.nvim": {
       "rev": "dc4684e163971bb1f5bfb93fbd4bb3e892bf9b15",
@@ -59,10 +51,6 @@
     "ts-comments.nvim": {
       "rev": "123a9fb12e7229342f807ec9e6de478b1102b041",
       "src": "https://github.com/folke/ts-comments.nvim"
-    },
-    "tv.nvim": {
-      "rev": "c0603ca8f31299c83deaa9a24a63d67116db25cd",
-      "src": "https://github.com/alexpasmantier/tv.nvim"
     },
     "typst-preview.nvim": {
       "rev": "87db18b8d19c8b0eed399f52e4c527ce5afe4817",
