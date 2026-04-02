@@ -4,6 +4,9 @@ M.set = vim.keymap.set
 
 vim.cmd.packadd([[nvim.difftool]])
 
+--
+-- Pre-Setup
+--
 M.gr = vim.api.nvim_create_augroup('custom-config', {})
 
 function M.on_packchanged(name, kinds, callback)
@@ -22,11 +25,21 @@ vim.pack.add({ 'https://github.com/nvim-mini/mini.nvim' })
 
 local misc = require('mini.misc')
 misc.setup()
+misc.setup_auto_root()
+misc.setup_restore_cursor()
+misc.setup_termbg_sync()
+
+vim.cmd([[colorscheme miniwinter]])
+require('mini.colors').setup()
+MiniColors.get_colorscheme():add_transparency({ float = true, statuscolumn = true }):apply()
 
 M.now = function(f) misc.safely('now', f) end
 M.later = function(f) misc.safely('later', f) end
 M.now_if_args = vim.fn.argc(-1) > 0 and M.now or M.later
 
+--
+-- Opts, Keymaps & Autocommands
+--
 M.now(function()
   local node_bin = vim.env.HOME .. '/.local/share/mise/installs/node/24/bin'
   vim.env.PATH = node_bin .. ':' .. vim.env.PATH
@@ -112,9 +125,7 @@ M.now(function()
   M.clues = {
     { mode = 'n', keys = '<leader>e', desc = '+Explorer' },
     { mode = 'n', keys = '<leader>f', desc = '+find' },
-    { mode = 'n', keys = '<leader>g', desc = '+git' },
     { mode = 'n', keys = '<leader>u', desc = '+utils' },
-    { mode = 'n', keys = '<leader>t', desc = '+TV' },
   }
 
   local nx = { 'n', 'x' }
@@ -145,6 +156,42 @@ M.now(function()
   M.set('c', '<M-h>', '<C-f>', { noremap = true, desc = 'Access cmdline history' })
   M.set('c', '<M-f>', '<C-Right>', { noremap = true, desc = 'Move cursor to left word' })
   M.set('c', '<M-b>', '<C-Left>', { noremap = true, desc = 'Move cursor to right word' })
+
+  M.later(function()
+    local clue = require('mini.clue')
+    clue.setup({
+      triggers = {
+        { mode = 'n', keys = '\\' },
+        { mode = 'i', keys = '<C-x>' },
+        { mode = 'n', keys = '<C-w>' },
+        { mode = { 'n', 'x' }, keys = '<Leader>' },
+        { mode = { 'n', 'x' }, keys = '[' },
+        { mode = { 'n', 'x' }, keys = ']' },
+        { mode = { 'n', 'x' }, keys = 'g' },
+        { mode = { 'n', 'x' }, keys = "'" },
+        { mode = { 'n', 'x' }, keys = '`' },
+        { mode = { 'n', 'x' }, keys = '"' },
+        { mode = { 'i', 'c' }, keys = '<C-r>' },
+        { mode = { 'n', 'x' }, keys = 'z' },
+      },
+      clues = {
+        M.clues,
+        clue.gen_clues.builtin_completion(),
+        clue.gen_clues.g(),
+        clue.gen_clues.marks(),
+        clue.gen_clues.registers(),
+        clue.gen_clues.square_brackets(),
+        clue.gen_clues.windows(),
+        clue.gen_clues.z(),
+      },
+      window = {
+        delay = 500,
+        scroll_down = '<C-f>',
+        scroll_up = '<C-b>',
+        config = { width = 'auto' },
+      },
+    })
+  end)
 
   vim.api.nvim_create_autocmd('TextYankPost', {
     group = M.gr,
@@ -227,145 +274,60 @@ M.now(function()
       end
     end,
   })
-
-  vim.cmd([[colorscheme miniwinter]])
-  require('mini.colors').setup()
-  MiniColors.get_colorscheme():add_transparency({ float = true, statuscolumn = true }):apply()
 end)
 
+--
+-- Specific modules and utilities
+--
 M.now_if_args(function()
-  vim.pack.add({ 'https://github.com/christoomey/vim-tmux-navigator' })
+  require('mini.icons').setup()
+  M.later(MiniIcons.tweak_lsp_kind)
+  M.later(MiniIcons.mock_nvim_web_devicons)
+
+  vim.pack.add({
+    'https://github.com/christoomey/vim-tmux-navigator',
+    'https://github.com/nvim-lua/plenary.nvim',
+    'https://github.com/b0o/SchemaStore.nvim',
+    'https://github.com/tpope/vim-sleuth',
+    'https://github.com/tpope/vim-fugitive',
+  })
+
+  require('mini.extra').setup()
+  require('mini.align').setup()
+  require('mini.cmdline').setup()
+  require('mini.move').setup()
+  require('mini.splitjoin').setup()
+
+  require('mini.jump2d').setup({
+    spotter = require('mini.jump2d').gen_spotter.pattern('[^%s%p]+'),
+    view = { dim = true, n_steps_ahead = 2 },
+  })
+
   M.set('n', '<C-h>', '<Cmd>TmuxNavigateLeft<CR>', { noremap = true, desc = 'Go to left window' })
   M.set('n', '<C-j>', '<Cmd>TmuxNavigateDown<CR>', { noremap = true, desc = 'Go to window below' })
   M.set('n', '<C-k>', '<Cmd>TmuxNavigateUp<CR>', { noremap = true, desc = 'Go to window above' })
   M.set('n', '<C-l>', '<Cmd>TmuxNavigateRight<CR>', { noremap = true, desc = 'Go to right window' })
 end)
 
-M.now_if_args(function()
-  misc.setup_auto_root()
-  misc.setup_restore_cursor()
-  misc.setup_termbg_sync()
-end)
-
-M.now_if_args(function() vim.pack.add({ 'https://github.com/nvim-lua/plenary.nvim' }) end)
-M.now_if_args(function()
-  require('mini.icons').setup()
-  M.later(MiniIcons.tweak_lsp_kind)
-  M.later(MiniIcons.mock_nvim_web_devicons)
-end)
-M.now_if_args(function() require('mini.extra').setup() end)
-M.now_if_args(function() require('mini.align').setup() end)
-M.now_if_args(function() require('mini.cmdline').setup() end)
-M.now_if_args(function() require('mini.move').setup() end)
-M.now_if_args(function() require('mini.splitjoin').setup() end)
-M.now_if_args(function() vim.pack.add({ 'https://github.com/b0o/SchemaStore.nvim' }) end)
-M.now_if_args(function() vim.pack.add({ 'https://github.com/tpope/vim-sleuth' }) end)
-M.now_if_args(function() vim.pack.add({ 'https://github.com/tpope/vim-fugitive' }) end)
-
-M.now_if_args(function()
-  require('mini.keymap').setup()
-  MiniKeymap.map_multistep('i', '<Tab>', { 'pmenu_next' })
-  MiniKeymap.map_multistep('i', '<S-Tab>', { 'pmenu_prev' })
-  MiniKeymap.map_multistep('i', '<CR>', { 'pmenu_accept', 'minipairs_cr' })
-  MiniKeymap.map_multistep('i', '<BS>', { 'minipairs_bs' })
-  MiniKeymap.map_multistep('i', '<Tab>', { 'minisnippets_next', 'minisnippets_expand', 'pmenu_next' })
-  MiniKeymap.map_multistep('i', '<S-Tab>', { 'minisnippets_prev', 'pmenu_prev' })
-end)
-
-M.now_if_args(function()
-  local jump2d = require('mini.jump2d')
-  jump2d.setup({
-    spotter = jump2d.gen_spotter.pattern('[^%s%p]+'),
-    view = { dim = true, n_steps_ahead = 2 },
-  })
-end)
-
-M.now_if_args(function()
-  require('mini.completion').setup({
-    lsp_completion = {
-      source_func = 'omnifunc',
-      auto_setup = false,
-      process_items = function(items, base)
-        local default = MiniCompletion.default_process_items
-        return default(items, base, { kind_priority = { Text = -1, Snippet = -1 } })
-      end,
-    },
-  })
-  vim.lsp.config('*', { capabilities = MiniCompletion.get_lsp_capabilities() })
-end)
-
-M.now_if_args(function()
-  vim.pack.add({ 'https://github.com/mikavilpas/yazi.nvim' })
-  require('yazi').setup({
-    floating_window_scaling_factor = 0.8,
-    open_for_directories = true,
-    keymaps = { show_help = '`' },
-  })
-  M.set('n', '<Leader>er', '<Cmd>Yazi toggle<CR>', { desc = 'Yazi (Resume)' })
-  M.set('n', '<Leader>ef', '<Cmd>Yazi<CR>', { desc = 'Yazi' })
-  M.set('n', '<Leader>ew', '<Cmd>Yazi cwd<CR>', { desc = 'Yazi (CWD)' })
-end)
-
-M.now_if_args(function()
-  local clue = require('mini.clue')
-  clue.setup({
-    triggers = {
-      { mode = 'n', keys = '\\' },
-      { mode = 'i', keys = '<C-x>' },
-      { mode = 'n', keys = '<C-w>' },
-      { mode = { 'n', 'x' }, keys = '<Leader>' },
-      { mode = { 'n', 'x' }, keys = '[' },
-      { mode = { 'n', 'x' }, keys = ']' },
-      { mode = { 'n', 'x' }, keys = 'g' },
-      { mode = { 'n', 'x' }, keys = "'" },
-      { mode = { 'n', 'x' }, keys = '`' },
-      { mode = { 'n', 'x' }, keys = '"' },
-      { mode = { 'i', 'c' }, keys = '<C-r>' },
-      { mode = { 'n', 'x' }, keys = 'z' },
-    },
-    clues = {
-      M.clues,
-      clue.gen_clues.builtin_completion(),
-      clue.gen_clues.g(),
-      clue.gen_clues.marks(),
-      clue.gen_clues.registers(),
-      clue.gen_clues.square_brackets(),
-      clue.gen_clues.windows(),
-      clue.gen_clues.z(),
-    },
-    window = {
-      delay = 500,
-      scroll_down = '<C-f>',
-      scroll_up = '<C-b>',
-      config = { width = 'auto' },
-    },
-  })
-end)
-
-M.now_if_args(function()
-  vim.pack.add({ 'https://github.com/windwp/nvim-ts-autotag' })
-  require('nvim-ts-autotag').setup()
-end)
-
-M.now_if_args(function()
-  vim.pack.add({ 'https://github.com/folke/ts-comments.nvim' })
-  require('ts-comments').setup({
-    lang = {
-      typst = { '// %s', '/* %s */' },
-    },
-  })
-end)
-
+--
+-- Treesitter and Utilities
+--
 M.now_if_args(function()
   M.on_packchanged('nvim-treesitter', { 'update' }, function(e)
     MiniMisc.log_add('Updating parsers', { name = e.data.spec.name, path = e.data.path })
     vim.cmd('TSUpdate')
     MiniMisc.log_add('Parsers updates', { name = e.data.spec.name, path = e.data.path })
   end)
+
   vim.pack.add({
     'https://github.com/nvim-treesitter/nvim-treesitter',
     'https://github.com/nvim-treesitter/nvim-treesitter-textobjects',
+    'https://github.com/windwp/nvim-ts-autotag',
+    'https://github.com/folke/ts-comments.nvim',
   })
+
+  require('nvim-ts-autotag').setup()
+  require('ts-comments').setup({ lang = { typst = { '// %s', '/* %s */' } } })
 
   -- stylua: ignore
   local parsers = {
@@ -411,9 +373,29 @@ M.now_if_args(function()
   })
 end)
 
+--
+-- Find, Replace & Navigate
+--
 M.now_if_args(function()
-  require('mini.pick').setup()
+  vim.pack.add({
+    'https://github.com/MagicDuck/grug-far.nvim',
+    'https://github.com/mikavilpas/yazi.nvim',
+  })
 
+  require('yazi').setup({
+    floating_window_scaling_factor = 0.8,
+    open_for_directories = true,
+    keymaps = { show_help = '`' },
+  })
+
+  M.set('n', '<Leader>er', '<Cmd>Yazi toggle<CR>', { desc = 'Yazi (Resume)' })
+  M.set('n', '<Leader>ef', '<Cmd>Yazi<CR>', { desc = 'Yazi' })
+  M.set('n', '<Leader>ew', '<Cmd>Yazi cwd<CR>', { desc = 'Yazi (CWD)' })
+
+  require('grug-far').setup({ disableBufferLineNumbers = false })
+  M.set('n', '<Leader>us', function() require('grug-far').open({ transient = true }) end, { desc = 'GrugFar' })
+
+  require('mini.pick').setup()
   M.set('n', '<Leader>fb', '<Cmd>Pick buffers<CR>', { desc = 'Buffers' })
   M.set('n', '<Leader>fc', '<Cmd>Pick commands<CR>', { desc = 'Commands' })
   M.set('n', '<Leader>fd', '<Cmd>Pick diagnostic<CR>', { desc = 'Diagnostics' })
@@ -448,6 +430,9 @@ M.now_if_args(function()
   end
 end)
 
+--
+-- Writing and Documenttion
+--
 M.now_if_args(function()
   M.on_packchanged('markdown-preview.nvim', { 'install', 'update' }, function(e)
     MiniMisc.log_add('Building dependencies', { name = e.data.spec.name, path = e.data.path })
@@ -459,31 +444,64 @@ M.now_if_args(function()
     end
   end)
 
-  vim.pack.add({ 'https://github.com/iamcco/markdown-preview.nvim' })
-end)
+  vim.pack.add({
+    'https://github.com/iamcco/markdown-preview.nvim',
+    'https://github.com/kevalin/mermaid.nvim',
+    'https://github.com/chomosuke/typst-preview.nvim',
+    'https://github.com/HakonHarnes/img-clip.nvim',
+  })
 
-M.now_if_args(function()
-  vim.pack.add({ 'https://github.com/kevalin/mermaid.nvim' })
   require('mermaid').setup({
     preview = {
       renderer = 'mermaid.js',
     },
   })
-end)
 
-M.now_if_args(function()
-  vim.pack.add({ 'https://github.com/chomosuke/typst-preview.nvim' })
   require('typst-preview').setup({
-    dependencies_bin = { ['tinymist'] = 'tinymist', ['websocat'] = nil },
+    dependencies_bin = {
+      ['tinymist'] = 'tinymist',
+      ['websocat'] = nil,
+    },
+  })
+
+  require('img-clip').setup({
+    default = { dir_path = 'static/img' },
   })
 end)
 
+--
+-- Completion LSP and Formatting
+--
 M.now_if_args(function()
-  vim.pack.add({ 'https://github.com/HakonHarnes/img-clip.nvim' })
-  require('img-clip').setup({ default = { dir_path = 'static/img' } })
-end)
+  vim.pack.add({ 'https://github.com/neovim/nvim-lspconfig' })
 
-M.now_if_args(function()
+  require('mini.completion').setup({
+    lsp_completion = {
+      source_func = 'omnifunc',
+      auto_setup = false,
+      process_items = function(items, base)
+        local default = MiniCompletion.default_process_items
+        return default(items, base, { kind_priority = { Text = -1, Snippet = -1 } })
+      end,
+    },
+  })
+
+  vim.lsp.config('*', { capabilities = MiniCompletion.get_lsp_capabilities() })
+
+  -- stylua: ignore
+  vim.lsp.enable({
+    'biome',   'eslint',   'gopls',  'lua_ls', 'oxfmt', 'oxlint',
+    'rubocop', 'ruby_lsp', 'ruff',   'tinymist',
+    'tsgo',    'ty',       'jsonls', 'yamlls',
+    -- 'pyright', 'harper_ls' 'tailwindcss',
+  })
+
+  M.set('i', '<C-k>', '<Cmd>lua vim.lsp.buf.signature_help()<CR>', { desc = 'Show Signature Help' })
+  M.set('n', 'E', '<Cmd>lua vim.diagnostic.open_float()<CR>', { desc = 'Open Current Diagnostic' })
+  M.set('n', 'gre', '<Cmd>lua vim.diagnostic.open_float()<CR>', { desc = 'Open Current Diagnostic' })
+  M.set('n', 'grx', '<Cmd>lua vim.diagnostic.setqflist()<CR>', { desc = 'Diagnostics' })
+  M.set('n', 'grd', '<Cmd>lua vim.lsp.buf.definition()<CR>', { desc = 'Definitions' })
+
   local autoformat = true
   vim.pack.add({ 'https://github.com/stevearc/conform.nvim' })
   require('conform').setup({
@@ -538,38 +556,6 @@ M.now_if_args(function()
   })
 
   M.set('n', '<Leader>uf', function() autoformat = not autoformat end, { desc = 'Toggle autoformat' })
-end)
-
-M.now_if_args(function()
-  vim.pack.add({ 'https://github.com/neovim/nvim-lspconfig' })
-  -- stylua: ignore
-  vim.lsp.enable({
-    'biome',   'eslint',   'gopls',  'lua_ls', 'oxfmt', 'oxlint',
-    'rubocop', 'ruby_lsp', 'ruff',   'tinymist',
-    'tsgo',    'ty',       'jsonls', 'yamlls',
-    -- 'pyright', 'harper_ls' 'tailwindcss',
-  })
-  M.set('i', '<C-k>', '<Cmd>lua vim.lsp.buf.signature_help()<CR>', { desc = 'Show Signature Help' })
-  M.set('n', 'E', '<Cmd>lua vim.diagnostic.open_float()<CR>', { desc = 'Open Current Diagnostic' })
-  M.set('n', 'gre', '<Cmd>lua vim.diagnostic.open_float()<CR>', { desc = 'Open Current Diagnostic' })
-  M.set('n', 'grx', '<Cmd>lua vim.diagnostic.setqflist()<CR>', { desc = 'Diagnostics' })
-  M.set('n', 'grd', '<Cmd>lua vim.lsp.buf.definition()<CR>', { desc = 'Definitions' })
-end)
-
-M.now_if_args(function()
-  vim.pack.add({ 'https://github.com/MagicDuck/grug-far.nvim' })
-  require('grug-far').setup({
-    folding = { enabled = false },
-    resultLocation = { showNumberLabel = false },
-    windowCreationCommand = 'vsplit',
-    helpLine = { enabled = false },
-    showCompactInputs = true,
-    showInputsTopPadding = false,
-    showInputsBottomPadding = false,
-    disableBufferLineNumbers = false,
-  })
-
-  M.set('n', '<Leader>us', function() require('grug-far').open({ transient = true }) end, { desc = 'GrugFar' })
 end)
 
 -- Mini.Files =====
