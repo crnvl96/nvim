@@ -31,7 +31,12 @@ misc.setup_termbg_sync()
 
 vim.cmd([[colorscheme miniwinter]])
 require('mini.colors').setup()
-MiniColors.get_colorscheme():add_transparency({ float = true, statuscolumn = true }):apply()
+MiniColors.get_colorscheme()
+  :add_transparency({
+    float = true,
+    statuscolumn = true,
+  })
+  :apply()
 
 M.now = function(f) misc.safely('now', f) end
 M.later = function(f) misc.safely('later', f) end
@@ -122,12 +127,6 @@ M.now(function()
     })
   end)
 
-  M.clues = {
-    { mode = 'n', keys = '<leader>e', desc = '+Explorer' },
-    { mode = 'n', keys = '<leader>f', desc = '+find' },
-    { mode = 'n', keys = '<leader>u', desc = '+utils' },
-  }
-
   local nx = { 'n', 'x' }
   local nt = { 'n', 't' }
   local nix = { 'n', 'i', 'x' }
@@ -158,7 +157,14 @@ M.now(function()
   M.set('c', '<M-b>', '<C-Left>', { noremap = true, desc = 'Move cursor to right word' })
 
   M.later(function()
+    M.clues = {
+      { mode = 'n', keys = '<leader>e', desc = '+Explorer' },
+      { mode = 'n', keys = '<leader>f', desc = '+find' },
+      { mode = 'n', keys = '<leader>u', desc = '+utils' },
+    }
+
     local clue = require('mini.clue')
+
     clue.setup({
       triggers = {
         { mode = 'n', keys = '\\' },
@@ -396,6 +402,7 @@ M.now_if_args(function()
   M.set('n', '<Leader>us', function() require('grug-far').open({ transient = true }) end, { desc = 'GrugFar' })
 
   require('mini.pick').setup()
+  M.set('n', '<Leader>f,', '<Cmd>Pick list scope="quickfix"<CR>', { desc = 'Quickfix list' })
   M.set('n', '<Leader>fb', '<Cmd>Pick buffers<CR>', { desc = 'Buffers' })
   M.set('n', '<Leader>fc', '<Cmd>Pick commands<CR>', { desc = 'Commands' })
   M.set('n', '<Leader>fd', '<Cmd>Pick diagnostic<CR>', { desc = 'Diagnostics' })
