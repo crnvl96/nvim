@@ -138,9 +138,10 @@ M.now(function()
   M.set(nt, '<C-Up>', '<Cmd>resize +5<CR>', { noremap = true, desc = 'Increase window height' })
   M.set(nt, '<C-Right>', '<Cmd>vertical resize +20<CR>', { noremap = true, desc = 'Increase window width' })
   M.set(nix, '<Esc>', '<Esc><Cmd>noh<CR><Esc>', { noremap = true, desc = 'Clear hlsearch on <Esc>' })
-  M.set(nix, '<C-s>', '<Esc><Cmd>noh<CR><Cmd>silent! update | redraw<CR>', { noremap = true, desc = 'Save' })
   M.set('n', 'Y', 'yg_', { noremap = true, desc = 'Yank till end of current line' })
   M.set('x', 'p', 'P', { noremap = true, desc = 'Paste in visual mode without overriding register' })
+  M.set('x', '>', '>gv', { desc = 'Indent' })
+  M.set('x', '<', '<gv', { desc = 'Deindent' })
   M.set('n', '<C-h>', '<C-w>h', { noremap = true, desc = 'Go to left window' })
   M.set('n', '<C-j>', '<C-w>j', { noremap = true, desc = 'Go to window below' })
   M.set('n', '<C-k>', '<C-w>k', { noremap = true, desc = 'Go to window above' })
@@ -285,6 +286,7 @@ end)
 --
 -- Specific modules and utilities
 --
+
 M.now_if_args(function()
   require('mini.icons').setup()
   M.later(MiniIcons.tweak_lsp_kind)
@@ -294,20 +296,30 @@ M.now_if_args(function()
     'https://github.com/christoomey/vim-tmux-navigator',
     'https://github.com/nvim-lua/plenary.nvim',
     'https://github.com/b0o/SchemaStore.nvim',
+    'https://codeberg.org/andyg/leap.nvim',
     'https://github.com/tpope/vim-sleuth',
     'https://github.com/tpope/vim-fugitive',
   })
 
   require('mini.extra').setup()
-  require('mini.align').setup()
+  require('mini.git').setup()
+  require('mini.diff').setup()
   require('mini.cmdline').setup()
-  require('mini.move').setup()
-  require('mini.splitjoin').setup()
 
-  require('mini.jump2d').setup({
-    spotter = require('mini.jump2d').gen_spotter.pattern('[^%s%p]+'),
-    view = { dim = true, n_steps_ahead = 2 },
-  })
+  require('leap').opts.preview = function(ch0, ch1, ch2)
+    return not (ch1:match('%s') or (ch0:match('%a') and ch1:match('%a') and ch2:match('%a')))
+  end
+
+  -- Enable the traversal keys to repeat the previous search without
+  -- explicitly invoking Leap (`<cr><cr>...` instead of `s<cr><cr>...`):
+  local clever = require('leap.user').with_traversal_keys
+  local nxo = { 'n', 'x', 'o' }
+  local opts_fwd = { ['repeat'] = true, opts = clever('<cr>', '<bs>') }
+  local opts_backward = { ['repeat'] = true, opts = clever('<bs>', '<cr>'), backward = true }
+  M.set(nxo, '<cr>', function() require('leap').leap(opts_fwd) end)
+  M.set(nxo, '<bs>', function() require('leap').leap(opts_backward) end)
+  M.set({ 'n', 'x', 'o' }, 's', '<Plug>(leap)')
+  M.set('n', 'S', '<Plug>(leap-from-window)')
 
   M.set('n', '<C-h>', '<Cmd>TmuxNavigateLeft<CR>', { noremap = true, desc = 'Go to left window' })
   M.set('n', '<C-j>', '<Cmd>TmuxNavigateDown<CR>', { noremap = true, desc = 'Go to window below' })
@@ -503,14 +515,15 @@ M.now_if_args(function()
     -- 'pyright', 'harper_ls' 'tailwindcss',
   })
 
-  M.set('i', '<C-k>', '<Cmd>lua vim.lsp.buf.signature_help()<CR>', { desc = 'Show Signature Help' })
   M.set('n', 'E', '<Cmd>lua vim.diagnostic.open_float()<CR>', { desc = 'Open Current Diagnostic' })
-  M.set('n', 'gre', '<Cmd>lua vim.diagnostic.open_float()<CR>', { desc = 'Open Current Diagnostic' })
-  M.set('n', 'grx', '<Cmd>lua vim.diagnostic.setqflist()<CR>', { desc = 'Diagnostics' })
-  M.set('n', 'grd', '<Cmd>lua vim.lsp.buf.definition()<CR>', { desc = 'Definitions' })
+  M.set('n', 'gre', '<Cmd>lua vim.diagnostic.open_float()<CR>', { desc = 'vim.diagnostic.open_float()' })
+  M.set('n', 'grx', '<Cmd>lua vim.diagnostic.setqflist()<CR>', { desc = 'vim.diagnostic.setqflist()' })
+  M.set('n', 'grd', '<Cmd>lua vim.lsp.buf.definition()<CR>', { desc = 'vim.lsp.buf.definition()' })
 
   local autoformat = true
+
   vim.pack.add({ 'https://github.com/stevearc/conform.nvim' })
+
   require('conform').setup({
     notify_on_error = false,
     notify_no_formatters = false,
@@ -564,85 +577,3 @@ M.now_if_args(function()
 
   M.set('n', '<Leader>uf', function() autoformat = not autoformat end, { desc = 'Toggle autoformat' })
 end)
-
--- Mini.Files =====
--- require('mini.files').setup({
---   content = { prefix = function() end },
---   mappings = {
---     go_in = '',
---     go_in_plus = '<CR>',
---     go_out = '',
---     go_out_plus = '-',
---   },
---   windows = {
---     max_number = 1,
---     preview = false,
---     width_focus = math.floor(vim.o.columns * 1),
---     width_nofocus = math.floor(vim.o.columns * 0.59),
---     width_preview = math.floor(vim.o.columns * 0.59),
---   },
--- })
---
--- set('n', '<Leader>ef', function() MiniFiles.open(vim.api.nvim_buf_get_name(0), false) end, { desc = 'Explorer' })
---
--- local filter_show = function() return true end
--- local filter_hide = function(fs_entry) return not vim.startswith(fs_entry.name, '.') end
---
--- local show_dotfiles = true
--- local show_preview = false
---
--- local toggle_dotfiles = function()
---   show_dotfiles = not show_dotfiles
---   local new_filter = show_dotfiles and filter_show or filter_hide
---   MiniFiles.refresh({ content = { filter = new_filter } })
--- end
---
--- local toggle_preview = function()
---   show_preview = not show_preview
---   MiniFiles.refresh({
---     windows = {
---       max_number = show_preview and 2 or 1,
---       preview = show_preview and true or false,
---       width_focus = math.floor(vim.o.columns * (show_preview and 0.39 or 1)),
---     },
---   })
--- end
---
--- vim.api.nvim_create_autocmd('User', {
---   group = gr,
---   pattern = 'MiniFilesBufferCreate',
---   callback = function(e)
---     local buf_id = e.data.buf_id
---     vim.keymap.set('n', 'g.', toggle_dotfiles, { buffer = buf_id })
---     vim.keymap.set('n', 'gp', toggle_preview, { buffer = buf_id })
---   end,
--- })
---
--- vim.api.nvim_create_autocmd('User', {
---   pattern = 'MiniFilesExplorerClose',
---   group = gr,
---   callback = function()
---     show_dotfiles = true
---     show_preview = false
---   end,
--- })
---
--- vim.api.nvim_create_autocmd('User', {
---   pattern = 'MiniFilesExplorerOpen',
---   group = gr,
---   callback = function()
---     MiniFiles.set_bookmark('_', vim.fn.getcwd(), { desc = 'Working directory' })
---     MiniFiles.set_bookmark('@', vim.env.HOME .. '/Developer', { desc = 'Projects' })
---     MiniFiles.set_bookmark('.', vim.env.HOME, { desc = 'Home directory' })
---   end,
--- })
---
--- vim.api.nvim_create_autocmd('User', {
---   pattern = 'MiniFilesWindowUpdate',
---   group = gr,
---   callback = function(e)
---     local config = vim.api.nvim_win_get_config(e.data.win_id)
---     config.height = vim.o.lines
---     vim.api.nvim_win_set_config(e.data.win_id, config)
---   end,
--- })
