@@ -3,6 +3,12 @@ local M = {}
 M.set = vim.keymap.set
 
 vim.cmd.packadd([[nvim.difftool]])
+vim.cmd.packadd([[nvim.undotree]])
+vim.cmd.packadd([[cfilter]])
+
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+vim.g.loaded_spellfile_plugin = 1
 
 --
 -- Pre-Setup
@@ -49,10 +55,10 @@ M.now(function()
   local node_bin = vim.env.HOME .. '/.local/share/mise/installs/node/24/bin'
   vim.env.PATH = node_bin .. ':' .. vim.env.PATH
   vim.g.node_host_prog = node_bin .. '/node'
-  vim.g.loaded_netrw = 1
-  vim.g.loaded_netrwPlugin = 1
+
   vim.g.mapleader = ' '
   vim.g.maplocalleader = ','
+
   vim.o.autoindent = true
   vim.o.breakindent = true
   vim.o.clipboard = 'unnamedplus'
@@ -298,7 +304,7 @@ M.now_if_args(function()
     'https://github.com/b0o/SchemaStore.nvim',
     'https://codeberg.org/andyg/leap.nvim',
     'https://github.com/tpope/vim-sleuth',
-    'https://github.com/tpope/vim-fugitive',
+    -- 'https://github.com/tpope/vim-fugitive',
   })
 
   require('mini.extra').setup()
@@ -310,8 +316,6 @@ M.now_if_args(function()
     return not (ch1:match('%s') or (ch0:match('%a') and ch1:match('%a') and ch2:match('%a')))
   end
 
-  -- Enable the traversal keys to repeat the previous search without
-  -- explicitly invoking Leap (`<cr><cr>...` instead of `s<cr><cr>...`):
   local clever = require('leap.user').with_traversal_keys
   local nxo = { 'n', 'x', 'o' }
   local opts_fwd = { ['repeat'] = true, opts = clever('<cr>', '<bs>') }
