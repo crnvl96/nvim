@@ -304,7 +304,6 @@ M.now_if_args(function()
     'https://github.com/b0o/SchemaStore.nvim',
     'https://codeberg.org/andyg/leap.nvim',
     'https://github.com/tpope/vim-sleuth',
-    -- 'https://github.com/tpope/vim-fugitive',
   })
 
   require('mini.extra').setup()
