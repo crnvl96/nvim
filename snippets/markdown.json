@@ -1,7 +1,0 @@
-{
-  "Code Block": {
-    "description": "Create a code block",
-    "prefix": "codeb",
-    "body": "```$0\n```"
-  }
-}
