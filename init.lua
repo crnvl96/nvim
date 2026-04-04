@@ -13,6 +13,13 @@ vim.g.loaded_spellfile_plugin = 1
 --
 -- Pre-Setup
 --
+
+local nx = { 'n', 'x' }
+local nxo = { 'n', 'x', 'o' }
+local nt = { 'n', 't' }
+local nix = { 'n', 'i', 'x' }
+local ic = { 'i', 'c' }
+
 M.gr = vim.api.nvim_create_augroup('custom-config', {})
 
 function M.on_packchanged(name, kinds, callback)
@@ -133,11 +140,6 @@ M.now(function()
     })
   end)
 
-  local nx = { 'n', 'x' }
-  local nxo = { 'n', 'x', 'o' }
-  local nt = { 'n', 't' }
-  local nix = { 'n', 'i', 'x' }
-
   M.set(nx, 'j', [[v:count == 0 ? 'gj' : 'j']], { expr = true, desc = 'Go down one visual line' })
   M.set(nx, 'k', [[v:count == 0 ? 'gk' : 'k']], { expr = true, desc = 'Go up one visual line' })
   M.set(nt, '<C-Left>', '<Cmd>vertical resize -20<CR>', { noremap = true, desc = 'Decrease window width' })
@@ -164,7 +166,7 @@ M.now(function()
   M.set('c', '<M-f>', '<C-Right>', { noremap = true, desc = 'Move cursor to left word' })
   M.set('c', '<M-b>', '<C-Left>', { noremap = true, desc = 'Move cursor to right word' })
 
-  M.set(nxo, '<A-o>', function()
+  M.set(nxo, '<M-o>', function()
     if vim.treesitter.get_parser(nil, nil, { error = false }) then
       require('vim.treesitter._select').select_parent(vim.v.count1)
     else
@@ -172,7 +174,7 @@ M.now(function()
     end
   end, { desc = 'Select parent treesitter node or outer incremental lsp selections' })
 
-  M.set(nxo, '<A-i>', function()
+  M.set(nxo, '<M-i>', function()
     if vim.treesitter.get_parser(nil, nil, { error = false }) then
       require('vim.treesitter._select').select_child(vim.v.count1)
     else
@@ -195,15 +197,15 @@ M.now(function()
         { mode = 'n', keys = '\\' },
         { mode = 'i', keys = '<C-x>' },
         { mode = 'n', keys = '<C-w>' },
-        { mode = { 'n', 'x' }, keys = '<Leader>' },
-        { mode = { 'n', 'x' }, keys = '[' },
-        { mode = { 'n', 'x' }, keys = ']' },
-        { mode = { 'n', 'x' }, keys = 'g' },
-        { mode = { 'n', 'x' }, keys = "'" },
-        { mode = { 'n', 'x' }, keys = '`' },
-        { mode = { 'n', 'x' }, keys = '"' },
-        { mode = { 'i', 'c' }, keys = '<C-r>' },
-        { mode = { 'n', 'x' }, keys = 'z' },
+        { mode = nx, keys = '<Leader>' },
+        { mode = nx, keys = '[' },
+        { mode = nx, keys = ']' },
+        { mode = nx, keys = 'g' },
+        { mode = nx, keys = "'" },
+        { mode = nx, keys = '`' },
+        { mode = nx, keys = '"' },
+        { mode = ic, keys = '<C-r>' },
+        { mode = nx, keys = 'z' },
       },
       clues = {
         M.clues,
@@ -325,23 +327,13 @@ M.now_if_args(function()
   })
 
   require('mini.extra').setup()
-  require('mini.diff').setup()
+  require('mini.diff').setup({ view = { style = 'number' } })
   require('mini.cmdline').setup()
-  require('mini.git').setup({
-    command = {
-      split = 'vertical',
-    },
-  })
+  require('mini.git').setup({ command = { split = 'vertical' } })
+  require('leap').opts.safe_labels = ''
 
   vim.api.nvim_create_autocmd('User', {
-    pattern = 'MiniGitUpdated',
-    callback = function(data)
-      local summary = vim.b[data.buf].minigit_summary
-      vim.b[data.buf].minigit_summary_string = summary.head_name or ''
-    end,
-  })
-
-  vim.api.nvim_create_autocmd('User', {
+    group = M.gr,
     pattern = 'MiniGitCommandSplit',
     callback = function(au_data)
       if au_data.data.git_subcommand == 'blame' then
@@ -358,40 +350,11 @@ M.now_if_args(function()
     end,
   })
 
-  require('leap').opts.preview = function(ch0, ch1, ch2)
-    return not (ch1:match('%s') or (ch0:match('%a') and ch1:match('%a') and ch2:match('%a')))
-  end
-
-  require('leap').opts.safe_labels = ''
-
-  local clever = require('leap.user').with_traversal_keys
-  local clever_f, clever_t = clever('f', 'F'), clever('t', 'T')
-  local nxo = { 'n', 'x', 'o' }
-
-  local function ft(key_specific_args)
-    require('leap').leap(vim.tbl_deep_extend('keep', key_specific_args, {
-      inputlen = 1,
-      inclusive = true,
-      opts = {
-        labels = '',
-        safe_labels = vim.fn.mode(1):match('o') and '' or nil,
-      },
-    }))
-  end
-
-  M.set(nxo, 'f', function() ft({ opts = clever_f }) end)
-  M.set(nxo, 'F', function() ft({ backward = true, opts = clever_f }) end)
-  M.set(nxo, 't', function() ft({ offset = -1, opts = clever_t }) end)
-  M.set(nxo, 'T', function() ft({ backward = true, offset = 1, opts = clever_t }) end)
-  local opts_fwd = { ['repeat'] = true, opts = clever('<cr>', '<bs>') }
-  local opts_backward = { ['repeat'] = true, opts = clever('<bs>', '<cr>'), backward = true }
-  M.set(nxo, '<cr>', function() require('leap').leap(opts_fwd) end)
-  M.set(nxo, '<bs>', function() require('leap').leap(opts_backward) end)
-  M.set({ 'n', 'x', 'o' }, 's', '<Plug>(leap)')
+  M.set(nxo, 's', '<Plug>(leap)')
   M.set('n', 'S', '<Plug>(leap-from-window)')
 
   M.set('n', '<Leader>gs', '<Cmd>Git status<CR>', { desc = 'Git status' })
-  M.set('n', '<Leader>gd', '<Cmd>Git diff<CR>', { desc = 'Git diff' })
+  M.set('n', '<Leader>gd', '<Cmd>Git diff --no-prefix -U0<CR>', { desc = 'Git diff' })
   M.set('n', '<Leader>ga', '<Cmd>Git add -- %<CR>', { desc = 'Git add %' })
   M.set('n', '<Leader>gc', '<Cmd>Git commit<CR>', { desc = 'Git commit' })
   M.set('n', '<Leader>gb', '<Cmd>vertical Git blame -- %<CR>', { desc = 'Git blame %' })
@@ -418,6 +381,15 @@ M.now_if_args(function()
     'https://github.com/nvim-treesitter/nvim-treesitter-textobjects',
     'https://github.com/windwp/nvim-ts-autotag',
     'https://github.com/folke/ts-comments.nvim',
+  })
+
+  require('mini.ai').setup({
+    custom_textobjects = {
+      g = MiniExtra.gen_ai_spec.buffer(),
+      f = require('mini.ai').gen_spec.treesitter({ a = '@function.outer', i = '@function.inner' }),
+      o = require('mini.ai').gen_spec.treesitter({ a = '@block.outer', i = '@block.inner' }),
+    },
+    search_method = 'cover',
   })
 
   require('nvim-ts-autotag').setup()
@@ -482,11 +454,12 @@ M.now_if_args(function()
     keymaps = { show_help = '`' },
   })
 
+  require('grug-far').setup({ disableBufferLineNumbers = false })
+
   M.set('n', '<Leader>er', '<Cmd>Yazi toggle<CR>', { desc = 'Yazi (Resume)' })
   M.set('n', '<Leader>ef', '<Cmd>Yazi<CR>', { desc = 'Yazi' })
   M.set('n', '<Leader>ew', '<Cmd>Yazi cwd<CR>', { desc = 'Yazi (CWD)' })
 
-  require('grug-far').setup({ disableBufferLineNumbers = false })
   M.set('n', '<Leader>us', function() require('grug-far').open({ transient = true }) end, { desc = 'GrugFar' })
 
   require('mini.pick').setup()
