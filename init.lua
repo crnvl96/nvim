@@ -99,6 +99,31 @@ vim.api.nvim_create_autocmd({ 'InsertEnter', 'CmdlineEnter' }, {
   callback = vim.schedule_wrap(function() vim.cmd.nohlsearch() end),
 })
 
+vim.api.nvim_create_autocmd('BufReadPre', {
+  group = M.gr,
+  callback = function(e)
+    vim.api.nvim_create_autocmd('FileType', {
+      buffer = e.buf,
+      once = true,
+      callback = function()
+        if vim.bo.buftype ~= '' then return end
+
+        if vim.tbl_contains({ 'gitcommit', 'gitrebase' }, vim.bo.filetype) then return end
+
+        local cursor_line = vim.api.nvim_win_get_cursor(0)[1]
+        if cursor_line > 1 then return end
+
+        local mark_line = vim.api.nvim_buf_get_mark(0, [["]])[1]
+        local n_lines = vim.api.nvim_buf_line_count(0)
+        if not (1 <= mark_line and mark_line <= n_lines) then return end
+
+        vim.cmd([[normal! g`"zv]])
+        vim.cmd([[normal! zz]])
+      end,
+    })
+  end,
+})
+
 vim.api.nvim_create_autocmd('BufEnter', {
   group = M.gr,
   callback = function(e)
@@ -116,7 +141,6 @@ vim.api.nvim_create_autocmd('BufEnter', {
 vim.cmd([[colorscheme miniwinter]])
 
 require('mini.misc').setup()
-require('mini.misc').setup_restore_cursor()
 
 require('mini.colors')
   .get_colorscheme()
