@@ -30,16 +30,14 @@ function M.on_packchanged(name, kinds, callback)
 end
 
 vim.pack.add({
+  'https://github.com/nvim-lua/plenary.nvim',
   'https://github.com/nvim-mini/mini.nvim',
   'https://github.com/christoomey/vim-tmux-navigator',
-  'https://github.com/nvim-lua/plenary.nvim',
-  'https://github.com/b0o/SchemaStore.nvim',
   'https://codeberg.org/andyg/leap.nvim',
   'https://github.com/tpope/vim-sleuth',
   'https://github.com/tpope/vim-fugitive',
   'https://github.com/mikavilpas/yazi.nvim',
   'https://github.com/stevearc/conform.nvim',
-  'https://github.com/neovim/nvim-lspconfig',
 })
 
 local node_bin = vim.env.HOME .. '/.local/share/mise/installs/node/24/bin'
@@ -91,9 +89,6 @@ vim.o.wildoptions = 'pum,tagfile,fuzzy'
 vim.o.winborder = 'single'
 vim.o.wrap = false
 
-vim.cmd('filetype plugin indent on')
-if vim.fn.exists('syntax_on') ~= 1 then vim.cmd('syntax enable') end
-
 vim.api.nvim_create_autocmd('TextYankPost', {
   group = M.gr,
   callback = function() vim.highlight.on_yank() end,
@@ -120,6 +115,9 @@ vim.api.nvim_create_autocmd('BufEnter', {
 
 vim.cmd([[colorscheme miniwinter]])
 
+require('mini.misc').setup()
+require('mini.misc').setup_restore_cursor()
+
 require('mini.colors')
   .get_colorscheme()
   :add_transparency({
@@ -127,8 +125,6 @@ require('mini.colors')
     statuscolumn = true,
   })
   :apply()
-
-vim.cmd('highlight ColorColumn ctermbg=lightgrey guibg=lightgrey')
 
 require('mini.extra').setup()
 require('mini.cmdline').setup()
@@ -153,24 +149,27 @@ require('mini.completion').setup({
   },
 })
 
-local servers = {
-  'biome',
-  'eslint',
-  'gopls',
-  'lua_ls',
-  'oxfmt',
-  'oxlint',
-  'rubocop',
-  'ruby_lsp',
-  'ruff',
-  'tinymist',
-  'tsgo',
-  'ty',
-  'jsonls',
-  'yamlls',
-}
+vim.api.nvim_create_autocmd({ 'BufReadPre', 'BufNewFile' }, {
+  once = true,
+  group = M.gr,
+  callback = function()
+    vim.lsp.config('*', { capabilities = MiniCompletion.get_lsp_capabilities() })
+    local servers = vim
+      .iter(vim.api.nvim_get_runtime_file('lsp/*.lua', true))
+      :map(function(file) return vim.fn.fnamemodify(file, ':t:r') end)
+      :totable()
+    vim.lsp.enable(servers)
+  end,
+})
 
-vim.lsp.enable(servers)
+vim.api.nvim_create_autocmd('LspAttach', {
+  group = M.gr,
+  callback = function(e)
+    vim.bo[e.buf].omnifunc = 'v:lua.MiniCompletion.completefunc_lsp'
+    local client = vim.lsp.get_client_by_id(e.data.client_id)
+    if not client then return end
+  end,
+})
 
 local autoformat = true
 
@@ -226,17 +225,6 @@ vim.ui.select = function(items, opts, on_choice)
   })
 end
 
-vim.lsp.config('*', { capabilities = MiniCompletion.get_lsp_capabilities() })
-
-vim.api.nvim_create_autocmd('LspAttach', {
-  group = M.gr,
-  callback = function(e)
-    vim.bo[e.buf].omnifunc = 'v:lua.MiniCompletion.completefunc_lsp'
-    local client = vim.lsp.get_client_by_id(e.data.client_id)
-    if not client then return end
-  end,
-})
-
 M.set(nx, 'j', [[v:count == 0 ? 'gj' : 'j']], { expr = true, desc = 'Go down one visual line' })
 M.set(nx, 'k', [[v:count == 0 ? 'gk' : 'k']], { expr = true, desc = 'Go up one visual line' })
 M.set(nt, '<C-Left>', '<Cmd>vertical resize -20<CR>', { noremap = true, desc = 'Decrease window width' })
@@ -259,23 +247,9 @@ M.set('c', '<C-b>', '<Left>', { noremap = true, desc = 'Move cursor to the left 
 M.set('c', '<C-a>', '<Home>', { noremap = true, desc = 'Move cursor to start of line' })
 M.set('c', '<C-e>', '<End>', { noremap = true, desc = 'Move cursor to end of line' })
 M.set('c', '<C-g>', '<C-c>', { noremap = true, desc = 'Quit/Exit from cmdline' })
-M.set('c', '<M-j>', '<C-f>', { noremap = true, desc = 'Access cmdline history' })
+M.set('c', '<M-h>', '<C-f>', { noremap = true, desc = 'Access cmdline history' })
 M.set('c', '<M-f>', '<C-Right>', { noremap = true, desc = 'Move cursor to left word' })
 M.set('c', '<M-b>', '<C-Left>', { noremap = true, desc = 'Move cursor to right word' })
-M.set(nxo, '<M-o>', function()
-  if vim.treesitter.get_parser(nil, nil, { error = false }) then
-    require('vim.treesitter._select').select_parent(vim.v.count1)
-  else
-    vim.lsp.buf.selection_range(vim.v.count1)
-  end
-end, { desc = 'Select parent treesitter node or outer incremental lsp selections' })
-M.set(nxo, '<M-i>', function()
-  if vim.treesitter.get_parser(nil, nil, { error = false }) then
-    require('vim.treesitter._select').select_child(vim.v.count1)
-  else
-    vim.lsp.buf.selection_range(-vim.v.count1)
-  end
-end, { desc = 'Select child treesitter node or inner incremental lsp selections' })
 M.set('n', '<Leader>uf', function() autoformat = not autoformat end, { desc = 'Toggle autoformat' })
 M.set(nxo, 's', '<Plug>(leap)')
 M.set('n', 'S', '<Plug>(leap-from-window)')
