@@ -13,7 +13,6 @@ vim.g.loaded_spellfile_plugin = 1
 --
 -- Pre-Setup
 --
-
 local nx = { 'n', 'x' }
 local nxo = { 'n', 'x', 'o' }
 local nt = { 'n', 't' }
@@ -162,7 +161,7 @@ M.now(function()
   M.set('c', '<C-a>', '<Home>', { noremap = true, desc = 'Move cursor to start of line' })
   M.set('c', '<C-e>', '<End>', { noremap = true, desc = 'Move cursor to end of line' })
   M.set('c', '<C-g>', '<C-c>', { noremap = true, desc = 'Quit/Exit from cmdline' })
-  M.set('c', '<M-h>', '<C-f>', { noremap = true, desc = 'Access cmdline history' })
+  M.set('c', '<M-j>', '<C-f>', { noremap = true, desc = 'Access cmdline history' })
   M.set('c', '<M-f>', '<C-Right>', { noremap = true, desc = 'Move cursor to left word' })
   M.set('c', '<M-b>', '<C-Left>', { noremap = true, desc = 'Move cursor to right word' })
 
@@ -324,41 +323,42 @@ M.now_if_args(function()
     'https://github.com/b0o/SchemaStore.nvim',
     'https://codeberg.org/andyg/leap.nvim',
     'https://github.com/tpope/vim-sleuth',
+    'https://github.com/tpope/vim-fugitive',
   })
 
   require('mini.extra').setup()
-  require('mini.diff').setup({ view = { style = 'number' } })
   require('mini.cmdline').setup()
-  require('mini.git').setup({ command = { split = 'vertical' } })
+  -- require('mini.diff').setup({ view = { style = 'number' } })
+  -- require('mini.git').setup({ command = { split = 'vertical' } })
   require('leap').opts.safe_labels = ''
 
-  vim.api.nvim_create_autocmd('User', {
-    group = M.gr,
-    pattern = 'MiniGitCommandSplit',
-    callback = function(au_data)
-      if au_data.data.git_subcommand == 'blame' then
-        local win_src = au_data.data.win_source
-        vim.wo.wrap = false
-        vim.fn.winrestview({ topline = vim.fn.line('w0', win_src) })
-        vim.api.nvim_win_set_cursor(0, { vim.fn.line('.', win_src), 0 })
-        vim.wo[win_src].scrollbind, vim.wo.scrollbind = true, true
-      end
-
-      if au_data.data.git_subcommand == 'status' then
-        vim.bo[vim.api.nvim_win_get_buf(au_data.data.win_stdout)].filetype = 'gitstatus'
-      end
-    end,
-  })
+  -- vim.api.nvim_create_autocmd('User', {
+  --   group = M.gr,
+  --   pattern = 'MiniGitCommandSplit',
+  --   callback = function(au_data)
+  --     if au_data.data.git_subcommand == 'blame' then
+  --       local win_src = au_data.data.win_source
+  --       vim.wo.wrap = false
+  --       vim.fn.winrestview({ topline = vim.fn.line('w0', win_src) })
+  --       vim.api.nvim_win_set_cursor(0, { vim.fn.line('.', win_src), 0 })
+  --       vim.wo[win_src].scrollbind, vim.wo.scrollbind = true, true
+  --     end
+  --
+  --     if au_data.data.git_subcommand == 'status' then
+  --       vim.bo[vim.api.nvim_win_get_buf(au_data.data.win_stdout)].filetype = 'gitstatus'
+  --     end
+  --   end,
+  -- })
 
   M.set(nxo, 's', '<Plug>(leap)')
   M.set('n', 'S', '<Plug>(leap-from-window)')
 
-  M.set('n', '<Leader>gs', '<Cmd>Git status<CR>', { desc = 'Git status' })
-  M.set('n', '<Leader>gd', '<Cmd>Git diff --no-prefix -U0<CR>', { desc = 'Git diff' })
-  M.set('n', '<Leader>ga', '<Cmd>Git add -- %<CR>', { desc = 'Git add %' })
+  -- M.set('n', '<Leader>gs', '<Cmd>Git status<CR>', { desc = 'Git status' })
+  -- M.set('n', '<Leader>gd', '<Cmd>Git diff --no-prefix<CR>', { desc = 'Git diff' })
+  -- M.set('n', '<Leader>ga', '<Cmd>Git add -- %<CR>', { desc = 'Git add %' })
   M.set('n', '<Leader>gc', '<Cmd>Git commit<CR>', { desc = 'Git commit' })
-  M.set('n', '<Leader>gb', '<Cmd>vertical Git blame -- %<CR>', { desc = 'Git blame %' })
-  M.set('n', '<Leader>go', '<Cmd>lua MiniDiff.toggle_overlay()<CR>', { desc = 'Git overlay' })
+  -- M.set('n', '<Leader>gb', '<Cmd>vertical Git blame -- %<CR>', { desc = 'Git blame %' })
+  -- M.set('n', '<Leader>go', '<Cmd>lua MiniDiff.toggle_overlay()<CR>', { desc = 'Git overlay' })
 
   M.set('n', '<C-h>', '<Cmd>TmuxNavigateLeft<CR>', { noremap = true, desc = 'Go to left window' })
   M.set('n', '<C-j>', '<Cmd>TmuxNavigateDown<CR>', { noremap = true, desc = 'Go to window below' })
@@ -395,13 +395,41 @@ M.now_if_args(function()
   require('nvim-ts-autotag').setup()
   require('ts-comments').setup({ lang = { typst = { '// %s', '/* %s */' } } })
 
-  -- stylua: ignore
   local parsers = {
     -- NOTE: parsers for c, lua, vim, vimdoc, query and markdown are already included in neovim
-    'bash',      'c',       'css',   'diff',     'dockerfile', 'git_config', 'git_rebase', 'gitattributes', 'gitcommit',
-    'gitignore', 'go',      'gomod', 'gosum',    'gowork',     'html',       'javascript', 'json',          'json5',
-    'jsx',       'mermaid', 'lua',   'markdown', 'python',     'regex',      'ruby',       'toml',          'tsx', 'typescript', 'typst',
-    'vim',       'vimdoc',  'yaml',  'jsdoc',
+    'bash',
+    'c',
+    'css',
+    'diff',
+    'dockerfile',
+    'git_config',
+    'git_rebase',
+    'gitattributes',
+    'gitcommit',
+    'gitignore',
+    'go',
+    'gomod',
+    'gosum',
+    'gowork',
+    'html',
+    'javascript',
+    'json',
+    'json5',
+    'jsx',
+    'mermaid',
+    'lua',
+    'markdown',
+    'python',
+    'regex',
+    'ruby',
+    'toml',
+    'tsx',
+    'typescript',
+    'typst',
+    'vim',
+    'vimdoc',
+    'yaml',
+    'jsdoc',
   }
 
   require('nvim-treesitter').install(vim
@@ -426,16 +454,6 @@ M.now_if_args(function()
     group = M.gr,
     pattern = pat,
     callback = function(ev) vim.treesitter.start(ev.buf) end,
-  })
-
-  vim.api.nvim_create_autocmd('FileType', {
-    group = M.gr,
-    pattern = pat,
-    callback = function()
-      vim.cmd('setlocal formatoptions-=c formatoptions-=o')
-      vim.wo[0][0].foldexpr = 'v:lua.vim.treesitter.foldexpr()'
-      vim.wo[0][0].foldmethod = 'expr'
-    end,
   })
 end)
 

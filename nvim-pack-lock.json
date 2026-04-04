@@ -12,21 +12,9 @@
       "rev": "dc4684e163971bb1f5bfb93fbd4bb3e892bf9b15",
       "src": "https://github.com/MagicDuck/grug-far.nvim"
     },
-    "img-clip.nvim": {
-      "rev": "b6ddfb97b5600d99afe3452d707444afda658aca",
-      "src": "https://github.com/HakonHarnes/img-clip.nvim"
-    },
     "leap.nvim": {
       "rev": "b960d5038c5c505c52e56a54490f9bbb1f0e6ef6",
       "src": "https://codeberg.org/andyg/leap.nvim"
-    },
-    "markdown-preview.nvim": {
-      "rev": "a923f5fc5ba36a3b17e289dc35dc17f66d0548ee",
-      "src": "https://github.com/iamcco/markdown-preview.nvim"
-    },
-    "mermaid.nvim": {
-      "rev": "a86a74e1366320703dd66bcba924c13f648fd3eb",
-      "src": "https://github.com/kevalin/mermaid.nvim"
     },
     "mini.nvim": {
       "rev": "402ee6c6ec8ea44b22330446c8fb4e615fd3953e",
@@ -56,10 +44,6 @@
       "rev": "123a9fb12e7229342f807ec9e6de478b1102b041",
       "src": "https://github.com/folke/ts-comments.nvim"
     },
-    "typst-preview.nvim": {
-      "rev": "87db18b8d19c8b0eed399f52e4c527ce5afe4817",
-      "src": "https://github.com/chomosuke/typst-preview.nvim"
-    },
     "vim-fugitive": {
       "rev": "3b753cf8c6a4dcde6edee8827d464ba9b8c4a6f0",
       "src": "https://github.com/tpope/vim-fugitive"
@@ -73,7 +57,7 @@
       "src": "https://github.com/christoomey/vim-tmux-navigator"
     },
     "yazi.nvim": {
-      "rev": "88b5826ac57ccf172e1e7d9d0762faa9c2505a69",
+      "rev": "9c8d2e2d51fd99e49b2f3ba581d2e342a57d3c14",
       "src": "https://github.com/mikavilpas/yazi.nvim"
     }
   }
