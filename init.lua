@@ -99,24 +99,35 @@ vim.api.nvim_create_autocmd({ 'InsertEnter', 'CmdlineEnter' }, {
   callback = vim.schedule_wrap(function() vim.cmd.nohlsearch() end),
 })
 
+vim.api.nvim_create_autocmd('FileType', {
+  group = M.gr,
+  pattern = vim
+    .iter(vim.api.nvim_get_runtime_file('parser/*.so', true))
+    :map(function(file) return vim.fn.fnamemodify(file, ':t:r') end)
+    :map(function(file) return vim.treesitter.language.get_filetypes(file) end)
+    :flatten()
+    :totable(),
+  callback = function(e)
+    local ft = vim.bo[e.buf].filetype
+    if vim.treesitter.language.add(ft) then vim.treesitter.start(e.buf) end
+  end,
+})
+
 vim.api.nvim_create_autocmd('BufReadPre', {
   group = M.gr,
   callback = function(e)
     vim.api.nvim_create_autocmd('FileType', {
+      group = M.gr,
       buffer = e.buf,
       once = true,
       callback = function()
         if vim.bo.buftype ~= '' then return end
-
         if vim.tbl_contains({ 'gitcommit', 'gitrebase' }, vim.bo.filetype) then return end
-
         local cursor_line = vim.api.nvim_win_get_cursor(0)[1]
         if cursor_line > 1 then return end
-
         local mark_line = vim.api.nvim_buf_get_mark(0, [["]])[1]
         local n_lines = vim.api.nvim_buf_line_count(0)
         if not (1 <= mark_line and mark_line <= n_lines) then return end
-
         vim.cmd([[normal! g`"zv]])
         vim.cmd([[normal! zz]])
       end,
@@ -140,8 +151,6 @@ vim.api.nvim_create_autocmd('BufEnter', {
 
 vim.cmd([[colorscheme miniwinter]])
 
-require('mini.misc').setup()
-
 require('mini.colors')
   .get_colorscheme()
   :add_transparency({
@@ -160,7 +169,34 @@ require('yazi').setup({
 })
 
 require('mini.pick').setup()
+
+---@diagnostic disable-next-line: duplicate-set-field
+vim.ui.select = function(items, opts, on_choice)
+  return MiniPick.ui_select(items, opts, on_choice, {
+    window = {
+      config = {
+        relative = 'cursor',
+        anchor = 'NW',
+        row = 0,
+        col = 0,
+        width = 80,
+        height = 15,
+      },
+    },
+  })
+end
+
 require('leap').opts.safe_labels = ''
+
+local ai = require('mini.ai')
+ai.setup({
+  custom_textobjects = {
+    g = MiniExtra.gen_ai_spec.buffer(),
+    f = ai.gen_spec.treesitter({ a = '@function.outer', i = '@function.inner' }),
+    o = ai.gen_spec.treesitter({ a = '@block.outer', i = '@block.inner' }),
+  },
+  search_method = 'cover',
+})
 
 require('mini.completion').setup({
   lsp_completion = {
@@ -173,6 +209,11 @@ require('mini.completion').setup({
   },
 })
 
+vim.api.nvim_create_autocmd('LspAttach', {
+  group = M.gr,
+  callback = function(e) vim.bo[e.buf].omnifunc = 'v:lua.MiniCompletion.completefunc_lsp' end,
+})
+
 vim.api.nvim_create_autocmd({ 'BufReadPre', 'BufNewFile' }, {
   once = true,
   group = M.gr,
@@ -183,15 +224,6 @@ vim.api.nvim_create_autocmd({ 'BufReadPre', 'BufNewFile' }, {
       :map(function(file) return vim.fn.fnamemodify(file, ':t:r') end)
       :totable()
     vim.lsp.enable(servers)
-  end,
-})
-
-vim.api.nvim_create_autocmd('LspAttach', {
-  group = M.gr,
-  callback = function(e)
-    vim.bo[e.buf].omnifunc = 'v:lua.MiniCompletion.completefunc_lsp'
-    local client = vim.lsp.get_client_by_id(e.data.client_id)
-    if not client then return end
   end,
 })
 
@@ -210,21 +242,9 @@ require('conform').setup({
     oxfmt = { require_cwd = false },
   },
   formatters_by_ft = {
-    javascript = { 'oxfmt', lsp_format = 'prefer', timeout_ms = 1000 },
-    typescript = { 'oxfmt', lsp_format = 'prefer', timeout_ms = 1000 },
-    javascriptreact = { 'oxfmt', lsp_format = 'prefer', timeout_ms = 1000 },
-    typescriptreact = { 'oxfmt', lsp_format = 'prefer', timeout_ms = 1000 },
-    typst = { 'typstyle', lsp_format = 'prefer', timeout_ms = 1000 },
-    go = { 'gofumpt', lsp_format = 'prefer', timeout_ms = 1000 },
-    json = { 'oxfmt', lsp_format = 'prefer', name = 'oxfmt', timeout_ms = 1000 },
-    jsonc = { 'oxfmt', lsp_format = 'prefer', name = 'oxfmt', timeout_ms = 1000 },
-    jsonc5 = { 'oxfmt', lsp_format = 'prefer', name = 'oxfmt', timeout_ms = 1000 },
-    css = { 'oxfmt' },
-    yaml = { 'oxfmt' },
     markdown = { 'oxfmt', 'injected' },
     python = { 'ruff_organize_imports', 'ruff_fix', 'ruff_format' },
     lua = { 'stylua' },
-    ruby = { 'rubocop' },
     ['_'] = { 'trim_whitespace', 'trim_newline' },
   },
   format_on_save = function()
@@ -232,22 +252,6 @@ require('conform').setup({
     return {}
   end,
 })
-
----@diagnostic disable-next-line: duplicate-set-field
-vim.ui.select = function(items, opts, on_choice)
-  return MiniPick.ui_select(items, opts, on_choice, {
-    window = {
-      config = {
-        relative = 'cursor',
-        anchor = 'NW',
-        row = 0,
-        col = 0,
-        width = 80,
-        height = 15,
-      },
-    },
-  })
-end
 
 M.set(nx, 'j', [[v:count == 0 ? 'gj' : 'j']], { expr = true, desc = 'Go down one visual line' })
 M.set(nx, 'k', [[v:count == 0 ? 'gk' : 'k']], { expr = true, desc = 'Go up one visual line' })
