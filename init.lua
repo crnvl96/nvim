@@ -5,10 +5,16 @@ M.set = vim.keymap.set
 vim.cmd.packadd([[nvim.difftool]])
 vim.cmd.packadd([[nvim.undotree]])
 vim.cmd.packadd([[cfilter]])
+vim.cmd([[colorscheme ham]])
 
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 vim.g.loaded_spellfile_plugin = 1
+
+require('vim._core.ui2').enable({
+  enable = true,
+  msg = { targets = 'msg' },
+})
 
 local nx = { 'n', 'x' }
 local nxo = { 'n', 'x', 'o' }
@@ -50,27 +56,18 @@ vim.g.maplocalleader = ','
 vim.o.autoindent = true
 vim.o.breakindent = true
 vim.o.clipboard = 'unnamedplus'
-vim.o.cmdheight = 1
-vim.o.completeopt = 'menu,menuone,popup,fuzzy,noinsert,noselect,nosort'
-vim.o.completetimeout = 100
 vim.o.expandtab = true
-vim.o.foldcolumn = '0'
-vim.o.foldlevel = 10
-vim.o.foldlevelstart = 99
-vim.o.foldnestmax = 10
-vim.o.foldtext = ''
 vim.o.ignorecase = true
 vim.o.incsearch = true
 vim.o.infercase = true
-vim.o.laststatus = 0
 vim.o.linebreak = true
 vim.o.mouse = 'a'
 vim.o.mousescroll = 'ver:1,hor:2'
 vim.o.number = true
-vim.o.pumborder = 'none'
 vim.o.pummaxwidth = 100
 vim.o.relativenumber = true
 vim.o.ruler = false
+vim.o.cmdheight = 0
 vim.o.scrolloff = 8
 vim.o.shiftwidth = 4
 vim.o.switchbuf = 'usetab'
@@ -85,9 +82,12 @@ vim.o.tabstop = 4
 vim.o.undofile = true
 vim.o.updatetime = 1000
 vim.o.virtualedit = 'block'
-vim.o.wildoptions = 'pum,tagfile,fuzzy'
 vim.o.winborder = 'single'
+
 vim.o.wrap = false
+
+vim.opt.completeopt:append('fuzzy,menuone,noinsert,noselect,popup')
+vim.opt.wildoptions:append('fuzzy,exacttext')
 
 vim.api.nvim_create_autocmd('TextYankPost', {
   group = M.gr,
@@ -149,25 +149,9 @@ vim.api.nvim_create_autocmd('BufEnter', {
   end,
 })
 
-vim.cmd([[colorscheme miniwinter]])
-
-require('mini.colors')
-  .get_colorscheme()
-  :add_transparency({
-    float = true,
-    statuscolumn = true,
-  })
-  :apply()
-
 require('mini.extra').setup()
 require('mini.cmdline').setup()
-
-require('yazi').setup({
-  floating_window_scaling_factor = 0.8,
-  open_for_directories = true,
-  keymaps = { show_help = '`' },
-})
-
+require('yazi').setup()
 require('mini.pick').setup()
 
 ---@diagnostic disable-next-line: duplicate-set-field
@@ -193,7 +177,6 @@ ai.setup({
   custom_textobjects = {
     g = MiniExtra.gen_ai_spec.buffer(),
     f = ai.gen_spec.treesitter({ a = '@function.outer', i = '@function.inner' }),
-    o = ai.gen_spec.treesitter({ a = '@block.outer', i = '@block.inner' }),
   },
   search_method = 'cover',
 })
@@ -307,6 +290,5 @@ M.set('n', '<Leader>fr', '<Cmd>Pick resume<CR>', { desc = 'Resume last picker' }
 M.set('n', '<Leader>fu', '<Cmd>Pick git_hunks<CR>', { desc = 'Git hunks' })
 M.set('n', '<Leader>fU', '<Cmd>Pick git_hunks scope="staged"<CR>', { desc = 'Git hunks' })
 M.set('n', 'E', '<Cmd>lua vim.diagnostic.open_float()<CR>', { desc = 'Open Current Diagnostic' })
-M.set('n', 'gre', '<Cmd>lua vim.diagnostic.open_float()<CR>', { desc = 'vim.diagnostic.open_float()' })
-M.set('n', 'grx', '<Cmd>lua vim.diagnostic.setqflist()<CR>', { desc = 'vim.diagnostic.setqflist()' })
 M.set('n', 'grd', '<Cmd>lua vim.lsp.buf.definition()<CR>', { desc = 'vim.lsp.buf.definition()' })
+M.set('n', 'grD', '<Cmd>lua vim.diagnostic.setqflist()<CR>', { desc = 'vim.diagnostic.setqflist()' })

@@ -25,7 +25,6 @@ return {
       '.git',
     },
   },
-  ---@type lspconfig.settings.lua_ls
   settings = {
     Lua = {
       codeLens = {
