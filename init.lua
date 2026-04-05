@@ -19,6 +19,8 @@ require('vim._core.ui2').enable({
 local nx = { 'n', 'x' }
 local nt = { 'n', 't' }
 local nix = { 'n', 'i', 'x' }
+local conform_should_autoformat = true
+local node_bin = vim.env.HOME .. '/.local/share/mise/installs/node/24/bin'
 
 M.gr = vim.api.nvim_create_augroup('custom-config', {})
 
@@ -34,6 +36,22 @@ function M.on_packchanged(name, kinds, callback)
   })
 end
 
+---@diagnostic disable-next-line: duplicate-set-field
+vim.ui.select = function(items, opts, on_choice)
+  return MiniPick.ui_select(items, opts, on_choice, {
+    window = {
+      config = {
+        relative = 'cursor',
+        anchor = 'NW',
+        row = 0,
+        col = 0,
+        width = 80,
+        height = 15,
+      },
+    },
+  })
+end
+
 vim.pack.add({
   'https://github.com/nvim-lua/plenary.nvim',
   'https://github.com/nvim-mini/mini.nvim',
@@ -44,7 +62,6 @@ vim.pack.add({
   'https://github.com/stevearc/conform.nvim',
 })
 
-local node_bin = vim.env.HOME .. '/.local/share/mise/installs/node/24/bin'
 vim.env.PATH = node_bin .. ':' .. vim.env.PATH
 vim.g.node_host_prog = node_bin .. '/node'
 
@@ -81,9 +98,7 @@ vim.o.undofile = true
 vim.o.updatetime = 1000
 vim.o.virtualedit = 'block'
 vim.o.winborder = 'single'
-
 vim.o.wrap = false
-
 vim.opt.completeopt:append('fuzzy,menuone,noinsert,noselect,popup')
 vim.opt.wildoptions:append('fuzzy,exacttext')
 
@@ -147,52 +162,6 @@ vim.api.nvim_create_autocmd('BufEnter', {
   end,
 })
 
-require('mini.extra').setup()
-require('mini.cmdline').setup()
-require('yazi').setup()
-require('mini.pick').setup()
-
----@diagnostic disable-next-line: duplicate-set-field
-vim.ui.select = function(items, opts, on_choice)
-  return MiniPick.ui_select(items, opts, on_choice, {
-    window = {
-      config = {
-        relative = 'cursor',
-        anchor = 'NW',
-        row = 0,
-        col = 0,
-        width = 80,
-        height = 15,
-      },
-    },
-  })
-end
-
-local ai = require('mini.ai')
-ai.setup({
-  custom_textobjects = {
-    g = MiniExtra.gen_ai_spec.buffer(),
-    f = ai.gen_spec.treesitter({ a = '@function.outer', i = '@function.inner' }),
-  },
-  search_method = 'cover',
-})
-
-require('mini.completion').setup({
-  lsp_completion = {
-    source_func = 'omnifunc',
-    auto_setup = false,
-    process_items = function(items, base)
-      local default = require('mini.completion').default_process_items
-      return default(items, base, { kind_priority = { Text = -1, Snippet = -1 } })
-    end,
-  },
-})
-
-vim.api.nvim_create_autocmd('LspAttach', {
-  group = M.gr,
-  callback = function(e) vim.bo[e.buf].omnifunc = 'v:lua.MiniCompletion.completefunc_lsp' end,
-})
-
 vim.api.nvim_create_autocmd({ 'BufReadPre', 'BufNewFile' }, {
   once = true,
   group = M.gr,
@@ -206,7 +175,34 @@ vim.api.nvim_create_autocmd({ 'BufReadPre', 'BufNewFile' }, {
   end,
 })
 
-local autoformat = true
+vim.api.nvim_create_autocmd('LspAttach', {
+  group = M.gr,
+  callback = function(e) vim.bo[e.buf].omnifunc = 'v:lua.MiniCompletion.completefunc_lsp' end,
+})
+
+require('mini.extra').setup()
+require('mini.cmdline').setup()
+require('yazi').setup()
+require('mini.pick').setup()
+
+require('mini.ai').setup({
+  search_method = 'cover',
+  custom_textobjects = {
+    g = MiniExtra.gen_ai_spec.buffer(),
+    f = require('mini.ai').gen_spec.treesitter({ a = '@function.outer', i = '@function.inner' }),
+  },
+})
+
+require('mini.completion').setup({
+  lsp_completion = {
+    source_func = 'omnifunc',
+    auto_setup = false,
+    process_items = function(items, base)
+      local default = require('mini.completion').default_process_items
+      return default(items, base, { kind_priority = { Text = -1, Snippet = -1 } })
+    end,
+  },
+})
 
 require('conform').setup({
   notify_on_error = false,
@@ -227,7 +223,7 @@ require('conform').setup({
     ['_'] = { 'trim_whitespace', 'trim_newline' },
   },
   format_on_save = function()
-    if not autoformat then return nil end
+    if not conform_should_autoformat then return nil end
     return {}
   end,
 })
@@ -257,7 +253,12 @@ M.set('c', '<C-g>', '<C-c>', { noremap = true, desc = 'Quit/Exit from cmdline' }
 M.set('c', '<M-h>', '<C-f>', { noremap = true, desc = 'Access cmdline history' })
 M.set('c', '<M-f>', '<C-Right>', { noremap = true, desc = 'Move cursor to left word' })
 M.set('c', '<M-b>', '<C-Left>', { noremap = true, desc = 'Move cursor to right word' })
-M.set('n', '<Leader>uf', function() autoformat = not autoformat end, { desc = 'Toggle autoformat' })
+M.set(
+  'n',
+  '<Leader>uf',
+  function() conform_should_autoformat = not conform_should_autoformat end,
+  { desc = 'Toggle autoformat' }
+)
 M.set('n', '<Leader>gc', '<Cmd>Git commit<CR>', { desc = 'Git commit' })
 M.set('n', '<C-h>', '<Cmd>TmuxNavigateLeft<CR>', { noremap = true, desc = 'Go to left window' })
 M.set('n', '<C-j>', '<Cmd>TmuxNavigateDown<CR>', { noremap = true, desc = 'Go to window below' })
