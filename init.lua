@@ -17,7 +17,6 @@ require('vim._core.ui2').enable({
 })
 
 local nx = { 'n', 'x' }
-local nxo = { 'n', 'x', 'o' }
 local nt = { 'n', 't' }
 local nix = { 'n', 'i', 'x' }
 
@@ -39,7 +38,6 @@ vim.pack.add({
   'https://github.com/nvim-lua/plenary.nvim',
   'https://github.com/nvim-mini/mini.nvim',
   'https://github.com/christoomey/vim-tmux-navigator',
-  'https://codeberg.org/andyg/leap.nvim',
   'https://github.com/tpope/vim-sleuth',
   'https://github.com/tpope/vim-fugitive',
   'https://github.com/mikavilpas/yazi.nvim',
@@ -170,8 +168,6 @@ vim.ui.select = function(items, opts, on_choice)
   })
 end
 
-require('leap').opts.safe_labels = ''
-
 local ai = require('mini.ai')
 ai.setup({
   custom_textobjects = {
@@ -262,8 +258,6 @@ M.set('c', '<M-h>', '<C-f>', { noremap = true, desc = 'Access cmdline history' }
 M.set('c', '<M-f>', '<C-Right>', { noremap = true, desc = 'Move cursor to left word' })
 M.set('c', '<M-b>', '<C-Left>', { noremap = true, desc = 'Move cursor to right word' })
 M.set('n', '<Leader>uf', function() autoformat = not autoformat end, { desc = 'Toggle autoformat' })
-M.set(nxo, 's', '<Plug>(leap)')
-M.set('n', 'S', '<Plug>(leap-from-window)')
 M.set('n', '<Leader>gc', '<Cmd>Git commit<CR>', { desc = 'Git commit' })
 M.set('n', '<C-h>', '<Cmd>TmuxNavigateLeft<CR>', { noremap = true, desc = 'Go to left window' })
 M.set('n', '<C-j>', '<Cmd>TmuxNavigateDown<CR>', { noremap = true, desc = 'Go to window below' })
