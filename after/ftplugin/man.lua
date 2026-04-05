@@ -1,1 +1,1 @@
-vim.b.buflisted = false
+vim.cmd('setlocal nobuflisted')

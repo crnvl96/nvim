@@ -1,2 +1,4 @@
-vim.cmd('setlocal nofoldenable')
-vim.cmd('wincmd L')
+vim.cmd([[
+  setlocal nofoldenable
+  wincmd L
+]])

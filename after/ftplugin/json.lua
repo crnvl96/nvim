@@ -1,1 +1,1 @@
-vim.opt_local.conceallevel = 0
+vim.cmd('setlocal conceallevel=0')
