@@ -1,30 +1,11 @@
+-- TODO: change completion system to builtin
+-- TODO: change cmdline completion to builtin
+
 local M = {}
 
-M.set = vim.keymap.set
-
-vim.cmd.packadd([[nvim.difftool]])
-vim.cmd.packadd([[nvim.undotree]])
-vim.cmd.packadd([[cfilter]])
-vim.cmd([[colorscheme ham]])
-
-vim.g.loaded_netrw = 1
-vim.g.loaded_netrwPlugin = 1
-vim.g.loaded_spellfile_plugin = 1
-
-require('vim._core.ui2').enable({
-  enable = true,
-  msg = { targets = 'msg' },
-})
-
-local nx = { 'n', 'x' }
-local nt = { 'n', 't' }
-local nix = { 'n', 'i', 'x' }
-local conform_should_autoformat = true
-local node_bin = vim.env.HOME .. '/.local/share/mise/installs/node/24/bin'
-
 M.gr = vim.api.nvim_create_augroup('custom-config', {})
-
-function M.on_packchanged(name, kinds, callback)
+M.set = vim.keymap.set
+M.on_packchanged = function(name, kinds, callback)
   vim.api.nvim_create_autocmd('PackChanged', {
     group = M.gr,
     callback = function(e)
@@ -35,6 +16,32 @@ function M.on_packchanged(name, kinds, callback)
     end,
   })
 end
+
+vim.cmd([[packadd nvim.difftool]])
+vim.cmd([[packadd nvim.undotree]])
+vim.cmd([[packadd cfilter]])
+vim.cmd([[colorscheme ham]])
+
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+vim.g.loaded_spellfile_plugin = 1
+
+require('vim._core.ui2').enable({
+  enable = true,
+  msg = {
+    targets = 'msg',
+    cmd = { height = 0.5 },
+    dialog = { height = 0.5 },
+    msg = { height = 0.5, timeout = 4000 },
+    pager = { height = 1 },
+  },
+})
+
+local nx = { 'n', 'x' }
+local nt = { 'n', 't' }
+local nix = { 'n', 'i', 'x' }
+local conform_should_autoformat = true
+local node_bin = vim.env.HOME .. '/.local/share/mise/installs/node/24/bin'
 
 ---@diagnostic disable-next-line: duplicate-set-field
 vim.ui.select = function(items, opts, on_choice)
@@ -82,7 +89,7 @@ vim.o.number = true
 vim.o.pummaxwidth = 100
 vim.o.relativenumber = true
 vim.o.ruler = false
-vim.o.cmdheight = 0
+vim.o.cmdheight = 1
 vim.o.scrolloff = 8
 vim.o.shiftwidth = 4
 vim.o.switchbuf = 'usetab'
@@ -110,20 +117,6 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 vim.api.nvim_create_autocmd({ 'InsertEnter', 'CmdlineEnter' }, {
   group = M.gr,
   callback = vim.schedule_wrap(function() vim.cmd.nohlsearch() end),
-})
-
-vim.api.nvim_create_autocmd('FileType', {
-  group = M.gr,
-  pattern = vim
-    .iter(vim.api.nvim_get_runtime_file('parser/*.so', true))
-    :map(function(file) return vim.fn.fnamemodify(file, ':t:r') end)
-    :map(function(file) return vim.treesitter.language.get_filetypes(file) end)
-    :flatten()
-    :totable(),
-  callback = function(e)
-    local ft = vim.bo[e.buf].filetype
-    if vim.treesitter.language.add(ft) then vim.treesitter.start(e.buf) end
-  end,
 })
 
 vim.api.nvim_create_autocmd('BufReadPre', {
@@ -180,10 +173,26 @@ vim.api.nvim_create_autocmd('LspAttach', {
   callback = function(e) vim.bo[e.buf].omnifunc = 'v:lua.MiniCompletion.completefunc_lsp' end,
 })
 
+vim.api.nvim_create_autocmd('FileType', {
+  group = M.gr,
+  pattern = vim
+    .iter(vim.api.nvim_get_runtime_file('parser/*.so', true))
+    :map(function(file) return vim.fn.fnamemodify(file, ':t:r') end)
+    :map(function(file) return vim.treesitter.language.get_filetypes(file) end)
+    :flatten()
+    :totable(),
+  callback = function(e)
+    local ft = vim.bo[e.buf].filetype
+    if vim.treesitter.language.add(ft) then vim.treesitter.start(e.buf) end
+  end,
+})
+
 require('mini.extra').setup()
 require('mini.cmdline').setup()
-require('yazi').setup()
 require('mini.pick').setup()
+require('mini.align').setup()
+require('mini.splitjoin').setup()
+require('yazi').setup()
 
 require('mini.ai').setup({
   search_method = 'cover',
