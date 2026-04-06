@@ -1,7 +1,25 @@
--- TODO: change completion system to builtin
--- TODO: change cmdline completion to builtin
-
 local M = {}
+
+---Debounce func on trailing edge.
+---@generic F: function
+---@param func F
+---@param delay_ms number
+---@return F
+M.debounce = function(func, delay_ms)
+  ---@type uv.uv_timer_t?
+  local timer = nil
+  ---@type boolean?
+  local running = nil
+  return function(...)
+    if not running then timer = assert(vim.uv.new_timer()) end
+    local argv = { ... }
+    assert(timer):start(delay_ms, 0, function()
+      assert(timer):stop()
+      running = nil
+      func(unpack(argv, 1, table.maxn(argv)))
+    end)
+  end
+end
 
 M.gr = vim.api.nvim_create_augroup('custom-config', {})
 M.set = vim.keymap.set
@@ -106,8 +124,9 @@ vim.o.updatetime = 1000
 vim.o.virtualedit = 'block'
 vim.o.winborder = 'single'
 vim.o.wrap = false
-vim.opt.completeopt:append('fuzzy,menuone,noinsert,noselect,popup')
-vim.opt.wildoptions:append('fuzzy,exacttext')
+vim.o.wildoptions = 'pum,fuzzy'
+vim.o.wildmode = 'noselect,full'
+vim.o.completeopt = 'menu,menuone,noinsert,noselect,popup,fuzzy'
 
 vim.api.nvim_create_autocmd('TextYankPost', {
   group = M.gr,
@@ -159,7 +178,6 @@ vim.api.nvim_create_autocmd({ 'BufReadPre', 'BufNewFile' }, {
   once = true,
   group = M.gr,
   callback = function()
-    vim.lsp.config('*', { capabilities = MiniCompletion.get_lsp_capabilities() })
     local servers = vim
       .iter(vim.api.nvim_get_runtime_file('lsp/*.lua', true))
       :map(function(file) return vim.fn.fnamemodify(file, ':t:r') end)
@@ -170,7 +188,69 @@ vim.api.nvim_create_autocmd({ 'BufReadPre', 'BufNewFile' }, {
 
 vim.api.nvim_create_autocmd('LspAttach', {
   group = M.gr,
-  callback = function(e) vim.bo[e.buf].omnifunc = 'v:lua.MiniCompletion.completefunc_lsp' end,
+  callback = function(e)
+    local client = vim.lsp.get_client_by_id(e.data.client_id)
+    if not client then return end
+
+    ---@param lhs string
+    ---@param rhs string|function
+    ---@param opts string|table
+    ---@param mode? string|string[]
+    local function keymap(lhs, rhs, opts, mode)
+      opts = type(opts) == 'string' and { desc = opts }
+        or vim.tbl_extend('error', opts --[[@as table]], { buffer = e.buf })
+      mode = mode or 'n'
+      vim.keymap.set(mode, lhs, rhs, opts)
+    end
+
+    ---@param keys string
+    local function feedkeys(keys)
+      vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(keys, true, false, true), 'n', true)
+    end
+
+    local function pumvisible() return tonumber(vim.fn.pumvisible()) ~= 0 end
+
+    if client:supports_method('textDocument/completion') then
+      client.server_capabilities.completionProvider.triggerCharacters =
+        vim.iter(vim.gsplit('a,e,i,o,u,A,E,I,O,U,.,:,-,_', ',')):totable()
+
+      vim.lsp.completion.enable(true, client.id, e.buf, { autotrigger = true })
+
+      keymap('<cr>', function() return pumvisible() and '<C-y>' or '<cr>' end, { expr = true }, 'i')
+
+      keymap('<C-n>', function()
+        if pumvisible() then
+          feedkeys('<C-n>')
+        else
+          if next(vim.lsp.get_clients({ bufnr = 0 })) then
+            vim.lsp.completion.get()
+          else
+            if vim.bo.omnifunc == '' then
+              feedkeys('<C-x><C-n>')
+            else
+              feedkeys('<C-x><C-o>')
+            end
+          end
+        end
+      end, 'Trigger/select next completion', 'i')
+    end
+
+    keymap('<Tab>', function()
+      if pumvisible() then
+        feedkeys('<C-n>')
+      else
+        feedkeys('<Tab>')
+      end
+    end, {}, { 'i', 's' })
+
+    keymap('<S-Tab>', function()
+      if pumvisible() then
+        feedkeys('<C-p>')
+      else
+        feedkeys('<S-Tab>')
+      end
+    end, {}, { 'i', 's' })
+  end,
 })
 
 vim.api.nvim_create_autocmd('FileType', {
@@ -187,10 +267,25 @@ vim.api.nvim_create_autocmd('FileType', {
   end,
 })
 
+vim.api.nvim_create_autocmd('CmdlineChanged', {
+  group = M.gr,
+  callback = M.debounce(
+    vim.schedule_wrap(function()
+      local function should_enable_autocomplete()
+        local cmdline_cmd = vim.fn.split(vim.fn.getcmdline(), ' ')[1]
+        local cmdline_type = vim.fn.getcmdtype()
+        return cmdline_type == '/' or cmdline_type == '?' or (cmdline_type == ':' and cmdline_cmd and #cmdline_cmd >= 2)
+      end
+      if should_enable_autocomplete() then vim.fn.wildtrigger() end
+    end),
+    500
+  ),
+})
+
 require('mini.extra').setup()
-require('mini.cmdline').setup()
 require('mini.pick').setup()
 require('mini.align').setup()
+require('mini.misc').setup()
 require('mini.splitjoin').setup()
 require('yazi').setup()
 
@@ -199,17 +294,6 @@ require('mini.ai').setup({
   custom_textobjects = {
     g = MiniExtra.gen_ai_spec.buffer(),
     f = require('mini.ai').gen_spec.treesitter({ a = '@function.outer', i = '@function.inner' }),
-  },
-})
-
-require('mini.completion').setup({
-  lsp_completion = {
-    source_func = 'omnifunc',
-    auto_setup = false,
-    process_items = function(items, base)
-      local default = require('mini.completion').default_process_items
-      return default(items, base, { kind_priority = { Text = -1, Snippet = -1 } })
-    end,
   },
 })
 

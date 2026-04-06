@@ -25,7 +25,7 @@
       "src": "https://github.com/christoomey/vim-tmux-navigator"
     },
     "yazi.nvim": {
-      "rev": "6f1c97327df36feff1c829c5b949e2c981d5a1ef",
+      "rev": "002e5a1e5c25b7c0c17aeadb2826a865fcaa97e9",
       "src": "https://github.com/mikavilpas/yazi.nvim"
     }
   }
