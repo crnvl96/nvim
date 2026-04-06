@@ -97,6 +97,7 @@ vim.pack.add({
   'https://github.com/tpope/vim-fugitive',
   'https://github.com/mikavilpas/yazi.nvim',
   'https://github.com/stevearc/conform.nvim',
+  'https://github.com/kevalin/mermaid.nvim',
 })
 
 vim.env.PATH = node_bin .. ':' .. vim.env.PATH
@@ -300,6 +301,7 @@ require('mini.align').setup()
 require('mini.misc').setup()
 require('mini.splitjoin').setup()
 require('yazi').setup()
+require('mermaid').setup()
 
 require('mini.ai').setup({
   search_method = 'cover',
