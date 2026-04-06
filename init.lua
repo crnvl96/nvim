@@ -1,4 +1,5 @@
 local M = {}
+_G.M = M
 
 ---Debounce func on trailing edge.
 ---@generic F: function
@@ -21,7 +22,19 @@ M.debounce = function(func, delay_ms)
   end
 end
 
+--- Toggle diagnostic for current buffer
+---@return string String indicator for new state. Similar to what |:set| `{option}?` shows.
+M.toggle_diagnostic = function()
+  local buf_id = vim.api.nvim_get_current_buf()
+  local is_enabled = vim.diagnostic.is_enabled({ bufnr = buf_id })
+  vim.diagnostic.enable(not is_enabled, { bufnr = buf_id })
+  local new_buf_state = not is_enabled
+  return new_buf_state and '  diagnostic' or 'nodiagnostic'
+end
+
 M.gr = vim.api.nvim_create_augroup('custom-config', {})
+M.conform_fmt = true
+
 M.set = vim.keymap.set
 M.on_packchanged = function(name, kinds, callback)
   vim.api.nvim_create_autocmd('PackChanged', {
@@ -58,7 +71,6 @@ require('vim._core.ui2').enable({
 local nx = { 'n', 'x' }
 local nt = { 'n', 't' }
 local nix = { 'n', 'i', 'x' }
-local conform_should_autoformat = true
 local node_bin = vim.env.HOME .. '/.local/share/mise/installs/node/24/bin'
 
 ---@diagnostic disable-next-line: duplicate-set-field
@@ -316,7 +328,7 @@ require('conform').setup({
     ['_'] = { 'trim_whitespace', 'trim_newline' },
   },
   format_on_save = function()
-    if not conform_should_autoformat then return nil end
+    if not M.conform_fmt then return nil end
     return {}
   end,
 })
@@ -346,17 +358,13 @@ M.set('c', '<C-g>', '<C-c>', { noremap = true, desc = 'Quit/Exit from cmdline' }
 M.set('c', '<M-h>', '<C-f>', { noremap = true, desc = 'Access cmdline history' })
 M.set('c', '<M-f>', '<C-Right>', { noremap = true, desc = 'Move cursor to left word' })
 M.set('c', '<M-b>', '<C-Left>', { noremap = true, desc = 'Move cursor to right word' })
-M.set(
-  'n',
-  '<Leader>uf',
-  function() conform_should_autoformat = not conform_should_autoformat end,
-  { desc = 'Toggle autoformat' }
-)
-M.set('n', '<Leader>gc', '<Cmd>Git commit<CR>', { desc = 'Git commit' })
 M.set('n', '<C-h>', '<Cmd>TmuxNavigateLeft<CR>', { noremap = true, desc = 'Go to left window' })
 M.set('n', '<C-j>', '<Cmd>TmuxNavigateDown<CR>', { noremap = true, desc = 'Go to window below' })
 M.set('n', '<C-k>', '<Cmd>TmuxNavigateUp<CR>', { noremap = true, desc = 'Go to window above' })
 M.set('n', '<C-l>', '<Cmd>TmuxNavigateRight<CR>', { noremap = true, desc = 'Go to right window' })
+M.set('n', 'E', '<Cmd>lua vim.diagnostic.open_float()<CR>', { desc = 'Open Current Diagnostic' })
+M.set('n', 'grd', '<Cmd>lua vim.lsp.buf.definition()<CR>', { desc = 'vim.lsp.buf.definition()' })
+M.set('n', 'grD', '<Cmd>lua vim.diagnostic.setqflist()<CR>', { desc = 'vim.diagnostic.setqflist()' })
 M.set('n', '<Leader>er', '<Cmd>Yazi toggle<CR>', { desc = 'Yazi (Resume)' })
 M.set('n', '<Leader>ef', '<Cmd>Yazi<CR>', { desc = 'Yazi' })
 M.set('n', '<Leader>ew', '<Cmd>Yazi cwd<CR>', { desc = 'Yazi (CWD)' })
@@ -377,6 +385,14 @@ M.set('n', '<Leader>fq', "<Cmd>Pick list scope='quickfix'<CR>", { desc = 'Quickf
 M.set('n', '<Leader>fr', '<Cmd>Pick resume<CR>', { desc = 'Resume last picker' })
 M.set('n', '<Leader>fu', '<Cmd>Pick git_hunks<CR>', { desc = 'Git hunks' })
 M.set('n', '<Leader>fU', '<Cmd>Pick git_hunks scope="staged"<CR>', { desc = 'Git hunks' })
-M.set('n', 'E', '<Cmd>lua vim.diagnostic.open_float()<CR>', { desc = 'Open Current Diagnostic' })
-M.set('n', 'grd', '<Cmd>lua vim.lsp.buf.definition()<CR>', { desc = 'vim.lsp.buf.definition()' })
-M.set('n', 'grD', '<Cmd>lua vim.diagnostic.setqflist()<CR>', { desc = 'vim.diagnostic.setqflist()' })
+M.set('n', '<Leader>gc', '<Cmd>Git commit<CR>', { desc = 'Git commit' })
+M.set('n', '<Leader>uf', '<Cmd>lua M.conform_fmt = not M.conform_fmt<CR>', { desc = 'Toggle autoformat' })
+M.set('n', '<Leader>uc', '<Cmd>setlocal cursorline! cursorline?<CR>', { desc = "Toggle 'cursorline'" })
+M.set('n', '<Leader>uC', '<Cmd>setlocal cursorcolumn! cursorcolumn?<CR>', { desc = "Toggle 'cursorcolumn'" })
+M.set('n', '<Leader>ud', '<Cmd>lua print(M.toggle_diagnostic())<CR>', { desc = 'Toggle diagnostic' })
+M.set('n', '<Leader>ui', '<Cmd>setlocal ignorecase! ignorecase?<CR>', { desc = "Toggle 'ignorecase'" })
+M.set('n', '<Leader>ul', '<Cmd>setlocal list! list?<CR>', { desc = "Toggle 'list'" })
+M.set('n', '<Leader>un', '<Cmd>setlocal number! number?<CR>', { desc = "Toggle 'number'" })
+M.set('n', '<Leader>ur', '<Cmd>setlocal relativenumber! relativenumber?<CR>', { desc = "Toggle 'relativenumber'" })
+M.set('n', '<Leader>us', '<Cmd>setlocal spell! spell?<CR>', { desc = "Toggle 'spell'" })
+M.set('n', '<Leader>uw', '<Cmd>setlocal wrap! wrap?<CR>', { desc = "Toggle 'wrap'" })
