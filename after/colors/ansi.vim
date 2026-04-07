@@ -26,11 +26,6 @@ set notermguicolors
 " (if your terminal and font support it), bold, reverse, underlined, etc.
 " See ':help attr-list' for possible options.
 
-
-" Plugins
-hi MiniPickMatchCurrent ctermbg=7 ctermfg=0
-hi MiniPickPreviewLine ctermbg=7 ctermfg=0
-
 " Editor Elements
 hi NonText ctermfg=0
 hi Ignore ctermfg=NONE  ctermbg=NONE cterm=NONE
