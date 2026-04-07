@@ -88,7 +88,7 @@ vim.pack.add({
   'https://github.com/tpope/vim-fugitive',
   'https://github.com/kevalin/mermaid.nvim',
   'https://github.com/justinmk/vim-dirvish',
-  'https://github.com/yorickpeterse/nvim-jump'
+  'https://github.com/yorickpeterse/nvim-jump',
 })
 
 vim.g.dirvish_mode = ':sort ,^.*[/],'
@@ -368,6 +368,7 @@ require('mini.clue').setup({
   },
 })
 
+Config.set({ 'n', 'x', 'o' }, 's', require('jump').start)
 Config.set(nx, 'j', [[v:count == 0 ? 'gj' : 'j']], { expr = true, desc = 'Go down one visual line' })
 Config.set(nx, 'k', [[v:count == 0 ? 'gk' : 'k']], { expr = true, desc = 'Go up one visual line' })
 Config.set(nt, '<C-Left>', '<Cmd>vertical resize -20<CR>', { noremap = true, desc = 'Decrease window width' })
@@ -412,10 +413,11 @@ end, { desc = 'Grep current file' })
 Config.set('n', '<Leader>uc', '<Cmd>setlocal cursorline! cursorline?<CR>', { desc = "Toggle 'cursorline'" })
 Config.set('n', '<Leader>uC', '<Cmd>setlocal cursorcolumn! cursorcolumn?<CR>', { desc = "Toggle 'cursorcolumn'" })
 Config.set('n', '<Leader>ud', '<Cmd>lua print(M.toggle_diagnostic())<CR>', { desc = 'Toggle diagnostic' })
+Config.set('n', '<Leader>uf', '<Cmd>lua print("No formatter configured for this ft")<CR>', { desc = 'Format file' })
+Config.set('n', '<Leader>uF', '<Cmd>lua print("No formatter configured for this ft")<CR>', { desc = 'Format project' })
 Config.set('n', '<Leader>ui', '<Cmd>setlocal ignorecase! ignorecase?<CR>', { desc = "Toggle 'ignorecase'" })
 Config.set('n', '<Leader>ul', '<Cmd>setlocal list! list?<CR>', { desc = "Toggle 'list'" })
 Config.set('n', '<Leader>un', '<Cmd>setlocal number! number?<CR>', { desc = "Toggle 'number'" })
 Config.set('n', '<Leader>ur', '<Cmd>setlocal relativenumber! relativenumber?<CR>', { desc = "Toggle 'relativenumber'" })
 Config.set('n', '<Leader>us', '<Cmd>setlocal spell! spell?<CR>', { desc = "Toggle 'spell'" })
 Config.set('n', '<Leader>uw', '<Cmd>setlocal wrap! wrap?<CR>', { desc = "Toggle 'wrap'" })
-Config.set({ 'n', 'x', 'o' }, 's', require('jump').start)
