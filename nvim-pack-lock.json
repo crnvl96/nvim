@@ -8,6 +8,10 @@
       "rev": "402ee6c6ec8ea44b22330446c8fb4e615fd3953e",
       "src": "https://github.com/nvim-mini/mini.nvim"
     },
+    "nvim-jump": {
+      "rev": "6a8841783475bab7037aab922c0604fe1effd0fb",
+      "src": "https://github.com/yorickpeterse/nvim-jump"
+    },
     "vim-dirvish": {
       "rev": "6be56227a4207c93cd8b607f52f567a1e13dddb1",
       "src": "https://github.com/justinmk/vim-dirvish"

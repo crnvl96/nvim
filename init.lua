@@ -59,7 +59,7 @@ end
 vim.cmd([[packadd nvim.difftool]])
 vim.cmd([[packadd nvim.undotree]])
 vim.cmd([[packadd cfilter]])
-vim.cmd([[colorscheme ham]])
+vim.cmd([[colorscheme ansi]])
 
 vim.g.loaded_spellfile_plugin = 1
 vim.g.loaded_netrw = 1
@@ -88,6 +88,7 @@ vim.pack.add({
   'https://github.com/tpope/vim-fugitive',
   'https://github.com/kevalin/mermaid.nvim',
   'https://github.com/justinmk/vim-dirvish',
+  'https://github.com/yorickpeterse/nvim-jump'
 })
 
 vim.g.dirvish_mode = ':sort ,^.*[/],'
@@ -417,3 +418,4 @@ Config.set('n', '<Leader>un', '<Cmd>setlocal number! number?<CR>', { desc = "Tog
 Config.set('n', '<Leader>ur', '<Cmd>setlocal relativenumber! relativenumber?<CR>', { desc = "Toggle 'relativenumber'" })
 Config.set('n', '<Leader>us', '<Cmd>setlocal spell! spell?<CR>', { desc = "Toggle 'spell'" })
 Config.set('n', '<Leader>uw', '<Cmd>setlocal wrap! wrap?<CR>', { desc = "Toggle 'wrap'" })
+Config.set({ 'n', 'x', 'o' }, 's', require('jump').start)

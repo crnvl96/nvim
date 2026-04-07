@@ -37,8 +37,8 @@ hi Ignore ctermfg=NONE  ctermbg=NONE cterm=NONE
 hi Underlined cterm=underline
 hi Bold cterm=bold
 hi Italic cterm=italic
-hi StatusLine ctermfg=15 ctermbg=NONE cterm=NONE
-hi StatusLineNC ctermfg=15 ctermbg=NONE cterm=NONE
+hi StatusLine ctermfg=15 ctermbg=8 cterm=NONE
+hi StatusLineNC ctermfg=15 ctermbg=0 cterm=NONE
 hi VertSplit ctermfg=8
 hi TabLine ctermfg=7 ctermbg=0
 hi TabLineFill ctermfg=0 ctermbg=NONE
@@ -53,7 +53,7 @@ hi helpLeadBlank ctermbg=NONE ctermfg=NONE
 hi helpNormal ctermbg=NONE ctermfg=NONE
 hi Visual ctermbg=8 ctermfg=15 cterm=bold
 hi VisualNOS ctermbg=8 ctermfg=15 cterm=bold
-hi Pmenu ctermbg=15 ctermfg=0
+hi Pmenu ctermbg=0 ctermfg=15
 hi PmenuSbar ctermbg=8 ctermfg=7
 hi PmenuSel ctermbg=8 ctermfg=15 cterm=bold
 hi PmenuThumb ctermbg=7 ctermfg=NONE
@@ -122,7 +122,6 @@ hi Structure ctermfg=11
 hi Todo ctermfg=0 ctermbg=9 cterm=bold
 hi Type ctermfg=11
 
-" neovim-specific (remove if you're using vim)
 hi NormalFloat ctermbg=0 ctermfg=15
 hi FloatBorder ctermbg=0 ctermfg=7
 hi FloatShadow ctermbg=0 ctermfg=15
