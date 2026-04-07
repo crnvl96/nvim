@@ -4,16 +4,18 @@
 -- https://github.com/nvim-treesitter/nvim-treesitter/tree/main/runtime/queries
 --
 -- https://github.com/romus204/tree-sitter-manager.nvim
+--
+-- https://github.com/arborist-ts/registry/blob/main/parsers.toml
 
-local M = {}
-_G.M = M
+local Config = {}
+_G.Config = Config
 
 ---Debounce func on trailing edge.
 ---@generic F: function
 ---@param func F
 ---@param delay_ms number
 ---@return F
-M.debounce = function(func, delay_ms)
+Config.debounce = function(func, delay_ms)
   ---@type uv.uv_timer_t?
   local timer = nil
   ---@type boolean?
@@ -31,7 +33,7 @@ end
 
 --- Toggle diagnostic for current buffer
 ---@return string String indicator for new state. Similar to what |:set| `{option}?` shows.
-M.toggle_diagnostic = function()
+Config.toggle_diagnostic = function()
   local buf_id = vim.api.nvim_get_current_buf()
   local is_enabled = vim.diagnostic.is_enabled({ bufnr = buf_id })
   vim.diagnostic.enable(not is_enabled, { bufnr = buf_id })
@@ -39,12 +41,12 @@ M.toggle_diagnostic = function()
   return new_buf_state and '  diagnostic' or 'nodiagnostic'
 end
 
-M.gr = vim.api.nvim_create_augroup('custom-config', {})
+Config.gr = vim.api.nvim_create_augroup('custom-config', {})
 
-M.set = vim.keymap.set
-M.on_packchanged = function(name, kinds, callback)
+Config.set = vim.keymap.set
+Config.on_packchanged = function(name, kinds, callback)
   vim.api.nvim_create_autocmd('PackChanged', {
-    group = M.gr,
+    group = Config.gr,
     callback = function(e)
       local is_target = e.data.spec.name == name and vim.tbl_contains(kinds, e.data.kind)
       if not is_target then return end
@@ -148,20 +150,20 @@ if vim.fn.executable('rg') == 1 then
 end
 
 vim.api.nvim_create_autocmd('TextYankPost', {
-  group = M.gr,
+  group = Config.gr,
   callback = function() vim.highlight.on_yank() end,
 })
 
 vim.api.nvim_create_autocmd({ 'InsertEnter', 'CmdlineEnter' }, {
-  group = M.gr,
+  group = Config.gr,
   callback = vim.schedule_wrap(function() vim.cmd.nohlsearch() end),
 })
 
 vim.api.nvim_create_autocmd('BufReadPre', {
-  group = M.gr,
+  group = Config.gr,
   callback = function(e)
     vim.api.nvim_create_autocmd('FileType', {
-      group = M.gr,
+      group = Config.gr,
       buffer = e.buf,
       once = true,
       callback = function()
@@ -180,7 +182,7 @@ vim.api.nvim_create_autocmd('BufReadPre', {
 })
 
 vim.api.nvim_create_autocmd('BufEnter', {
-  group = M.gr,
+  group = Config.gr,
   callback = function(e)
     local bufnr = e.buf
     local filetype = vim.bo[bufnr].ft
@@ -194,14 +196,14 @@ vim.api.nvim_create_autocmd('BufEnter', {
 })
 
 vim.api.nvim_create_autocmd('QuickFixCmdPost', {
-  group = M.gr,
+  group = Config.gr,
   pattern = '[^l]*',
   command = 'cwindow',
 })
 
 vim.api.nvim_create_autocmd({ 'BufReadPre', 'BufNewFile' }, {
   once = true,
-  group = M.gr,
+  group = Config.gr,
   callback = function()
     local servers = vim
       .iter(vim.api.nvim_get_runtime_file('lsp/*.lua', true))
@@ -212,7 +214,7 @@ vim.api.nvim_create_autocmd({ 'BufReadPre', 'BufNewFile' }, {
 })
 
 vim.api.nvim_create_autocmd('LspAttach', {
-  group = M.gr,
+  group = Config.gr,
   callback = function(e)
     local client = vim.lsp.get_client_by_id(e.data.client_id)
     if not client then return end
@@ -279,7 +281,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
 })
 
 vim.api.nvim_create_autocmd('FileType', {
-  group = M.gr,
+  group = Config.gr,
   pattern = vim
     .iter(vim.api.nvim_get_runtime_file('parser/*.so', true))
     :map(function(file) return vim.fn.fnamemodify(file, ':t:r') end)
@@ -293,8 +295,8 @@ vim.api.nvim_create_autocmd('FileType', {
 })
 
 vim.api.nvim_create_autocmd('CmdlineChanged', {
-  group = M.gr,
-  callback = M.debounce(
+  group = Config.gr,
+  callback = Config.debounce(
     vim.schedule_wrap(function()
       local function should_enable_autocomplete()
         local cmdline_cmd = vim.fn.split(vim.fn.getcmdline(), ' ')[1]
@@ -365,52 +367,53 @@ require('mini.clue').setup({
   },
 })
 
-M.set(nx, 'j', [[v:count == 0 ? 'gj' : 'j']], { expr = true, desc = 'Go down one visual line' })
-M.set(nx, 'k', [[v:count == 0 ? 'gk' : 'k']], { expr = true, desc = 'Go up one visual line' })
-M.set(nt, '<C-Left>', '<Cmd>vertical resize -20<CR>', { noremap = true, desc = 'Decrease window width' })
-M.set(nt, '<C-Down>', '<Cmd>resize -5<CR>', { noremap = true, desc = 'Decrease window height' })
-M.set(nt, '<C-Up>', '<Cmd>resize +5<CR>', { noremap = true, desc = 'Increase window height' })
-M.set(nt, '<C-Right>', '<Cmd>vertical resize +20<CR>', { noremap = true, desc = 'Increase window width' })
-M.set(nix, '<Esc>', '<Esc><Cmd>noh<CR><Esc>', { noremap = true, desc = 'Clear hlsearch on <Esc>' })
-M.set('n', 'Y', 'yg_', { noremap = true, desc = 'Yank till end of current line' })
-M.set('x', 'p', 'P', { noremap = true, desc = 'Paste in visual mode without overriding register' })
-M.set('x', '>', '>gv', { desc = 'Indent' })
-M.set('x', '<', '<gv', { desc = 'Deindent' })
-M.set('n', '<C-h>', '<C-w>h', { noremap = true, desc = 'Go to left window' })
-M.set('n', '<C-j>', '<C-w>j', { noremap = true, desc = 'Go to window below' })
-M.set('n', '<C-k>', '<C-w>k', { noremap = true, desc = 'Go to window above' })
-M.set('n', '<C-l>', '<C-w>l', { noremap = true, desc = 'Go to right window' })
-M.set('n', '<C-d>', '<C-d>zz', { noremap = true, desc = 'Scroll down' })
-M.set('n', '<C-u>', '<C-u>zz', { noremap = true, desc = 'Scroll up' })
-M.set('c', '<C-f>', '<Right>', { noremap = true, desc = 'Move cursor to the right char' })
-M.set('c', '<C-b>', '<Left>', { noremap = true, desc = 'Move cursor to the left char' })
-M.set('c', '<C-a>', '<Home>', { noremap = true, desc = 'Move cursor to start of line' })
-M.set('c', '<C-e>', '<End>', { noremap = true, desc = 'Move cursor to end of line' })
-M.set('c', '<C-g>', '<C-c>', { noremap = true, desc = 'Quit/Exit from cmdline' })
-M.set('c', '<M-h>', '<C-f>', { noremap = true, desc = 'Access cmdline history' })
-M.set('c', '<M-f>', '<C-Right>', { noremap = true, desc = 'Move cursor to left word' })
-M.set('c', '<M-b>', '<C-Left>', { noremap = true, desc = 'Move cursor to right word' })
-M.set('n', '<C-h>', '<Cmd>TmuxNavigateLeft<CR>', { noremap = true, desc = 'Go to left window' })
-M.set('n', '<C-j>', '<Cmd>TmuxNavigateDown<CR>', { noremap = true, desc = 'Go to window below' })
-M.set('n', '<C-k>', '<Cmd>TmuxNavigateUp<CR>', { noremap = true, desc = 'Go to window above' })
-M.set('n', '<C-l>', '<Cmd>TmuxNavigateRight<CR>', { noremap = true, desc = 'Go to right window' })
-M.set('n', 'E', '<Cmd>lua vim.diagnostic.open_float()<CR>', { desc = 'Open Current Diagnostic' })
-M.set('n', 'grd', '<Cmd>lua vim.lsp.buf.definition()<CR>', { desc = 'vim.lsp.buf.definition()' })
-M.set('n', 'grD', '<Cmd>lua vim.diagnostic.setqflist()<CR>', { desc = 'vim.diagnostic.setqflist()' })
-M.set('n', '<leader>ef', '<Cmd>Dirvish<CR>', { desc = 'File explorer' })
-M.set('n', '<leader>ff', ':find<space>', { desc = 'Fuzzy find' })
-M.set('n', '<leader>fg', ':sil grep<space>', { desc = 'Fuzzy find file' })
-M.set('n', '<leader>fl', function()
+Config.set(nx, 'j', [[v:count == 0 ? 'gj' : 'j']], { expr = true, desc = 'Go down one visual line' })
+Config.set(nx, 'k', [[v:count == 0 ? 'gk' : 'k']], { expr = true, desc = 'Go up one visual line' })
+Config.set(nt, '<C-Left>', '<Cmd>vertical resize -20<CR>', { noremap = true, desc = 'Decrease window width' })
+Config.set(nt, '<C-Down>', '<Cmd>resize -5<CR>', { noremap = true, desc = 'Decrease window height' })
+Config.set(nt, '<C-Up>', '<Cmd>resize +5<CR>', { noremap = true, desc = 'Increase window height' })
+Config.set(nt, '<C-Right>', '<Cmd>vertical resize +20<CR>', { noremap = true, desc = 'Increase window width' })
+Config.set(nix, '<Esc>', '<Esc><Cmd>noh<CR><Esc>', { noremap = true, desc = 'Clear hlsearch on <Esc>' })
+Config.set('n', 'Y', 'yg_', { noremap = true, desc = 'Yank till end of current line' })
+Config.set('x', 'p', 'P', { noremap = true, desc = 'Paste in visual mode without overriding register' })
+Config.set('x', '>', '>gv', { desc = 'Indent' })
+Config.set('x', '<', '<gv', { desc = 'Deindent' })
+Config.set('n', '<C-h>', '<C-w>h', { noremap = true, desc = 'Go to left window' })
+Config.set('n', '<C-j>', '<C-w>j', { noremap = true, desc = 'Go to window below' })
+Config.set('n', '<C-k>', '<C-w>k', { noremap = true, desc = 'Go to window above' })
+Config.set('n', '<C-l>', '<C-w>l', { noremap = true, desc = 'Go to right window' })
+Config.set('n', '<C-d>', '<C-d>zz', { noremap = true, desc = 'Scroll down' })
+Config.set('n', '<C-u>', '<C-u>zz', { noremap = true, desc = 'Scroll up' })
+Config.set('c', '<C-f>', '<Right>', { noremap = true, desc = 'Move cursor to the right char' })
+Config.set('c', '<C-b>', '<Left>', { noremap = true, desc = 'Move cursor to the left char' })
+Config.set('c', '<C-a>', '<Home>', { noremap = true, desc = 'Move cursor to start of line' })
+Config.set('c', '<C-e>', '<End>', { noremap = true, desc = 'Move cursor to end of line' })
+Config.set('c', '<C-g>', '<C-c>', { noremap = true, desc = 'Quit/Exit from cmdline' })
+Config.set('c', '<M-h>', '<C-f>', { noremap = true, desc = 'Access cmdline history' })
+Config.set('c', '<M-f>', '<C-Right>', { noremap = true, desc = 'Move cursor to left word' })
+Config.set('c', '<M-b>', '<C-Left>', { noremap = true, desc = 'Move cursor to right word' })
+Config.set('n', '<C-h>', '<Cmd>TmuxNavigateLeft<CR>', { noremap = true, desc = 'Go to left window' })
+Config.set('n', '<C-j>', '<Cmd>TmuxNavigateDown<CR>', { noremap = true, desc = 'Go to window below' })
+Config.set('n', '<C-k>', '<Cmd>TmuxNavigateUp<CR>', { noremap = true, desc = 'Go to window above' })
+Config.set('n', '<C-l>', '<Cmd>TmuxNavigateRight<CR>', { noremap = true, desc = 'Go to right window' })
+Config.set('n', 'E', '<Cmd>lua vim.diagnostic.open_float()<CR>', { desc = 'Open Current Diagnostic' })
+Config.set('n', 'grd', '<Cmd>lua vim.lsp.buf.definition()<CR>', { desc = 'vim.lsp.buf.definition()' })
+Config.set('n', 'grD', '<Cmd>lua vim.diagnostic.setqflist()<CR>', { desc = 'vim.diagnostic.setqflist()' })
+Config.set('n', '<leader>ef', '<Cmd>Dirvish<CR>', { desc = 'File explorer' })
+Config.set('n', '<leader>ff', ':find<space>', { desc = 'Fuzzy find' })
+Config.set('n', '<leader>fg', ':sil<space>grep<space>', { desc = 'Fuzzy find file' })
+Config.set('n', '<leader>fh', ':help<space>', { desc = 'Fuzzy find file' })
+Config.set('n', '<leader>fl', function()
   local file = vim.fn.getreg('%')
   local left = vim.api.nvim_replace_termcodes('<Left>', true, false, true)
   vim.api.nvim_feedkeys(':sil grep  -g=' .. file .. string.rep(left, 4 + #file), 'n', false)
 end, { desc = 'Grep current file' })
-M.set('n', '<Leader>uc', '<Cmd>setlocal cursorline! cursorline?<CR>', { desc = "Toggle 'cursorline'" })
-M.set('n', '<Leader>uC', '<Cmd>setlocal cursorcolumn! cursorcolumn?<CR>', { desc = "Toggle 'cursorcolumn'" })
-M.set('n', '<Leader>ud', '<Cmd>lua print(M.toggle_diagnostic())<CR>', { desc = 'Toggle diagnostic' })
-M.set('n', '<Leader>ui', '<Cmd>setlocal ignorecase! ignorecase?<CR>', { desc = "Toggle 'ignorecase'" })
-M.set('n', '<Leader>ul', '<Cmd>setlocal list! list?<CR>', { desc = "Toggle 'list'" })
-M.set('n', '<Leader>un', '<Cmd>setlocal number! number?<CR>', { desc = "Toggle 'number'" })
-M.set('n', '<Leader>ur', '<Cmd>setlocal relativenumber! relativenumber?<CR>', { desc = "Toggle 'relativenumber'" })
-M.set('n', '<Leader>us', '<Cmd>setlocal spell! spell?<CR>', { desc = "Toggle 'spell'" })
-M.set('n', '<Leader>uw', '<Cmd>setlocal wrap! wrap?<CR>', { desc = "Toggle 'wrap'" })
+Config.set('n', '<Leader>uc', '<Cmd>setlocal cursorline! cursorline?<CR>', { desc = "Toggle 'cursorline'" })
+Config.set('n', '<Leader>uC', '<Cmd>setlocal cursorcolumn! cursorcolumn?<CR>', { desc = "Toggle 'cursorcolumn'" })
+Config.set('n', '<Leader>ud', '<Cmd>lua print(M.toggle_diagnostic())<CR>', { desc = 'Toggle diagnostic' })
+Config.set('n', '<Leader>ui', '<Cmd>setlocal ignorecase! ignorecase?<CR>', { desc = "Toggle 'ignorecase'" })
+Config.set('n', '<Leader>ul', '<Cmd>setlocal list! list?<CR>', { desc = "Toggle 'list'" })
+Config.set('n', '<Leader>un', '<Cmd>setlocal number! number?<CR>', { desc = "Toggle 'number'" })
+Config.set('n', '<Leader>ur', '<Cmd>setlocal relativenumber! relativenumber?<CR>', { desc = "Toggle 'relativenumber'" })
+Config.set('n', '<Leader>us', '<Cmd>setlocal spell! spell?<CR>', { desc = "Toggle 'spell'" })
+Config.set('n', '<Leader>uw', '<Cmd>setlocal wrap! wrap?<CR>', { desc = "Toggle 'wrap'" })
