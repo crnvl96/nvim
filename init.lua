@@ -88,10 +88,17 @@ vim.pack.add({
   'https://github.com/tpope/vim-fugitive',
   'https://github.com/kevalin/mermaid.nvim',
   'https://github.com/justinmk/vim-dirvish',
-  'https://github.com/yorickpeterse/nvim-jump',
+  'https://github.com/justinmk/vim-sneak',
 })
 
-vim.g.dirvish_mode = ':sort ,^.*[/],'
+vim.cmd([[
+let g:sneak#label = 1
+let g:sneak#s_next = 0
+let g:sneak#use_ic_scs = 1
+let g:sneak#target_labels = ";sftunq/SFGHLTUNRMQZ?0"
+
+let g:dirvish_mode = ':sort ,^.*[\/],'
+]])
 
 vim.env.PATH = node_bin .. ':' .. vim.env.PATH
 vim.g.node_host_prog = node_bin .. '/node'
@@ -338,37 +345,6 @@ require('mini.ai').setup({
   },
 })
 
-require('mini.clue').setup({
-  clues = {
-    { mode = 'n', keys = '<Leader>e', desc = '+Explore/Edit' },
-    { mode = 'n', keys = '<Leader>f', desc = '+Find' },
-    { mode = 'n', keys = '<Leader>u', desc = '+Utils' },
-    require('mini.clue').gen_clues.builtin_completion(),
-    require('mini.clue').gen_clues.g(),
-    require('mini.clue').gen_clues.marks(),
-    require('mini.clue').gen_clues.registers(),
-    require('mini.clue').gen_clues.square_brackets(),
-    require('mini.clue').gen_clues.windows(),
-    require('mini.clue').gen_clues.z(),
-  },
-  triggers = {
-    { mode = { 'n', 'x' }, keys = '<Leader>' },
-    { mode = 'n', keys = '\\' },
-    { mode = { 'n', 'x' }, keys = '[' },
-    { mode = { 'n', 'x' }, keys = ']' },
-    { mode = 'i', keys = '<C-x>' },
-    { mode = { 'n', 'x' }, keys = 'g' },
-    { mode = { 'n', 'x' }, keys = "'" },
-    { mode = { 'n', 'x' }, keys = '`' },
-    { mode = { 'n', 'x' }, keys = '"' },
-    { mode = { 'i', 'c' }, keys = '<C-r>' },
-    { mode = 'n', keys = '<C-w>' },
-    { mode = { 'n', 'x' }, keys = 's' },
-    { mode = { 'n', 'x' }, keys = 'z' },
-  },
-})
-
-Config.set({ 'n', 'x', 'o' }, 's', require('jump').start)
 Config.set(nx, 'j', [[v:count == 0 ? 'gj' : 'j']], { expr = true, desc = 'Go down one visual line' })
 Config.set(nx, 'k', [[v:count == 0 ? 'gk' : 'k']], { expr = true, desc = 'Go up one visual line' })
 Config.set(nt, '<C-Left>', '<Cmd>vertical resize -20<CR>', { noremap = true, desc = 'Decrease window width' })
