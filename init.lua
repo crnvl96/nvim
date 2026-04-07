@@ -1,3 +1,10 @@
+-- https://docs.libuv.org/en/v1.x/index.html
+--
+-- https://github.com/nvim-treesitter/nvim-treesitter/blob/main/lua/nvim-treesitter/parsers.lua
+-- https://github.com/nvim-treesitter/nvim-treesitter/tree/main/runtime/queries
+--
+-- https://github.com/romus204/tree-sitter-manager.nvim
+
 local M = {}
 _G.M = M
 
@@ -33,7 +40,6 @@ M.toggle_diagnostic = function()
 end
 
 M.gr = vim.api.nvim_create_augroup('custom-config', {})
-M.conform_fmt = true
 
 M.set = vim.keymap.set
 M.on_packchanged = function(name, kinds, callback)
@@ -53,9 +59,9 @@ vim.cmd([[packadd nvim.undotree]])
 vim.cmd([[packadd cfilter]])
 vim.cmd([[colorscheme ham]])
 
+vim.g.loaded_spellfile_plugin = 1
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
-vim.g.loaded_spellfile_plugin = 1
 
 require('vim._core.ui2').enable({
   enable = true,
@@ -73,32 +79,16 @@ local nt = { 'n', 't' }
 local nix = { 'n', 'i', 'x' }
 local node_bin = vim.env.HOME .. '/.local/share/mise/installs/node/24/bin'
 
----@diagnostic disable-next-line: duplicate-set-field
-vim.ui.select = function(items, opts, on_choice)
-  return MiniPick.ui_select(items, opts, on_choice, {
-    window = {
-      config = {
-        relative = 'cursor',
-        anchor = 'NW',
-        row = 0,
-        col = 0,
-        width = 80,
-        height = 15,
-      },
-    },
-  })
-end
-
 vim.pack.add({
-  'https://github.com/nvim-lua/plenary.nvim',
   'https://github.com/nvim-mini/mini.nvim',
   'https://github.com/christoomey/vim-tmux-navigator',
   'https://github.com/tpope/vim-sleuth',
   'https://github.com/tpope/vim-fugitive',
-  'https://github.com/mikavilpas/yazi.nvim',
-  'https://github.com/stevearc/conform.nvim',
   'https://github.com/kevalin/mermaid.nvim',
+  'https://github.com/justinmk/vim-dirvish',
 })
+
+vim.g.dirvish_mode = ':sort ,^.*[/],'
 
 vim.env.PATH = node_bin .. ':' .. vim.env.PATH
 vim.g.node_host_prog = node_bin .. '/node'
@@ -140,6 +130,22 @@ vim.o.wrap = false
 vim.o.wildoptions = 'pum,fuzzy'
 vim.o.wildmode = 'noselect,full'
 vim.o.completeopt = 'menu,menuone,noinsert,noselect,popup,fuzzy'
+
+if vim.fn.executable('rg') == 1 then
+  vim.opt.grepprg = 'rg --vimgrep'
+  vim.opt.grepformat = '%f:%l:%c:%m,%f'
+
+  function _G.RgFindFiles(cmdarg)
+    local fnames = vim.fn.systemlist('rg --files --hidden --color=never --glob="!.git"')
+    if #cmdarg == 0 then
+      return fnames
+    else
+      return vim.fn.matchfuzzy(fnames, cmdarg)
+    end
+  end
+
+  vim.o.findfunc = 'v:lua.RgFindFiles'
+end
 
 vim.api.nvim_create_autocmd('TextYankPost', {
   group = M.gr,
@@ -185,6 +191,12 @@ vim.api.nvim_create_autocmd('BufEnter', {
       end
     end
   end,
+})
+
+vim.api.nvim_create_autocmd('QuickFixCmdPost', {
+  group = M.gr,
+  pattern = '[^l]*',
+  command = 'cwindow',
 })
 
 vim.api.nvim_create_autocmd({ 'BufReadPre', 'BufNewFile' }, {
@@ -287,7 +299,21 @@ vim.api.nvim_create_autocmd('CmdlineChanged', {
       local function should_enable_autocomplete()
         local cmdline_cmd = vim.fn.split(vim.fn.getcmdline(), ' ')[1]
         local cmdline_type = vim.fn.getcmdtype()
-        return cmdline_type == '/' or cmdline_type == '?' or (cmdline_type == ':' and cmdline_cmd and #cmdline_cmd >= 2)
+        -- return cmdline_type == '/' or cmdline_type == '?' or (cmdline_type == ':' and cmdline_cmd and #cmdline_cmd >= 2)
+        return cmdline_type == '/'
+          or cmdline_type == '?'
+          or cmdline_type == '!'
+          or (
+            cmdline_type == ':'
+            and (
+              cmdline_cmd == 'find'
+              or cmdline_cmd == 'fin'
+              or cmdline_cmd == 'help'
+              or cmdline_cmd == 'h'
+              or cmdline_cmd == 'buffer'
+              or cmdline_cmd == 'b'
+            )
+          )
       end
       if should_enable_autocomplete() then vim.fn.wildtrigger() end
     end),
@@ -296,11 +322,9 @@ vim.api.nvim_create_autocmd('CmdlineChanged', {
 })
 
 require('mini.extra').setup()
-require('mini.pick').setup()
 require('mini.align').setup()
 require('mini.misc').setup()
 require('mini.splitjoin').setup()
-require('yazi').setup()
 require('mermaid').setup()
 
 require('mini.ai').setup({
@@ -311,28 +335,34 @@ require('mini.ai').setup({
   },
 })
 
-require('conform').setup({
-  notify_on_error = false,
-  notify_no_formatters = false,
-  default_format_opts = {
-    lsp_format = 'fallback',
-    timeout_ms = 1000,
+require('mini.clue').setup({
+  clues = {
+    { mode = 'n', keys = '<Leader>e', desc = '+Explore/Edit' },
+    { mode = 'n', keys = '<Leader>f', desc = '+Find' },
+    { mode = 'n', keys = '<Leader>u', desc = '+Utils' },
+    require('mini.clue').gen_clues.builtin_completion(),
+    require('mini.clue').gen_clues.g(),
+    require('mini.clue').gen_clues.marks(),
+    require('mini.clue').gen_clues.registers(),
+    require('mini.clue').gen_clues.square_brackets(),
+    require('mini.clue').gen_clues.windows(),
+    require('mini.clue').gen_clues.z(),
   },
-  formatters = {
-    stylua = { require_cwd = true },
-    prettier = { require_cwd = false },
-    oxfmt = { require_cwd = false },
+  triggers = {
+    { mode = { 'n', 'x' }, keys = '<Leader>' },
+    { mode = 'n', keys = '\\' },
+    { mode = { 'n', 'x' }, keys = '[' },
+    { mode = { 'n', 'x' }, keys = ']' },
+    { mode = 'i', keys = '<C-x>' },
+    { mode = { 'n', 'x' }, keys = 'g' },
+    { mode = { 'n', 'x' }, keys = "'" },
+    { mode = { 'n', 'x' }, keys = '`' },
+    { mode = { 'n', 'x' }, keys = '"' },
+    { mode = { 'i', 'c' }, keys = '<C-r>' },
+    { mode = 'n', keys = '<C-w>' },
+    { mode = { 'n', 'x' }, keys = 's' },
+    { mode = { 'n', 'x' }, keys = 'z' },
   },
-  formatters_by_ft = {
-    markdown = { 'oxfmt', 'injected' },
-    python = { 'ruff_organize_imports', 'ruff_fix', 'ruff_format' },
-    lua = { 'stylua' },
-    ['_'] = { 'trim_whitespace', 'trim_newline' },
-  },
-  format_on_save = function()
-    if not M.conform_fmt then return nil end
-    return {}
-  end,
 })
 
 M.set(nx, 'j', [[v:count == 0 ? 'gj' : 'j']], { expr = true, desc = 'Go down one visual line' })
@@ -367,28 +397,14 @@ M.set('n', '<C-l>', '<Cmd>TmuxNavigateRight<CR>', { noremap = true, desc = 'Go t
 M.set('n', 'E', '<Cmd>lua vim.diagnostic.open_float()<CR>', { desc = 'Open Current Diagnostic' })
 M.set('n', 'grd', '<Cmd>lua vim.lsp.buf.definition()<CR>', { desc = 'vim.lsp.buf.definition()' })
 M.set('n', 'grD', '<Cmd>lua vim.diagnostic.setqflist()<CR>', { desc = 'vim.diagnostic.setqflist()' })
-M.set('n', '<Leader>er', '<Cmd>Yazi toggle<CR>', { desc = 'Yazi (Resume)' })
-M.set('n', '<Leader>ef', '<Cmd>Yazi<CR>', { desc = 'Yazi' })
-M.set('n', '<Leader>ew', '<Cmd>Yazi cwd<CR>', { desc = 'Yazi (CWD)' })
-M.set('n', '<Leader>f,', '<Cmd>Pick list scope="quickfix"<CR>', { desc = 'Quickfix list' })
-M.set('n', '<Leader>fb', '<Cmd>Pick buffers<CR>', { desc = 'Buffers' })
-M.set('n', '<Leader>fc', '<Cmd>Pick commands<CR>', { desc = 'Commands' })
-M.set('n', '<Leader>fd', '<Cmd>Pick diagnostic<CR>', { desc = 'Diagnostics' })
-M.set('n', '<Leader>fe', '<Cmd>Pick explorer<CR>', { desc = 'Explorer' })
-M.set('n', '<Leader>ff', '<Cmd>Pick files<CR>', { desc = 'Find Files' })
-M.set('n', '<Leader>fg', '<Cmd>Pick grep_live<CR>', { desc = 'Grep live' })
-M.set('n', '<Leader>fh', "<Cmd>Pick help default_split='vertical'<CR>", { desc = 'Help files' })
-M.set('n', '<Leader>fH', '<Cmd>Pick hl_groups<CR>', { desc = 'Highlights' })
-M.set('n', '<Leader>fk', '<Cmd>Pick keymaps<CR>', { desc = 'Keymaps' })
-M.set('n', '<Leader>fl', "<Cmd>Pick buf_lines scope='current' preserve_order=true<CR>", { desc = 'Lines' })
-M.set('n', '<Leader>fm', '<Cmd>Pick manpages<CR>', { desc = 'Search manpages' })
-M.set('n', '<Leader>fo', '<Cmd>Pick visit_paths preserve_order=true<CR>', { desc = 'Oldfiles' })
-M.set('n', '<Leader>fq', "<Cmd>Pick list scope='quickfix'<CR>", { desc = 'Quickfix' })
-M.set('n', '<Leader>fr', '<Cmd>Pick resume<CR>', { desc = 'Resume last picker' })
-M.set('n', '<Leader>fu', '<Cmd>Pick git_hunks<CR>', { desc = 'Git hunks' })
-M.set('n', '<Leader>fU', '<Cmd>Pick git_hunks scope="staged"<CR>', { desc = 'Git hunks' })
-M.set('n', '<Leader>gc', '<Cmd>Git commit<CR>', { desc = 'Git commit' })
-M.set('n', '<Leader>uf', '<Cmd>lua M.conform_fmt = not M.conform_fmt<CR>', { desc = 'Toggle autoformat' })
+M.set('n', '<leader>ef', '<Cmd>Dirvish<CR>', { desc = 'File explorer' })
+M.set('n', '<leader>ff', ':find<space>', { desc = 'Fuzzy find' })
+M.set('n', '<leader>fg', ':sil grep<space>', { desc = 'Fuzzy find file' })
+M.set('n', '<leader>fl', function()
+  local file = vim.fn.getreg('%')
+  local left = vim.api.nvim_replace_termcodes('<Left>', true, false, true)
+  vim.api.nvim_feedkeys(':sil grep  -g=' .. file .. string.rep(left, 4 + #file), 'n', false)
+end, { desc = 'Grep current file' })
 M.set('n', '<Leader>uc', '<Cmd>setlocal cursorline! cursorline?<CR>', { desc = "Toggle 'cursorline'" })
 M.set('n', '<Leader>uC', '<Cmd>setlocal cursorcolumn! cursorcolumn?<CR>', { desc = "Toggle 'cursorcolumn'" })
 M.set('n', '<Leader>ud', '<Cmd>lua print(M.toggle_diagnostic())<CR>', { desc = 'Toggle diagnostic' })

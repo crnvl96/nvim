@@ -1,0 +1,10 @@
+vim.keymap.set('n', '<Leader>uf', function()
+  local file = vim.fn.getreg('%')
+  vim.cmd('silent !uv run --all-groups ruff format ' .. file)
+  vim.cmd('edit')
+end, { desc = 'Format file', buffer = true })
+
+vim.keymap.set('n', '<Leader>uF', function()
+  vim.cmd('silent !uv run --all-groups ruff format')
+  vim.cmd('edit')
+end, { desc = 'Format project', buffer = true })
