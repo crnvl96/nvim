@@ -148,6 +148,8 @@ require('mini.clue').setup({
     { mode = 'n', keys = '<C-w>' },
     -- `z` key
     { mode = { 'n', 'x' }, keys = 'z' },
+    -- `Z` key (dirvish)
+    { mode = { 'n', 'x' }, keys = 'Z' },
   },
   clues = {
     { mode = { 'n', 'x' }, keys = '<leader>f', desc = '+find' },
