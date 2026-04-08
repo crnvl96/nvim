@@ -1,4 +1,1 @@
-vim.cmd([[
-  setlocal nofoldenable
-  wincmd L
-]])
+vim.cmd([[setlocal nofoldenable]])

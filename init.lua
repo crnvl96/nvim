@@ -2,10 +2,10 @@
 --
 -- https://github.com/nvim-treesitter/nvim-treesitter/blob/main/lua/nvim-treesitter/parsers.lua
 -- https://github.com/nvim-treesitter/nvim-treesitter/tree/main/runtime/queries
---
 -- https://github.com/romus204/tree-sitter-manager.nvim
---
 -- https://github.com/arborist-ts/registry/blob/main/parsers.toml
+--
+-- https://github.com/neovim/neovim/blob/master/INSTALL.md#linux
 
 local Config = {}
 _G.Config = Config
@@ -41,23 +41,12 @@ Config.toggle_diagnostic = function()
   return new_buf_state and '  diagnostic' or 'nodiagnostic'
 end
 
-Config.gr = vim.api.nvim_create_augroup('custom-config', {})
-
 Config.set = vim.keymap.set
-Config.on_packchanged = function(name, kinds, callback)
-  vim.api.nvim_create_autocmd('PackChanged', {
-    group = Config.gr,
-    callback = function(e)
-      local is_target = e.data.spec.name == name and vim.tbl_contains(kinds, e.data.kind)
-      if not is_target then return end
-      if not e.data.active then vim.cmd.packadd(name) end
-      callback(e)
-    end,
-  })
-end
+
+Config.gr = vim.api.nvim_create_augroup('custom-config', {})
+Config.treesitter_langs = { 'python' }
 
 vim.cmd([[packadd nvim.difftool]])
-vim.cmd([[packadd nvim.undotree]])
 vim.cmd([[packadd cfilter]])
 vim.cmd([[colorscheme ansi]])
 
@@ -89,16 +78,16 @@ vim.pack.add({
   'https://github.com/kevalin/mermaid.nvim',
   'https://github.com/justinmk/vim-dirvish',
   'https://github.com/justinmk/vim-sneak',
+  'https://github.com/nvim-treesitter/nvim-treesitter',
+  'https://github.com/nvim-treesitter/nvim-treesitter-textobjects',
+  'https://github.com/stevearc/conform.nvim',
 })
 
-vim.cmd([[
-let g:sneak#label = 1
-let g:sneak#s_next = 0
-let g:sneak#use_ic_scs = 1
-let g:sneak#target_labels = ";sftunq/SFGHLTUNRMQZ?0"
-
-let g:dirvish_mode = ':sort ,^.*[\/],'
-]])
+vim.cmd([[let g:sneak#label = 1]])
+vim.cmd([[let g:sneak#s_next = 0]])
+vim.cmd([[let g:sneak#use_ic_scs = 1]])
+vim.cmd([[let g:sneak#target_labels = ";sftunq/SFGHLTUNRMQZ?0"]])
+vim.cmd([[let g:dirvish_mode = ':sort ,^.*[\/],']])
 
 vim.env.PATH = node_bin .. ':' .. vim.env.PATH
 vim.g.node_host_prog = node_bin .. '/node'
@@ -142,7 +131,7 @@ vim.o.wildmode = 'noselect,full'
 vim.o.completeopt = 'menu,menuone,noinsert,noselect,popup,fuzzy'
 
 if vim.fn.executable('rg') == 1 then
-  vim.opt.grepprg = 'rg --vimgrep'
+  vim.opt.grepprg = 'rg --vimgrep --hidden'
   vim.opt.grepformat = '%f:%l:%c:%m,%f'
 
   function _G.RgFindFiles(cmdarg)
@@ -156,6 +145,16 @@ if vim.fn.executable('rg') == 1 then
 
   vim.o.findfunc = 'v:lua.RgFindFiles'
 end
+
+vim.api.nvim_create_autocmd('PackChanged', {
+  group = Config.gr,
+  callback = function(e)
+    if e.data.spec.name == 'nvim-treesitter' and vim.tbl_contains({ 'update' }, e.data.kind) then
+      if not e.data.active then vim.cmd.packadd('nvim-treesitter') end
+      vim.cmd('TSUpdate')
+    end
+  end,
+})
 
 vim.api.nvim_create_autocmd('TextYankPost', {
   group = Config.gr,
@@ -194,7 +193,7 @@ vim.api.nvim_create_autocmd('BufEnter', {
   callback = function(e)
     local bufnr = e.buf
     local filetype = vim.bo[bufnr].ft
-    local types = { 'help', 'checkhealth', 'vim', 'fugitive', '' }
+    local types = { 'help', 'checkhealth', 'vim', 'fugitive', 'qf', '' }
     for _, b in ipairs(types) do
       if filetype == b then
         vim.keymap.set('n', 'q', function() vim.api.nvim_command('close') end, { buffer = true })
@@ -288,12 +287,16 @@ vim.api.nvim_create_autocmd('LspAttach', {
   end,
 })
 
+vim
+  .iter(Config.treesitter_langs)
+  :filter(function(lang) return #vim.api.nvim_get_runtime_file('parser/' .. lang .. '.*', false) == 0 end)
+  :each(function(lang) require('nvim-treesitter').install(lang) end)
+
 vim.api.nvim_create_autocmd('FileType', {
   group = Config.gr,
   pattern = vim
-    .iter(vim.api.nvim_get_runtime_file('parser/*.so', true))
-    :map(function(file) return vim.fn.fnamemodify(file, ':t:r') end)
-    :map(function(file) return vim.treesitter.language.get_filetypes(file) end)
+    .iter(Config.treesitter_langs)
+    :map(function(lang) return vim.treesitter.language.get_filetypes(lang) end)
     :flatten()
     :totable(),
   callback = function(e)
@@ -340,9 +343,51 @@ require('mermaid').setup()
 require('mini.ai').setup({
   search_method = 'cover',
   custom_textobjects = {
-    g = MiniExtra.gen_ai_spec.buffer(),
-    f = require('mini.ai').gen_spec.treesitter({ a = '@function.outer', i = '@function.inner' }),
+    f = require('mini.ai').gen_spec.treesitter({
+      a = '@function.outer',
+      i = '@function.inner',
+    }),
+    g = {
+      from = {
+        line = 1,
+        col = 1,
+      },
+      to = {
+        line = vim.fn.line('$'),
+        col = math.max(vim.fn.getline('$'):len(), 1),
+      },
+    },
   },
+})
+
+vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
+vim.g.autoformat = true
+
+require('conform').setup({
+  notify_on_error = false,
+  notify_no_formatters = false,
+  default_format_opts = {
+    lsp_format = 'fallback',
+    timeout_ms = 1000,
+  },
+  formatters = {
+    stylua = { require_cwd = true },
+    prettier = { require_cwd = false },
+    oxfmt = { require_cwd = false },
+  },
+  formatters_by_ft = {
+    markdown = { 'oxfmt', 'injected' },
+    python = { 'ruff_organize_imports', 'ruff_fix', 'ruff_format' },
+    lua = { 'stylua' },
+    json = { 'oxfmt', lsp_format = 'prefer', name = 'oxfmt' },
+    jsonc = { 'oxfmt', lsp_format = 'prefer', name = 'oxfmt' },
+    jsonc5 = { 'oxfmt', lsp_format = 'prefer', name = 'oxfmt' },
+    ['_'] = { 'trim_whitespace', 'trim_newline' },
+  },
+  format_on_save = function()
+    if not vim.g.autoformat then return nil end
+    return {}
+  end,
 })
 
 Config.set(nx, 'j', [[v:count == 0 ? 'gj' : 'j']], { expr = true, desc = 'Go down one visual line' })
@@ -379,12 +424,12 @@ Config.set('n', 'grd', '<Cmd>lua vim.lsp.buf.definition()<CR>', { desc = 'vim.ls
 Config.set('n', 'grD', '<Cmd>lua vim.diagnostic.setqflist()<CR>', { desc = 'vim.diagnostic.setqflist()' })
 Config.set('n', '<leader>ef', '<Cmd>Dirvish<CR>', { desc = 'File explorer' })
 Config.set('n', '<leader>ff', ':find<space>', { desc = 'Fuzzy find' })
-Config.set('n', '<leader>fg', ':sil<space>grep<space>', { desc = 'Fuzzy find file' })
+Config.set('n', '<leader>fg', ":sil<space>grep<space>''<left>", { desc = 'Fuzzy find file' })
 Config.set('n', '<leader>fh', ':help<space>', { desc = 'Fuzzy find file' })
 Config.set('n', '<leader>fl', function()
   local file = vim.fn.getreg('%')
   local left = vim.api.nvim_replace_termcodes('<Left>', true, false, true)
-  vim.api.nvim_feedkeys(':sil grep  -g=' .. file .. string.rep(left, 4 + #file), 'n', false)
+  vim.api.nvim_feedkeys(":sil grep '' -g=" .. file .. string.rep(left, 5 + #file), 'n', false)
 end, { desc = 'Grep current file' })
 Config.set('n', '<Leader>uc', '<Cmd>setlocal cursorline! cursorline?<CR>', { desc = "Toggle 'cursorline'" })
 Config.set('n', '<Leader>uC', '<Cmd>setlocal cursorcolumn! cursorcolumn?<CR>', { desc = "Toggle 'cursorcolumn'" })
