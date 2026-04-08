@@ -32,6 +32,7 @@ require('fzf-lua').setup({
   fzf_opts = {
     ['--info'] = 'default',
     ['--layout'] = 'reverse-list',
+    ['--cycle'] = '',
   },
   keymap = {
     builtin = {

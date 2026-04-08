@@ -1,23 +1,15 @@
--- vim.cmd([[let g:sneak#label = 1]])
--- vim.cmd([[let g:sneak#s_next = 0]])
--- vim.cmd([[let g:sneak#use_ic_scs = 1]])
--- vim.cmd([[let g:sneak#target_labels = ";sftunq/SFGHLTUNRMQZ?0"]])
-
-vim.cmd([[let g:dirvish_mode = ':sort ,^.*[\/],']])
-
 vim.pack.add({
   'https://github.com/christoomey/vim-tmux-navigator',
   'https://github.com/tpope/vim-sleuth',
   'https://github.com/tpope/vim-fugitive',
   'https://github.com/kevalin/mermaid.nvim',
-  'https://github.com/justinmk/vim-dirvish',
-  'https://github.com/rlane/pounce.nvim',
   'https://github.com/stevearc/conform.nvim',
+  'https://github.com/stevearc/oil.nvim',
+  'https://codeberg.org/andyg/leap.nvim',
 })
 
-require('pounce').setup()
-
 require('mini.extra').setup()
+require('mini.icons').setup()
 require('mini.align').setup()
 require('mini.misc').setup()
 require('mini.splitjoin').setup()
@@ -39,4 +31,10 @@ require('mini.ai').setup({
       return { from = from, to = to }
     end,
   },
+})
+
+require('oil').setup({
+  columns = { 'icon' },
+  watch_for_changes = false,
+  view_options = { show_hidden = true },
 })
