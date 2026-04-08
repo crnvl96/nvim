@@ -21,6 +21,7 @@ vim.g.loaded_spellfile_plugin = 1
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
+-- Still has some flickering..
 require('vim._core.ui2').enable({
   enable = false,
   msg = {
