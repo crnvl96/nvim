@@ -31,3 +31,9 @@ require('vim._core.ui2').enable({
     pager = { height = 1 },
   },
 })
+
+-- This config is mainly powered by Mini capabilities
+-- https://github.com/nvim-mini/mini.nvim
+vim.pack.add({
+  'https://github.com/nvim-mini/mini.nvim',
+})

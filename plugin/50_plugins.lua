@@ -1,19 +1,21 @@
+-- vim.cmd([[let g:sneak#label = 1]])
+-- vim.cmd([[let g:sneak#s_next = 0]])
+-- vim.cmd([[let g:sneak#use_ic_scs = 1]])
+-- vim.cmd([[let g:sneak#target_labels = ";sftunq/SFGHLTUNRMQZ?0"]])
+
+vim.cmd([[let g:dirvish_mode = ':sort ,^.*[\/],']])
+
 vim.pack.add({
-  'https://github.com/nvim-mini/mini.nvim',
   'https://github.com/christoomey/vim-tmux-navigator',
   'https://github.com/tpope/vim-sleuth',
   'https://github.com/tpope/vim-fugitive',
   'https://github.com/kevalin/mermaid.nvim',
   'https://github.com/justinmk/vim-dirvish',
-  'https://github.com/justinmk/vim-sneak',
+  'https://github.com/rlane/pounce.nvim',
   'https://github.com/stevearc/conform.nvim',
 })
 
-vim.cmd([[let g:sneak#label = 1]])
-vim.cmd([[let g:sneak#s_next = 0]])
-vim.cmd([[let g:sneak#use_ic_scs = 1]])
-vim.cmd([[let g:sneak#target_labels = ";sftunq/SFGHLTUNRMQZ?0"]])
-vim.cmd([[let g:dirvish_mode = ':sort ,^.*[\/],']])
+require('pounce').setup()
 
 require('mini.extra').setup()
 require('mini.align').setup()
@@ -37,34 +39,4 @@ require('mini.ai').setup({
       return { from = from, to = to }
     end,
   },
-})
-
-vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
-vim.g.autoformat = true
-
-require('conform').setup({
-  notify_on_error = false,
-  notify_no_formatters = false,
-  default_format_opts = {
-    lsp_format = 'fallback',
-    timeout_ms = 1000,
-  },
-  formatters = {
-    stylua = { require_cwd = true },
-    prettier = { require_cwd = false },
-    oxfmt = { require_cwd = false },
-  },
-  formatters_by_ft = {
-    markdown = { 'oxfmt', 'injected' },
-    python = { 'ruff_organize_imports', 'ruff_fix', 'ruff_format' },
-    lua = { 'stylua' },
-    json = { 'oxfmt', lsp_format = 'prefer', name = 'oxfmt' },
-    jsonc = { 'oxfmt', lsp_format = 'prefer', name = 'oxfmt' },
-    jsonc5 = { 'oxfmt', lsp_format = 'prefer', name = 'oxfmt' },
-    ['_'] = { 'trim_whitespace', 'trim_newline' },
-  },
-  format_on_save = function()
-    if not vim.g.autoformat then return nil end
-    return {}
-  end,
 })

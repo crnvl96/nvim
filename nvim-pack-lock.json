@@ -4,6 +4,10 @@
       "rev": "086a40dc7ed8242c03be9f47fbcee68699cc2395",
       "src": "https://github.com/stevearc/conform.nvim"
     },
+    "fzf-lua": {
+      "rev": "9f0432fdd7825ab163520045831a40b6df82ea28",
+      "src": "https://github.com/ibhagwan/fzf-lua"
+    },
     "mermaid.nvim": {
       "rev": "a86a74e1366320703dd66bcba924c13f648fd3eb",
       "src": "https://github.com/kevalin/mermaid.nvim"
@@ -19,6 +23,10 @@
     "nvim-treesitter-textobjects": {
       "rev": "851e865342e5a4cb1ae23d31caf6e991e1c99f1e",
       "src": "https://github.com/nvim-treesitter/nvim-treesitter-textobjects"
+    },
+    "pounce.nvim": {
+      "rev": "2e36399ac09b517770c459f1a123e6b4b4c1c171",
+      "src": "https://github.com/rlane/pounce.nvim"
     },
     "vim-dirvish": {
       "rev": "6be56227a4207c93cd8b607f52f567a1e13dddb1",
