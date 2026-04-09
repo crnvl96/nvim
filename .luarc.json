@@ -10,7 +10,8 @@
     "MiniCompletion",
     "MiniColors",
     "MiniBufremove",
-    "MiniDiff"
+    "MiniDiff",
+        "MiniStatusline"
   ]
 }
 
