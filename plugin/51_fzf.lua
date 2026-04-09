@@ -122,3 +122,22 @@ require('fzf-lua').setup({
     },
   },
 })
+
+Config.set('i', '<C-x><C-f>', Config.file_completion_fzf, { desc = 'Fuzzy complete path' })
+Config.set('n', '<leader>fH', '<cmd>FzfLua highlights<cr>', { desc = 'Highlights' })
+Config.set('n', '<leader>fb', '<cmd>FzfLua buffers<cr>', { desc = 'Buffers' })
+Config.set('n', '<leader>fd', '<cmd>FzfLua lsp_document_diagnostics<cr>', { desc = 'Document diagnostics' })
+Config.set('n', '<leader>fD', '<cmd>FzfLua lsp_workspace_diagnostics<cr>', { desc = 'Workspace diagnostics' })
+Config.set('n', '<leader>ff', '<cmd>FzfLua files<cr>', { desc = 'Files [fzf]' })
+Config.set('n', '<leader>fg', '<cmd>FzfLua live_grep<cr>', { desc = 'Grep [fzf]' })
+Config.set('n', '<leader>fh', '<cmd>FzfLua help_tags<cr>', { desc = 'Help [fzf]' })
+Config.set('n', '<leader>fo', '<cmd>FzfLua oldfiles<cr>', { desc = 'Recently opened files' })
+Config.set('n', '<leader>fr', '<cmd>FzfLua resume<cr>', { desc = 'Resume last fzf command' })
+Config.set('x', '<leader>fg', '<cmd>FzfLua grep_visual<cr>', { desc = 'Grep [fzf]' })
+Config.set({ 'n', 'x' }, '<Leader>fl', Config.grep_blines_fzf, { desc = 'Grep buffer [fzf]' })
+
+Config.set('n', '<leader>lr', '<cmd>FzfLua lsp_references<cr>', { desc = 'LSP references' })
+Config.set('n', '<leader>ld', '<cmd>FzfLua lsp_definitions<cr>', { desc = 'LSP definitions' })
+Config.set('n', '<leader>lt', '<cmd>FzfLua lsp_typedefs<cr>', { desc = 'LSP typedefs' })
+Config.set('n', '<leader>li', '<cmd>FzfLua lsp_implementations<cr>', { desc = 'LSP implementations' })
+Config.set('n', '<leader>lO', '<cmd>FzfLua lsp_document_symbols<cr>', { desc = 'LSP document symbols' })

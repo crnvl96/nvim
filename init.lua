@@ -21,18 +21,6 @@ vim.g.loaded_spellfile_plugin = 1
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
--- Still has some flickering..
-require('vim._core.ui2').enable({
-  enable = false,
-  msg = {
-    targets = 'msg',
-    cmd = { height = 0.5 },
-    dialog = { height = 0.5 },
-    msg = { height = 0.5, timeout = 4000 },
-    pager = { height = 1 },
-  },
-})
-
 -- This config is mainly powered by Mini capabilities
 -- https://github.com/nvim-mini/mini.nvim
 vim.pack.add({

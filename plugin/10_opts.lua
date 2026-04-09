@@ -20,7 +20,6 @@ vim.o.number = true
 vim.o.pummaxwidth = 100
 vim.o.relativenumber = true
 vim.o.ruler = false
-vim.o.cmdheight = 1
 vim.o.scrolloff = 8
 vim.o.shiftwidth = 4
 vim.o.switchbuf = 'usetab'
@@ -40,6 +39,7 @@ vim.o.wrap = false
 vim.o.wildoptions = 'pum,fuzzy'
 vim.o.wildmode = 'noselect,full'
 vim.o.completeopt = 'menu,menuone,noinsert,noselect,popup,fuzzy'
+vim.o.cmdheight = 1
 
 if vim.fn.executable('rg') == 1 then
   vim.opt.grepprg = 'rg --vimgrep --hidden'

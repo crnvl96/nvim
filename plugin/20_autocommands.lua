@@ -57,21 +57,20 @@ vim.api.nvim_create_autocmd('CmdlineChanged', {
       local function should_enable_autocomplete()
         local cmdline_cmd = vim.fn.split(vim.fn.getcmdline(), ' ')[1]
         local cmdline_type = vim.fn.getcmdtype()
-        -- return cmdline_type == '/' or cmdline_type == '?' or (cmdline_type == ':' and cmdline_cmd and #cmdline_cmd >= 2)
-        return cmdline_type == '/'
-          or cmdline_type == '?'
-          or cmdline_type == '!'
-          or (
-            cmdline_type == ':'
-            and (
-              cmdline_cmd == 'find'
-              or cmdline_cmd == 'fin'
-              or cmdline_cmd == 'help'
-              or cmdline_cmd == 'h'
-              or cmdline_cmd == 'buffer'
-              or cmdline_cmd == 'b'
-            )
-          )
+        return cmdline_type == '/' or cmdline_type == '?' or (cmdline_type == ':' and cmdline_cmd and #cmdline_cmd >= 2)
+        -- return cmdline_type == '/'
+        --   or cmdline_type == '?'
+        --   or (
+        --     cmdline_type == ':'
+        --     and (
+        --       cmdline_cmd == 'find'
+        --       or cmdline_cmd == 'fin'
+        --       or cmdline_cmd == 'help'
+        --       or cmdline_cmd == 'h'
+        --       or cmdline_cmd == 'buffer'
+        --       or cmdline_cmd == 'b'
+        --     )
+        --   )
       end
       if should_enable_autocomplete() then vim.fn.wildtrigger() end
     end),

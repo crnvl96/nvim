@@ -76,3 +76,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
     end, {}, { 'i', 's' })
   end,
 })
+
+Config.set('n', 'E', '<Cmd>lua vim.diagnostic.open_float()<CR>', { desc = 'Open Current Diagnostic' })
+Config.set('n', 'grD', '<Cmd>lua vim.diagnostic.setqflist()<CR>', { desc = 'vim.diagnostic.setqflist()' })
+Config.set('n', 'grd', '<Cmd>lua vim.lsp.buf.definition()<CR>', { desc = 'vim.lsp.buf.definition()' })
