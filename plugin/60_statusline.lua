@@ -25,8 +25,8 @@ require('mini.statusline').setup({
         { hl = 'MiniStatuslineDevinfo', strings = { git, diff, diagnostics } },
         '%<', -- Mark general truncate point
         { hl = 'MiniStatuslineFilename', strings = { filename } },
-        '%=', -- End left alignment
         { hl = 'MiniStatuslineFilename', strings = { macro } },
+        '%=', -- End left alignment
         { hl = 'MiniStatuslineFileinfo', strings = { fileinfo } },
         { hl = mode_hl, strings = { search, location } },
       })

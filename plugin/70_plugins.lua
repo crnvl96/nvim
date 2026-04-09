@@ -8,7 +8,7 @@ vim.pack.add({
   'https://codeberg.org/andyg/leap.nvim',
   'https://github.com/rachartier/tiny-inline-diagnostic.nvim',
   'https://github.com/rachartier/tiny-code-action.nvim',
-  -- 'https://github.com/rachartier/tiny-cmdline.nvim',
+  'https://github.com/rachartier/tiny-cmdline.nvim',
 })
 
 require('mini.extra').setup()
@@ -19,12 +19,9 @@ require('mini.splitjoin').setup()
 require('mermaid').setup()
 require('tiny-code-action').setup({ picker = 'buffer' })
 
--- vim.o.cmdheight = 0
--- require('vim._core.ui2').enable({
---   enable = true,
---   msg = { targets = 'msg', msg = { height = 0.5, timeout = 3000 } },
--- })
--- require('tiny-cmdline').setup()
+vim.o.cmdheight = 0
+require('vim._core.ui2').enable({ enable = true, msg = { targets = 'msg', msg = { height = 0.5, timeout = 3000 } } })
+require('tiny-cmdline').setup()
 
 vim.diagnostic.config({ virtual_text = false })
 require('tiny-inline-diagnostic').setup({ preset = 'classic' })
