@@ -118,7 +118,7 @@ hi Todo ctermfg=0 ctermbg=9 cterm=bold
 hi Type ctermfg=11
 
 hi NormalFloat ctermbg=0 ctermfg=15
-hi FloatBorder ctermbg=0 ctermfg=7
+hi FloatBorder ctermbg=NONE ctermfg=NONE
 hi FloatShadow ctermbg=0 ctermfg=15
 
 " Treesitter highlighting

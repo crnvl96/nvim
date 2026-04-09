@@ -5,7 +5,7 @@
       "src": "https://github.com/stevearc/conform.nvim"
     },
     "fzf-lua": {
-      "rev": "9f0432fdd7825ab163520045831a40b6df82ea28",
+      "rev": "4deeecf611c0beba6455e6cf06e2c051a6169dd4",
       "src": "https://github.com/ibhagwan/fzf-lua"
     },
     "leap.nvim": {
@@ -17,7 +17,7 @@
       "src": "https://github.com/kevalin/mermaid.nvim"
     },
     "mini.nvim": {
-      "rev": "2431902e78b76f435542d1e606f08475360068ca",
+      "rev": "69b7433355664cf76898eb86a12a019f39bd86d1",
       "src": "https://github.com/nvim-mini/mini.nvim"
     },
     "nvim-treesitter": {
@@ -33,7 +33,7 @@
       "src": "https://github.com/stevearc/oil.nvim"
     },
     "tiny-cmdline.nvim": {
-      "rev": "bb068b3a056a427e7db2f37d306b667e5c34258a",
+      "rev": "01519b13230d549380cee405c12062738240a11b",
       "src": "https://github.com/rachartier/tiny-cmdline.nvim"
     },
     "tiny-code-action.nvim": {
