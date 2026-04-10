@@ -33,7 +33,7 @@
       "src": "https://github.com/stevearc/oil.nvim"
     },
     "tiny-cmdline.nvim": {
-      "rev": "01519b13230d549380cee405c12062738240a11b",
+      "rev": "807d23bcb7cdf26da9e92c5ea5299e7f0d07383d",
       "src": "https://github.com/rachartier/tiny-cmdline.nvim"
     },
     "tiny-code-action.nvim": {
