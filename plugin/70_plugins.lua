@@ -12,6 +12,8 @@ vim.pack.add({
 })
 
 require('mini.extra').setup()
+require('mini.align').setup()
+require('mini.splitjoin').setup()
 require('mini.icons').setup()
 require('mini.align').setup()
 require('mini.misc').setup()
