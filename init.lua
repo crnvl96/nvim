@@ -1,11 +1,14 @@
+-- https://github.com/neovim/neovim/blob/master/INSTALL.md#linux
+--
 -- https://docs.libuv.org/en/v1.x/index.html
 --
 -- https://github.com/nvim-treesitter/nvim-treesitter/blob/main/lua/nvim-treesitter/parsers.lua
 -- https://github.com/nvim-treesitter/nvim-treesitter/tree/main/runtime/queries
--- https://github.com/romus204/tree-sitter-manager.nvim
--- https://github.com/arborist-ts/registry/blob/main/parsers.toml
 --
--- https://github.com/neovim/neovim/blob/master/INSTALL.md#linux
+-- https://github.com/romus204/tree-sitter-manager.nvim
+--
+-- https://github.com/arborist-ts/registry/blob/main/parsers.toml
+-- https://github.com/arborist-ts/queries
 
 local Config = {}
 _G.Config = Config
